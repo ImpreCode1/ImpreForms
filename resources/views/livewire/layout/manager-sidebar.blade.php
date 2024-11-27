@@ -1,4 +1,4 @@
-<x-app-layout>
+{{-- <x-app-layout>
     <div class="flex h-screen bg-gray-100">
         <!-- Sidebar -->
         <div class="flex flex-col w-64 bg-white shadow-lg">
@@ -23,7 +23,7 @@
             <nav class="flex-grow">
                 <div class="px-4 py-2 space-y-1">
                     <!-- Enviar Formulario -->
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 hover:text-gray-800 rounded-lg">
+                    <a href="{{ route('enviar.formulario') }}" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 hover:text-gray-800 rounded-lg">
                         <svg class="h-6 w-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                         </svg>
@@ -31,7 +31,7 @@
                     </a>
 
                     <!-- Historial -->
-                    <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 hover:text-gray-800 rounded-lg">
+                    <a href="{{ route('historial') }}" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 hover:text-gray-800 rounded-lg">
                         <svg class="h-6 w-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -53,7 +53,7 @@
 
         <!-- Content -->
         <div class="flex-grow p-6">
-            {{ $slot ?? 'Contenido principal' }}
+            <livewire:{{ $slot ?? 'enviar-formulario' }} />
         </div>
     </div>
-</x-app-layout>
+</x-app-layout> --}}
