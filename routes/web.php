@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Controller;
 use App\Livewire\EnviarFormulario;
 use App\Livewire\Historial;
 use App\Livewire\Layout\ManagerSidebar;
@@ -41,5 +43,10 @@ Route::get('/user-dashboard', function () {
 Route::get('/manager-dashboard', ManagerSidebar::class)->name('manager.dashboard');
 Route::view('/enviar-formulario', 'enviar-formulario')->name('formulario');
 Route::view('/historial', 'historial')->name('historial');
+
+
+
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 require __DIR__ . '/auth.php';
