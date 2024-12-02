@@ -28,48 +28,97 @@ new #[Layout('layouts.guest')] class extends Component
     }
 }; ?>
 
-<div>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 p-4">
+  <div class="w-full max-w-4xl bg-white shadow-2xl rounded-3xl overflow-hidden grid md:grid-cols-2">
+    <!-- Left Side: Decorative Section -->
+    <div class="bg-gradient-to-br from-[#6a11cb] to-[#2575fc] flex items-center justify-center p-12 relative">
+      <div class="text-white text-center z-10">
+        <h2 class="text-4xl font-bold mb-6 tracking-tight">ImpreForms</h2>
+        <p class="text-lg opacity-80 leading-relaxed">
+          Transforma la gestión de formularios con nuestra plataforma intuitiva y eficiente. Simplifica procesos, ahorra tiempo y mejora la productividad.
+        </p>
+        <div class="absolute top-0 left-0 w-full h-full opacity-20 bg-pattern"></div>
+      </div>
+    </div>
 
-    <form wire:submit="login">
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input wire:model="form.email" id="email" class="block mt-1 w-full" type="email" name="email" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+    <!-- Right Side: Login Form -->
+    <div class="p-12 flex items-center">
+      <form wire:submit="login" class="w-full space-y-6">
+        <div class="text-center mb-8">
+          <h3 class="text-3xl font-bold text-gray-800 mb-2">Iniciar Sesión</h3>
+          <p class="text-gray-500">Accede a tu cuenta personal</p>
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input wire:model="form.password" id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <!-- Email Input -->
+        <div class="relative">
+          <input 
+            wire:model="form.email"
+            type="email" 
+            placeholder="Correo electrónico" 
+            required
+            class="w-full px-4 py-3.5 pl-10 rounded-xl border-2 border-gray-200 
+                   focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 
+                   transition duration-300 ease-in-out"
+          />
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember" class="inline-flex items-center">
-                <input wire:model="form.remember" id="remember" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
+        <!-- Password Input -->
+        <div class="relative">
+          <input 
+            wire:model="form.password"
+            type="password" 
+            placeholder="Contraseña" 
+            required
+            class="w-full px-4 py-3.5 pl-10 rounded-xl border-2 border-gray-200 
+                   focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 
+                   transition duration-300 ease-in-out"
+          />
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}" wire:navigate>
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+        <!-- Forgot Password -->
+        <div class="flex justify-between items-center">
+          <label class="flex items-center space-x-2">
+            <input type="checkbox" class="form-checkbox text-indigo-600 rounded">
+            <span class="text-gray-600">Recuérdame</span>
+          </label>
+          <a 
+            href="{{ route('password.request') }}" 
+            wire:navigate
+            class="text-sm text-indigo-600 hover:text-indigo-800 transition duration-300"
+          >
+            ¿Olvidaste tu contraseña?
+          </a>
         </div>
-    </form>
+
+        <!-- Login Button -->
+        <button 
+          type="submit" 
+          class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl 
+                 hover:from-indigo-700 hover:to-purple-700 
+                 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 
+                 transition duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+        >
+          Iniciar Sesión
+        </button>
+
+        <!-- Social Login -->
+        <div class="text-center">
+          <div class="flex items-center justify-center space-x-4 mt-6">
+            
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
+

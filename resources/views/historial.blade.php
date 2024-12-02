@@ -1,7 +1,7 @@
 <x-app-layout>
 
-    <h1 class="text-3xl font-extrabold mb-6 text-center text-gray-500 tracking-wide">
-         <span class="text-gray-700">Historial de formularios</span> 
+    <h1 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
+        Historial de formularios
     </h1>
 
     <div class="overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">

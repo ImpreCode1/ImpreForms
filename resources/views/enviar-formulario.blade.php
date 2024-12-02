@@ -1,11 +1,11 @@
 <x-app-layout>
 
     {{-- <div class="py-12"> --}}
-        <h1 class="text-3xl font-extrabold mb-6 text-center text-gray-500 tracking-wide">
-            Información <span class="text-gray-700">suministrada</span> por ventas
-        </h1>
+    <h1 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
+            Información suministrada por ventas
+    </h1>
         
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+      <div class="font-sans text-gray-900 antialiased">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
             <form wire:submit.prevent="submitForm" class="space-y-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -175,8 +175,9 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Certificado de existencia y
                                 representación legal</label>
-                            <input type="text" wire:model.live="clientCode"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                <br>
+                            <input type="file" wire:model.live="clientCode"
+                                class="w-full text-gray-500 font-medium text-sm bg-gray-100 file:cursor-pointer cursor-pointer file:border-0 file:py-2 file:px-4 file:mr-4 file:bg-gray-800 file:hover:bg-gray-700 file:text-white rounded" />
                         </div>
 
 

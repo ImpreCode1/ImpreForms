@@ -79,7 +79,7 @@
 
             <!-- Logout Section -->
             <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-200">
-                <form method="POST" action="">
+                <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="
                         w-full flex items-center justify-center 
