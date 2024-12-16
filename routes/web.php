@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Controller;
+use App\Livewire\Auth\Login;
 use App\Livewire\EnviarFormulario;
 use App\Livewire\Historial;
 use App\Livewire\Layout\ManagerSidebar;

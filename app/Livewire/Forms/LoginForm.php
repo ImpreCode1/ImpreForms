@@ -21,11 +21,14 @@ class LoginForm extends Form
     #[Validate('boolean')]
     public bool $remember = false;
 
-    /**
-     * Attempt to authenticate the request's credentials.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
+
+    protected $messages = [
+        'form.email.required' => 'El correo electrónico es obligatorio.',
+        'form.email.email' => 'Introduce un correo electrónico válido.',
+        'form.password.required' => 'La contraseña es obligatoria.',
+        'form.password.min' => 'La contraseña debe tener al menos 6 caracteres.',
+    ];
+
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
@@ -34,7 +37,7 @@ class LoginForm extends Form
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => 'Las credenciales proporcionadas son incorrectas.',
             ]);
         }
 

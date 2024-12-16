@@ -29,22 +29,22 @@
                     <h1 class="text-2xl font-bold text-gray-800 tracking-tight">ImpreForms</h1>
                 </div>
             </div>
-            
+
 
             <!-- User Profile -->
             <div class="px-6 py-6 text-center">
                 <div class="relative inline-block">
                     <div class="w-24 h-24 mx-auto rounded-full border-4 border-white shadow-lg overflow-hidden mb-4">
-                        <img 
-                            src="https://ui-avatars.com/api/?name=kevin&background=f3f4f6&color=374151" 
-                            alt="kevin" 
+                        <img
+                            src="https://ui-avatars.com/api/?name={{Auth::user()->name}}&background=f3f4f6&color=374151"
+                            alt="kevin"
                             class="w-full h-full object-cover"
                         >
                     </div>
                     <div class="absolute bottom-0 right-0 bg-green-500 w-6 h-6 rounded-full border-2 border-white"></div>
                 </div>
-                <h2 class="text-xl font-semibold text-gray-800 mt-2">kevin</h2>
-                <p class="text-sm text-gray-500">jhoe@gmail.com</p>
+                <h2 class="text-xl font-semibold text-gray-800 mt-2">{{Auth::user()->name}}</h2>
+                <p class="text-sm text-gray-500">{{Auth::user()->email}}</p>
             </div>
 
             <!-- Navigation Menu -->
@@ -60,8 +60,8 @@
                 @foreach($menuItems as $item)
                     <a href="{{ route($item['route']) }}" class="
                         group flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 ease-in-out
-                        {{ request()->routeIs($item['route']) 
-                            ? 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600' 
+                        {{ request()->routeIs($item['route'])
+                            ? 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600'
                             : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800' }}
                     ">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 {{ $item['color'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,11 +82,11 @@
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="
-                        w-full flex items-center justify-center 
-                        px-4 py-3 rounded-lg 
-                        bg-gradient-to-r from-red-500 to-red-700 
+                        w-full flex items-center justify-center
+                        px-4 py-3 rounded-lg
+                        bg-gradient-to-r from-red-500 to-red-700
                         text-white font-semibold
-                        hover:from-red-600 hover:to-pink-600 
+                        hover:from-red-600 hover:to-pink-600
                         transition-all duration-300 ease-in-out
                         transform hover:-translate-y-1 hover:scale-105
                     ">
