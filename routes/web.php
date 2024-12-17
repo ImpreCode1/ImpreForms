@@ -4,20 +4,11 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Controller;
 use App\Livewire\Auth\Login;
 use App\Livewire\EnviarFormulario;
+use App\Livewire\FormularioInteractivo;
 use App\Livewire\Historial;
 use App\Livewire\Layout\ManagerSidebar;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
 Route::view('/', 'welcome');
 
@@ -47,7 +38,27 @@ Route::view('/historial', 'historial')->name('historial');
 
 
 
+// * : ruta para el cierre de sesion.
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+
+// * rutas para los formularios.
+
+Route::get('/formulario', function () {
+    return view('formulario', ['mostrarFormularioInteractivo' => true, 'mostrarFormularioFinanciera' => false]);
+});
+
+Route::get('/formulario-financiera', function () {
+    return view('formulario', ['mostrarFormularioInteractivo' => false, 'mostrarFormularioFinanciera' => true]);
+});
+
 require __DIR__ . '/auth.php';
+
+
+
+
+// TODO: se utiliza para indicar que hay una tarea pendiente .
+// !: ¡advertencia!.
+// ? :  Puede indicar una sección del código que no está clara o donde se necesita una explicación adicional
+// * : se usa dentro de los comentarios para resaltar o estructurar una lista de cosas.
