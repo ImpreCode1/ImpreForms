@@ -8,27 +8,7 @@
       <div class="font-sans text-gray-900 antialiased">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
             <form wire:submit.prevent="submitForm" class="space-y-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Información de Solicitud -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-blue-500" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            Información de Solicitud
-                        </h2>
 
-                        <div class="grid grid-cols-1 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Fecha de Solicitud</label>
-                                <input type="date" wire:model.live="requestDate"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                @error('requestDate')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Solicitado por</label>
