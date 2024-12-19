@@ -6,8 +6,47 @@ use Livewire\Component;
 
 class FormularioInteractivo extends Component
 {
+    public $cliente;
 
-    // TODO: Faltan validaciones.
+    public $icoterm;
+    public  $lugar;
+    public $puerto;
+    public $pais;
+    public $entrega;
+    public $transporte;
+    public $origen;
+    public $destino;
+    public $entregalocal;
+    protected $rules = [
+        'cliente'=> 'required|string|min:5',
+
+        'icoterm'=> 'required|string|min:5',
+        'lugar'=> 'required|string|min:5',
+        'puerto'=> 'required|string|min:5',
+        'pais'=> 'required|string|min:5',
+        'entrega'=> 'required|string|min:5',
+        'transporte'=> 'required|string|min:5',
+        'origen'=> 'required|string|min:5',
+        'destino'=> 'required|string|min:5',
+        'entregalocal'=> 'required|string|min:5',
+    ];
+
+    protected $messages = [
+        'icoterm.required' => 'El espacio es requerido.',
+        'icoterm.min' => 'El espacio debe tener mínimo 3 caracteres.',
+        'cliente.required' => 'El espacio es requerido.',
+        'lugar.required' => 'El espacio es requerido.',
+        'puerto.required' => 'El espacio es requerido.',
+        'pais.required' => 'El espacio es requerido.',
+        'entrega.required' => 'El espacio es requerido.',
+        'transporte.required' => 'El espacio es requerido.',
+        'origen.required' => 'El espacio es requerido.',
+        'destino.required' => 'El espacio es requerido.',
+        'entregalocal.required' => 'El espacio es requerido.',
+
+
+
+    ];
 
     public $currentStep = 1;
 
@@ -34,12 +73,17 @@ class FormularioInteractivo extends Component
         }
     }
 
+    public function submit()
+    {
+        $this->validate();
+
+        // Lógica de envío de formulario
+    }
+
     public function render()
     {
         return view('livewire.formulario-interactivo', [
             'currentStep' => $this->currentStep
         ]);
     }
-
-
 }

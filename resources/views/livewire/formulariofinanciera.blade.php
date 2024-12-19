@@ -20,7 +20,8 @@
                 </h1>
             </div>
 
-            <form id="multiStepForm" class="bg-white shadow-xl rounded-2xl p-6 sm:p-8 space-y-6">
+            <form wire:submit.prevent="submit" id="multiStepForm"
+                class="bg-white shadow-xl rounded-2xl p-6 sm:p-8 space-y-6">
                 <!-- Progreso del Formulario -->
                 <div class="flex justify-between items-center mb-6">
                     <div class="flex items-center space-x-2">
@@ -88,14 +89,14 @@
 
                     <div class="flex justify-end mt-6">
                         <button wire:click="changeStep(2)" type="button"
-                        class="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg">
-                        Siguiente Paso
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
-                    </button>
+                            class="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg">
+                            Siguiente Paso
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
@@ -107,17 +108,22 @@
 
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                            <label for="plazo" class="block text-gray-700 text-sm font-bold mb-2">
                                 Plazo
                             </label>
                             <div class="relative">
-                                <i
-                                    class="ri-time-line absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
-                                <input
-                                    class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
-                                    type="text" placeholder="Duración del plazo">
+                                <i class="ri-time-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('plazo') text-red-500 @enderror"></i>
+                                    <input id="plazo" wire:model="plazo"
+                                    class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                    @error('plazo') border-red-300 @enderror"
+                                    type="text" placeholder="Duracion del plazo">
+
                             </div>
+                            @error('plazo')
+                            <span class="text-sm text-red-500">{{ $message }}</span>
+                        @enderror
                         </div>
+
 
                         <div>
                             <label class="block text-gray-700 text-sm font-bold mb-2">
@@ -125,25 +131,35 @@
                             </label>
                             <div class="relative">
                                 <i
-                                    class="ri-bank-card-line text-blue-200 absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
-                                <input
-                                    class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
-                                    type="text" placeholder="Forma De Pago">
-                            </div>
-                        </div>
+                                    class="ri-bank-card-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('pago') text-red-500 @enderror"></i>
+                                    <input id="pago" wire:model="pago"
+                                    class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                    @error('pago') border-red-300 @enderror"
+                                    type="text" placeholder="Forma de pago">
 
-                        <div>
-                            <label class="block text-gray-700 text-sm font-bold mb-2">
-                                Moneda
-                            </label>
-                            <div class="relative">
-                                <i
-                                    class="ri-money-dollar-circle-line text-blue-200 absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
-                                <input
-                                    class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
-                                    type="text" placeholder="Moneda">
+                                </div>
+                                @error('pago')
+                                <span class="text-sm text-red-500 ">{{ $message }}</span>
+                            @enderror
                             </div>
-                        </div>
+
+                            <div>
+                                <label for="moneda" class="block text-gray-700 text-sm font-bold mb-2">
+                                    Moneda
+                                </label>
+                                <div class="relative">
+                                    <i class="ri-money-dollar-circle-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('moneda') text-red-500 @enderror"></i>
+                                    <input id="moneda" wire:model="moneda"
+                                           class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                           @error('moneda') border-red-300 @enderror"
+                                           type="text" placeholder="Moneda">
+
+                                </div>
+                                @error('moneda')
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                                @enderror
+                            </div>
+
 
                         <div>
                             <label class="block text-gray-700 text-sm font-bold mb-2">
@@ -163,32 +179,38 @@
                             </div>
                         </div>
 
-                        <div id="advancePaymentFields" class="{{ $hasAdvancePayment === 'si' ? '' : 'hidden' }} space-y-4">
+                        <div id="advancePaymentFields"
+                            class="{{ $hasAdvancePayment === 'si' ? '' : 'hidden' }} space-y-4">
                             <!-- //porcentaje -->
                             <div>
-                                <label class="block text-gray-700 text-sm font-bold mb-2">
+                                <label for="anticipo" class="block text-gray-700 text-sm font-bold mb-2">
                                     Porcentaje de anticipo
                                 </label>
                                 <div class="relative">
                                     <i
                                         class="ri-percent-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
-                                    <input
-                                        class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
-                                        type="number" min="0" max="100" placeholder="Porcentaje">
+                                        <input id="anticipo" wire:model="anticipo"
+                                        class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                        @error('anticipo') border-red-300 @enderror"
+                                        type="text" placeholder="Anticipo">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-gray-700 text-sm font-bold mb-2">
+                                <label for="fecha" class="block text-gray-700 text-sm font-bold mb-2">
                                     Fecha de pago del anticipo
                                 </label>
                                 <div class="relative">
                                     <i
                                         class="ri-calendar-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
-                                    <input
-                                        class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
-                                        type="date">
+                                        <input id="fecha" wire:model="fecha"
+                                        class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                        @error('fecha') border-red-300 @enderror"
+                                        type="text" placeholder="fecha">
                                 </div>
+                            @error ('fecha')
+                            <span class="text-sm text-red-500" >{{$message}}</span>
+                            @enderror
                             </div>
                         </div>
 
@@ -211,3 +233,4 @@
         </div>
     </div>
 </div>
+
