@@ -7,7 +7,7 @@ use Livewire\Component;
 class Formulariofinanciera extends Component
 {
     public $currentStep = 1;
-    public $hasAdvancePayment = null; // Captura si hay pago anticipado
+    public $hasAdvancePayment = null;
     public $advancePaymentPercentage = null;
     public $advancePaymentDate = null;
     public $poliza;
@@ -16,6 +16,8 @@ class Formulariofinanciera extends Component
     public $moneda;
     public $anticipo;
     public $fecha;
+    public $garantia;
+    public $otros;
 
     protected $messages = [
         'plazo.required' => 'El espacio es requerido',
@@ -27,15 +29,17 @@ class Formulariofinanciera extends Component
         'fecha.date' => 'La fecha debe ser válida.',
         'anticipo.required' => 'El espacio es requerido.',
         'anticipo.min' => 'El anticipo debe tener mínimo 5 caracteres.',
+        'garantia.required' => 'El espacio es requerido.',
     ];
 
     public function rules()
     {
-        // Establece las reglas básicas
+
         $rules = [
             'plazo' => 'required|string|min:5|max:50',
             'moneda' => 'required|string',
             'pago' => 'required|string|min:2',
+            'garantia' => 'required|string'
         ];
 
         // Verifica si hay un pago anticipado
@@ -65,8 +69,8 @@ class Formulariofinanciera extends Component
             // Resetear otros campos si no hay pago anticipado
             $this->advancePaymentPercentage = null;
             $this->advancePaymentDate = null;
-            $this->anticipo = null; // Opcional: también puedes limpiar el anticipo
-            $this->fecha = null; // Opcional: también puedes limpiar la fecha
+            $this->anticipo = null;
+            $this->fecha = null;
         }
     }
 
