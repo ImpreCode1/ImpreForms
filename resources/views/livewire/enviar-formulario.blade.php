@@ -6,11 +6,12 @@
 
         <div class="font-sans text-gray-900 antialiased">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
-                <form class="space-y-8">
+                <form wire:submit.prevent="submit" class="space-y-8">
 
                     <div id="step1" class="{{ $currentStep === 1 ? '' : 'hidden' }} form-step">
                         <h1 class="text-4xl font-semibold text-center text-gray-800 mb-8 tracking-tight">
                             Información Proporcionada por Marcas
+
                         </h1>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -27,48 +28,49 @@
 
                                 <div class="grid grid-cols-1 gap-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Codigo Cliente</label>
-                                        <input type="text" wire:model.live="requestDate"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('requestDate')
-                                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                                        @enderror
+                                        <label for= "negocio" class="block text-sm font-medium text-gray-700">Codigo Cliente</label>
+
+                                        <input type="text" wire:model="negocio"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    @error('negocio')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Nombre</label>
-                                        <input type="text" wire:model.live="requestedBy"
+                                        <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
+                                        <input id="nombre" wire:model="nombre" type="text"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('requestedBy')
+                                        @error('nombre')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
 
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Correo</label>
-                                        <input type="email" wire:model.live="position"
+                                        <input id="correo" type="email" wire:model="corrreo"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('position')
+                                        @error('correo')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Numero celular
+                                        <label for="numero" class="block text-sm font-medium text-gray-700">Numero celular
                                             cliente</label>
-                                        <input type="text" wire:model.live="maxCompletionDate"
+                                        <input numero type="text" wire:model="numero"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('maxCompletionDate')
+                                        @error('numero')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">N° oportunidad
+                                        <label for="crm" class="block text-sm font-medium text-gray-700">N° oportunidad
                                             CRM:</label>
-                                        <input type="text" wire:model.live="hour"
+                                        <input id="crm" type="text" wire:model="crm"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('hour')
+                                        @error('crm')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -88,38 +90,38 @@
 
                                 <div class="grid grid-cols-1 gap-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Fecha</label>
-                                        <input type="date" wire:model.live="requestDate"
+                                        <label for="fecha" class="block text-sm font-medium text-gray-700">Fecha</label>
+                                        <input id="fecha" type="date" wire:model="fecha"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('requestDate')
+                                        @error('fecha')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">N° OC</label>
-                                        <input type="text" wire:model.live="requestDate"
+                                        <label for="oc" class="block text-sm font-medium text-gray-700">N° OC</label>
+                                        <input id="oc" type="text" wire:model="oc"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('requestDate')
+                                        @error('oc')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Precio de venta que debe
+                                        <label for="precio" class="block text-sm font-medium text-gray-700">Precio de venta que debe
                                             quedar
                                             en el contrato</label>
-                                        <input type="text" wire:model.live="requestDate"
+                                        <input id="precio" type="text" wire:model="precio"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('requestDate')
+                                        @error('precio')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Adjuntar
+                                        <label for="cotizacion" class="block text-sm font-medium text-gray-700">Adjuntar
                                             cotización</label>
-                                        <input type="file" wire:model.live="clientCode"
+                                        <input id="cotizacion" type="file" wire:model="cotizacion"
                                             class="w-full text-gray-500 font-medium text-sm bg-gray-100 file:cursor-pointer cursor-pointer file:border-0 file:py-2 file:px-4 file:mr-4 file:bg-gray-800 file:hover:bg-gray-700 file:text-white rounded" />
                                     </div>
                                 </div>
@@ -139,8 +141,8 @@
 
                             <div class="grid grid-cols-1 gap-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Soluciones</label>
-                                    <select wire:model.live="contractType"
+                                    <label for="soluciones" class="block text-sm font-medium text-gray-700">Soluciones</label>
+                                    <select id="soluciones" wire:model="soluciones"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                         <option value="">Seleccionar Solución</option>
                                         <option value="huawei">Soluciones</option>
@@ -151,7 +153,7 @@
                                         <option value="solar">Productos que no sean de línea para un negocio específico
                                         </option>
                                     </select>
-                                    @error('contractType')
+                                    @error('soluciones')
                                         <span class="text-red-500 text-sm">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -171,63 +173,87 @@
 
                             <div class="grid md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Linea</label>
-                                    <input type="text" wire:model.live="clientCode"
+                                    <label for="linea" class="block text-sm font-medium text-gray-700">Linea</label>
+                                    <input id="linea" type="text" wire:model="linea"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                </div>
+                                @error ('linea')
+                             <span class="text-red-500 text-sm"> {{$message}}</span>
+                             @enderror
+                                    </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 ml-4">Código de la línea</label>
-                                    <input type="text" wire:model.live="clientName"
+                                    <label for="codlinea" class="block text-sm font-medium text-gray-700 ml-4">Código de la línea</label>
+                                    <input id="codlinea" type="text" wire:model="codlinea"
                                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 ml-4" />
-
+                                     @error ('codlinea')
+                                     <span class="text-red-500 text-sm"> {{$message}}</span>
+                                     @enderror
 
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Nombre</label>
-                                    <input type="number" wire:model.live="clientCode"
+                                    <label for="nomgerente" class="block text-sm font-medium text-gray-700">Nombre</label>
+                                    <input id="nomgerente" type="number" wire:model="nomgerente"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                </div>
+                                        @error ('nomgerente')
+                                        <span class="text-red-500 text-sm"> {{$message}}</span>
+                                        @enderror
+                                    </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 ml-4">Teléfono</label>
-                                    <input type="text" wire:model.live="clientName"
+                                    <label for="telgerente" class="block text-sm font-medium text-gray-700 ml-4">Teléfono</label>
+                                    <input id="telgerente" type="text" wire:model="telgerente"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200m ml-4" />
-                                </div>
+                                        @error ('telgerente')
+                                        <span class="text-red-500 text-sm"> {{$message}}</span>
+                                        @enderror
+                                    </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Correo electrónico</label>
-                                    <input type="text" wire:model.live="clientCode"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    <label for="corgerente" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
+                                    <input id="corgerente" type="text" wire:model="corgerente"
+
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    @error ('corgerente')
+                                    <span class="text-red-500 text-sm"> {{$message}}</span>
+                                    @enderror
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 ml-4">Otro</label>
-                                    <input type="text" wire:model.live="clientCode"
+                                    <input type="text" wire:model="clientCode"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 ml-4" placeholder="Opcional" />
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Teléfono</label>
-                                    <input type="text" wire:model.live="clientName"
+                                    <input type="text" wire:model="clientName"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" placeholder="Opcional"/>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 ml-4">Correo electrónico</label>
-                                    <input type="text" wire:model.live="clientCode"
+                                    <input type="text" wire:model="clientCode"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 ml-4" placeholder="Opcional" />
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Director</label>
-                                    <input type="text" wire:model.live="clientName"
+                                    <label for="director" class="block text-sm font-medium text-gray-700">Director</label>
+                                    <input id="director" type="text" wire:model="director"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                </div>
+                                        @error ('director')
+                                        <span class="text-red-500 text-sm"> {{$message}}</span>
+                                        @enderror
+                                    </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 ml-4">Teléfono</label>
-                                    <input type="text" wire:model.live="clientName"
+                                    <label for="tel2gerente" class="block text-sm font-medium text-gray-700 ml-4">Teléfono</label>
+                                    <input id="tel2gerente" type="text" wire:model="tel2gerente"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 ml-4" />
-                                </div>
+                                        @error ('tel2gerente')
+                                        <span class="text-red-500 text-sm"> {{$message}}</span>
+                                        @enderror
+                                    </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Correo electrónico</label>
-                                    <input type="text" wire:model.live="clientName"
+                                    <label for="cor2gerente" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
+                                    <input id="cor2gerente" type="text" wire:model="cor2gerente"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                </div>
+                                        @error ('cor2gerente')
+                                        <span class="text-red-500 text-sm"> {{$message}}</span>
+                                        @enderror
+                                    </div>
 
 
 
@@ -250,61 +276,61 @@
 
                                 <div class="grid grid-cols-1 gap-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">¿Quién realiza la
+                                        <label for="entregacliente" class="block text-sm font-medium text-gray-700">¿Quién realiza la
                                             entrega a
                                             cliente?</label>
-                                        <input type="text" wire:model.live="requestDate"
+                                        <input id="entregacliente" type="text" wire:model="entregacliente"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('requestDate')
+                                        @error('entregacliente')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Lugar de entrega y
+                                        <label for="lugarentrega" class="block text-sm font-medium text-gray-700">Lugar de entrega y
                                             dirección</label>
-                                        <input type="text" wire:model.live="requestedBy"
+                                        <input id="lugarentrega" type="text" wire:model="lugarentrega"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('requestedBy')
+                                        @error('lugarentrega')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Especificar país</label>
-                                        <input type="text" wire:model.live="position"
+                                        <label for="espais" class="block text-sm font-medium text-gray-700">Especificar país</label>
+                                        <input id="espais" type="text" wire:model="espais"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('position')
+                                        @error('espais')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
 
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Tiempo de
+                                        <label for="tiempoentrega" class="block text-sm font-medium text-gray-700">Tiempo de
                                             entrega</label>
-                                        <input type="time" wire:model.live="maxCompletionDate"
+                                        <input id="tiempoentrega" type="time" wire:model="tiempoentrega"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('maxCompletionDate')
+                                        @error('tiempoentrega')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Fecha de inicio del término de entrega (día, mes, año)</label>
-                                        <input type="date" wire:model.live="maxCompletionDate"
+                                        <label for="terminoentrega" class="block text-sm font-medium text-gray-700">Fecha de inicio del término de entrega (día, mes, año)</label>
+                                        <input id="terminoentrega" type="date" wire:model="terminoentrega"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('maxCompletionDate')
+                                        @error('terminoentrega')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">¿Qué tipo de incoterms
+                                        <label for="tipoicoterm" class="block text-sm font-medium text-gray-700">¿Qué tipo de incoterms
                                             aplica?</label>
-                                        <input type="text" wire:model.live="maxCompletionDate"
+                                        <input id="tipoicoterm" type="text" wire:model="tipoicoterm"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('maxCompletionDate')
+                                        @error('tipoicoterm')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -326,37 +352,37 @@
 
                                 <div class="grid grid-cols-1 gap-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">¿Qué servicio se va a
+                                        <label for="prestar" class="block text-sm font-medium text-gray-700">¿Qué servicio se va a
                                             prestar?</label>
-                                        <input type="text" wire:model.live="requestDate"
+                                        <input id="prestar" type="text" wire:model="prestar"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('requestDate')
+                                        @error('prestar')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">¿Cada cuanto se va a
+                                        <label for="suministrar" class="block text-sm font-medium text-gray-700">¿Cada cuanto se va a
                                             suministrar?</label>
-                                        <input type="text" wire:model.live="requestDate"
+                                        <input id="suministrar" type="text" wire:model="suministrar"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('requestDate')
+                                        @error('suministrar')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Fecha de inicio</label>
-                                        <input type="date" wire:model.live="requestDate"
+                                        <label for="inicio" class="block text-sm font-medium text-gray-700">Fecha de inicio</label>
+                                        <input id="inicio" type="date" wire:model="inicio"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('requestDate')
+                                        @error('inicio')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Fecha de
+                                        <label for="finalizacion" class="block text-sm font-medium text-gray-700">Fecha de
                                             finalización</label>
-                                        <input type="date" wire:model.live="requestDate"
+                                        <input id="finalizacion" type="date" wire:model="finalizacion"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('requestDate')
+                                        @error('finalizacion')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -406,11 +432,14 @@
                                 </h2>
                                 <div class="grid gap-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Detalles de los equipos
+                                        <label for="details" class="block text-sm font-medium text-gray-700">Detalles de los equipos
                                             a
                                             entregar</label>
-                                        <input type="text" wire:model.live="clientCode"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        <input id="details" type="text" wire:model="details"
+
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    @error('details') <span class="text-red-500 text-sm"> {{$message}}</span>
+                                    @enderror
                                     </div>
                                 </div>
                             </div>
@@ -429,18 +458,22 @@
                                 </h2>
                                 <div class="grid gap-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">¿Aplica algún tipo de
+                                        <label for="aplicagarantia" class="block text-sm font-medium text-gray-700">¿Aplica algún tipo de
                                             garantía?</label>
-                                        <input type="text" wire:model.live="clientCode"
+                                        <input id="aplicagarantia" type="text" wire:model="aplicagarantia"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                    </div>
+                                            @error('aplicagarantia') <span class="text-red-500 text-sm"> {{$message}}</span>
+                                            @enderror
+                                        </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">¿Cuál es el término de
+                                        <label for="terminogarantia" class="block text-sm font-medium text-gray-700">¿Cuál es el término de
                                             la
                                             garantía?</label>
-                                        <input type="text" wire:model.live="clientCode"
+                                        <input id="terminogarantia" type="text" wire:model="terminogarantia"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                    </div>
+                                            @error('terminogarantia') <span class="text-red-500 text-sm"> {{$message}}</span>
+                                            @enderror
+                                        </div>
                                 </div>
                             </div>
                         </div>
@@ -460,29 +493,39 @@
                                 </h2>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Forma de Pago</label>
-                                        <input type="text" wire:model.live="clientCode"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        <label for="formapago" class="block text-sm font-medium text-gray-700">Forma de Pago</label>
+                                        <input id="formapago" type="text" wire:model="formapago"
+
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        @error('formapago') <span class="text-red-500 text-sm"> {{$message}}</span>
+                                        @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Fecha de cada
+                                        <label for="fechapago" class="block text-sm font-medium text-gray-700">Fecha de cada
                                             pago</label>
-                                        <input type="date" wire:model.live="clientCode"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        <input id="fechapago" type="date" wire:model="fechapago"
+
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        @error('fechapago') <span class="text-red-500 text-sm"> {{$message}}</span>
+                                        @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Moneda</label>
-                                        <input type="text" wire:model.live="clientCode"
+                                        <label for="moneda" class="block text-sm font-medium text-gray-700">Moneda</label>
+                                        <input id="moneda" type="text" wire:model="moneda"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                    </div>
+                                            @error('moneda') <span class="text-red-500 text-sm"> {{$message}}</span>
+                                            @enderror
+                                        </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">¿Incluye IVA?</label>
-                                        <select wire:model.live="clientCode"
+                                        <label for="iva" class="block text-sm font-medium text-gray-700">¿Incluye IVA?</label>
+                                        <select id="iva" wire:model="iva"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                             <option value="">Seleccione</option>
                                             <option value="si">Sí</option>
                                             <option value="no">No</option>
                                         </select>
+                                        @error('iva') <span class="text-red-500 text-sm"> {{$message}}</span>
+                                        @enderror
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">¿Hay existencia de
@@ -496,25 +539,31 @@
                                     </div>
 
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Otros</label>
-                                        <input type="text" wire:model.live="clientCode"
+                                        <label for="others" class="block text-sm font-medium text-gray-700">Otros</label>
+                                        <input id="others" type="text" wire:model="others"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                    </div>
+                                            @error('others') <span class="text-red-500 text-sm"> {{$message}}</span>
+                                            @enderror
+                                        </div>
 
                                     <div id="advancePaymentFields" class="{{ $hasAdvancePayment === 'si' ? '' : 'hidden' }} space-y-4">
                                         <div class="mb-4">
-                                            <label class="block text-sm font-medium text-gray-700">Fecha de cada
+                                            <label for="actualpago" class="block text-sm font-medium text-gray-700">Fecha de cada
                                                 pago</label>
-                                            <input type="date" wire:model.live="clientCode"
+                                            <input id="actualpago" type="date" wire:model="actualpago"
                                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
 
-                                        </div>
+                                                @error('actualpago') <span class="text-red-500 text-sm"> {{$message}}</span>
+                                                @enderror
+                                            </div>
 
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700">Moneda</label>
-                                            <input type="text" wire:model.live="clientCode"
+                                            <label for="monedaactual" class="block text-sm font-medium text-gray-700">Moneda</label>
+                                            <input id="monedaactual" type="text" wire:model="monedaactual"
                                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        </div>
+                                                @error('monedaactual') <span class="text-red-500 text-sm"> {{$message}}</span>
+                                                @enderror
+                                            </div>
                                     </div>
                                 </div>
                             </div>
@@ -531,17 +580,21 @@
                                 </h2>
                                 <div class="grid gap-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">¿Aplica algún tipo de
+                                        <label id="aplicapoliza" class="block text-sm font-medium text-gray-700">¿Aplica algún tipo de
                                             póliza?</label>
-                                        <input type="text" wire:model.live="clientCode"
+                                        <input id="aplicapoliza" type="text" wire:model="aplicapoliza"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                    </div>
+                                            @error('aplicapoliza') <span class="text-red-500 text-sm"> {{$message}}</span>
+                                            @enderror
+                                        </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">¿Cuál es el
+                                        <label for="porcentaje" class="block text-sm font-medium text-gray-700">¿Cuál es el
                                             porcentaje?</label>
-                                        <input type="number" step="0.01" wire:model.live="clientCode"
+                                        <input id="porcentaje" type="number" step="0.01" wire:model="porcentaje"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                    </div>
+                                            @error('porcentaje') <span class="text-red-500 text-sm"> {{$message}}</span>
+                                            @enderror
+                                        </div>
                                 </div>
                             </div>
                         </div>
@@ -616,7 +669,7 @@
                                 </svg>
                                 <span>Atrás</span>
                             </button>
-                            <button wire:click="" type="button"
+                            <button wire:click="submit" type="button"
                                 class="
                                     bg-gradient-to-r from-blue-500 to-blue-700
                                     text-white font-bold py-3 px-8

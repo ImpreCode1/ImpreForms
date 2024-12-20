@@ -17,6 +17,7 @@ class FormularioInteractivo extends Component
     public $origen;
     public $destino;
     public $entregalocal;
+
     protected $rules = [
         'cliente'=> 'required|string|min:5',
 
