@@ -4,7 +4,7 @@
     <h1 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
             Información suministrada por ventas
     </h1>
-        
+
       <div class="font-sans text-gray-900 antialiased">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
             <form wire:submit.prevent="submitForm" class="space-y-8">
@@ -333,7 +333,7 @@
                             <li class="bg-white p-2 rounded-md flex justify-between items-center shadow-sm">
                                 {{-- <span class="text-sm truncate">{{ $file->getClientOriginalName() }}</span> --}}
                                 <button type="button" {{-- wire:click="removeAttachment('{{ $file->getFilename() }}')" --}} class="text-red-500 hover:text-red-700">
-                                    ✕
+                                    
                                 </button>
                             </li>
                             {{-- @endforeach --}}
@@ -346,12 +346,12 @@
                 <div class="flex justify-center">
                     <button type="submit"
                         class="
-                                bg-gradient-to-r from-blue-500 to-blue-700 
-                                text-white font-bold py-3 px-8 
-                                rounded-full 
-                                hover:from-blue-600 hover:to-blue-800 
-                                transition duration-300 
-                                transform hover:scale-105 
+                                bg-gradient-to-r from-blue-500 to-blue-700
+                                text-white font-bold py-3 px-8
+                                rounded-full
+                                hover:from-blue-600 hover:to-blue-800
+                                transition duration-300
+                                transform hover:scale-105
                                 flex items-center space-x-3
                             ">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
