@@ -112,16 +112,18 @@
                                 Plazo
                             </label>
                             <div class="relative">
-                                <i class="ri-time-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('plazo') text-red-500 @enderror"></i>
-                                    <input id="plazo" wire:model="plazo"
-                                    class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                    @error('plazo') border-red-300 @enderror"
+                                <i
+                                    class="ri-time-line absolute left-3 top-1/2 transform -translate-y-1/2  {{ $errors->has('plazo') ? 'text-red-500' : 'text-blue-400' }}"></i>
+                                <input id="plazo" wire:model="plazo"
+                                    class="pl-12 w-full input-gradient border-2
+                                      {{ $errors->has('moneda') ? 'border-red-300' : 'border-blue-100' }}
+                                    rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
                                     type="text" placeholder="Duracion del plazo">
 
                             </div>
                             @error('plazo')
-                            <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
                         </div>
 
 
@@ -131,34 +133,42 @@
                             </label>
                             <div class="relative">
                                 <i
-                                    class="ri-bank-card-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('pago') text-red-500 @enderror"></i>
-                                    <input id="pago" wire:model="pago"
-                                    class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                    @error('pago') border-red-300 @enderror"
+                                    class="ri-bank-card-line absolute left-3 top-1/2 transform -translate-y-1/2
+                                       {{ $errors->has('pago') ? 'text-red-500' : 'text-blue-400' }}"></i></i>
+                                <input id="pago" wire:model="pago"
+                                    class="pl-12 w-full input-gradient border-2
+                                      {{ $errors->has('pago') ? 'border-red-300' : 'border-blue-100' }}
+                                    rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500
+                                    focus:border-transparent transition duration-300"
                                     type="text" placeholder="Forma de pago">
 
-                                </div>
-                                @error('pago')
+                            </div>
+                            @error('pago')
                                 <span class="text-sm text-red-500 ">{{ $message }}</span>
                             @enderror
+                        </div>
+
+                        <div>
+                            <label for="moneda" class="block text-gray-700 text-sm font-bold mb-2">
+                                Moneda
+                            </label>
+                            <div class="relative">
+                                <i
+                                    class="ri-money-dollar-circle-line absolute left-3 top-1/2 transform -translate-y-1/2
+                                {{ $errors->has('moneda') ? 'text-red-500' : 'text-blue-400' }}"></i>
+
+                                <input id="moneda" wire:model="moneda"
+                                    class="pl-12 w-full input-gradient border-2
+                                    {{ $errors->has('moneda') ? 'border-red-300' : 'border-blue-100' }}
+                                    rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
+                                    type="text" placeholder="Moneda">
+
+
                             </div>
-
-                            <div>
-                                <label for="moneda" class="block text-gray-700 text-sm font-bold mb-2">
-                                    Moneda
-                                </label>
-                                <div class="relative">
-                                    <i class="ri-money-dollar-circle-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('moneda') text-red-500 @enderror"></i>
-                                    <input id="moneda" wire:model="moneda"
-                                           class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                           @error('moneda') border-red-300 @enderror"
-                                           type="text" placeholder="Moneda">
-
-                                </div>
-                                @error('moneda')
+                            @error('moneda')
                                 <span class="text-sm text-red-500">{{ $message }}</span>
-                                @enderror
-                            </div>
+                            @enderror
+                        </div>
 
 
                         <div>
@@ -169,15 +179,15 @@
                                 <label class="inline-flex items-center">
                                     <input type="radio" class="form-radio" name="hasAdvancePayment" value="si"
                                         wire:model="hasAdvancePayment" wire:click="setAdvancePayment('si')">
-                                    <span class="ml-2">Sí</span>
+                                    <span class="ml-2 text-gray-500">Sí</span>
                                 </label>
                                 <label class="inline-flex items-center">
                                     <input type="radio" class="form-radio" name="hasAdvancePayment" value="no"
                                         wire:model="hasAdvancePayment" wire:click="setAdvancePayment('no')">
-                                    <span class="ml-2">No</span>
-                                </label>
+                                    <span class="ml-2 text-gray-500">No</span>
                             </div>
                         </div>
+
 
                         <div id="advancePaymentFields"
                             class="{{ $hasAdvancePayment === 'si' ? '' : 'hidden' }} space-y-4">
@@ -188,12 +198,15 @@
                                 </label>
                                 <div class="relative">
                                     <i
-                                        class="ri-percent-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
-                                        <input id="anticipo" wire:model="anticipo"
-                                        class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                        @error('anticipo') border-red-300 @enderror"
+                                        class="ri-percent-line absolute left-3 top-1/2 transform -translate-y-1/2   {{ $errors->has('anticipo') ? 'text-red-500' : 'text-blue-400' }}"></i>
+                                    <input id="anticipo" wire:model="anticipo"
+                                        class="pl-12 w-full input-gradient border-2 {{ $errors->has('anticipo') ? 'border-red-300' : 'border-blue-100' }}
+                                    rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
                                         type="text" placeholder="Anticipo">
                                 </div>
+                                @error('anticipo')
+                                    <span class="text-sm text-red-500">{{ $message }}</span>
+                                @enderror
                             </div>
 
                             <div>
@@ -202,15 +215,15 @@
                                 </label>
                                 <div class="relative">
                                     <i
-                                        class="ri-calendar-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
-                                        <input id="fecha" wire:model="fecha"
-                                        class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                        @error('fecha') border-red-300 @enderror"
+                                        class="ri-calendar-line absolute left-3 top-1/2 transform -translate-y-1/2 {{ $errors->has('anticipo') ? 'text-red-500' : 'text-blue-400' }}"></i>
+                                    <input id="fecha" wire:model="fecha"
+                                        class="pl-12 w-full input-gradient border-2 {{ $errors->has('fecha') ? 'border-red-300' : 'border-blue-100' }}
+                                    rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
                                         type="text" placeholder="fecha">
                                 </div>
-                            @error ('fecha')
-                            <span class="text-sm text-red-500" >{{$message}}</span>
-                            @enderror
+                                @error('fecha')
+                                    <span class="text-sm text-red-500">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
 
@@ -233,4 +246,3 @@
         </div>
     </div>
 </div>
-
