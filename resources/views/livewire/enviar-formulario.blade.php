@@ -31,7 +31,7 @@
                                         <label for= "negocio" class="block text-sm font-medium text-gray-700">Codigo Cliente</label>
 
                                         <input type="text" wire:model="negocio"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('negocio') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                     @error('negocio')
                                         <span class="text-red-500 text-sm">{{ $message }}</span>
                                     @enderror
@@ -40,7 +40,7 @@
                                     <div>
                                         <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
                                         <input id="nombre" wire:model="nombre" type="text"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('nombre') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('nombre')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -49,7 +49,7 @@
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Correo</label>
                                         <input id="correo" type="email" wire:model="corrreo"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('correo') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('correo')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -59,7 +59,7 @@
                                         <label for="numero" class="block text-sm font-medium text-gray-700">Numero celular
                                             cliente</label>
                                         <input numero type="text" wire:model="numero"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('numero') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('numero')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -69,7 +69,7 @@
                                         <label for="crm" class="block text-sm font-medium text-gray-700">N° oportunidad
                                             CRM:</label>
                                         <input id="crm" type="text" wire:model="crm"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('crm') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('crm')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -92,7 +92,7 @@
                                     <div>
                                         <label for="fecha" class="block text-sm font-medium text-gray-700">Fecha</label>
                                         <input id="fecha" type="date" wire:model="fecha"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('fecha') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('fecha')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -101,7 +101,7 @@
                                     <div>
                                         <label for="oc" class="block text-sm font-medium text-gray-700">N° OC</label>
                                         <input id="oc" type="text" wire:model="oc"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('oc') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('oc')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -112,7 +112,7 @@
                                             quedar
                                             en el contrato</label>
                                         <input id="precio" type="text" wire:model="precio"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('precio') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('precio')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -143,7 +143,7 @@
                                 <div>
                                     <label for="soluciones" class="block text-sm font-medium text-gray-700">Soluciones</label>
                                     <select id="soluciones" wire:model="soluciones"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('soluciones') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                         <option value="">Seleccionar Solución</option>
                                         <option value="huawei">Soluciones</option>
                                         <option value="huawei">Líneas Huawei EBG, Datacenter y Solar, líneas de paneles
@@ -175,7 +175,7 @@
                                 <div>
                                     <label for="linea" class="block text-sm font-medium text-gray-700">Linea</label>
                                     <input id="linea" type="text" wire:model="linea"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('linea') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error ('linea')
                              <span class="text-red-500 text-sm"> {{$message}}</span>
                              @enderror
@@ -183,7 +183,7 @@
                                 <div>
                                     <label for="codlinea" class="block text-sm font-medium text-gray-700 ml-4">Código de la línea</label>
                                     <input id="codlinea" type="text" wire:model="codlinea"
-                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 ml-4" />
+                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('codlinea') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 ml-4" />
                                      @error ('codlinea')
                                      <span class="text-red-500 text-sm"> {{$message}}</span>
                                      @enderror
@@ -192,7 +192,7 @@
                                 <div>
                                     <label for="nomgerente" class="block text-sm font-medium text-gray-700">Nombre</label>
                                     <input id="nomgerente" type="number" wire:model="nomgerente"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('nomgerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error ('nomgerente')
                                         <span class="text-red-500 text-sm"> {{$message}}</span>
                                         @enderror
@@ -200,7 +200,7 @@
                                 <div>
                                     <label for="telgerente" class="block text-sm font-medium text-gray-700 ml-4">Teléfono</label>
                                     <input id="telgerente" type="text" wire:model="telgerente"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200m ml-4" />
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('telgerente') ? 'border-red-400' : 'border-blue-100' }}  shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200m ml-4" />
                                         @error ('telgerente')
                                         <span class="text-red-500 text-sm"> {{$message}}</span>
                                         @enderror
@@ -209,7 +209,7 @@
                                     <label for="corgerente" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
                                     <input id="corgerente" type="text" wire:model="corgerente"
 
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('corgerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                     @error ('corgerente')
                                     <span class="text-red-500 text-sm"> {{$message}}</span>
                                     @enderror
@@ -222,17 +222,17 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Teléfono</label>
                                     <input type="text" wire:model="clientName"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" placeholder="Opcional"/>
+                                        class="mt-1 block w-full rounded-md border-gray-300  shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" placeholder="Opcional"/>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 ml-4">Correo electrónico</label>
                                     <input type="text" wire:model="clientCode"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 ml-4" placeholder="Opcional" />
+                                        class="mt-1 block w-full rounded-md border-gray-300  shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 ml-4" placeholder="Opcional" />
                                 </div>
                                 <div>
                                     <label for="director" class="block text-sm font-medium text-gray-700">Director</label>
                                     <input id="director" type="text" wire:model="director"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('director') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error ('director')
                                         <span class="text-red-500 text-sm"> {{$message}}</span>
                                         @enderror
@@ -240,7 +240,7 @@
                                 <div>
                                     <label for="tel2gerente" class="block text-sm font-medium text-gray-700 ml-4">Teléfono</label>
                                     <input id="tel2gerente" type="text" wire:model="tel2gerente"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 ml-4" />
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tel2gerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 ml-4" />
                                         @error ('tel2gerente')
                                         <span class="text-red-500 text-sm"> {{$message}}</span>
                                         @enderror
@@ -249,7 +249,7 @@
                                 <div>
                                     <label for="cor2gerente" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
                                     <input id="cor2gerente" type="text" wire:model="cor2gerente"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('cor2gerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error ('cor2gerente')
                                         <span class="text-red-500 text-sm"> {{$message}}</span>
                                         @enderror
@@ -280,7 +280,7 @@
                                             entrega a
                                             cliente?</label>
                                         <input id="entregacliente" type="text" wire:model="entregacliente"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('entregacliente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('entregacliente')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -290,7 +290,7 @@
                                         <label for="lugarentrega" class="block text-sm font-medium text-gray-700">Lugar de entrega y
                                             dirección</label>
                                         <input id="lugarentrega" type="text" wire:model="lugarentrega"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('lugarentrega') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('lugarentrega')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -299,7 +299,7 @@
                                     <div>
                                         <label for="espais" class="block text-sm font-medium text-gray-700">Especificar país</label>
                                         <input id="espais" type="text" wire:model="espais"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('espais') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('espais')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -310,7 +310,7 @@
                                         <label for="tiempoentrega" class="block text-sm font-medium text-gray-700">Tiempo de
                                             entrega</label>
                                         <input id="tiempoentrega" type="time" wire:model="tiempoentrega"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tiempoentrega') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('tiempoentrega')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -319,7 +319,7 @@
                                     <div>
                                         <label for="terminoentrega" class="block text-sm font-medium text-gray-700">Fecha de inicio del término de entrega (día, mes, año)</label>
                                         <input id="terminoentrega" type="date" wire:model="terminoentrega"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('terminoentrega') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('terminoentrega')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -329,7 +329,7 @@
                                         <label for="tipoicoterm" class="block text-sm font-medium text-gray-700">¿Qué tipo de incoterms
                                             aplica?</label>
                                         <input id="tipoicoterm" type="text" wire:model="tipoicoterm"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tipoicoterm') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('tipoicoterm')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -355,7 +355,7 @@
                                         <label for="prestar" class="block text-sm font-medium text-gray-700">¿Qué servicio se va a
                                             prestar?</label>
                                         <input id="prestar" type="text" wire:model="prestar"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('prestar') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('prestar')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -364,7 +364,7 @@
                                         <label for="suministrar" class="block text-sm font-medium text-gray-700">¿Cada cuanto se va a
                                             suministrar?</label>
                                         <input id="suministrar" type="text" wire:model="suministrar"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('suministrar') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('suministrar')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -372,7 +372,7 @@
                                     <div>
                                         <label for="inicio" class="block text-sm font-medium text-gray-700">Fecha de inicio</label>
                                         <input id="inicio" type="date" wire:model="inicio"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('inicio') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('inicio')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -381,7 +381,7 @@
                                         <label for="finalizacion" class="block text-sm font-medium text-gray-700">Fecha de
                                             finalización</label>
                                         <input id="finalizacion" type="date" wire:model="finalizacion"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('finalizacion') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('finalizacion')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
@@ -437,7 +437,7 @@
                                             entregar</label>
                                         <input id="details" type="text" wire:model="details"
 
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('details') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                     @error('details') <span class="text-red-500 text-sm"> {{$message}}</span>
                                     @enderror
                                     </div>
@@ -458,10 +458,10 @@
                                 </h2>
                                 <div class="grid gap-4">
                                     <div>
-                                        <label for="aplicagarantia" class="block text-sm font-medium text-gray-700">¿Aplica algún tipo de
+                                        <label for="    garantia" class="block text-sm font-medium text-gray-700">¿Aplica algún tipo de
                                             garantía?</label>
                                         <input id="aplicagarantia" type="text" wire:model="aplicagarantia"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicagarantia') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                             @error('aplicagarantia') <span class="text-red-500 text-sm"> {{$message}}</span>
                                             @enderror
                                         </div>
@@ -470,7 +470,7 @@
                                             la
                                             garantía?</label>
                                         <input id="terminogarantia" type="text" wire:model="terminogarantia"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('terminogarantia') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                             @error('terminogarantia') <span class="text-red-500 text-sm"> {{$message}}</span>
                                             @enderror
                                         </div>
@@ -496,7 +496,7 @@
                                         <label for="formapago" class="block text-sm font-medium text-gray-700">Forma de Pago</label>
                                         <input id="formapago" type="text" wire:model="formapago"
 
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('formapago') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('formapago') <span class="text-red-500 text-sm"> {{$message}}</span>
                                         @enderror
                                     </div>
@@ -505,21 +505,21 @@
                                             pago</label>
                                         <input id="fechapago" type="date" wire:model="fechapago"
 
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('fechapago') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('fechapago') <span class="text-red-500 text-sm"> {{$message}}</span>
                                         @enderror
                                     </div>
                                     <div>
                                         <label for="moneda" class="block text-sm font-medium text-gray-700">Moneda</label>
                                         <input id="moneda" type="text" wire:model="moneda"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('moneda') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                             @error('moneda') <span class="text-red-500 text-sm"> {{$message}}</span>
                                             @enderror
                                         </div>
                                     <div>
                                         <label for="iva" class="block text-sm font-medium text-gray-700">¿Incluye IVA?</label>
                                         <select id="iva" wire:model="iva"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('iva') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                             <option value="">Seleccione</option>
                                             <option value="si">Sí</option>
                                             <option value="no">No</option>
@@ -541,7 +541,7 @@
                                     <div>
                                         <label for="others" class="block text-sm font-medium text-gray-700">Otros</label>
                                         <input id="others" type="text" wire:model="others"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('others') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                             @error('others') <span class="text-red-500 text-sm"> {{$message}}</span>
                                             @enderror
                                         </div>
@@ -551,7 +551,7 @@
                                             <label for="actualpago" class="block text-sm font-medium text-gray-700">Fecha de cada
                                                 pago</label>
                                             <input id="actualpago" type="date" wire:model="actualpago"
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('actualpago') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
 
                                                 @error('actualpago') <span class="text-red-500 text-sm"> {{$message}}</span>
                                                 @enderror
@@ -560,7 +560,7 @@
                                         <div>
                                             <label for="monedaactual" class="block text-sm font-medium text-gray-700">Moneda</label>
                                             <input id="monedaactual" type="text" wire:model="monedaactual"
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('monedaactual') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                                 @error('monedaactual') <span class="text-red-500 text-sm"> {{$message}}</span>
                                                 @enderror
                                             </div>
@@ -583,7 +583,7 @@
                                         <label id="aplicapoliza" class="block text-sm font-medium text-gray-700">¿Aplica algún tipo de
                                             póliza?</label>
                                         <input id="aplicapoliza" type="text" wire:model="aplicapoliza"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicapoliza') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                             @error('aplicapoliza') <span class="text-red-500 text-sm"> {{$message}}</span>
                                             @enderror
                                         </div>
@@ -591,7 +591,7 @@
                                         <label for="porcentaje" class="block text-sm font-medium text-gray-700">¿Cuál es el
                                             porcentaje?</label>
                                         <input id="porcentaje" type="number" step="0.01" wire:model="porcentaje"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('porcentaje') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                             @error('porcentaje') <span class="text-red-500 text-sm"> {{$message}}</span>
                                             @enderror
                                         </div>

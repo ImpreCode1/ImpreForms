@@ -24,7 +24,7 @@ class EnviarFormulario extends Component
     public  $cotizacion;
     public  $soluciones;
     public  $linea;
-    public  $codlionea;
+    public  $codlinea;
     public  $nomgerente;
     public  $telgerente;
     public  $corgerente;
@@ -51,7 +51,7 @@ class EnviarFormulario extends Component
     public  $actualpago;
     public  $monedaactual;
     public  $porcentaje;
-
+    public $aplicapoliza;
     protected $rules = [
         'negocio' => 'required|string|min:5',
         'nombre' => 'required|string|min:5',
@@ -64,7 +64,7 @@ class EnviarFormulario extends Component
         'cotizacion' => 'required|string|min:5',
         'soluciones' => 'required|string|min:5',
         'linea' => 'required|string|min:5',
-        'codlionea' => 'required|string|min:5',
+        'codlinea' => 'required|string|min:5',
         'nomgerente' => 'required|string|min:5',
         'telgerente' => 'required|string|min:5',
         'corgerente' => 'required|string|min:5',
@@ -91,6 +91,8 @@ class EnviarFormulario extends Component
         'actualpago' => 'required|string|min:5',
         'monedaactual' => 'required|string|min:5',
         'porcentaje' => 'required|string|min:5',
+        'aplicapoliza' => 'required|string|min:5',
+
 
     ];
 

@@ -199,9 +199,9 @@
                                 <div class="relative">
                                     <i
                                         class="ri-percent-line absolute left-3 top-1/2 transform -translate-y-1/2   {{ $errors->has('anticipo') ? 'text-red-500' : 'text-blue-400' }}"></i>
-                                    <input id="anticipo" wire:model="anticipo"
-                                        class="pl-12 w-full input-gradient border-2 {{ $errors->has('anticipo') ? 'border-red-300' : 'border-blue-100' }}
-                                    rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
+                                        <input id="anticipo" wire:model="anticipo"
+                                        class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                        @error('anticipo') border-blue-300 @enderror"
                                         type="text" placeholder="Anticipo">
                                 </div>
                                 @error('anticipo')
@@ -215,11 +215,11 @@
                                 </label>
                                 <div class="relative">
                                     <i
-                                        class="ri-calendar-line absolute left-3 top-1/2 transform -translate-y-1/2 {{ $errors->has('anticipo') ? 'text-red-500' : 'text-blue-400' }}"></i>
-                                    <input id="fecha" wire:model="fecha"
-                                        class="pl-12 w-full input-gradient border-2 {{ $errors->has('fecha') ? 'border-red-300' : 'border-blue-100' }}
-                                    rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
-                                        type="text" placeholder="fecha">
+                                        class="ri-calendar-line absolute left-3 top-1/2 transform -translate-y-1/2 {{ $errors->has('anticipo') ? 'text-red-500' : 'text-blue-400'}}"></i>
+                                        <input id="fecha" wire:model="fecha"
+                                        class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                        @error('fecha') border-blue-300 @enderror"
+                                        type="text" placeholder="Fecha">
                                 </div>
                                 @error('fecha')
                                     <span class="text-sm text-red-500">{{ $message }}</span>
