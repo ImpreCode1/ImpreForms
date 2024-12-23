@@ -19,7 +19,7 @@ class Formulariofinanciera extends Component
     public $fecha;
     public $garantia;
     public $otros;
-
+    public $no;
     protected $messages = [
         'plazo.required' => 'El espacio es requerido',
         'plazo.min' => 'El espacio debe tener mínimo 5 caracteres',
@@ -31,6 +31,8 @@ class Formulariofinanciera extends Component
         'anticipo.required' => 'El espacio es requerido.',
         'anticipo.min' => 'El anticipo debe tener mínimo 5 caracteres.',
         'garantia.required' => 'El espacio es requerido.',
+        'no.required' => 'El espacio es requerido.',
+
     ];
 
     public function rules()
@@ -40,6 +42,8 @@ class Formulariofinanciera extends Component
             'moneda' => 'required|string',
             'pago' => 'required|string|min:2',
             'garantia' => 'required|string',
+            'no' => 'required|string',
+            
         ];
 
         // Verifica si hay un pago anticipado

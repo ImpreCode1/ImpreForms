@@ -116,7 +116,7 @@
                                     class="ri-time-line absolute left-3 top-1/2 transform -translate-y-1/2  {{ $errors->has('plazo') ? 'text-red-500' : 'text-blue-400' }}"></i>
                                 <input id="plazo" wire:model="plazo"
                                     class="pl-12 w-full input-gradient border-2
-                                      {{ $errors->has('moneda') ? 'border-red-300' : 'border-blue-100' }}
+                                      {{ $errors->has('plazo') ? 'border-red-300' : 'border-blue-100' }}
                                     rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
                                     type="text" placeholder="Duracion del plazo">
 
@@ -203,11 +203,14 @@
                                         wire:model="hasAdvancePayment" wire:click="setAdvancePayment('si')">
                                     <span class="ml-2 text-gray-500">Sí</span>
                                 </label>
-                                <label class="inline-flex items-center">
-                                    <input type="radio" class="form-radio" name="hasAdvancePayment" value="no"
-                                        wire:model="hasAdvancePayment" wire:click="setAdvancePayment('no')">
+                                <label for="no" class="inline-flex items-center">
+                                    <input id="no" type="radio" class="form-radio" name="hasAdvancePayment" value="no"
+                                        wire:model="no" wire:click="setAdvancePayment('no')" checked>
                                     <span class="ml-2 text-gray-500">No</span>
                             </div>
+                            @error('no')
+                            <span class="text-sm text-red-500">{{ $message }}</span>
+                        @enderror
                         </div>
 
 
