@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Financiera;
 use Livewire\Component;
 
 class Formulariofinanciera extends Component
@@ -11,7 +12,7 @@ class Formulariofinanciera extends Component
     public $advancePaymentPercentage = null;
     public $advancePaymentDate = null;
     public $poliza;
-    public $plazo;
+    public $plazo = '';
     public $pago;
     public $moneda;
     public $anticipo;
@@ -34,22 +35,21 @@ class Formulariofinanciera extends Component
 
     public function rules()
     {
-
         $rules = [
             'plazo' => 'required|string|min:5|max:50',
             'moneda' => 'required|string',
             'pago' => 'required|string|min:2',
-            'garantia' => 'required|string'
+            'garantia' => 'required|string',
         ];
 
         // Verifica si hay un pago anticipado
         if ($this->hasAdvancePayment !== 'no') {
             // Si hay un pago anticipado, el anticipo y la fecha son requeridos
-            $rules['anticipo'] = 'required|string|min:5|max:50';
-            $rules['fecha'] = 'required|date'; // Asegúrate de que la fecha sea válida
+            $rules['anticipo'] = 'nullable|numeric'; // Asegura que el anticipo sea numérico si se proporciona
+            $rules['fecha'] = 'nullable|date'; // Asegúrate de que la fecha sea válida si se proporciona
         } else {
             // Si no hay pago anticipado, se puede omitir la validación de los campos
-            $rules['anticipo'] = 'nullable|string|min:5|max:50'; // Opcional o puedes evitar esta línea
+            $rules['anticipo'] = 'nullable|numeric'; // Opcional y debe ser numérico si se proporciona
             $rules['fecha'] = 'nullable|date'; // Opcional y debe ser válida si se proporciona
         }
 
@@ -76,11 +76,27 @@ class Formulariofinanciera extends Component
 
     public function submit()
     {
-        // Aquí llamamos a la validación antes de enviar o procesar los datos
         $this->validate();
 
-        // Lógica de envío del formulario
-        // ...
+        Financiera::create([
+            'marcas_id' => 1,
+            'plazo' => $this->plazo,
+            'forma_pago' => $this->pago,
+            'moneda' => $this->moneda,
+            'garantiascredit' => $this->garantia,
+            'existencia_anticipo' => $this->hasAdvancePayment ? 1 : 0,
+            'porcentaje' => $this->anticipo,
+            'fecha_pago' => $this->fecha,
+            'otros' => $this->otros,
+        ]);
+
+        // $this->reset();
+
+        $this->reset(['plazo', 'pago', 'moneda', 'garantia', 'hasAdvancePayment', 'anticipo', 'fecha', 'otros']);
+
+        // $this->emitTo('alert', 'showAlert', '¡Éxito!', 'Formulario financiera enviado correctamente.', 'success');
+        // $this->emit('showAlert', '¡Éxito!', 'Formulario financiera enviado correctamente.', 'success');
+
     }
 
     public function render()
@@ -90,14 +106,14 @@ class Formulariofinanciera extends Component
 
     public function getStepIconClasses($stepNumber)
     {
-        $baseClasses = "step-icon w-10 h-10 rounded-full flex items-center justify-center";
+        $baseClasses = 'step-icon w-10 h-10 rounded-full flex items-center justify-center';
 
         if ($this->currentStep > $stepNumber) {
-            return $baseClasses . " bg-indigo-500 text-white";
+            return $baseClasses . ' bg-indigo-500 text-white';
         } elseif ($this->currentStep === $stepNumber) {
-            return $baseClasses . " bg-indigo-500 text-white";
+            return $baseClasses . ' bg-indigo-500 text-white';
         } else {
-            return $baseClasses . " bg-gray-200 text-gray-500";
+            return $baseClasses . ' bg-gray-200 text-gray-500';
         }
     }
 }

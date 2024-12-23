@@ -128,7 +128,7 @@
 
 
                         <div>
-                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                            <label for="pago" class="block text-gray-700 text-sm font-bold mb-2">
                                 Forma De Pago
                             </label>
                             <div class="relative">
@@ -170,6 +170,28 @@
                             @enderror
                         </div>
 
+                        <div>
+                            <label for="garantia" class="block text-gray-700 text-sm font-bold mb-2">
+                                Garantías de Crédito
+                            </label>
+                            <div class="relative">
+                                <i
+                                    class="ri-lock-line absolute left-3 top-1/2 transform -translate-y-1/2
+                                {{ $errors->has('garantia') ? 'text-red-500' : 'text-blue-400' }}"></i>
+
+
+                                <input id="garantia" wire:model="garantia"
+                                    class="pl-12 w-full input-gradient border-2
+                                    {{ $errors->has('garantia') ? 'border-red-300' : 'border-blue-100' }}
+                                    rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
+                                    type="text" placeholder="Garantías">
+
+
+                            </div>
+                            @error('garantia')
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
+                        </div>
 
                         <div>
                             <label class="block text-gray-700 text-sm font-bold mb-2">
@@ -189,43 +211,67 @@
                         </div>
 
 
+
+
                         <div id="advancePaymentFields"
                             class="{{ $hasAdvancePayment === 'si' ? '' : 'hidden' }} space-y-4">
-                            <!-- //porcentaje -->
+
                             <div>
                                 <label for="anticipo" class="block text-gray-700 text-sm font-bold mb-2">
                                     Porcentaje de anticipo
                                 </label>
                                 <div class="relative">
-                                    <i
-                                        class="ri-percent-line absolute left-3 top-1/2 transform -translate-y-1/2   {{ $errors->has('anticipo') ? 'text-red-500' : 'text-blue-400' }}"></i>
-                                        <input id="anticipo" wire:model="anticipo"
-                                        class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                        @error('anticipo') border-blue-300 @enderror"
-                                        type="text" placeholder="Anticipo">
+                                    <i class="ri-percent-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
+                                    <input id="anticipo" wire:model="anticipo"
+                                        class="pl-12 w-full input-gradient border-2
+                                        {{ $errors->has('anticipo') ? 'border-red-300' : 'border-blue-100' }}
+                                        rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
+                                        type="text" placeholder="Porcentaje de anticipo"
+                                        @if ($anticipo) value="{{ $anticipo }}" @endif>
                                 </div>
                                 @error('anticipo')
                                     <span class="text-sm text-red-500">{{ $message }}</span>
                                 @enderror
                             </div>
 
+
+
                             <div>
                                 <label for="fecha" class="block text-gray-700 text-sm font-bold mb-2">
                                     Fecha de pago del anticipo
                                 </label>
                                 <div class="relative">
-                                    <i
-                                        class="ri-calendar-line absolute left-3 top-1/2 transform -translate-y-1/2 {{ $errors->has('anticipo') ? 'text-red-500' : 'text-blue-400'}}"></i>
-                                        <input id="fecha" wire:model="fecha"
-                                        class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                        @error('fecha') border-blue-300 @enderror"
-                                        type="text" placeholder="Fecha">
+                                    <i class="ri-calendar-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
+                                    <input id="fecha" wire:model="fecha"
+                                        class="pl-12 w-full input-gradient border-2
+                                        {{ $errors->has('fecha') ? 'border-red-300' : 'border-blue-100' }}
+                                        rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
+                                        type="date" placeholder="Fecha de pago">
                                 </div>
                                 @error('fecha')
                                     <span class="text-sm text-red-500">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
+
+
+                        <div>
+                            <label for="otros" class="block text-gray-700 text-sm font-bold mb-2">
+                                Otros
+                            </label>
+                            <div class="relative">
+                                <i class="ri-more-2-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
+                                <input id="otros" wire:model="otros"
+                                    class="pl-12 w-full input-gradient border-2
+                                    {{ $errors->has('otros') ? 'border-red-300' : 'border-blue-100' }}
+                                    rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
+                                    type="text" placeholder="Opcional">
+                            </div>
+                            @error('otros')
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
+                        </div>
+
 
 
                     </div>
@@ -236,7 +282,7 @@
                             <i class="ri-arrow-left-line mr-2"></i> Anterior
                         </button>
 
-                        <button type="submit"
+                        <button wire:click="submit" type="button"
                             class="flex items-center bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white font-bold py-3 px-7 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300">
                             Enviar <i class="ri-send-plane-line ml-2"></i>
                         </button>
@@ -244,5 +290,8 @@
                 </div>
             </form>
         </div>
+
+        {{-- <livewire:alert /> --}}
+        @livewire('alert')
     </div>
 </div>
