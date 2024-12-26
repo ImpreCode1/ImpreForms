@@ -59,7 +59,7 @@ class EnviarFormulario extends Component
         'correo' => 'required|string|min:2',
         'numero' => 'required|int|min:2',
         'crm' => 'required|string|min:2',
-        'fecha' => 'required|string|min:2',
+        'fecha' => 'required|date|min:2',
         'oc' => 'required|string|min:2',
         'precio' => 'required|string|min:2',
         'cotizacion' => 'required|string|min:2',
@@ -98,6 +98,7 @@ class EnviarFormulario extends Component
     ];
 
     protected $messages = [
+        // estacio requerido validaciones
         'negocio.required' => 'El espacio es requerido.',
         'negocio.min' => 'El espacio debe tener mínimo 5 caracteres.',
         'nombre.required' =>'El espacio es requerido.',
@@ -138,9 +139,7 @@ class EnviarFormulario extends Component
         'monedaactual.required '=>'El espacio es requerido.',
         'porcentaje.required' =>'El espacio es requerido.',
         'aplicapoliza.required' =>'El espacio es requerido.',
-
-
-
+        // minimo caracteres
         'nombre.min'=> 'El espacio debe tener como minimo 2 caracteres.',
         'correo.min'=>'El espacio debe tener como minimo 2 caracteres.',
         'numero.min'=>'El espacio debe ser completado solo con numeros',
