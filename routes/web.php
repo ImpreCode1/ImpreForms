@@ -33,8 +33,13 @@ Route::get('/user-dashboard', function () {
 
 // rutas sin recragra
 Route::get('/manager-dashboard', ManagerSidebar::class)->name('manager.dashboard');
-Route::view('/menu', 'menu')->name('menu');
-Route::view('/historial', 'historial')->name('historial');
+Route::view('/menu', 'menu')
+->middleware(['auth'])
+->name('menu');
+
+Route::view('/historial', 'historial')
+->middleware(['auth'])
+->name('historial');
 
 
 
