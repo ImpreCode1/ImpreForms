@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Infoentrega;
 use Livewire\Component;
 
 class FormularioInteractivo extends Component
@@ -9,10 +10,10 @@ class FormularioInteractivo extends Component
     public $cliente;
 
     public $icoterm;
-    public  $lugar;
+    public $lugar;
     public $puerto;
     public $pais;
-    public $entrega;
+    // public $entrega;
     public $transporte;
     public $origen;
     public $destino;
@@ -25,7 +26,7 @@ class FormularioInteractivo extends Component
         'lugar'=> 'required|string|min:5',
         'puerto'=> 'required|string|min:5',
         'pais'=> 'required|string|min:5',
-        'entrega'=> 'required|string|min:5',
+        // 'entrega'=> 'required|string|min:5',
         'transporte'=> 'required|string|min:5',
         'origen'=> 'required|string|min:5',
         'destino'=> 'required|string|min:5',
@@ -39,7 +40,7 @@ class FormularioInteractivo extends Component
         'lugar.required' => 'El espacio es requerido.',
         'puerto.required' => 'El espacio es requerido.',
         'pais.required' => 'El espacio es requerido.',
-        'entrega.required' => 'El espacio es requerido.',
+        // 'entrega.required' => 'El espacio es requerido.',
         'transporte.required' => 'El espacio es requerido.',
         'origen.required' => 'El espacio es requerido.',
         'destino.required' => 'El espacio es requerido.',
@@ -76,9 +77,26 @@ class FormularioInteractivo extends Component
 
     public function submit()
     {
+
+        // dd('Método submit llamado', $this->all());
+
         $this->validate();
 
-        // Lógica de envío de formulario
+        Infoentrega::create([
+            'marcas_id' => 1,
+            'entrega_cliente' => $this->cliente,
+            'lugar_entrega'=> $this->lugar,
+            'pais' =>  $this->pais,
+            'puerto' =>  $this->puerto,
+            'incoterm' =>  $this->icoterm,
+            'transporte' =>  $this->transporte,
+            'origen' =>  $this->origen,
+            'destino' =>  $this->destino,
+            'condiciones' =>  $this->entregalocal,
+
+        ]);
+
+        $this->reset();
     }
 
     public function render()

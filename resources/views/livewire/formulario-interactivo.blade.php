@@ -19,7 +19,8 @@
                     Formulario de Condiciones del Negocio
                 </p>
             </div>
-            <form wire:submit.prevent="submit" id="multiStepForm" class="bg-white shadow-xl rounded-2xl p-6 sm:p-8 space-y-6">
+            <form wire:submit.prevent="submit" id="multiStepForm"
+                class="bg-white shadow-xl rounded-2xl p-6 sm:p-8 space-y-6">
                 <!-- Progreso del Formulario -->
                 <div class="flex justify-between items-center mb-10 space-x-4">
                     <!-- Paso 1 -->
@@ -161,15 +162,15 @@
                             <div class="relative">
                                 <i
                                     class="ri-user-location-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('cliente') text-red-500 @enderror"></i>
-                                    <input id="cliente" wire:model="cliente"
+                                <input id="cliente" wire:model="cliente"
                                     class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('cliente') border-red-300 @enderror"
                                     type="text" placeholder="Entrega">
                             </div>
-                         @error('cliente')
-                         <span class="text-sm text-red-500">{{$message}}</span>
-                         @enderror
-                    </div>
+                            @error('cliente')
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
+                        </div>
 
                         <div>
                             <label class="block text-gray-700 text-sm font-semibold mb-3">
@@ -178,14 +179,14 @@
                             <div class="relative">
                                 <i
                                     class="ri-map-pin-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('lugar') text-red-500 @enderror"></i>
-                                    <input id="lugar" wire:model="lugar"
+                                <input id="lugar" wire:model="lugar"
                                     class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('lugar') border-red-300 @enderror"
                                     type="text" placeholder="Lugar">
                             </div>
-                       @error ('lugar')
-                       <span class="text-sm text-red-500 ">{{$message}}</span>
-                       @enderror
+                            @error('lugar')
+                                <span class="text-sm text-red-500 ">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div>
@@ -195,14 +196,14 @@
                             <div class="relative">
                                 <i
                                     class="ri-earth-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('pais') text-red-500 @enderror"></i>
-                                    <input id="pais" wire:model="pais"
+                                <input id="pais" wire:model="pais"
                                     class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('pais') border-red-300 @enderror"
                                     type="text" placeholder="Pais">
                             </div>
-                        @error ('pais')
-                        <span class="text-sm text-red-500"> {{$message}}</span>
-                        @enderror
+                            @error('pais')
+                                <span class="text-sm text-red-500"> {{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div>
@@ -213,14 +214,14 @@
                                 <i
                                     class="ri-anchor-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('puerto') text-red-500 @enderror"></i>
 
-                                    <input id="puerto" wire:model="puerto"
+                                <input id="puerto" wire:model="puerto"
                                     class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('puerto') border-red-300 @enderror"
                                     type="text" placeholder="Puerto">
                             </div>
-                        @error ('puerto')
-                        <span class="text-sm text-red-500"> {{$message}}</span>
-                        @enderror
+                            @error('puerto')
+                                <span class="text-sm text-red-500"> {{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
 
@@ -252,16 +253,17 @@
                                 Incoterm
                             </label>
                             <div class="relative">
-                                <i  class="ri-file-list-3-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('icoterm') text-red-500 @enderror"></i>
+                                <i
+                                    class="ri-file-list-3-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('icoterm') text-red-500 @enderror"></i>
 
                                 <input id="icoterm" wire:model="icoterm"
                                     class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('icoterm') border-red-300 @enderror"
                                     type="text" placeholder="Icoterm">
                             </div>
-                        @error ('icoterm')
-                        <span class="text-sm text-red-500 "> {{$message}}</span>
-                        @enderror
+                            @error('icoterm')
+                                <span class="text-sm text-red-500 "> {{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div>
@@ -271,14 +273,14 @@
                             <div class="relative">
                                 <i
                                     class="ri-truck-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('transporte') text-red-500 @enderror"></i>
-                                    <input id="transporte" wire:model="transporte"
+                                <input id="transporte" wire:model="transporte"
                                     class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('transporte') border-red-300 @enderror"
                                     type="text" placeholder="Transporte">
                             </div>
-                        @error ('transporte')
-                         <span class="text-sm text-red-500">{{$message}}</span>
-                         @enderror
+                            @error('transporte')
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div>
@@ -289,16 +291,16 @@
                                 <i
                                     class="ri-map-pin-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('origen') text-red-500 @enderror"></i>
 
-                                    <input id="origen" wire:model="origen"
+                                <input id="origen" wire:model="origen"
                                     class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('origen') border-red-300 @enderror"
                                     type="text" placeholder="Origen">
                             </div>
-                     @error ('origen')
-                     <span class="text-sm text-red-500">{{$message}}</span>
-                    @enderror
+                            @error('origen')
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
 
-                    </div>
+                        </div>
 
                         <div>
                             <label for="destino" class="block text-gray-700 text-sm font-semibold mb-3">
@@ -307,14 +309,14 @@
                             <div class="relative">
                                 <i
                                     class="ri-flag-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('destino') text-red-500 @enderror"></i>
-                                    <input id="destino" wire:model="destino"
+                                <input id="destino" wire:model="destino"
                                     class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('destino') border-red-300 @enderror"
                                     type="text" placeholder="Destino">
                             </div>
-                        @error ('destino')
-                        <span class="text-sm text-red-500">{{$message}}</span>
-                        @enderror
+                            @error('destino')
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div>
@@ -325,14 +327,14 @@
                                 <i
                                     class="ri-map-pin-2-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('entregalocal') text-red-500 @enderror"></i>
 
-                                    <input id="entregalocal" wire:model="entregalocal"
+                                <input id="entregalocal" wire:model="entregalocal"
                                     class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('entregalocal') border-red-300 @enderror"
                                     type="text" placeholder="Entrega Local">
                             </div>
-                        @error ('entregalocal')
-                        <span class="text-sm text-red-500">{{$message}}</span>
-                        @enderror
+                            @error('entregalocal')
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
                         </div>
 
 
@@ -343,7 +345,7 @@
                             class="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg">
                             <i class="ri-arrow-left-line mr-2"></i> Anterior
                         </button>
-                        <button type="submit"
+                        <button wire:click="submit" type="button"
                             class="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 transition duration-300 shadow-md hover:shadow-lg">
                             Enviar <i class="ri-send-plane-line ml-2"></i>
                         </button>
