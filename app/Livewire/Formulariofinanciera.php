@@ -43,7 +43,7 @@ class Formulariofinanciera extends Component
             'pago' => 'required|string|min:2',
             'garantia' => 'required|string',
             'no' => 'required|string',
-            
+
         ];
 
         // Verifica si hay un pago anticipado
@@ -92,6 +92,7 @@ class Formulariofinanciera extends Component
             'porcentaje' => $this->anticipo,
             'fecha_pago' => $this->fecha,
             'otros' => $this->otros,
+
         ]);
 
         // $this->reset();

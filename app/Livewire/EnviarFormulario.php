@@ -48,7 +48,7 @@ class EnviarFormulario extends Component
     public  $terminogarantia;
     public  $formapago;
     public  $moneda;
-    public  $iva = 'no';
+    public  $iva ;
 
     public  $other;
     public  $actualpago;
