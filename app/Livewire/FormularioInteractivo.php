@@ -37,14 +37,29 @@ class FormularioInteractivo extends Component
         'icoterm.required' => 'El espacio es requerido.',
         'icoterm.min' => 'El espacio debe tener mínimo 3 caracteres.',
         'cliente.required' => 'El espacio es requerido.',
+        'cliente.min' => 'El espacio debe tener mínimo 3 caracteres.',
+
         'lugar.required' => 'El espacio es requerido.',
+        'lugar.min' => 'El espacio debe tener mínimo 3 caracteres.',
+
         'puerto.required' => 'El espacio es requerido.',
+        'puerto.min' => 'El espacio debe tener mínimo 3 caracteres.',
+
         'pais.required' => 'El espacio es requerido.',
-        // 'entrega.required' => 'El espacio es requerido.',
+        'pais.min' => 'El espacio debe tener mínimo 3 caracteres.',
+
+
         'transporte.required' => 'El espacio es requerido.',
+        'transporte.min' => 'El espacio debe tener mínimo 3 caracteres.',
+
         'origen.required' => 'El espacio es requerido.',
+        'origen.min' => 'El espacio debe tener mínimo 3 caracteres.',
+
         'destino.required' => 'El espacio es requerido.',
+        'destino.min' => 'El espacio debe tener mínimo 3 caracteres.',
+
         'entregalocal.required' => 'El espacio es requerido.',
+        'entregalocal.min' => 'El espacio debe tener mínimo 3 caracteres.',
 
 
 

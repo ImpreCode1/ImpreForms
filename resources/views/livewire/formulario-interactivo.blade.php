@@ -161,10 +161,10 @@
                             </label>
                             <div class="relative">
                                 <i
-                                    class="ri-user-location-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('cliente') text-red-500 @enderror"></i>
+                                    class="ri-user-location-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400z @error('cliente') text-red-500 @enderror"></i>
                                 <input id="cliente" wire:model="cliente"
-                                    class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                    @error('cliente') border-red-300 @enderror"
+                                    class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                    @error('cliente') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Entrega">
                             </div>
                             @error('cliente')
@@ -178,10 +178,10 @@
                             </label>
                             <div class="relative">
                                 <i
-                                    class="ri-map-pin-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('lugar') text-red-500 @enderror"></i>
+                                    class="ri-map-pin-line absolute left-3 top-1/2 transform -translate-y-1/2 @error('lugar') text-red-500 @enderror"></i>
                                 <input id="lugar" wire:model="lugar"
-                                    class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                    @error('lugar') border-red-300 @enderror"
+                                    class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                    @error('lugar') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Lugar">
                             </div>
                             @error('lugar')
@@ -195,10 +195,10 @@
                             </label>
                             <div class="relative">
                                 <i
-                                    class="ri-earth-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('pais') text-red-500 @enderror"></i>
+                                    class="ri-earth-line absolute left-3 top-1/2 transform -translate-y-1/2 @error('pais') text-red-500 @enderror"></i>
                                 <input id="pais" wire:model="pais"
-                                    class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                    @error('pais') border-red-300 @enderror"
+                                    class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                    @error('pais') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Pais">
                             </div>
                             @error('pais')
@@ -212,11 +212,11 @@
                             </label>
                             <div class="relative">
                                 <i
-                                    class="ri-anchor-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('puerto') text-red-500 @enderror"></i>
+                                    class="ri-anchor-line absolute left-3 top-1/2 transform -translate-y-1/2  @error('puerto') text-red-500 @enderror"></i>
 
                                 <input id="puerto" wire:model="puerto"
-                                    class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                    @error('puerto') border-red-300 @enderror"
+                                    class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                    @error('puerto') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Puerto">
                             </div>
                             @error('puerto')
@@ -254,11 +254,11 @@
                             </label>
                             <div class="relative">
                                 <i
-                                    class="ri-file-list-3-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('icoterm') text-red-500 @enderror"></i>
+                                    class="ri-file-list-3-line absolute left-3 top-1/2 transform -translate-y-1/2  @error('icoterm') text-red-500 @enderror"></i>
 
                                 <input id="icoterm" wire:model="icoterm"
-                                    class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                    @error('icoterm') border-red-300 @enderror"
+                                    class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                   @error('icoterm') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Icoterm">
                             </div>
                             @error('icoterm')
@@ -272,10 +272,10 @@
                             </label>
                             <div class="relative">
                                 <i
-                                    class="ri-truck-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('transporte') text-red-500 @enderror"></i>
+                                    class="ri-truck-line absolute left-3 top-1/2 transform -translate-y-1/2  @error('transporte') text-red-500 @enderror"></i>
                                 <input id="transporte" wire:model="transporte"
-                                    class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                    @error('transporte') border-red-300 @enderror"
+                                    class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                    @error('transporte') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Transporte">
                             </div>
                             @error('transporte')
@@ -289,11 +289,11 @@
                             </label>
                             <div class="relative">
                                 <i
-                                    class="ri-map-pin-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('origen') text-red-500 @enderror"></i>
+                                    class="ri-map-pin-line absolute left-3 top-1/2 transform -translate-y-1/2  @error('origen') text-red-500 @enderror"></i>
 
                                 <input id="origen" wire:model="origen"
-                                    class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                    @error('origen') border-red-300 @enderror"
+                                    class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                    @error('origen') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Origen">
                             </div>
                             @error('origen')
@@ -308,10 +308,10 @@
                             </label>
                             <div class="relative">
                                 <i
-                                    class="ri-flag-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('destino') text-red-500 @enderror"></i>
+                                    class="ri-flag-line absolute left-3 top-1/2 transform -translate-y-1/2  @error('destino') text-red-500 @enderror"></i>
                                 <input id="destino" wire:model="destino"
-                                    class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                    @error('destino') border-red-300 @enderror"
+                                    class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                    @error('destino') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Destino">
                             </div>
                             @error('destino')
@@ -325,11 +325,11 @@
                             </label>
                             <div class="relative">
                                 <i
-                                    class="ri-map-pin-2-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 @error('entregalocal') text-red-500 @enderror"></i>
+                                    class="ri-map-pin-2-line absolute left-3 top-1/2 transform -translate-y-1/2  @error('entregalocal') text-red-500 @enderror"></i>
 
                                 <input id="entregalocal" wire:model="entregalocal"
-                                    class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                    @error('entregalocal') border-red-300 @enderror"
+                                    class="pl-12 w-full input-gradient  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                    @error('entregalocal') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Entrega Local">
                             </div>
                             @error('entregalocal')
