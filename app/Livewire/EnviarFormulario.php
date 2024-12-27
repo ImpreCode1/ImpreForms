@@ -4,12 +4,13 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class EnviarFormulario extends Component
 {
     public $currentStep = 1;
 
-
+    use WithFileUploads;
 
     public $hasAdvancePayment = null;
 
@@ -57,6 +58,10 @@ class EnviarFormulario extends Component
     public $aplicapoliza;
     public $fechapago;
 
+    public $attachments = [];
+    public $files  = [];
+    public $dragging = false;
+
     protected $rules = [
         'iva' => 'required',
         'fechapago' => 'required|date|',
@@ -99,6 +104,7 @@ class EnviarFormulario extends Component
         'monedaactual' => 'required|string|min:2',
         'porcentaje' => 'required|numeric',
         'aplicapoliza' => 'required|string|min:2',
+        'attachments.*' => 'file|max:10240|mimes:pdf,doc,docx,xls,xlsx'
 
 
     ];
@@ -229,5 +235,61 @@ class EnviarFormulario extends Component
         return view('livewire.enviar-formulario', [
             'currentStep' => $this->currentStep
         ]);
+    }
+
+    public function mount()
+    {
+        $this->files = [];
+    }
+
+    public function updatedAttachments()
+    {
+        $this->updateFilesList();
+    }
+
+    public function handleDrop($files)
+    {
+        // dd($files);
+        foreach ($files as $file) {
+            $this->attachments[] = $file;
+        }
+
+        $this->updateFilesList();
+    }
+
+    public function updateFilesList()
+    {
+        $this->files = [];
+        foreach ($this->attachments as $attachment) {
+            if (is_array($attachment)) {
+                foreach ($attachment as $file) {
+                    $this->files[] = [
+                        'name' => $file->getClientOriginalName(),
+                        'size' => round($file->getSize() / 1024, 2)
+                    ];
+                }
+            } else {
+                $this->files[] = [
+                    'name' => $attachment->getClientOriginalName(),
+                    'size' => round($attachment->getSize() / 1024, 2)
+                ];
+            }
+        }
+    }
+    public function removeFile($index)
+    {
+        unset($this->attachments[$index]);
+        $this->attachments = array_values($this->attachments); // Reindexar el array
+        $this->updateFilesList();
+    }
+
+    public function dragOver()
+    {
+        $this->dragging = true;
+    }
+
+    public function dragLeave()
+    {
+        $this->dragging = false;
     }
 }
