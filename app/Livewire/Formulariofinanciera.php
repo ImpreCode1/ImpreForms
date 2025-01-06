@@ -20,17 +20,23 @@ class Formulariofinanciera extends Component
     public $garantia;
     public $otros;
     public $no;
+
     protected $messages = [
         'plazo.required' => 'El espacio es requerido',
-        'plazo.min' => 'El espacio debe tener mínimo 5 caracteres',
+        'plazo.min' => 'El espacio debe tener mínimo 2 caracteres',
         'pago.required' => 'El espacio es requerido.',
-        'pago.min' => 'El espacio debe tener mínimo 5 caracteres',
+        'pago.min' => 'El espacio debe tener mínimo 2 caracteres',
+        'moneda.min' => 'El espacio debe tener mínimo 2 caracteres',
+
         'moneda.required' => 'El espacio es requerido.',
+
         'fecha.required' => 'El espacio es requerido.',
         'fecha.date' => 'La fecha debe ser válida.',
         'anticipo.required' => 'El espacio es requerido.',
-        'anticipo.min' => 'El anticipo debe tener mínimo 5 caracteres.',
+        'anticipo.min' => 'El anticipo debe tener mínimo 2 caracteres.',
         'garantia.required' => 'El espacio es requerido.',
+        'garantia.min' => 'El espacio debe tener mínimo 2 caracteres',
+
         'no.required' => 'El espacio es requerido.',
 
     ];
@@ -38,10 +44,10 @@ class Formulariofinanciera extends Component
     public function rules()
     {
         $rules = [
-            'plazo' => 'required|string|min:5|max:50',
-            'moneda' => 'required|string',
+            'plazo' => 'required|string|min:2|max:50',
+            'moneda' => 'required|string|min:2',
             'pago' => 'required|string|min:2',
-            'garantia' => 'required|string',
+            'garantia' =>'required|string|min:2',
             'no' => 'required|string',
 
         ];
@@ -99,8 +105,7 @@ class Formulariofinanciera extends Component
 
         $this->reset(['plazo', 'pago', 'moneda', 'garantia', 'hasAdvancePayment', 'anticipo', 'fecha', 'otros']);
 
-        // $this->emitTo('alert', 'showAlert', '¡Éxito!', 'Formulario financiera enviado correctamente.', 'success');
-        // $this->emit('showAlert', '¡Éxito!', 'Formulario financiera enviado correctamente.', 'success');
+
 
     }
 

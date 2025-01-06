@@ -20,17 +20,17 @@ class FormularioInteractivo extends Component
     public $entregalocal;
 
     protected $rules = [
-        'cliente'=> 'required|string|min:5',
+        'cliente'=> 'required|string|min:3',
 
-        'icoterm'=> 'required|string|min:5',
-        'lugar'=> 'required|string|min:5',
-        'puerto'=> 'required|string|min:5',
-        'pais'=> 'required|string|min:5',
-        // 'entrega'=> 'required|string|min:5',
-        'transporte'=> 'required|string|min:5',
-        'origen'=> 'required|string|min:5',
-        'destino'=> 'required|string|min:5',
-        'entregalocal'=> 'required|string|min:5',
+        'icoterm'=> 'required|string|min:3',
+        'lugar'=> 'required|string|min:3',
+        'puerto'=> 'required|string|min:3',
+        'pais'=> 'required|string|min:3',
+        // 'entrega'=> 'required|string|min:3',
+        'transporte'=> 'required|string|min:3',
+        'origen'=> 'required|string|min:3',
+        'destino'=> 'required|string|min:3',
+        'entregalocal'=> 'required|string|min:3',
     ];
 
     protected $messages = [

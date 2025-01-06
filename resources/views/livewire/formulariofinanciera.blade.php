@@ -53,7 +53,7 @@
                             </label>
                             <div class="relative">
                                 <i
-                                    class="ri-hashtag absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
+                                    class="ri-hashtag absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                 <input
                                     class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300 cursor-not-allowed"
                                     type="text" placeholder="Código de cliente" disabled>
@@ -66,7 +66,7 @@
                             </label>
                             <div class="relative">
                                 <i
-                                    class="ri-user-line absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
+                                    class="ri-user-line absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                 <input
                                     class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300 cursor-not-allowed"
                                     type="text" placeholder="Nombre completo" disabled>
@@ -79,7 +79,7 @@
                             </label>
                             <div class="relative">
                                 <i
-                                    class="ri-task-line absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
+                                    class="ri-task-line absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                 <input
                                     class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300 cursor-not-allowed"
                                     type="text" placeholder="Número de oportunidad" disabled>
@@ -102,9 +102,7 @@
 
                 <!-- Paso 2: Formulario Financiero -->
                 <div id="step2" class="{{ $currentStep == 2 ? '' : 'hidden' }} form-step">
-                    <!-- <h2 class="text-2xl font-bold mb-4 text-gray-800 flex items-center">
-                        <i class="ri-bank-card-line mr-3 text-blue-500"></i>Condiciones Financieros
-                    </h2> -->
+
 
                     <div class="space-y-4">
                         <div>
@@ -113,7 +111,7 @@
                             </label>
                             <div class="relative">
                                 <i
-                                    class="ri-time-line absolute left-3 top-1/2 transform -translate-y-1/2  {{ $errors->has('plazo') ? 'text-red-500' : 'text-blue-400' }}"></i>
+                                    class="ri-time-line absolute left-3 top-1/2 transform -translate-y-1/2  {{ $errors->has('plazo') ? 'text-red-500' : 'text-gray-400' }}"></i>
                                 <input id="plazo" wire:model="plazo"
                                     class="pl-12 w-full input-gradient border-2
                                       {{ $errors->has('plazo') ? 'border-red-300' : 'border-blue-100' }}
@@ -134,7 +132,7 @@
                             <div class="relative">
                                 <i
                                     class="ri-bank-card-line absolute left-3 top-1/2 transform -translate-y-1/2
-                                       {{ $errors->has('pago') ? 'text-red-500' : 'text-blue-400' }}"></i></i>
+                                       {{ $errors->has('pago') ? 'text-red-500' : 'text-gray-400' }}"></i></i>
                                 <input id="pago" wire:model="pago"
                                     class="pl-12 w-full input-gradient border-2
                                       {{ $errors->has('pago') ? 'border-red-300' : 'border-blue-100' }}
@@ -155,7 +153,7 @@
                             <div class="relative">
                                 <i
                                     class="ri-money-dollar-circle-line absolute left-3 top-1/2 transform -translate-y-1/2
-                                {{ $errors->has('moneda') ? 'text-red-500' : 'text-blue-400' }}"></i>
+                                {{ $errors->has('moneda') ? 'text-red-500' : 'text-gray-400' }}"></i>
 
                                 <input id="moneda" wire:model="moneda"
                                     class="pl-12 w-full input-gradient border-2
@@ -177,7 +175,7 @@
                             <div class="relative">
                                 <i
                                     class="ri-lock-line absolute left-3 top-1/2 transform -translate-y-1/2
-                                {{ $errors->has('garantia') ? 'text-red-500' : 'text-blue-400' }}"></i>
+                                {{ $errors->has('garantia') ? 'text-red-500' : 'text-gray-400 ' }}"></i>
 
 
                                 <input id="garantia" wire:model="garantia"
@@ -224,7 +222,7 @@
                                     Porcentaje de anticipo
                                 </label>
                                 <div class="relative">
-                                    <i class="ri-percent-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
+                                    <i class="ri-percent-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                     <input id="anticipo" wire:model="anticipo"
                                         class="pl-12 w-full input-gradient border-2
                                         {{ $errors->has('anticipo') ? 'border-red-300' : 'border-blue-100' }}
@@ -244,7 +242,7 @@
                                     Fecha de pago del anticipo
                                 </label>
                                 <div class="relative">
-                                    <i class="ri-calendar-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400"></i>
+                                    <i class="ri-calendar-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                     <input id="fecha" wire:model="fecha"
                                         class="pl-12 w-full input-gradient border-2
                                         {{ $errors->has('fecha') ? 'border-red-300' : 'border-blue-100' }}
@@ -294,7 +292,10 @@
             </form>
         </div>
 
-        {{-- <livewire:alert /> --}}
-        @livewire('alert')
+
+
+
     </div>
+  {{-- este enlace deja que livewire interactue con la alerta --}}
+    <livewire:alert />
 </div>
