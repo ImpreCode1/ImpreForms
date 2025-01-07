@@ -98,7 +98,7 @@ class FormularioInteractivo extends Component
         $this->validate();
 
         Infoentrega::create([
-            'marcas_id' => 1,
+            'marcas_id' => 2,
             'entrega_cliente' => $this->cliente,
             'lugar_entrega'=> $this->lugar,
             'pais' =>  $this->pais,

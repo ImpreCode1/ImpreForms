@@ -238,18 +238,24 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Teléfono</label>
+                                    <label  class="block text-sm font-medium text-gray-700">Teléfono</label>
                                     <input type="text" wire:model="clientname"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
                                         placeholder="Opcional" />
-                                </div>
+                                        @error('clientname')
+                                        <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
+                                    @enderror
+                                    </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Correo electrónico</label>
                                     <input type="text" wire:model="mail"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
                                         placeholder="Opcional" />
-                                </div>
+                                        @error('mail')
+                                        <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
+                                    @enderror
+                                    </div>
 
                                 <div>
                                     <label for="director"

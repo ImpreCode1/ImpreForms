@@ -89,7 +89,7 @@ class Formulariofinanciera extends Component
         $this->validate();
 
         Financiera::create([
-            'marcas_id' => 1,
+            'marcas_id' => 2,
             'plazo' => $this->plazo,
             'forma_pago' => $this->pago,
             'moneda' => $this->moneda,

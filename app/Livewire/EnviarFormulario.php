@@ -53,11 +53,11 @@ class EnviarFormulario extends Component
     public $details;
     public $aplicagarantia;
     public $terminogarantia;
-    // public $garantia;
+
     public $formapago;
     public $moneda;
     public $incluye_iva;
-    // public $fecha_pago;
+
     public $clientcode;
     public $clientname;
     public $mail;
@@ -95,7 +95,7 @@ class EnviarFormulario extends Component
         // Marca
         'fecha' => 'required|date',
         'oc' => 'required|string|min:2',
-        'precio' => 'required|string|min:2',
+        'precio' => 'required|numeric|min:2',
         'cotizacion' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         'soluciones' => 'required|string|min:2',
         'linea' => 'required|string|min:2',
@@ -137,7 +137,7 @@ class EnviarFormulario extends Component
         'incluye_iva' => 'required|boolean',
         'fecha_pago' => 'required|date',
 
-        'archivos.*' => 'file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
+
     ];
 
     protected $messages = [
@@ -152,8 +152,8 @@ class EnviarFormulario extends Component
             'numeric' => 'El campo :attribute debe ser al menos :min.',
         ],
         'max' => [
-            'numeric' => 'El campo :attribute no puede ser mayor que :max.',
-            'file' => 'El archivo :attribute no debe pesar más de :max kilobytes.',
+        'numeric' => 'El campo :attribute no puede ser mayor que :max.',
+        'file' => 'El archivo :attribute no debe pesar más de :max kilobytes.',
         ],
         'file' => 'El campo :attribute debe ser un archivo.',
         'mimes' => 'El archivo :attribute debe ser de tipo: :values.',
@@ -178,6 +178,8 @@ class EnviarFormulario extends Component
         'oc.required' => 'La orden de compra es obligatoria.',
         'oc.min' => 'La orden de compra debe tener al menos 2 caracteres.',
         'precio.required' => 'El precio es obligatorio.',
+        'precio.numeric' => 'El campo debe tener solo números',
+
         'precio.min' => 'El precio debe tener al menos 2 caracteres.',
         'cotizacion.file' => 'La cotización debe ser un archivo.',
         'cotizacion.mimes' => 'La cotización debe ser un archivo PDF, Word o Excel.',
@@ -203,7 +205,7 @@ class EnviarFormulario extends Component
 
         // Campos opcionales en Marca
         'clientcode.min' => 'El código de cliente debe tener al menos 2 caracteres.',
-        'clientname.numeric' => 'El nombre del cliente debe ser numérico.',
+        'clientname.numeric' => 'El numero del cliente debe ser numérico.',
         'mail.email' => 'El correo debe ser una dirección válida.',
 
         // Información
@@ -253,9 +255,7 @@ class EnviarFormulario extends Component
         'fecha_pago.date' => 'La fecha de pago debe ser una fecha válida.',
 
 
-        //archivos
-        'archivos.*.mimes' => 'Solo se permiten archivos PDF, DOC, DOCX, XLS, XLSX',
-        'archivos.*.max' => 'El archivo no debe pesar más de 10MB',
+
     ];
 
     public function updatedHasAdvancePayment($value)
@@ -288,8 +288,9 @@ class EnviarFormulario extends Component
     {
         $this->validate();
 
+        // dd('$infonegocio');
         // dd($this->attachments);
-        // dd('Método submit llamado', $this->all());
+        // dd('$this');
 
         $infonegocio = Infonegocio::create([
             'codigo_cliente' => $this->negocio, // * no puede ser igual a otro y es numerico obligatorio
