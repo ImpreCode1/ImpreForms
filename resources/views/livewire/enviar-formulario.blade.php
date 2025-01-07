@@ -1,17 +1,13 @@
 <div>
     <x-app-layout>
-
         {{-- <div class="py-12"> --}}
-
-
         <div class="font-sans text-gray-900 antialiased">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
                 <form wire:submit.prevent="submit" class="space-y-8">
 
                     <div id="step1" class="{{ $currentStep === 1 ? '' : 'hidden' }} form-step">
-                        <h1 class="text-4xl font-semibold text-center text-gray-800 mb-8 tracking-tight">
+                        <h1 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
                             Información Proporcionada por Marcas
-
                         </h1>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -50,7 +46,7 @@
 
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Correo</label>
-                                        <input id="correo" type="email" wire:model="corrreo"
+                                        <input id="correo" type="email" wire:model="correo"
                                             class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('correo') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('correo')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -183,88 +179,95 @@
                                 Gerente de producto
                             </h2>
 
-                            <div class="grid md:grid-cols-2 gap-4">
+                            <div class="grid md:grid-cols-2 gap-6">
                                 <div>
                                     <label for="linea"
                                         class="block text-sm font-medium text-gray-700">Linea</label>
                                     <input id="linea" type="text" wire:model="linea"
                                         class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('linea') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                     @error('linea')
-                                        <span class="text-red-500 text-sm"> {{ $message }}</span>
+                                        <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                                     @enderror
                                 </div>
-                                <div>
-                                    <label for="codlinea" class="block text-sm font-medium text-gray-700 ml-4">Código
-                                        de la línea</label>
-                                    <input id="codlinea" type="text" wire:model="codlinea"
-                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('codlinea') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 ml-4" />
-                                    @error('codlinea')
-                                        <span class="text-red-500 text-sm"> {{ $message }}</span>
-                                    @enderror
 
+                                <div>
+                                    <label for="codlinea" class="block text-sm font-medium text-gray-700">Código de la
+                                        línea</label>
+                                    <input id="codlinea" type="text" wire:model="codlinea"
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('codlinea') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    @error('codlinea')
+                                        <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
+                                    @enderror
                                 </div>
+
                                 <div>
                                     <label for="nomgerente"
                                         class="block text-sm font-medium text-gray-700">Nombre</label>
-                                    <input id="nomgerente" type="number" wire:model="nomgerente"
+                                    <input id="nomgerente" type="text" wire:model="nomgerente"
                                         class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('nomgerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                     @error('nomgerente')
-                                        <span class="text-red-500 text-sm"> {{ $message }}</span>
+                                        <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                                     @enderror
                                 </div>
+
                                 <div>
                                     <label for="telgerente"
-                                        class="block text-sm font-medium text-gray-700 ml-4">Teléfono</label>
+                                        class="block text-sm font-medium text-gray-700">Teléfono</label>
                                     <input id="telgerente" type="text" wire:model="telgerente"
-                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('telgerente') ? 'border-red-400' : 'border-blue-100' }}  shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200m ml-4" />
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('telgerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                     @error('telgerente')
-                                        <span class="text-red-500 text-sm"> {{ $message }}</span>
+                                        <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                                     @enderror
                                 </div>
+
                                 <div>
                                     <label for="corgerente" class="block text-sm font-medium text-gray-700">Correo
                                         electrónico</label>
                                     <input id="corgerente" type="text" wire:model="corgerente"
                                         class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('corgerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                     @error('corgerente')
-                                        <span class="text-red-500 text-sm"> {{ $message }}</span>
+                                        <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                                     @enderror
                                 </div>
+
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 ml-4">Otro</label>
-                                    <input type="text" wire:model="clientCode"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 ml-4"
+                                    <label class="block text-sm font-medium text-gray-700">Otro</label>
+                                    <input type="text" wire:model="clientcode"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
                                         placeholder="Opcional" />
                                 </div>
+
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Teléfono</label>
-                                    <input type="text" wire:model="clientName"
-                                        class="mt-1 block w-full rounded-md border-gray-300  shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
+                                    <input type="text" wire:model="clientname"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
                                         placeholder="Opcional" />
                                 </div>
+
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 ml-4">Correo
-                                        electrónico</label>
-                                    <input type="text" wire:model="clientCode"
-                                        class="mt-1 block w-full rounded-md border-gray-300  shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 ml-4"
+                                    <label class="block text-sm font-medium text-gray-700">Correo electrónico</label>
+                                    <input type="text" wire:model="mail"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
                                         placeholder="Opcional" />
                                 </div>
+
                                 <div>
                                     <label for="director"
                                         class="block text-sm font-medium text-gray-700">Director</label>
                                     <input id="director" type="text" wire:model="director"
                                         class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('director') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                     @error('director')
-                                        <span class="text-red-500 text-sm"> {{ $message }}</span>
+                                        <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                                     @enderror
                                 </div>
+
                                 <div>
                                     <label for="tel2gerente"
-                                        class="block text-sm font-medium text-gray-700 ml-4">Teléfono</label>
+                                        class="block text-sm font-medium text-gray-700">Teléfono</label>
                                     <input id="tel2gerente" type="text" wire:model="tel2gerente"
-                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tel2gerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 ml-4" />
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tel2gerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                     @error('tel2gerente')
-                                        <span class="text-red-500 text-sm"> {{ $message }}</span>
+                                        <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                                     @enderror
                                 </div>
 
@@ -274,14 +277,12 @@
                                     <input id="cor2gerente" type="text" wire:model="cor2gerente"
                                         class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('cor2gerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                     @error('cor2gerente')
-                                        <span class="text-red-500 text-sm"> {{ $message }}</span>
+                                        <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                                     @enderror
                                 </div>
-
-
-
                             </div>
                         </div>
+
 
                         {{-- Información de Entrega --}}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -432,10 +433,14 @@
                         <div class="flex justify-center">
                             <button wire:click="changeStep(2)" type="button"
                                 class="group relative bg-blue-600 py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3 overflow-hidden">
-                                <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                                </div>
                                 <span class="relative font-semibold text-white">Siguiente paso</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="relative h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="relative h-5 w-5 text-white"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
                             </button>
                         </div>
@@ -528,17 +533,16 @@
                                         <input id="formapago" type="text" wire:model="formapago"
                                             class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('formapago') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('formapago')
-                                            <span class="text-red-500 text-sm"> {{ $message }}</span>
+                                            <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div>
-                                        <label for="fechapago" class="block text-sm font-medium text-gray-700">Fecha
-                                            de cada
-                                            pago</label>
-                                        <input id="fechapago" type="date" wire:model="fechapago"
-                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('fechapago') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('fechapago')
-                                            <span class="text-red-500 text-sm"> {{ $message }}</span>
+                                        <label for="fecha_pago" class="block text-sm font-medium text-gray-700">Fecha
+                                            de Pago</label>
+                                        <input id="fecha_pago" type="date" wire:model="fecha_pago"
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('fecha_pago') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        @error('fecha_pago')
+                                            <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div>
@@ -547,70 +551,34 @@
                                         <input id="moneda" type="text" wire:model="moneda"
                                             class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('moneda') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('moneda')
-                                            <span class="text-red-500 text-sm"> {{ $message }}</span>
+                                            <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div>
-                                        <label for="iva" class="block text-sm font-medium text-gray-700">¿Incluye
-                                            IVA?</label>
-                                        <select id="iva" wire:model="iva"
-                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('iva') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                        <label for="incluye_iva"
+                                            class="block text-sm font-medium text-gray-700">¿Incluye IVA?</label>
+                                        <select id="incluye_iva" wire:model="incluye_iva"
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('incluye_iva') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                             <option value="">Seleccione</option>
-                                            <option value="si">Sí</option>
-                                            <option value="no">No</option>
+                                            <option value="1">Sí</option>
+                                            <option value="0">No</option>
                                         </select>
-                                        @error('iva')
-                                            <span class="text-red-500 text-sm"> {{ $message }}</span>
+                                        @error('incluye_iva')
+                                            <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">¿Hay existencia de
-                                            anticipo?</label>
-                                        <select wire:model.live="hasAdvancePayment"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
-                                            <option value="">Seleccione</option>
-                                            <option value="si" wire:click="setAdvancePayment('si')">Sí</option>
-                                            <option value="no" wire:click="setAdvancePayment('no')">No</option>
-                                        </select>
-
-                                    </div>
-
-                                    <div>
-                                        <label for="others"
+                                        <label for="otros"
                                             class="block text-sm font-medium text-gray-700">Otros</label>
-                                        <input id="others" type="text" wire:model="others"
-                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('others') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('others')
-                                            <span class="text-red-500 text-sm"> {{ $message }}</span>
+                                        <input id="otros" type="text" wire:model="otros" placeholder="Opcional"
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('otros') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        @error('otros')
+                                            <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
-                                    </div>
-
-                                    <div id="advancePaymentFields"
-                                        class="{{ $hasAdvancePayment === 'si' ? '' : 'hidden' }} space-y-4">
-                                        <div class="mb-4">
-                                            <label for="actualpago"
-                                                class="block text-sm font-medium text-gray-700">Fecha de cada
-                                                pago</label>
-                                            <input id="actualpago" type="date" wire:model="actualpago"
-                                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('actualpago') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-
-                                            @error('actualpago')
-                                                <span class="text-red-500 text-sm"> {{ $message }}</span>
-                                            @enderror
-                                        </div>
-
-                                        <div>
-                                            <label for="monedaactual"
-                                                class="block text-sm font-medium text-gray-700">Moneda</label>
-                                            <input id="monedaactual" type="text" wire:model="monedaactual"
-                                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('monedaactual') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                            @error('monedaactual')
-                                                <span class="text-red-500 text-sm"> {{ $message }}</span>
-                                            @enderror
-                                        </div>
                                     </div>
                                 </div>
                             </div>
+
 
                             <!-- Pólizas Section -->
                             <div class="bg-gray-50 p-6 rounded-lg">
@@ -648,63 +616,6 @@
                         </div>
 
 
-                        {{-- <div class="bg-gray-50 p-6 rounded-lg">
-                            <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-indigo-500"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                                </svg>
-                                Adjuntar Documentos
-                            </h2>
-
-                            <div class="border-dashed border-2 border-gray-300 p-6 text-center">
-                                <input type="file" wire:model="attachments" multiple class="hidden"
-                                    id="file-upload" accept=".pdf,.doc,.docx,.xls,.xlsx" />
-                                <label for="file-upload" class="cursor-pointer">
-                                    <div class="flex flex-col items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-4"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                        <p class="text-gray-600">
-                                            Arrastra y suelta archivos aquí o
-                                            <span class="text-blue-600 hover:underline">selecciona archivos</span>
-                                        </p>
-                                        <p class="text-sm text-gray-500 mt-2">
-                                            Archivos permitidos: (PDF, DOC, XLSX - Máximo 10MB)
-                                        </p>
-                                    </div>
-                                </label>
-                            </div>
-
-                            @if (count($temporaryFiles) > 0)
-                                <div class="mt-4">
-                                    <h3 class="text-sm font-medium text-gray-700 mb-2">Archivos Seleccionados:</h3>
-                                    <ul class="space-y-2">
-                                        @foreach ($temporaryFiles as $index => $file)
-                                            <li class="bg-white p-2 rounded-md flex justify-between items-center shadow-sm">
-                                                <div class="flex items-center">
-                                                    <span class="text-sm truncate">{{ $file['name'] }}</span>
-                                                    <span class="text-xs text-gray-500 ml-2">({{ $file['size'] }} KB)</span>
-                                                </div>
-                                                <button type="button" wire:click="removeAttachment({{ $index }})"
-                                                        class="text-red-500 hover:text-red-700">
-                                                    ✕
-                                                </button>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-
-                            @error('attachments.*')
-                                <span class="text-red-500 text-sm mt-2">{{ $message }}</span>
-                            @enderror
-                        </div> --}}
-
-
                         <!-- Área de Archivos -->
 
                         <div class="border-dashed border-2 border-gray-300 p-6 text-center"
@@ -736,33 +647,41 @@
                                 <h3 class="text-sm font-medium text-gray-700 mb-2">Archivos Seleccionados:</h3>
                                 <ul class="space-y-2">
                                     @foreach ($files as $index => $file)
-                                    <li class="bg-gray-50 rounded-lg p-3 flex items-center justify-between group hover:bg-gray-100 transition-all duration-200">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="p-2 bg-blue-100 rounded-lg">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        <li
+                                            class="bg-gray-50 rounded-lg p-3 flex items-center justify-between group hover:bg-gray-100 transition-all duration-200">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="p-2 bg-blue-100 rounded-lg">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-5 w-5 text-blue-600" fill="none"
+                                                        viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                    </svg>
+                                                </div>
+                                                <div class="flex flex-col">
+                                                    <span
+                                                        class="text-sm font-medium text-gray-700">{{ $file['name'] }}</span>
+                                                    <span class="text-xs text-gray-500">{{ $file['size'] }} KB</span>
+                                                </div>
+                                            </div>
+                                            <button type="button" wire:click="removeFile({{ $index }})"
+                                                class="hidden group-hover:flex items-center space-x-1 text-sm text-red-500 hover:text-red-700 transition-colors duration-200">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
-                                            </div>
-                                            <div class="flex flex-col">
-                                                <span class="text-sm font-medium text-gray-700">{{ $file['name'] }}</span>
-                                                <span class="text-xs text-gray-500">{{ $file['size'] }} KB</span>
-                                            </div>
-                                        </div>
-                                        <button type="button"
-                                            wire:click="removeFile({{ $index }})"
-                                            class="hidden group-hover:flex items-center space-x-1 text-sm text-red-500 hover:text-red-700 transition-colors duration-200">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                            <span>Eliminar</span>
-                                        </button>
-                                    </li>
-                                @endforeach
+                                                <span>Eliminar</span>
+                                            </button>
+                                        </li>
+                                    @endforeach
                                 </ul>
                             </div>
                         @endif
 
-                        @error('attachments.*')
+                        @error('archivos.*')
                             <span class="text-red-500 text-sm mt-2">{{ $message }}</span>
                         @enderror
 
@@ -771,18 +690,27 @@
                         <div class="flex justify-center space-x-6">
                             <button wire:click="changeStep(1)" type="button"
                                 class="group relative bg-white border-2 border-gray-300 text-gray-700 py-3 px-8 rounded-xl hover:border-gray-400 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3">
-                                <div class="absolute inset-0 bg-gray-100 rounded-xl transform scale-0 group-hover:scale-100 transition-transform duration-300 -z-10"></div>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 group-hover:text-gray-800 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                <div
+                                    class="absolute inset-0 bg-gray-100 rounded-xl transform scale-0 group-hover:scale-100 transition-transform duration-300 -z-10">
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="h-5 w-5 text-gray-600 group-hover:text-gray-800 transition-colors duration-300"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                 </svg>
                                 <span class="font-semibold">Atrás</span>
                             </button>
 
                             <button wire:click="submit" type="button"
                                 class="group relative bg-blue-600 py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3 overflow-hidden">
-                                <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="relative h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="relative h-5 w-5 text-white"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 <span class="relative font-semibold text-white">Enviar Formulario</span>
                             </button>
@@ -832,12 +760,7 @@
                         </div>
                     </div>
                 </form>
-
-
-
             </div>
         </div>
-</div>
-</x-app-layout>
-
+    </x-app-layout>
 </div>
