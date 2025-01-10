@@ -9,8 +9,11 @@ use App\Models\Informacion;
 use App\Models\Marca;
 use App\Models\Pago;
 use App\Models\Producto;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Str;
 
 class EnviarFormulario extends Component
 {
@@ -81,8 +84,13 @@ class EnviarFormulario extends Component
     public $documentosGuardados = [];
 
 
+    public $operacionesLink;
+    public $financieraLink;
+    public $marcaId;
+
     public $files = [];
     public $dragging = false;
+
 
     protected $rules = [
         // Infonegocio
@@ -321,8 +329,11 @@ class EnviarFormulario extends Component
             'correo_director' => $this->cor2gerente, // obligatorio tipo correo
         ]);
 
+        $this->marcaId = $marca->id;
+
+
         $informacion = Informacion::create([
-            'marcas_id' => $marca->id,
+            'marcas_id' => $this->marcaId,
             'realiza_entrega_cliente' => $this->entregacliente, // obligatorio varchar
             'lugar_entrega' => $this->lugarentrega, // obligatorio varchar
             'pais' => $this->espais, // obligatorio varchar
@@ -345,13 +356,13 @@ class EnviarFormulario extends Component
         ]);
 
         Pago::create([
-            'marcas_id' => $marca->id,
+            'marcas_id' => $this->marcaId,
             'fecha_pago' => $this->fecha_pago,
             'incluye_iva' => $this->incluye_iva,
         ]);
 
         Financiera::create([
-            'marcas_id' => $marca->id,
+            'marcas_id' => $this->marcaId,
             'forma_pago' => $this->formapago,
             'moneda' => $this->moneda,
             // 'garantiascredit' => $this->garantia,
@@ -361,7 +372,6 @@ class EnviarFormulario extends Component
             'otros' => $this->otros,
         ]);
 
-        $this->reset();
 
         // Documento::create([
         //     'marca_id' => $marca->id,
@@ -370,11 +380,54 @@ class EnviarFormulario extends Component
         //     'fecha_subida' => date('Y-m-d H:i:s'),
         // ]);
 
-        $this->reset();
 
-        session()->flash('message', 'Formulario enviado correctamente');
+
+        $this->operacionesLink = (string) Str::uuid();
+        $this->financieraLink = (string) Str::uuid();
+
+        DB::table('form_links')->insert([
+            [
+                'link' => $this->operacionesLink,
+                'type' => 'operaciones',
+                'marca_id' => $marca->id,
+                'cliente' => $this->negocio,
+                'nombre' => $this->nombre,
+                'crm' => $this->crm,
+                'forma_pago' => $this->formapago,
+                'moneda' => $this->moneda,
+                'otros' => $this->otros,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'link' => $this->financieraLink,
+                'type' => 'financiera',
+                'marca_id' => $marca->id,
+                'cliente' => $this->negocio,
+                'nombre' => $this->nombre,
+                'crm' => $this->crm,
+                'forma_pago' => $this->formapago,
+                'moneda' => $this->moneda,
+                'otros' => $this->otros,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+
+            ]
+        ]);
+
+        $operacionesUrl = url("formulario-operaciones/{$this->operacionesLink}");
+        $financieraUrl = url("formulario-financiera/{$this->financieraLink}");
+
+        session()->flash('message', 'Formulario enviado correctamente. Enlaces generados:');
+        session()->flash('operacionesUrl', $operacionesUrl);
+        session()->flash('financieraUrl', $financieraUrl);
 
         // return redirect()->to('/enviar-formulario');
+
+        // session()->flash('message', 'Formulario enviado correctamente');
+
+        // $this->reset();
+
     }
 
     public function mount()
@@ -434,10 +487,24 @@ class EnviarFormulario extends Component
         $this->dragging = false;
     }
 
+    public function mounts($operacionesLink, $financieraLink)
+    {
+        $this->operacionesLink = $operacionesLink;
+        $this->financieraLink = $financieraLink;
+    }
+
+    public function copyToClipboard($text)
+    {
+        $this->dispatchBrowserEvent('copyToClipboard', ['text' => $text]);
+        session()->flash('message', 'Enlace copiado al portapapeles');
+    }
+
     public function render()
     {
         return view('livewire.enviar-formulario', [
             'currentStep' => $this->currentStep,
+            'operacionesLink' => $this->operacionesLink,
+            'financieraLink' => $this->financieraLink,
         ]);
     }
 }
