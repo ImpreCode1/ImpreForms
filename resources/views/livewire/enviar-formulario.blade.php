@@ -570,7 +570,8 @@
                                     <div>
                                         <label for="otros"
                                             class="block text-sm font-medium text-gray-700">Otros</label>
-                                        <input id="otros" type="text" wire:model="otros" placeholder="Opcional"
+                                        <input id="otros" type="text" wire:model="otros"
+                                            placeholder="Opcional"
                                             class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('otros') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('otros')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -717,50 +718,106 @@
                         </div>
 
                         <br>
-                        <div class="mt-12">
-                            <h4 class="text-2xl font-semibold text-center text-gray-800 mb-4">Links para Completar
-                                Información</h4>
+                        @if (session('operacionesUrl') && session('financieraUrl'))
+                        <div class="max-w-4xl mx-auto p-6">
 
-                            <p class="text-lg text-gray-600 text-center mb-6">
-                                A continuación, se generarán dos enlaces para completar la información faltante de las
-                                secciones de <strong>Operaciones</strong> y <strong>Financiera</strong>. Es obligatorio
-                                completar ambos formularios antes de enviar la información completa. Cada enlace tendrá
-                                una duración de 3 días antes de vencerse, por lo que debe completar los formularios
-                                dentro de este plazo. Si no se completan ambos formularios, la información no podrá ser
-                                procesada.
-                            </p>
+                            <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                                <!-- Encabezado -->
+                                <div class="text-center mb-10">
+                                    <h4 class="text-3xl font-bold text-black  mb-4">
+                                        Links para Completar Información
+                                    </h4>
 
-                            <div class="flex justify-center items-center space-x-8">
-                                <a href="formulario"
-                                    class="group flex flex-col items-center transition-all duration-300 transform hover:scale-105">
-                                    <div class="bg-white p-4 rounded-full shadow-lg group-hover:shadow-xl mb-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                        </svg>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        A continuación, se generarán dos enlaces para completar la información faltante de las secciones de
+                                        <span class="font-semibold text-blue-600">Operaciones</span> y
+                                        <span class="font-semibold text-green-600">Financiera</span>.
+                                    </p>
+                                </div>
+
+                                <!-- Alerta de Tiempo -->
+                                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-8 rounded-r-lg">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0">
+                                            <svg class="h-5 w-5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-sm text-amber-700">
+                                                Los enlaces tienen una validez de <span class="font-bold">3 días</span>. Por favor, complete ambos formularios dentro de este plazo.
+                                            </p>
+                                        </div>
                                     </div>
-                                    <span
-                                        class="text-gray-700 font-medium group-hover:text-blue-600">Operaciones</span>
-                                </a>
+                                </div>
 
-                                <a href="formulario-financiera"
-                                    class="group flex flex-col items-center transition-all duration-300 transform hover:scale-105">
-                                    <div class="bg-white p-4 rounded-full shadow-lg group-hover:shadow-xl mb-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
+                                <!-- Contenedor de Links -->
+                                <div class="space-y-6">
+                                    <!-- Link Operaciones -->
+                                    <div class="group">
+                                        <div class="bg-white border-2 border-blue-100 rounded-xl p-6 transition-all duration-300 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-100">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex-1">
+                                                    <div class="flex items-center space-x-3 mb-3">
+                                                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">Operaciones</span>
+                                                        <span class="text-gray-400 text-sm">•</span>
+                                                        <span class="text-gray-500 text-sm">Obligatorio</span>
+                                                    </div>
+                                                    <p class="text-gray-600 break-all">{{ session('operacionesUrl') }}</p>
+                                                </div>
+                                                <button type="button" onclick="copyToClipboard('{{ session('operacionesUrl') }}')" class="ml-4 p-3 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors duration-200">
+                                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <span
-                                        class="text-gray-700 font-medium group-hover:text-green-600">Financiera</span>
-                                </a>
+
+                                    <!-- Link Financiera -->
+                                    <div class="group">
+                                        <div class="bg-white border-2 border-green-100 rounded-xl p-6 transition-all duration-300 hover:border-green-300 hover:shadow-lg hover:shadow-green-100">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex-1">
+                                                    <div class="flex items-center space-x-3 mb-3">
+                                                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">Financiera</span>
+                                                        <span class="text-gray-400 text-sm">•</span>
+                                                        <span class="text-gray-500 text-sm">Obligatorio</span>
+                                                    </div>
+                                                    <p class="text-gray-600 break-all">{{ session('financieraUrl') }}</p>
+                                                </div>
+                                                <button type="button" onclick="copyToClipboard('{{ session('financieraUrl') }}')" class="ml-4 p-3 text-green-500 hover:bg-green-50 rounded-lg transition-colors duration-200">
+                                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Footer con advertencia -->
+                                <div class="mt-8 text-center text-sm text-gray-500">
+                                    <p>Si no completa ambos formularios, la información no podrá ser procesada.</p>
+                                </div>
                             </div>
                         </div>
+                        @endif
+
                     </div>
                 </form>
             </div>
         </div>
     </x-app-layout>
 </div>
+
+<script>
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(function() {
+            alert('Enlace copiado al portapapeles');
+        }, function(err) {
+            console.error('Error al copiar el enlace: ', err);
+        });
+    }
+</script>
+

@@ -94,9 +94,9 @@
                                     </svg>
                                 </div>
                                 <input
-                                    class="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 cursor-not-allowed"
-                                    id="clientCode" name="clientCode" type="text" placeholder="Código de cliente"
-                                    disabled>
+                                class="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 cursor-not-allowed"
+                                id="clientCode" name="clientCode" type="text" placeholder="Código de cliente"
+                                value="{{ $cliente }}" disabled>
                             </div>
                         </div>
 
@@ -113,9 +113,9 @@
                                     </svg>
                                 </div>
                                 <input
-                                    class="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 cursor-not-allowed"
-                                    id="clientName" name="clientName" type="text" placeholder="Nombre completo"
-                                    disabled>
+                                class="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 cursor-not-allowed"
+                                id="clientName" name="clientName" type="text" placeholder="Nombre completo"
+                                value="{{ $nombre }}" disabled>
                             </div>
                         </div>
 
@@ -132,9 +132,9 @@
                                     </svg>
                                 </div>
                                 <input
-                                    class="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 cursor-not-allowed"
-                                    id="crmOpportunityNumber" name="crmOpportunityNumber" type="text"
-                                    placeholder="Número de oportunidad" disabled>
+                                class="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 cursor-not-allowed"
+                                id="crmOpportunityNumber" name="crmOpportunityNumber" type="text"
+                                placeholder="Número de oportunidad" value="{{ $crm }}" disabled>
                             </div>
                         </div>
                     </div>
@@ -156,18 +156,18 @@
                 <div id="step2" class="{{ $currentStep == 2 ? '' : 'hidden' }} form-step">
                     <div class="space-y-4">
                         <div>
-                            <label for="cliente" class="block text-gray-700 text-sm font-semibold mb-3">
+                            <label for="clientes" class="block text-gray-700 text-sm font-semibold mb-3">
                                 ¿Quien realiza la entrega a cliente?
                             </label>
                             <div class="relative">
                                 <i
-                                    class="ri-user-location-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400z @error('cliente') text-red-500 @enderror"></i>
-                                <input id="cliente" wire:model="cliente"
+                                    class="ri-user-location-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400z @error('clientes') text-red-500 @enderror"></i>
+                                <input id="clientes" wire:model="clientes"
                                     class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                    @error('cliente') border-red-300 @else border-gray-300 @enderror"
+                                    @error('clientes') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Entrega">
                             </div>
-                            @error('cliente')
+                            @error('clientes')
                                 <span class="text-sm text-red-500">{{ $message }}</span>
                             @enderror
                         </div>
