@@ -56,7 +56,7 @@
                                     class="ri-hashtag absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                 <input
                                     class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300 cursor-not-allowed"
-                                    type="text" placeholder="Código de cliente" disabled>
+                                    type="text" placeholder="Código de cliente" value="{{ $cliente }}"  disabled>
                             </div>
                         </div>
 
@@ -69,7 +69,7 @@
                                     class="ri-user-line absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                 <input
                                     class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300 cursor-not-allowed"
-                                    type="text" placeholder="Nombre completo" disabled>
+                                    type="text" placeholder="Nombre completo" value="{{$nombre}}" disabled>
                             </div>
                         </div>
 
@@ -82,7 +82,7 @@
                                     class="ri-task-line absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                 <input
                                     class="pl-12 w-full input-gradient border-2 border-blue-100 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300 cursor-not-allowed"
-                                    type="text" placeholder="Número de oportunidad" disabled>
+                                    type="text" placeholder="Número de oportunidad" value="{{$crm}}" disabled>
                             </div>
                         </div>
                     </div>
@@ -138,7 +138,7 @@
                                       {{ $errors->has('pago') ? 'border-red-300' : 'border-blue-100' }}
                                     rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500
                                     focus:border-transparent transition duration-300"
-                                    type="text" placeholder="Forma de pago">
+                                    type="text" value="{{$pago}}" placeholder="Forma de pago">
 
                             </div>
                             @error('pago')
@@ -159,7 +159,7 @@
                                     class="pl-12 w-full input-gradient border-2
                                     {{ $errors->has('moneda') ? 'border-red-300' : 'border-blue-100' }}
                                     rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
-                                    type="text" placeholder="Moneda">
+                                    type="text" value="{{$moneda}}" placeholder="Moneda">
 
 
                             </div>
@@ -266,7 +266,7 @@
                                     class="pl-12 w-full input-gradient border-2
                                     {{ $errors->has('otros') ? 'border-red-300' : 'border-blue-100' }}
                                     rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
-                                    type="text" placeholder="Opcional">
+                                    type="text" value="{{$otros}}" placeholder="Opcional">
                             </div>
                             @error('otros')
                                 <span class="text-sm text-red-500">{{ $message }}</span>

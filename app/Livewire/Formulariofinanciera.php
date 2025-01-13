@@ -3,10 +3,17 @@
 namespace App\Livewire;
 
 use App\Models\Financiera;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class Formulariofinanciera extends Component
 {
+
+    public $cliente;
+    public $nombre;
+    public $crm;
+
     public $currentStep = 1;
     public $hasAdvancePayment = null;
     public $advancePaymentPercentage = null;
@@ -20,6 +27,8 @@ class Formulariofinanciera extends Component
     public $garantia;
     public $otros;
     public $no;
+    public $link;
+    public $marcaId;
 
     protected $messages = [
         'plazo.required' => 'El espacio es requerido',
@@ -84,9 +93,37 @@ class Formulariofinanciera extends Component
         }
     }
 
+    public function mount($link)
+    {
+        $this->link = $link;
+
+        $record = DB::table('form_links')->where('link', $link)->where('type', 'financiera')->first();
+        if (!$record || Carbon::parse($record->created_at)->addMinutes(40)->isPast()) {
+            abort(404, 'El enlace ha expirado o no es válido.');
+        }
+
+        $this->cliente = $record->cliente;
+        $this->nombre = $record->nombre;
+        $this->crm = $record->crm;
+        $this->marcaId = $record->marca_id;
+
+
+        if (is_null($this->marcaId)) {
+            abort(500, 'Marca ID is null');
+        }
+
+        $financiera = Financiera::where('marcas_id', $this->marcaId)->first();
+        if ($financiera) {
+            $this->pago = $financiera->forma_pago;
+            $this->moneda = $financiera->moneda;
+            $this->otros = $financiera->otros;
+        }
+    }
+
     public function submit()
     {
         $this->validate();
+
 
         Financiera::create([
             'marcas_id' => 2,
@@ -100,6 +137,32 @@ class Formulariofinanciera extends Component
             'otros' => $this->otros,
 
         ]);
+        $financiera = Financiera::where('marcas_id', $this->marcaId)->first();
+        if ($financiera) {
+            $financiera->update([
+                'plazo' => $this->plazo,
+                'forma_pago' => $this->pago,
+                'moneda' => $this->moneda,
+                'garantiascredit' => $this->garantia,
+                'existencia_anticipo' => $this->hasAdvancePayment ? 1 : 0,
+                'porcentaje' => $this->anticipo,
+                'fecha_pago' => $this->fecha,
+                'otros' => $this->otros,
+            ]);
+        } else {
+            Financiera::create([
+                'marcas_id' => $this->marcaId,
+                'plazo' => $this->plazo,
+                'forma_pago' => $this->pago,
+                'moneda' => $this->moneda,
+                'garantiascredit' => $this->garantia,
+                'existencia_anticipo' => $this->hasAdvancePayment ? 1 : 0,
+                'porcentaje' => $this->anticipo,
+                'fecha_pago' => $this->fecha,
+                'otros' => $this->otros,
+            ]);
+        }
+
 
         // $this->reset();
 

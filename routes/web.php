@@ -4,9 +4,11 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Controller;
 use App\Livewire\Auth\Login;
 use App\Livewire\EnviarFormulario;
+use App\Livewire\Formulariofinanciera;
 use App\Livewire\FormularioInteractivo;
 use App\Livewire\Historial;
 use App\Livewire\Layout\ManagerSidebar;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 
@@ -50,13 +52,51 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // * rutas para los formularios.
 
-Route::get('/formulario', function () {
-    return view('formulario', ['mostrarFormularioInteractivo' => true, 'mostrarFormularioFinanciera' => false]);
+// Route::get('/formulario', function () {
+//     return view('formulario', ['mostrarFormularioInteractivo' => true, 'mostrarFormularioFinanciera' => false]);
+// });
+
+// Route::get('/formulario-financiera', function () {
+//     return view('formulario', ['mostrarFormularioInteractivo' => false, 'mostrarFormularioFinanciera' => true]);
+// });
+
+Route::get('/enviar-formulario', EnviarFormulario::class);
+
+// Ruta para el formulario interactivo
+Route::get('/formulario-operaciones/{link}', function ($link) {
+    $record = DB::table('form_links')->where('link', $link)->where('type', 'operaciones')->first();
+    if (!$record) {
+        abort(404, 'El enlace no es válido.');
+    }
+    return view('formulario', [
+        'mostrarFormularioInteractivo' => true,
+        'mostrarFormularioFinanciera' => false,
+        'link' => $link,
+        'cliente' => $record->cliente,
+        'nombre' => $record->nombre,
+        'crm' => $record->crm
+    ]);
+})->name('formulario-operaciones');
+
+// Ruta para el formulario financiera
+Route::get('/formulario-financiera/{link}', function ($link) {
+    $record = DB::table('form_links')->where('link', $link)->where('type', 'financiera')->first();
+    if (!$record) {
+        abort(404, 'El enlace no es válido.');
+    }
+    return view('formulario', [
+        'mostrarFormularioInteractivo' => false,
+        'mostrarFormularioFinanciera' => true,
+        'link' => $link,
+        'cliente' => $record->cliente,
+        'nombre' => $record->nombre,
+        'crm' => $record->crm,
+        'forma_pago' => $record->forma_pago,
+        'moneda' => $record->moneda,
+        'otros' => $record->otros,
+    ]);
 });
 
-Route::get('/formulario-financiera', function () {
-    return view('formulario', ['mostrarFormularioInteractivo' => false, 'mostrarFormularioFinanciera' => true]);
-});
 
 require __DIR__ . '/auth.php';
 
