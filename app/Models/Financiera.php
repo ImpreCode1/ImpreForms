@@ -25,6 +25,6 @@ class Financiera extends Model
 
     public function marca()
     {
-        return $this->belongsTo(Marca::class);
+        return $this->belongsTo(Marca::class, 'marcas_id');
     }
 }

@@ -30,9 +30,9 @@ class Informacion extends Model
         return $this->belongsTo(Marca::class);
     }
 
-    public function productos()
+    public function producto()
     {
-        return $this->hasMany(Producto::class);
+        return $this->hasMany(Producto::class, 'informacion_id');
     }
 
 }

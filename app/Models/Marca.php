@@ -14,6 +14,7 @@ class Marca extends Model
 
     protected $fillable = [
         'infonegocio_id',
+        'user_id',
         'fecha',
         'n_oc',
         'precio_venta',
@@ -34,32 +35,38 @@ class Marca extends Model
 
     public function infonegocio()
     {
-        return $this->belongsTo(InfoNegocio::class);
+        return $this->belongsTo(Infonegocio::class );
     }
 
     public function informacion()
     {
-        return $this->hasMany(Informacion::class);
+        return $this->hasMany(Informacion::class, 'marcas_id');
     }
 
-    public function pagos()
+
+    public function pago()
     {
-        return $this->hasMany(Pago::class);
+        return $this->hasMany(Pago::class, 'marcas_id');
     }
 
     public function infoEntrega()
     {
-        return $this->hasMany(InfoEntrega::class);
+        return $this->hasMany(Infoentrega::class);
     }
 
     public function financiera()
     {
-        return $this->hasMany(Financiera::class);
+        return $this->hasMany(Financiera::class, 'marcas_id');
     }
 
     public function documentos()
     {
         return $this->hasMany(Documento::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
 
