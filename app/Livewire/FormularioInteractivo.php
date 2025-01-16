@@ -144,8 +144,17 @@ class FormularioInteractivo extends Component
 
         ]);
 
-        $this->reset();
+
+
+
+$this->reset(['cliente', 'nombre', 'crm', 'icoterm', 'lugar', 'puerto', 'pais', 'transporte', 'origen', 'destino', 'entregalocal', 'clientes', 'link',]);
+        return redirect ()->to('/successful');
+
+        $this->dispatchBrowserEvent('reloadAndRedirect');
+
+
     }
+
 
     public function render()
     {

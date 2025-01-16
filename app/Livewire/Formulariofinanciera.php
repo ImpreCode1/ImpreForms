@@ -4,9 +4,15 @@ namespace App\Livewire;
 
 use App\Models\Financiera;
 use Carbon\Carbon;
+use Illuminate\Cache\RedisLock;
+use Illuminate\Cache\RedisStore;
+use Illuminate\Cache\RedisTaggedCache;
+use Illuminate\Queue\Jobs\RedisJob;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Livewire\Component;
-
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Illuminate\Support\Facades\Session;
 class Formulariofinanciera extends Component
 {
 
@@ -29,7 +35,10 @@ class Formulariofinanciera extends Component
     public $no;
     public $link;
     public $marcaId;
+//mostrar el mensaje personalizado en caso de que el formulario no tenga todos los campos llenos
+    public $errorMessage;
 
+    public $success = false;
     protected $messages = [
         'plazo.required' => 'El espacio es requerido',
         'plazo.min' => 'El espacio debe tener mínimo 2 caracteres',
@@ -118,11 +127,15 @@ class Formulariofinanciera extends Component
             $this->moneda = $financiera->moneda;
             $this->otros = $financiera->otros;
         }
+        if (Session::has('form_submited')){
+            return redirect()->to('/successful');
+        }
     }
 
     public function submit()
     {
-        $this->validate();
+
+        $DataValidate=$this->validate();
 
 
         Financiera::create([
@@ -161,13 +174,23 @@ class Formulariofinanciera extends Component
                 'fecha_pago' => $this->fecha,
                 'otros' => $this->otros,
             ]);
+
         }
+        Session::put('form_submitted', true);
 
 
-        // $this->reset();
+
+
+
+            session()->flash('mensaje', 'Formulario enviado correctamente.');
+
 
         $this->reset(['plazo', 'pago', 'moneda', 'garantia', 'hasAdvancePayment', 'anticipo', 'fecha', 'otros']);
 
+
+ 
+        $this->success= true;
+        return Redirect ()->to('/successful');
 
 
     }
@@ -175,6 +198,8 @@ class Formulariofinanciera extends Component
     public function render()
     {
         return view('livewire.formulariofinanciera');
+
+
     }
 
     public function getStepIconClasses($stepNumber)

@@ -11,11 +11,11 @@ use Livewire\Volt\Component;
 
 new #[Layout('layouts.guest')] class extends Component
 {
-    public string $name ;
-    public string $email;
-    public string $password;
-    public string $password_confirmation ;
-   public string $role;
+    public string $name = "";
+    public string $email="";
+    public string $password ="";
+    public string $password_confirmation ="";
+   public string $role ="";
 
 
     /**
@@ -38,7 +38,8 @@ new #[Layout('layouts.guest')] class extends Component
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required','string','lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required','confirmed',Rules\Password::defaults()],
-            session ()->flash ('message', 'Se ha registrado el usuario con éxito.');
+
+
 
         ]);
 
@@ -48,11 +49,14 @@ new #[Layout('layouts.guest')] class extends Component
 
         event(new Registered($user = User::create($validated)));
 
-        Auth::login($user);
+        // Auth::login($user);
+ $this-> reset('email','password','name');
 
-        $this->redirect(RouteServiceProvider::HOME, navigate: true);
-    }
+ session() ->flash('success', 'Se ha creado el usuario Correctamente');
 
+ //  $this->redirect(RouteServiceProvider::HOME, navigate: true);
+
+}
 };
 ?>
 
@@ -62,7 +66,7 @@ new #[Layout('layouts.guest')] class extends Component
         Registro de un nuevo usuario
     </h1> </div>
     <div class="max-w-md mx-auto  bg-white p-6 rounded-lg shadow-sm shadow-slate-500  mt-10">
-        <form wire:submit="register">
+        <form wire:submit="register" >
         <!-- Name -->
         <div class="mt-4 flex items-center">
             <svg  class="mb-4" width="15px" height="15px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -86,7 +90,7 @@ new #[Layout('layouts.guest')] class extends Component
 
             <x-input-label for="name" :value="__(' Nombre')" class="block font-medium text-gray-700 mb-3 text-sm ml-2" />
         </div>
-        <x-text-input wire:model="name" id="name"
+        <x-text-input wire:model="name" id="name" autocomplete="off"
             class="block mt-1 w-full border-blue-700
             focus:border-blue-700 p-2" type="text" name="name"
             required autofocus autocomplete="name" placeholder="Nombre" />
@@ -109,7 +113,7 @@ new #[Layout('layouts.guest')] class extends Component
            </svg>
                 <x-input-label for="email" :value="__('Email')" class="block  font-medium text-gray-700 mb-3 text-sm"  />
         </div>
-            <x-text-input wire:model="email" id="email" class=" block mt-1 w-full border-blue-700  focus:border-indigo-500 p-2" type="email" name="email" required autocomplete="username"  placeholder="Ingrese Email"/>
+            <x-text-input wire:model="email" id="email" autocomplete="off" class=" block mt-1 w-full border-blue-700  focus:border-indigo-500 p-2" type="email" name="email" required autocomplete="username"  placeholder="Ingrese Email"/>
             <x-input-error :messages="$errors->get('email')" class="mt-2 text-red-500 text-sm" />
 
             </div>
@@ -137,7 +141,7 @@ new #[Layout('layouts.guest')] class extends Component
     <x-input-label for="password" :value="__('Contraseña')" class="block text-sm font-medium text-gray-700 mb-3" />
            </div>
     <div >
-           <x-text-input wire:model="password" id="password" class=" block mt-1 w-full border-blue-700  focus:border-indigo-500 p-2"
+           <x-text-input wire:model="password" id="password" autocomplete="off" class=" block mt-1 w-full border-blue-700  focus:border-indigo-500 p-2"
                             type="password"
                             name="password"
                             required autocomplete="new-password" placeholder="Ingrese la Contraseña" />
@@ -188,13 +192,31 @@ new #[Layout('layouts.guest')] class extends Component
         </div>
     </form>
 </div>
+ {{-- formulario enviado --}}
+
+@if(session('success'))
+    <div class="w-96 fixed top-0  right-0 z-50 flex items-center p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg shadow-lg" role="alert">
+        <div
+                    class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+<svg class="h-6 w-6 text-green-600" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+</svg>
+</div>
+        <span class="font-medium">Éxito!</span> {{ session('success') }}
+        <button  type="button" class="ml-auto -mx-1.5 -my-1.5 rounded-md focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center" aria-label="Close"
+                onclick="this.parentElement.style.display='none';">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.293 7.293a1 1 0 011.414 0L10 10.586l2.293-2.293a1 1 0 011.414 1.414L11.414 12l2.293 2.293a1 1 0 01-1.414 1.414L10 13.414l-2.293 2.293a1 1 0 01-1.414-1.414L8.586 12 6.293 9.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+        </button>
+    </div>
+@endif
 
 
-@if (session()->has('message'))
-            <div class="mt-4 text-green-600">{{ session('message') }}</div>
-        @endif
+
+
 
         <!-- Modal de Confirmación -->
+
+
         <div id="modalConfirm" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity hidden">
             <div class="flex items-center justify-center h-full">
                 <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
@@ -234,8 +256,15 @@ new #[Layout('layouts.guest')] class extends Component
             document.getElementById('modalConfirm').classList.add('hidden');
             // Emitir el evento de envío
             Livewire.emit('submitForm');
-
+            setTimeout(() => {
+        document.getElementById('name').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('password').value = '';
+    }, 100);
             location.reload();
+            @this.reload('register');
+
+
 
         }
 
@@ -258,7 +287,6 @@ new #[Layout('layouts.guest')] class extends Component
             for (const element of formElements) {
                 if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
                     // Eliminar espacios en blanco
-                    element.value = element.value.trim();
                 }
             }
 
@@ -267,3 +295,4 @@ new #[Layout('layouts.guest')] class extends Component
             console.log('Formulario enviado con valores limpiados:', Object.fromEntries(new FormData(event.target)));
         });
     </script>
+

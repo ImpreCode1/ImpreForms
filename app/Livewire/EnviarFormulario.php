@@ -91,8 +91,10 @@ class EnviarFormulario extends Component
     public $files = [];
     public $dragging = false;
 
+        public $mmd =false;
 
-    protected $rules = [
+        protected $listeners = ['openModal'];
+        protected $rules = [
         // Infonegocio
         'negocio' => 'required|numeric|unique:infonegocio,codigo_cliente',
         'nombre' => 'required|string|min:2',
@@ -310,6 +312,7 @@ class EnviarFormulario extends Component
 
         $marca = Marca::create([
             'infonegocio_id' => $infonegocio->id,
+            'user_id'=> auth()->id(),
             'fecha' => $this->fecha, // tipo fecha obligatorio
             'n_oc' => $this->oc, // obligatorio varchar
             'precio_venta' => $this->precio, // obligatorio varchar
@@ -416,6 +419,7 @@ class EnviarFormulario extends Component
             ]
         ]);
 
+        $this->mmd =true;
         $operacionesUrl = url("formulario-operaciones/{$this->operacionesLink}");
         $financieraUrl = url("formulario-financiera/{$this->financieraLink}");
 
@@ -423,18 +427,26 @@ class EnviarFormulario extends Component
         session()->flash('operacionesUrl', $operacionesUrl);
         session()->flash('financieraUrl', $financieraUrl);
 
-        // return redirect()->to('/enviar-formulario');
 
-        // session()->flash('message', 'Formulario enviado correctamente');
-
-        // $this->reset();
 
     }
 
+
+
+    public function cerrarmodal(){
+
+        $this ->mmd =false;
+
+    }
     public function mount()
     {
+
+
         $this->files = [];
+
+
     }
+
 
     public function updatedAttachments()
     {
@@ -486,6 +498,7 @@ class EnviarFormulario extends Component
     public function dragLeave()
     {
         $this->dragging = false;
+
     }
 
     public function mounts($operacionesLink, $financieraLink)
@@ -503,6 +516,7 @@ class EnviarFormulario extends Component
     public function render()
     {
         return view('livewire.enviar-formulario', [
+            // 'fragmento '=> $this->fragmento,
             'currentStep' => $this->currentStep,
             'operacionesLink' => $this->operacionesLink,
             'financieraLink' => $this->financieraLink,

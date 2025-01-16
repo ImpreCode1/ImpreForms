@@ -1,6 +1,12 @@
 <div>
     <x-app-layout>
         {{-- <div class="py-12"> --}}
+
+
+
+
+
+
         <div class="font-sans text-gray-900 antialiased">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
                 <form wire:submit.prevent="submit" class="space-y-8">
@@ -238,24 +244,24 @@
                                 </div>
 
                                 <div>
-                                    <label  class="block text-sm font-medium text-gray-700">Teléfono</label>
+                                    <label class="block text-sm font-medium text-gray-700">Teléfono</label>
                                     <input type="text" wire:model="clientname"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
                                         placeholder="Opcional" />
-                                        @error('clientname')
+                                    @error('clientname')
                                         <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                                     @enderror
-                                    </div>
+                                </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Correo electrónico</label>
                                     <input type="text" wire:model="mail"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
                                         placeholder="Opcional" />
-                                        @error('mail')
+                                    @error('mail')
                                         <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                                     @enderror
-                                    </div>
+                                </div>
 
                                 <div>
                                     <label for="director"
@@ -608,6 +614,7 @@
                                             <span class="text-red-500 text-sm"> {{ $message }}</span>
                                         @enderror
                                     </div>
+
                                     <div>
                                         <label for="porcentaje" class="block text-sm font-medium text-gray-700">¿Cuál
                                             es el
@@ -724,93 +731,138 @@
                         </div>
 
                         <br>
-                        @if (session('operacionesUrl') && session('financieraUrl'))
-                        <div class="max-w-4xl mx-auto p-6">
-
-                            <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-                                <!-- Encabezado -->
-                                <div class="text-center mb-10">
-                                    <h4 class="text-3xl font-bold text-black  mb-4">
-                                        Links para Completar Información
-                                    </h4>
-
-                                    <p class="text-gray-600 leading-relaxed">
-                                        A continuación, se generarán dos enlaces para completar la información faltante de las secciones de
-                                        <span class="font-semibold text-blue-600">Operaciones</span> y
-                                        <span class="font-semibold text-green-600">Financiera</span>.
-                                    </p>
-                                </div>
-
-                                <!-- Alerta de Tiempo -->
-                                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-8 rounded-r-lg">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0">
-                                            <svg class="h-5 w-5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                            </svg>
-                                        </div>
-                                        <div class="ml-3">
-                                            <p class="text-sm text-amber-700">
-                                                Los enlaces tienen una validez de <span class="font-bold">3 días</span>. Por favor, complete ambos formularios dentro de este plazo.
+                        <div id="modalContainer">
+                            @if ($mmd)
+                                <div
+                                    class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm">
+                                    <div
+                                        class="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-lg border border-gray-100 bg-white p-6 shadow-xl sm:p-8">
+                                        <div class="mb-6 text-center md:mb-10">
+                                            <h4 class="mb-4 text-2xl font-bold text-black md:text-3xl">Links para
+                                                Completar Información</h4>
+                                            <p class="leading-relaxed text-gray-600">
+                                                A continuación, se generarán dos enlaces para completar la información
+                                                faltante de las secciones de
+                                                <span class="font-semibold text-blue-600">Operaciones</span> y <span
+                                                    class="font-semibold text-green-600">Financiera</span>.
                                             </p>
                                         </div>
-                                    </div>
-                                </div>
 
-                                <!-- Contenedor de Links -->
-                                <div class="space-y-6">
-                                    <!-- Link Operaciones -->
-                                    <div class="group">
-                                        <div class="bg-white border-2 border-blue-100 rounded-xl p-6 transition-all duration-300 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-100">
-                                            <div class="flex items-center justify-between">
-                                                <div class="flex-1">
-                                                    <div class="flex items-center space-x-3 mb-3">
-                                                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">Operaciones</span>
-                                                        <span class="text-gray-400 text-sm">•</span>
-                                                        <span class="text-gray-500 text-sm">Obligatorio</span>
-                                                    </div>
-                                                    <p class="text-gray-600 break-all">{{ session('operacionesUrl') }}</p>
-                                                </div>
-                                                <button type="button" onclick="copyToClipboard('{{ session('operacionesUrl') }}')" class="ml-4 p-3 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors duration-200">
-                                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                        <div
+                                            class="mb-6 rounded-r-lg border-l-4 border-amber-500 bg-amber-50 p-4 md:mb-8">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0">
+                                                    <svg class="h-5 w-5 text-amber-500" viewBox="0 0 24 24"
+                                                        fill="none" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                     </svg>
-                                                </button>
+                                                </div>
+                                                <div class="ml-3">
+                                                    <p class="text-sm text-amber-700">Los enlaces tienen una validez de
+                                                        <span class="font-bold">3 días</span>. Por favor, complete
+                                                        ambos formularios dentro de este plazo.</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <!-- Link Financiera -->
-                                    <div class="group">
-                                        <div class="bg-white border-2 border-green-100 rounded-xl p-6 transition-all duration-300 hover:border-green-300 hover:shadow-lg hover:shadow-green-100">
-                                            <div class="flex items-center justify-between">
-                                                <div class="flex-1">
-                                                    <div class="flex items-center space-x-3 mb-3">
-                                                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">Financiera</span>
-                                                        <span class="text-gray-400 text-sm">•</span>
-                                                        <span class="text-gray-500 text-sm">Obligatorio</span>
+                                        <div class="max-h-[60vh] space-y-4 overflow-y-auto md:space-y-6">
+                                            <div class="group">
+                                                <div
+                                                    class="rounded-xl border-2 border-blue-100 bg-white p-4 transition-all duration-300 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-100 sm:p-6">
+                                                    <div class="flex items-center justify-between">
+                                                        <div class="flex-1">
+                                                            <div class="mb-3 flex items-center space-x-3">
+                                                                <span
+                                                                    class="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">Operaciones</span>
+                                                                <span class="text-sm text-gray-400">•</span>
+                                                                <span class="text-sm text-gray-500">Obligatorio</span>
+                                                            </div>
+                                                            <p class="break-all text-gray-600">
+                                                                {{ session('operacionesUrl') }}</p>
+                                                        </div>
+                                                        <button type="button"
+                                                            onclick="copyToClipboard('{{ session('operacionesUrl') }}')"
+                                                            class="ml-4 rounded-lg p-3 text-blue-500 transition-colors duration-200 hover:bg-blue-50">
+                                                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2z" />
+                                                            </svg>
+                                                        </button>
                                                     </div>
-                                                    <p class="text-gray-600 break-all">{{ session('financieraUrl') }}</p>
                                                 </div>
-                                                <button type="button" onclick="copyToClipboard('{{ session('financieraUrl') }}')" class="ml-4 p-3 text-green-500 hover:bg-green-50 rounded-lg transition-colors duration-200">
-                                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                                                    </svg>
-                                                </button>
                                             </div>
+
+                                            <div class="group">
+                                                <div
+                                                    class="rounded-xl border-2 border-green-100 bg-white p-4 transition-all duration-300 hover:border-green-300 hover:shadow-lg hover:shadow-green-100 sm:p-6">
+                                                    <div class="flex items-center justify-between">
+                                                        <div class="flex-1">
+                                                            <div class="mb-3 flex items-center space-x-3">
+                                                                <span
+                                                                    class="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">Financiera</span>
+                                                                <span class="text-sm text-gray-400">•</span>
+                                                                <span class="text-sm text-gray-500">Obligatorio</span>
+                                                            </div>
+                                                            <p class="break-all text-gray-600">
+                                                                {{ session('financieraUrl') }}</p>
+                                                        </div>
+                                                        <button type="button"
+                                                            onclick="copyToClipboard('{{ session('financieraUrl') }}')"
+                                                            class="ml-4 rounded-lg p-3 text-green-500 transition-colors duration-200 hover:bg-green-50">
+                                                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2z" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-6 text-center text-sm text-gray-500 md:mt-8">
+                                            <p>Si no completa ambos formularios, la información no podrá ser procesada.
+                                            </p>
+                                        </div>
+                                        <!-- Información adicional -->
+                                        <div class="mt-8 rounded-lg border-l-4 border-red-500 bg-red-50 p-4 shadow-md">
+                                            <div class="flex items-start">
+                                                <div class="flex-shrink-0">
+                                                    <svg class="h-6 w-6 text-red-500"
+                                                        xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 110 20 10 10 0 010-20z" />
+                                                    </svg>
+                                                </div>
+                                                <div class="ml-3">
+                                                    <h5 class="mb-1 text-lg font-semibold text-red-700">Nota importante
+                                                    </h5>
+                                                    <p class="text-sm leading-relaxed text-gray-700">Los enlaces de
+                                                        <span class="font-medium text-black-600">Operaciones</span> y
+                                                        <span class="font-medium text-black-600">Financiera</span> se
+                                                        han guardado en tu carpeta de <span
+                                                            class="font-medium">Descargas</span>. Puedes utilizarlos
+                                                        para completar la información requerida o compartirlos con las
+                                                        personas responsables.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-4 flex justify-end">
+                                            <button wire:click="cerrarmodal"
+                                                class="rounded-lg bg-red-500 px-4 py-2 text-white transition-colors hover:bg-red-600">Cerrar</button>
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- Footer con advertencia -->
-                                <div class="mt-8 text-center text-sm text-gray-500">
-                                    <p>Si no completa ambos formularios, la información no podrá ser procesada.</p>
-                                </div>
-                            </div>
+                            @endif
                         </div>
-                        @endif
-
-                    </div>
                 </form>
             </div>
         </div>
@@ -826,4 +878,3 @@
         });
     }
 </script>
-

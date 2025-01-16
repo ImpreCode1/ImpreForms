@@ -10,9 +10,16 @@ use App\Livewire\Historial;
 use App\Livewire\Layout\ManagerSidebar;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Successful;
+use App\Livewire\FragmentoComponente;
 
 
-Route::view('/', 'welcome');
+
+Route::get('/successful', Successful::class)->name('succesful');
+// Route::view('/', 'welcome');
+Route::redirect('/', '/login');
+
+Route::view('login', 'livewire.pages.auth.login')->name('login');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -22,6 +29,10 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
+// redireccionamiento a la vista de formulario enviado  del formulario
+    Route::view('successful', 'successful')
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 //sidebar users
 Route::get('/user-dashboard', function () {
@@ -47,7 +58,7 @@ Route::view('/historial', 'historial')
 
 // * : ruta para el cierre de sesion.
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 // * rutas para los formularios.
