@@ -54,8 +54,25 @@ Route::view('/historial', 'historial')
 ->middleware(['auth'])
 ->name('historial');
 
+Route::view('/crear-usuario', 'crear-usuario')
+    ->middleware(['auth', 'admin'])
+    ->name('crear-usuario');
+
+Route::view('/formularios-recibidos', 'formularios-recibidos')
+    ->middleware(['auth', 'admin'])
+    ->name('formularios-recibidos');
 
 
+
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/crear-usuario', function () {
+            return view('crear-usuario');
+        })->name('crear-usuario');
+
+        Route::get('/formularios.recibidos', function () {
+            return view('formularios-recibidos');
+        })->name('formularios-recibidos');
+    });
 // * : ruta para el cierre de sesion.
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

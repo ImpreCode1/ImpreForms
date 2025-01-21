@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
+
 class LoginForm extends Form
 {
     #[Validate('required|string|email')]
@@ -21,7 +22,6 @@ class LoginForm extends Form
     #[Validate('boolean')]
     public bool $remember = false;
 
-
     protected $messages = [
         'form.email.required' => 'El correo electrónico es obligatorio.',
         'form.email.email' => 'Introduce un correo electrónico válido.',
@@ -29,11 +29,11 @@ class LoginForm extends Form
         'form.password.min' => 'La contraseña debe tener al menos 6 caracteres.',
     ];
 
-    public function authenticate(): void
+    public function authenticate(): string
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only(['email', 'password']), $this->remember)) {
+        if (!Auth::attempt($this->only(['email', 'password']), $this->remember)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -42,14 +42,20 @@ class LoginForm extends Form
         }
 
         RateLimiter::clear($this->throttleKey());
+
+        // Verificar el rol y retornar la ruta correspondiente
+        $user = Auth::user();
+
+        if ($user->rol === 'Admin') {
+            return route('formularios-recibidos');
+        } else {
+            return route('menu');
+        }
     }
 
-    /**
-     * Ensure the authentication request is not rate limited.
-     */
     protected function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
@@ -65,9 +71,6 @@ class LoginForm extends Form
         ]);
     }
 
-    /**
-     * Get the authentication rate limiting throttle key.
-     */
     protected function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
