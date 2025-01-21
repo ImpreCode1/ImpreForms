@@ -17,13 +17,19 @@ new #[Layout('layouts.guest')] class extends Component
     {
         $this->validate();
 
-        $this->form->authenticate();
+        $redirectTo = $this->form->authenticate();
 
         Session::regenerate();
 
+        $this->redirect($redirectTo);
+
+        // $this->form->authenticate();
+
+        // Session::regenerate();
+
         // $this->redirectIntended(default: RouteServiceProvider::HOME, navigate: true);
         // $this->redirect(session('url.intended', RouteServiceProvider::HOME));
-        $this->redirect(route('menu'));
+        // $this->redirect(route('menu'));
 
     }
 }; ?>
