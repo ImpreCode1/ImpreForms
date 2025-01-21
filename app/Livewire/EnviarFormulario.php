@@ -103,7 +103,7 @@ class EnviarFormulario extends Component
         'crm' => 'required|numeric',
 
         // Marca
-        'fecha' => 'required|date',
+        'fecha' => 'required',
         'oc' => 'required|string|min:2',
         'precio' => 'required|numeric|min:2',
         'cotizacion' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
@@ -510,7 +510,7 @@ class EnviarFormulario extends Component
     public function copyToClipboard($text)
     {
         $this->dispatchBrowserEvent('copyToClipboard', ['text' => $text]);
-        session()->flash('message', 'Enlace copiado al portapapeles');
+        session()->flash('link', 'Enlace copiado al portapapeles');
     }
 
     public function render()

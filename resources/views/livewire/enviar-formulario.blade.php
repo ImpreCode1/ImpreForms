@@ -9,7 +9,7 @@
 
         <div class="font-sans text-gray-900 antialiased">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
-                <form wire:submit.prevent="submit" class="space-y-8">
+                <form wire:submit.prevent="submit" id="operacionesForm" class="space-y-8">
 
                     <div id="step1" class="{{ $currentStep === 1 ? '' : 'hidden' }} form-step">
                         <h1 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
@@ -120,7 +120,7 @@
                                             venta que debe
                                             quedar
                                             en el contrato</label>
-                                        <input id="precio" type="text" wire:model="precio"
+                                        <input id="precio" type="text" wire:model="precio" maxlength="10"
                                             class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('precio') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('precio')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -694,7 +694,7 @@
                                 </ul>
                             </div>
                         @endif
-
+                        <div class="flex flex-col mt-6">
                         @error('archivos.*')
                             <span class="text-red-500 text-sm mt-2">{{ $message }}</span>
                         @enderror
@@ -729,7 +729,7 @@
                                 <span class="relative font-semibold text-white">Enviar Formulario</span>
                             </button>
                         </div>
-
+                </div>
                         <br>
                         <div id="modalContainer">
                             @if ($mmd)
@@ -762,7 +762,8 @@
                                                 <div class="ml-3">
                                                     <p class="text-sm text-amber-700">Los enlaces tienen una validez de
                                                         <span class="font-bold">3 días</span>. Por favor, complete
-                                                        ambos formularios dentro de este plazo.</p>
+                                                        ambos formularios dentro de este plazo.
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
@@ -779,7 +780,7 @@
                                                                 <span class="text-sm text-gray-400">•</span>
                                                                 <span class="text-sm text-gray-500">Obligatorio</span>
                                                             </div>
-                                                            <p class="break-all text-gray-600">
+                                                            <p id="operaciones" class="break-all text-gray-600">
                                                                 {{ session('operacionesUrl') }}</p>
                                                         </div>
                                                         <button type="button"
@@ -807,7 +808,7 @@
                                                                 <span class="text-sm text-gray-400">•</span>
                                                                 <span class="text-sm text-gray-500">Obligatorio</span>
                                                             </div>
-                                                            <p class="break-all text-gray-600">
+                                                            <p id="financiera" class="break-all text-gray-600">
                                                                 {{ session('financieraUrl') }}</p>
                                                         </div>
                                                         <button type="button"
@@ -820,6 +821,8 @@
                                                                     d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2z" />
                                                             </svg>
                                                         </button>
+
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -850,18 +853,34 @@
                                                         han guardado en tu carpeta de <span
                                                             class="font-medium">Descargas</span>. Puedes utilizarlos
                                                         para completar la información requerida o compartirlos con las
-                                                        personas responsables.</p>
+                                                        personas responsables.
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
+
 
                                         <div class="mt-4 flex justify-end">
                                             <button wire:click="cerrarmodal"
                                                 class="rounded-lg bg-red-500 px-4 py-2 text-white transition-colors hover:bg-red-600">Cerrar</button>
                                         </div>
                                     </div>
+                                    {{-- inicio diseño de copiado en portapapeles --}}
+                                    <div id="alert"
+                                        class="hidden fixed bottom-5 right-5 flex items-center rounded-md bg-white h-12 px-4 py-2 text-black shadow-md">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" class="mr-2">
+                                            <g fill="none" stroke="currentColor" stroke-linecap="round"
+                                                stroke-linejoin="round" stroke-width="2">
+                                                <path d="M16 3H4v13" />
+                                                <path d="M8 7h12v12a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2z" />
+                                            </g>
+                                        </svg> Enlace Copiado. </div>
+
+                                    {{-- fin diseño copiado en portapapeles --}}
                                 </div>
                             @endif
+
                         </div>
                 </form>
             </div>
@@ -869,12 +888,47 @@
     </x-app-layout>
 </div>
 
-<script>
+<script type="text/javascript">
     function copyToClipboard(text) {
         navigator.clipboard.writeText(text).then(function() {
-            alert('Enlace copiado al portapapeles');
+            const alertBox = document.getElementById('alert');
+            alertBox.classList.remove('hidden'); // Muestra la alerta
+
+            // Ocultar la alerta después de 2 segundos
+            setTimeout(() => {
+                alertBox.classList.add('hidden');
+            }, 2000);
         }, function(err) {
             console.error('Error al copiar el enlace: ', err);
         });
     }
+
+    document.getElementById('operacionesForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Obtener los enlaces de los dos elementos
+        var operacionesUrl = document.getElementById("operaciones").innerText;
+        var financieraUrl = document.getElementById("financiera").innerText;
+
+        // Combinar ambos enlaces en uno solo con un salto de línea
+        var combinedUrls = "LINK OPERACIONES: " + operacionesUrl + "\nLINK FINANCIERA: " + financieraUrl;
+
+
+        var enlace = document.createElement("a");
+        enlace.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(combinedUrls));
+        enlace.setAttribute("download", "operaciones.txt");
+        enlace.style.display = "none";
+
+        // Agregar el enlace al cuerpo del documento y hacer clic en él
+        document.body.appendChild(enlace);
+        enlace.click();
+
+        // Eliminar el enlace del documento
+        document.body.removeChild(enlace);
+
+        // Esperar un momento antes de enviar el formulario
+        setTimeout(() => {
+            this.submit();
+        }, 500); // Esperar 500 milisegundos (0.5 segundos)
+    });
 </script>
