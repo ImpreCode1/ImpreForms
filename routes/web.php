@@ -18,7 +18,6 @@ use App\Livewire\FragmentoComponente;
 Route::get('/successful', Successful::class)->name('succesful');
 // Route::view('/', 'welcome');
 Route::redirect('/', '/login');
-
 Route::view('login', 'livewire.pages.auth.login')->name('login');
 
 Route::view('dashboard', 'dashboard')
@@ -31,8 +30,8 @@ Route::view('profile', 'profile')
 
 // redireccionamiento a la vista de formulario enviado  del formulario
     Route::view('successful', 'successful')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+    ->middleware(['auth', 'admin', 'verified'])
+    ->name('crear-usuario');
 
 //sidebar users
 Route::get('/user-dashboard', function () {
