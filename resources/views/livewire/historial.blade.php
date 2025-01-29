@@ -190,7 +190,7 @@
                                                             <div
                                                                 class="px-6 py-8 max-h-[calc(100vh-200px)] overflow-y-auto">
                                                                 <div class="space-y-6">
-                                                                    <livewire:editar-formulario :formulario="$formulario"
+                                                                    <livewire:editar-formulario :formulario="$formulario" 
                                                                         wire:key="edit-{{ $formulario->id }}" />
                                                                 </div>
                                                             </div>

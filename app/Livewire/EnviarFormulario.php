@@ -19,7 +19,16 @@ class EnviarFormulario extends Component
 {
     public $currentStep = 1;
 
+
+
     use WithFileUploads;
+
+    // identificadores de archivos por id
+
+    public $marcasId;
+    public $documento;
+    public $documentos;
+    // fin de manejo de documentos
 
     public $hasAdvancePayment = null;
     public $advancePaymentPercentage = null;
@@ -91,10 +100,13 @@ class EnviarFormulario extends Component
     public $files = [];
     public $dragging = false;
 
-        public $mmd =false;
+    public $mmd = false;
 
-        protected $listeners = ['openModal'];
-        protected $rules = [
+    protected $listeners = ['openModal'];
+    protected $rules = [
+
+        'attachments.*' => 'file|mimes:pdf,docx|max:10240',
+
         // Infonegocio
         'negocio' => 'required|numeric|unique:infonegocio,codigo_cliente',
         'nombre' => 'required|string|min:2',
@@ -162,8 +174,8 @@ class EnviarFormulario extends Component
             'numeric' => 'El campo :attribute debe ser al menos :min.',
         ],
         'max' => [
-        'numeric' => 'El campo :attribute no puede ser mayor que :max.',
-        'file' => 'El archivo :attribute no debe pesar más de :max kilobytes.',
+            'numeric' => 'El campo :attribute no puede ser mayor que :max.',
+            'file' => 'El archivo :attribute no debe pesar más de :max kilobytes.',
         ],
         'file' => 'El campo :attribute debe ser un archivo.',
         'mimes' => 'El archivo :attribute debe ser de tipo: :values.',
@@ -298,15 +310,12 @@ class EnviarFormulario extends Component
     {
         $this->validate();
 
-        // dd('$infonegocio');
-        // dd($this->attachments);
-        // dd('$this');
 
         $infonegocio = Infonegocio::create([
             'codigo_cliente' => $this->negocio, // * no puede ser igual a otro y es numerico obligatorio
-            'nombre' => $this->nombre, // obligatorio varchar
-            'correo' => $this->correo, // tipo correo electronico obligatorio
-            'numero_celular' => $this->numero, // tipo numerico obligatorio
+            'nombre' => $this->nombre,
+            'correo' => $this->correo,
+            'numero_celular' => $this->numero,
             'n_oportunidad_crm' => $this->crm, // *  es numerico obligatorio
         ]);
 
@@ -331,7 +340,7 @@ class EnviarFormulario extends Component
             'director' => $this->director, // obligatorio vacrhar
             'numero' => $this->tel2gerente, // obligatorio numerico
             'correo_director' => $this->cor2gerente, // obligatorio tipo correo
-        ]);
+]);
 
         $this->marcaId = $marca->id;
 
@@ -419,32 +428,43 @@ class EnviarFormulario extends Component
             ]
         ]);
 
-        $this->mmd =true;
+        foreach ($this->attachments as $file) {
+            $originalName = $file->getClientoriginalName();
+
+            $path = $file->storeAs('documents',$originalName, 'public');
+            Documento::create([
+                'marcas_id' => $this->marcaId,
+                'ruta_documento' => $path,
+            ]);
+        }
+
+
+        $this->documentos = Documento::where('marcas_id', $this->marcaId)->get();
+        $this->mmd = true;
+
         $operacionesUrl = url("formulario-operaciones/{$this->operacionesLink}");
         $financieraUrl = url("formulario-financiera/{$this->financieraLink}");
 
         session()->flash('message', 'Formulario enviado correctamente. Enlaces generados:');
         session()->flash('operacionesUrl', $operacionesUrl);
         session()->flash('financieraUrl', $financieraUrl);
-
-
-
     }
 
 
 
-    public function cerrarmodal(){
-
-        $this ->mmd =false;
-
-    }
-    public function mount()
+    public function cerrarmodal()
     {
 
+        $this->mmd = false;
+    }
+    public function mount($marcaId = null)
+
+    {
 
         $this->files = [];
 
-
+        $this->marcaId = $marcaId ?? 'valor_por_defecto';
+        $this->documentos = Documento::where('marcas_id', $this->marcaId)->get();
     }
 
 
@@ -473,7 +493,7 @@ class EnviarFormulario extends Component
                         'name' => $file->getClientOriginalName(),
                         'size' => round($file->getSize() / 1024, 2),
                     ];
-                }
+ }
             } else {
                 $this->files[] = [
                     'name' => $attachment->getClientOriginalName(),
@@ -498,7 +518,6 @@ class EnviarFormulario extends Component
     public function dragLeave()
     {
         $this->dragging = false;
-
     }
 
     public function mounts($operacionesLink, $financieraLink)

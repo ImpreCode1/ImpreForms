@@ -29,20 +29,150 @@ class EditarFormulario extends Component
     public $aplicagarantia, $terminogarantia, $aplicapoliza, $porcentaje;
     public $formapago, $moneda, $incluye_iva, $fecha_pago, $otros;
 
-    // protected $rules = [
-    //     'formulario.codigo_cliente' => 'required|string',
-    //     'formulario.tipo_contrato' => 'required|string',
-    //     'formulario.n_oc' => 'required|string',
-    //     'formulario.adjunto_cotizacion' => 'nullable|string',
-    //     'formulario.fecha' => 'required|date',
-    // ];
-
+    public $marcaId;
+    public $documentos;
     protected $listeners = ['editFormulario'];
 
-    public function mount($formulario)
-    {
-        $this->formulario = $formulario;
 
+    protected $rules = [
+        // validaciones
+
+        'negocio' => 'required|numeric|',
+        'nombres' =>  'required|string|',
+        'correo' =>  'required|email|',
+        'numero' => 'required|numeric',
+        'crms' => 'required|string|',
+        'fecha' => 'required|date',
+        'oc' =>  'required|string|',
+        'precio' =>  'required|numeric',
+        'soluciones' => 'required|string|',
+        'linea' => 'required|string|',
+        'codlinea' => 'required|string|',
+        'nomgerente' => 'required|string|',
+        'telgerente' => 'required|numeric',
+        'corgerente' => 'required|email|',
+        'director' => 'required|string|',
+        'tel2gerente' => 'required|numeric',
+        'cor2gerente' => 'required|email|',
+        'entregacliente' => 'required|string|',
+        'lugarentrega' => 'required|string|',
+        'espais' => 'required|string|',
+        'tiempoentrega' => 'required|string|',
+        'terminoentrega' => 'required|string|',
+        'tipoicoterm' => 'required|string|max:255',
+        'prestar' => 'required|string|',
+        'suministrar' => 'required|string|',
+        'inicio' => 'required|date',
+        'finalizacion' => 'required|date',
+
+        'clientname' => 'required|string|',
+        'mail' => 'required|email|',
+        'details' => 'required|string|',
+        'aplicagarantia' => 'required|string|',
+        'terminogarantia' => 'required|string|',
+        'aplicapoliza' => 'required|string|',
+        'porcentaje' => 'required|numeric',
+        'formapago' => 'required|string|',
+        'moneda' => 'required|string|',
+        'incluye_iva' => 'required',
+        'fecha_pago'  => 'required|date',
+        'otros'  => 'string|',
+    ];
+
+    protected $messages = [
+
+            'negocio.required' => 'El campo "Negocio" es obligatorio.',
+            'negocio.numeric' => 'El campo "Negocio" debe ser un número.',
+            'nombres.required' => 'El campo "Nombres" es obligatorio.',
+            'nombres.string' => 'El campo "Nombres" debe ser una cadena de texto.',
+            'correo.required' => 'El campo "Correo" es obligatorio.',
+            'correo.email' => 'El campo "Correo" debe ser un correo electrónico válido.',
+            'numero.required' => 'El campo "Número" es obligatorio.',
+            'numero.numeric' => 'El campo "Número" debe ser un número.',
+            'crms.required' => 'El campo "CRM" es obligatorio.',
+            'crms.string' => 'El campo "CRM" debe ser una cadena de texto.',
+            'fecha.required' => 'El campo "Fecha" es obligatorio.',
+            'fecha.date' => 'El campo "Fecha" debe ser una fecha válida.',
+            'oc.required' => 'El campo "OC" es obligatorio.',
+            'oc.string' => 'El campo "OC" debe ser una cadena de texto.',
+            'precio.required' => 'El campo "Precio" es obligatorio.',
+            'precio.numeric' => 'El campo "Precio" debe ser un número.',
+            'soluciones.required' => 'El campo "Soluciones" es obligatorio.',
+            'soluciones.string' => 'El campo "Soluciones" debe ser una cadena de texto.',
+            'linea.required' => 'El campo "Línea" es obligatorio.',
+            'linea.string' => 'El campo "Línea" debe ser una cadena de texto.',
+            'codlinea.required' => 'El campo "Código de línea" es obligatorio.',
+            'codlinea.string' => 'El campo "Código de línea" debe ser una cadena de texto.',
+            'nomgerente.required' => 'El campo "Nombre del Gerente" es obligatorio.',
+            'nomgerente.string' => 'El campo "Nombre del Gerente" debe ser una cadena de texto.',
+            'telgerente.required' => 'El campo "Teléfono del Gerente" es obligatorio.',
+            'telgerente.numeric' => 'El campo "Teléfono del Gerente" debe ser un número.',
+            'corgerente.required' => 'El campo "Correo del Gerente" es obligatorio.',
+            'corgerente.email' => 'El campo "Correo del Gerente" debe ser un correo electrónico válido.',
+            'director.required' => 'El campo "Director" es obligatorio.',
+            'director.string' => 'El campo "Director" debe ser una cadena de texto.',
+            'tel2gerente.required' => 'El campo "Teléfono 2 del Gerente" es obligatorio.',
+            'tel2gerente.numeric' => 'El campo "Teléfono 2 del Gerente" debe ser un número.',
+            'cor2gerente.required' => 'El campo "Correo 2 del Gerente" es obligatorio.',
+            'cor2gerente.email' => 'El campo "Correo 2 del Gerente" debe ser un correo electrónico válido.',
+            'entregacliente.required' => 'El campo "Entrega Cliente" es obligatorio.',
+            'entregacliente.string' => 'El campo "Entrega Cliente" debe ser una cadena de texto.',
+            'lugarentrega.required' => 'El campo "Lugar de Entrega" es obligatorio.',
+            'lugarentrega.string' => 'El campo "Lugar de Entrega" debe ser una cadena de texto.',
+            'espais.required' => 'El campo "Espacio" es obligatorio.',
+            'espais.string' => 'El campo "Espacio" debe ser una cadena de texto.',
+            'tiempoentrega.required' => 'El campo "Tiempo de Entrega" es obligatorio.',
+            'tiempoentrega.string' => 'El campo "Tiempo de Entrega" debe ser una cadena de texto.',
+            'terminoentrega.required' => 'El campo "Término de Entrega" es obligatorio.',
+            'terminoentrega.string' => 'El campo "Término de Entrega" debe ser una cadena de texto.',
+            'tipoicoterm.required' => 'El campo "Tipo Incoterm" es obligatorio.',
+            'tipoicoterm.string' => 'El campo "Tipo Incoterm" debe ser una cadena de texto.',
+            'tipoicoterm.max' => 'El campo "Tipo Incoterm" no puede superar los 255 caracteres.',
+            'prestar.required' => 'El campo "Prestar" es obligatorio.',
+            'prestar.string' => 'El campo "Prestar" debe ser una cadena de texto.',
+            'suministrar.required' => 'El campo "Suministrar" es obligatorio.',
+            'suministrar.string' => 'El campo "Suministrar" debe ser una cadena de texto.',
+            'inicio.required' => 'El campo "Inicio" es obligatorio.',
+            'inicio.date' => 'El campo "Inicio" debe ser una fecha válida.',
+            'finalizacion.required' => 'El campo "Finalización" es obligatorio.',
+            'finalizacion.date' => 'El campo "Finalización" debe ser una fecha válida.',
+            'clientcode.required' => 'El campo "Código del Cliente" es obligatorio.',
+            'clientcode.string' => 'El campo "Código del Cliente" debe ser una cadena de texto.',
+            'clientname.required' => 'El campo "Nombre del Cliente" es obligatorio.',
+            'clientname.string' => 'El campo "Nombre del Cliente" debe ser una cadena de texto.',
+            'mail.required' => 'El campo "Correo del Cliente" es obligatorio.',
+            'mail.email' => 'El campo "Correo del Cliente" debe ser un correo electrónico válido.',
+            'details.required' => 'El campo "Detalles" es obligatorio.',
+            'details.string' => 'El campo "Detalles" debe ser una cadena de texto.',
+            'aplicagarantia.required' => 'El campo "Aplicar Garantía" es obligatorio.',
+            'aplicagarantia.string' => 'El campo "Aplicar Garantía" debe ser una cadena de texto.',
+            'terminogarantia.required' => 'El campo "Término de Garantía" es obligatorio.',
+            'terminogarantia.string' => 'El campo "Término de Garantía" debe ser una cadena de texto.',
+            'aplicapoliza.required' => 'El campo "Aplicar Póliza" es obligatorio.',
+            'aplicapoliza.string' => 'El campo "Aplicar Póliza" debe ser una cadena de texto.',
+            'porcentaje.required' => 'El campo "Porcentaje" es obligatorio.',
+            'porcentaje.numeric' => 'El campo "Porcentaje" debe ser un número.',
+            'formapago.required' => 'El campo "Forma de Pago" es obligatorio.',
+            'formapago.string' => 'El campo "Forma de Pago" debe ser una cadena de texto.',
+            'moneda.required' => 'El campo "Moneda" es obligatorio.',
+            'moneda.string' => 'El campo "Moneda" debe ser una cadena de texto.',
+            'incluye_iva.required' => 'Este espacio es requerido.',
+            'fecha_pago.required' => 'El campo "Fecha de Pago" es obligatorio.',
+            'fecha_pago.date' => 'El campo "Fecha de Pago" debe ser una fecha válida.',
+            'otros.string' => 'El campo "Otros" debe ser una cadena de texto.'
+        ];
+
+
+
+
+
+
+    public function mount($formulario,)
+    {
+        // $this->marcaId = $marcaId;
+        // $this->obtenerDocumentos();
+
+        $this->formulario = $formulario;
         $this->negocio = $formulario->infonegocio->codigo_cliente;
         $this->nombres = $formulario->infonegocio->nombre;
         $this->correo = $formulario->infonegocio->correo;
@@ -107,81 +237,10 @@ class EditarFormulario extends Component
         }
     }
 
-    // public function editFormulario($formulario)
-    // {
-    //     $this->formulario = $formulario;
-
-    //     // Datos del negocio
-    //     $this->negocio = $formulario->infonegocio->codigo_cliente ?? null;
-    //     $this->nombres = $formulario->infonegocio->nombre ?? null;
-    //     $this->correo = $formulario->infonegocio->correo ?? null;
-    //     $this->numero = $formulario->infonegocio->numero_celular ?? null;
-    //     $this->crms = $formulario->infonegocio->n_oportunidad_crm ?? null;
-
-    //     // Datos principales del formulario
-    //     $this->fecha = $this->formatearFecha($formulario->fecha) ?? null;
-    //     $this->oc = $formulario->n_oc ?? null;
-    //     $this->precio = $formulario->precio_venta ?? null;
-    //     $this->soluciones = $formulario->tipo_contrato ?? null;
-    //     $this->linea = $formulario->linea ?? null;
-    //     $this->codlinea = $formulario->codigo_linea ?? null;
-    //     $this->nomgerente = $formulario->nombre ?? null;
-    //     $this->telgerente = $formulario->telefono ?? null;
-    //     $this->corgerente = $formulario->correo_electronico ?? null;
-
-    //     // Datos adicionales del cliente
-    //     $this->clientcode = $formulario->otro ?? null;
-    //     $this->clientname = $formulario->cel ?? null;
-    //     $this->mail = $formulario->email ?? null;
-
-    //     // Datos del director
-    //     $this->director = $formulario->director ?? null;
-    //     $this->tel2gerente = $formulario->numero ?? null;
-    //     $this->cor2gerente = $formulario->correo_director ?? null;
-
-    //     // Información adicional
-    //     if ($formulario->informacion->isNotEmpty()) {
-    //         $info = $formulario->informacion->first();
-    //         $this->entregacliente = $info->realiza_entrega_cliente ?? null;
-    //         $this->lugarentrega = $info->lugar_entrega ?? null;
-    //         $this->espais = $info->pais ?? null;
-    //         $this->tiempoentrega = $info->tiempo_entrega ?? null;
-    //         $this->terminoentrega = $this->formatearFecha($info->fecha_inicio_termino) ?? null;
-    //         $this->tipoicoterm = $info->tipo_incoterms ?? null;
-    //         $this->prestar = $info->servicio_a_prestar ?? null;
-    //         $this->suministrar = $info->frecuencia_suministro ?? null;
-    //         $this->inicio = $this->formatearFecha($info->fecha_inicio) ?? null;
-    //         $this->finalizacion = $this->formatearFecha($info->fecha_finalizacion) ?? null;
-
-    //         // Información del producto
-    //         if ($info->producto->isNotEmpty()) {
-    //             $producto = $info->producto->first();
-    //             $this->details = $producto->detalles_equipos ?? null;
-    //             $this->aplicagarantia = $producto->aplica_garantia ?? null;
-    //             $this->terminogarantia = $producto->termino_garantia ?? null;
-    //             $this->aplicapoliza = $producto->aplica_poliza ?? null;
-    //             $this->porcentaje = $producto->porcentaje_poliza ?? null;
-    //         }
-    //     }
-
-    //     // Información de pago
-    //     if ($formulario->pago && $formulario->pago->isNotEmpty()) {
-    //         $pago = $formulario->pago->first();
-    //         $this->fecha_pago = $this->formatearFecha($pago->fecha_pago) ?? null;
-    //         $this->incluye_iva = $pago->incluye_iva ?? null;
-    //     }
-
-    //     // Información financiera
-    //     if ($formulario->financiera->isNotEmpty()) {
-    //         $financiera = $formulario->financiera->first();
-    //         $this->formapago = $financiera->forma_pago ?? null;
-    //         $this->moneda = $financiera->moneda ?? null;
-    //         $this->otros = $financiera->otros ?? null;
-    //     }
-    // }
 
     public function submit()
     {
+        $this->validate();
         $this->formulario->update([
             'n_oc' => $this->oc,
             'fecha' => $this->fecha,
@@ -198,6 +257,8 @@ class EditarFormulario extends Component
             'director' => $this->director,
             'numero' => $this->tel2gerente,
             'correo_director' => $this->cor2gerente
+
+
         ]);
 
         // Actualizar información del negocio
@@ -211,6 +272,7 @@ class EditarFormulario extends Component
 
         // Actualizar información
         if ($info = $this->formulario->informacion->first()) {
+
             $info->update([
                 'realiza_entrega_cliente' => $this->entregacliente,
                 'lugar_entrega' => $this->lugarentrega,
@@ -235,7 +297,6 @@ class EditarFormulario extends Component
                 ]);
             }
         }
-
         // Actualizar pago
         if ($pago = $this->formulario->pago->first()) {
             $pago->update([
@@ -243,7 +304,6 @@ class EditarFormulario extends Component
                 'incluye_iva' => $this->incluye_iva
             ]);
         }
-
         // Actualizar información financiera
         if ($financiera = $this->formulario->financiera->first()) {
             $financiera->update([
@@ -252,7 +312,6 @@ class EditarFormulario extends Component
                 'otros' => $this->otros
             ]);
         }
-
 
         // return redirect()->route('formularios.index');
         $this->dispatch('formularioUpdated');

@@ -10,7 +10,7 @@
     'locale' => 'es',
     'fallback_locale' => 'en',
     'faker_locale' => 'en_US',
-    'key' => 'base64:+3IsXNF6R6/JuNY/fwNF4B7URrEypNyEXWO8YkY7Th0=',
+    'key' => 'base64:O9P15cNqqgRI4uP7MV+jkbIv/g8d927jpOxVgvhX6dk=',
     'cipher' => 'AES-256-CBC',
     'maintenance' => 
     array (
@@ -199,8 +199,8 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => 'C:\\FormSync\\storage\\framework/cache/data',
-        'lock_path' => 'C:\\FormSync\\storage\\framework/cache/data',
+        'path' => 'C:\\Users\\luis.puentes\\OneDrive - Impresistem SAS\\Escritorio\\formularios repositorioclon\\FormSync\\storage\\framework/cache/data',
+        'lock_path' => 'C:\\Users\\luis.puentes\\OneDrive - Impresistem SAS\\Escritorio\\formularios repositorioclon\\FormSync\\storage\\framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -283,7 +283,7 @@
       array (
         'driver' => 'sqlite',
         'url' => NULL,
-        'database' => 'prueba',
+        'database' => 'formularios',
         'prefix' => '',
         'foreign_key_constraints' => true,
       ),
@@ -293,7 +293,7 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'prueba',
+        'database' => 'formularios',
         'username' => 'root',
         'password' => '',
         'unix_socket' => '',
@@ -313,7 +313,7 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'prueba',
+        'database' => 'formularios',
         'username' => 'root',
         'password' => '',
         'charset' => 'utf8',
@@ -328,7 +328,7 @@
         'url' => NULL,
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'prueba',
+        'database' => 'formularios',
         'username' => 'root',
         'password' => '',
         'charset' => 'utf8',
@@ -373,13 +373,13 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => 'C:\\FormSync\\storage\\app',
+        'root' => 'C:\\Users\\luis.puentes\\OneDrive - Impresistem SAS\\Escritorio\\formularios repositorioclon\\FormSync\\storage\\app',
         'throw' => false,
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => 'C:\\FormSync\\storage\\app/public',
+        'root' => 'C:\\Users\\luis.puentes\\OneDrive - Impresistem SAS\\Escritorio\\formularios repositorioclon\\FormSync\\storage\\app/public',
         'url' => 'http://localhost/storage',
         'visibility' => 'public',
         'throw' => false,
@@ -399,7 +399,7 @@
     ),
     'links' => 
     array (
-      'C:\\FormSync\\public\\storage' => 'C:\\FormSync\\storage\\app/public',
+      'C:\\Users\\luis.puentes\\OneDrive - Impresistem SAS\\Escritorio\\formularios repositorioclon\\FormSync\\public\\storage' => 'C:\\Users\\luis.puentes\\OneDrive - Impresistem SAS\\Escritorio\\formularios repositorioclon\\FormSync\\storage\\app/public',
     ),
   ),
   'hashing' => 
@@ -440,14 +440,14 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => 'C:\\FormSync\\storage\\logs/laravel.log',
+        'path' => 'C:\\Users\\luis.puentes\\OneDrive - Impresistem SAS\\Escritorio\\formularios repositorioclon\\FormSync\\storage\\logs/laravel.log',
         'level' => 'debug',
         'replace_placeholders' => true,
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => 'C:\\FormSync\\storage\\logs/laravel.log',
+        'path' => 'C:\\Users\\luis.puentes\\OneDrive - Impresistem SAS\\Escritorio\\formularios repositorioclon\\FormSync\\storage\\logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
         'replace_placeholders' => true,
@@ -512,7 +512,7 @@
       ),
       'emergency' => 
       array (
-        'path' => 'C:\\FormSync\\storage\\logs/laravel.log',
+        'path' => 'C:\\Users\\luis.puentes\\OneDrive - Impresistem SAS\\Escritorio\\formularios repositorioclon\\FormSync\\storage\\logs/laravel.log',
       ),
     ),
   ),
@@ -588,7 +588,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => 'C:\\FormSync\\resources\\views/vendor/mail',
+        0 => 'C:\\Users\\luis.puentes\\OneDrive - Impresistem SAS\\Escritorio\\formularios repositorioclon\\FormSync\\resources\\views/vendor/mail',
       ),
     ),
   ),
@@ -701,7 +701,7 @@
     'lifetime' => '120',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => 'C:\\FormSync\\storage\\framework/sessions',
+    'files' => 'C:\\Users\\luis.puentes\\OneDrive - Impresistem SAS\\Escritorio\\formularios repositorioclon\\FormSync\\storage\\framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -722,14 +722,14 @@
   array (
     'paths' => 
     array (
-      0 => 'C:\\FormSync\\resources\\views',
+      0 => 'C:\\Users\\luis.puentes\\OneDrive - Impresistem SAS\\Escritorio\\formularios repositorioclon\\FormSync\\resources\\views',
     ),
-    'compiled' => 'C:\\FormSync\\storage\\framework\\views',
+    'compiled' => 'C:\\Users\\luis.puentes\\OneDrive - Impresistem SAS\\Escritorio\\formularios repositorioclon\\FormSync\\storage\\framework\\views',
   ),
   'livewire' => 
   array (
     'class_namespace' => 'App\\Livewire',
-    'view_path' => 'C:\\FormSync\\resources\\views/livewire',
+    'view_path' => 'C:\\Users\\luis.puentes\\OneDrive - Impresistem SAS\\Escritorio\\formularios repositorioclon\\FormSync\\resources\\views/livewire',
     'layout' => 'components.layouts.app',
     'lazy_placeholder' => NULL,
     'temporary_file_upload' => 
@@ -855,7 +855,7 @@
     array (
     ),
     'enable_runnable_solutions' => NULL,
-    'remote_sites_path' => 'C:\\FormSync',
+    'remote_sites_path' => 'C:\\Users\\luis.puentes\\OneDrive - Impresistem SAS\\Escritorio\\formularios repositorioclon\\FormSync',
     'local_sites_path' => '',
     'housekeeping_endpoint_prefix' => '_ignition',
     'settings_file_path' => '',

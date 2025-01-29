@@ -631,31 +631,49 @@
 
 
                         <!-- Área de Archivos -->
+{{-- inicio subida de documentos --}}
+<div>
+    <!-- Zona de arrastrar y soltar -->
+    <div class="border-dashed border-2 border-gray-300 p-6 text-center"
+         wire:drop.prevent="handleDrop($event.dataTransfer.files)"
+         wire:dragover.prevent="dragOver"
+         wire:dragleave.prevent="dragLeave">
+        <input type="file" wire:model="attachments" multiple class="hidden" id="file-upload"
+               accept=".pdf,.doc,.docx,.xls,.xlsx" />
+        <label for="file-upload" class="cursor-pointer">
+            <div class="flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-4"
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p class="text-gray-600">
+                    Por favor, <span class="text-blue-600 hover:underline">seleccione los archivos
+                        que desea agregar</span>.
+                </p>
+                <p class="text-sm text-gray-500 mt-2">
+                    Archivos permitidos: PDF, DOC, XLSX. Tamaño máximo: 10MB.
+                </p>
+            </div>
+        </label>
+    </div>
 
-                        <div class="border-dashed border-2 border-gray-300 p-6 text-center"
-                            wire:drop.prevent="handleDrop($event.dataTransfer.files)" wire:dragover.prevent="dragOver"
-                            wire:dragleave.prevent="dragLeave">
-                            <input type="file" wire:model="attachments" multiple class="hidden" id="file-upload"
-                                accept=".pdf,.doc,.docx,.xls,.xlsx" />
-                            <label for="file-upload" class="cursor-pointer">
-                                <div class="flex flex-col items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-4"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    <p class="text-gray-600">
-                                        Por favor, <span class="text-blue-600 hover:underline">seleccione los archivos
-                                            que desea agregar</span>.
-                                    </p>
-                                    <p class="text-sm text-gray-500 mt-2">
-                                        Archivos permitidos: PDF, DOC, XLSX. Tamaño máximo: 10MB.
-                                    </p>
+    <!-- Mensajes de error -->
+    @error('attachments.*')
+        <span class="text-red-500">{{ $message }}</span>
+    @enderror
 
-                                </div>
-                            </label>
-                        </div>
+    <!-- Mensajes de éxito -->
+    @if (session()->has('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
+    <!-- Lista de documentos -->
+   
+
+{{--final subida de documentos  --}}
                         @if (count($files) > 0)
                             <div class="mt-4">
                                 <h3 class="text-sm font-medium text-gray-700 mb-2">Archivos Seleccionados:</h3>
@@ -692,15 +710,22 @@
                                         </li>
                                     @endforeach
                                 </ul>
+
                             </div>
                         @endif
                         <div class="flex flex-col mt-6">
                         @error('archivos.*')
                             <span class="text-red-500 text-sm mt-2">{{ $message }}</span>
                         @enderror
+                <br>
 
+                        <div class="flex flex-col mt-6">
+                            @if ($errors->any())
+                            <div class="alert alert-danger mb-4 text-center">
+                                <span class="text-red-500">Parece que algunos campos del formulario aún no están completos o contienen información incorrecta.</span>
+                            </div>
+                            @endif
 
-                        <br>
                         <div class="flex justify-center space-x-6">
                             <button wire:click="changeStep(1)" type="button"
                                 class="group relative bg-white border-2 border-gray-300 text-gray-700 py-3 px-8 rounded-xl hover:border-gray-400 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3">
@@ -876,7 +901,9 @@
                                                 <path d="M8 7h12v12a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2z" />
                                             </g>
                                         </svg> Enlace Copiado. </div>
+                                        <div>
 
+                                        </div>
                                     {{-- fin diseño copiado en portapapeles --}}
                                 </div>
                             @endif

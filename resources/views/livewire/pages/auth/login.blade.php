@@ -62,25 +62,27 @@ new #[Layout('layouts.guest')] class extends Component
 
         <!-- Email Input -->
         <div class="relative">
-          <input
-            wire:model="form.email"
-            type="email"
-            placeholder="Correo electrónico"
+            <input
+                wire:model="form.email"
+                type="email"
+                placeholder="Correo electrónico"
+                class="w-full px-4 py-3.5 pl-10 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-indigo-200 @error('form.email') border-red-500 @enderror"
+            />
 
-            class="w-full px-4 py-3.5 pl-10 rounded-xl border-2 border-gray-200
-                   focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200
-                   transition duration-300 ease-in-out  @error('form.email') border-red-500 @enderror"
-          />
+            <div class="absolute mb-5 inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+            </div>
 
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-          </div>
-
-         @error('form.email') <span class="text-sm text-red-500">{{ $message }}</span> @enderror
-
+            <!-- Reserva espacio para el mensaje de error, con espacio mínimo garantizado -->
+            <div class="mt-1 min-h-[1.25rem]">
+                @error('form.email') <span class="text-sm text-red-500">{{ $message }}</span> @enderror
+            </div>
         </div>
+
+
+
 
         <!-- Password Input -->
         <div class="relative">
@@ -93,14 +95,14 @@ new #[Layout('layouts.guest')] class extends Component
                    focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200
                    transition duration-300 ease-in-out @error('form.password') border-red-500 @enderror"
           />
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <div class="absolute mb-5 inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-
+          <div class="mt-1 min-h-[1.25rem]">
           @error('form.password') <span class="text-sm text-red-500">{{ $message }}</span> @enderror
-
+</div>
         </div>
 
         <!-- Forgot Password -->

@@ -26,31 +26,46 @@
                                     <label for="codigo_cliente" class="block text-sm font-medium text-gray-700">Código Cliente</label>
                                     <input type="text" wire:model="negocio"
                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                </div>
+                                           @error('negocio')
+                                           <span class="text-red-500 text-sm">{{ $message }}</span>
+                                       @enderror
+                                        </div>
 
                                 <div>
                                     <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
                                     <input type="text" wire:model="nombres"
                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                </div>
+                                           @error('nombres')
+                                           <span class="text-red-500 text-sm">{{ $message }}</span>
+                                       @enderror
+                                        </div>
 
                                 <div>
                                     <label for="correo" class="block text-sm font-medium text-gray-700">Correo</label>
                                     <input type="email" wire:model="correo"
                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                </div>
+                                           @error('correo')
+                                           <span class="text-red-500 text-sm">{{ $message }}</span>
+                                       @enderror
+                                        </div>
 
                                 <div>
                                     <label for="numero" class="block text-sm font-medium text-gray-700">Número</label>
                                     <input type="text" wire:model="numero"
                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                </div>
+                                           @error('numero')
+                                           <span class="text-red-500 text-sm">{{ $message }}</span>
+                                       @enderror
+                                        </div>
 
                                 <div>
                                     <label for="crm" class="block text-sm font-medium text-gray-700">N° oportunidad CRM</label>
                                     <input type="text" wire:model="crms"
                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                </div>
+                                           @error('crms')
+                                           <span class="text-red-500 text-sm">{{ $message }}</span>
+                                       @enderror
+                                        </div>
                             </div>
                         </div>
 

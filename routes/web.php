@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Successful;
 use App\Livewire\FragmentoComponente;
 
-
-
 Route::get('/successful', Successful::class)->name('succesful');
 // Route::view('/', 'welcome');
 Route::redirect('/', '/login');

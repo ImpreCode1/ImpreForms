@@ -37,6 +37,7 @@ class Historial extends Component
     {
         return view('livewire.historial', [
             'formularios' => $this->formularios,
+
         ]);
     }
 }

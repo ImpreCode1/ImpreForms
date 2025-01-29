@@ -13,21 +13,26 @@ use Livewire\Form;
 
 class LoginForm extends Form
 {
+
+
     #[Validate('required|string|email')]
     public string $email = '';
 
-    #[Validate('required|string')]
+    #[Validate('required')]
     public string $password = '';
 
     #[Validate('boolean')]
     public bool $remember = false;
 
-    protected $messages = [
-        'form.email.required' => 'El correo electrónico es obligatorio.',
-        'form.email.email' => 'Introduce un correo electrónico válido.',
-        'form.password.required' => 'La contraseña es obligatoria.',
-        'form.password.min' => 'La contraseña debe tener al menos 6 caracteres.',
-    ];
+protected $messages =[
+'email.required' => 'El espacio del correo tiene que ser requerido.',
+'email.email' => 'El email tiene que ser valido.',
+'password.required' => 'El espacio de Contraseña debe ser requerido.',
+
+
+
+
+];
 
     public function authenticate(): string
     {
@@ -38,6 +43,8 @@ class LoginForm extends Form
 
             throw ValidationException::withMessages([
                 'email' => 'Las credenciales proporcionadas son incorrectas.',
+
+
             ]);
         }
 
@@ -74,5 +81,15 @@ class LoginForm extends Form
     protected function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+
+
+
     }
+    // protected function messages()
+    // {
+    // ['email.required' => 'El correo electrónico es obligatorio.',
+    //         'email.email' => 'El correo electrónico debe ser una dirección válida.',
+    //         'password.required' => 'La contraseña es obligatoria.',
+    //         'remember.boolean' => 'El valor de recordar debe ser verdadero o falso.',];
+    // }
 }
