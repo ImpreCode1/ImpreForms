@@ -51,7 +51,7 @@ class Marca extends Model
 
     public function infoEntrega()
     {
-        return $this->hasMany(Infoentrega::class);
+        return $this->hasMany(Infoentrega::class, 'marcas_id');
     }
 
     public function financiera()
@@ -61,7 +61,7 @@ class Marca extends Model
 
     public function documentos()
     {
-        return $this->hasMany(Documento::class);
+        return $this->hasMany(Documento::class, 'marcas_id');
     }
 
     public function user()
