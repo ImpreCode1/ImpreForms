@@ -105,7 +105,9 @@ class EnviarFormulario extends Component
     protected $listeners = ['openModal'];
     protected $rules = [
 
-        'attachments.*' => 'file|mimes:pdf,docx|max:10240',
+        // 'attachments.*' => 'file|mimes:pdf,docx|max:10240',
+        'attachments.*' => 'nullable|file|mimes:pdf,docx,xlsx,eml|max:10240',
+
 
         // Infonegocio
         'negocio' => 'required|numeric|unique:infonegocio,codigo_cliente',
@@ -278,6 +280,13 @@ class EnviarFormulario extends Component
 
 
 
+        //documentos
+        'attachments.*.nullable' => 'El archivo adjunto es opcional, pero si se incluye, debe ser válido.',
+        'attachments.*.file' => 'El campo :attribute debe ser un archivo válido.',
+        'attachments.*.mimes' => 'El archivo :attribute debe ser de tipo PDF, Word (.docx), Excel (.xlsx) o correo electrónico (.eml).',
+        'attachments.*.max' => 'El archivo :attribute no puede exceder los 10 MB de tamaño.',
+
+
     ];
 
     public function updatedHasAdvancePayment($value)
@@ -434,6 +443,7 @@ class EnviarFormulario extends Component
             $path = $file->storeAs('documents',$originalName, 'public');
             Documento::create([
                 'marcas_id' => $this->marcaId,
+                'nombre_original' => $originalName,
                 'ruta_documento' => $path,
             ]);
         }
