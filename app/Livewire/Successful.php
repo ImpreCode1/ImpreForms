@@ -10,4 +10,5 @@ class Successful extends Component
     {
         return view('livewire.successful');
     }
+
 }
