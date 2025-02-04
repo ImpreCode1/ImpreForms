@@ -2,7 +2,9 @@
 
 namespace App\Livewire;
 
+use App\Models\Documento;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithEvents;
@@ -20,6 +22,10 @@ class EditarFormulario extends Component
     use WithFileUploads, FormatearFechas;
 
     public $formulario;
+    public $attachments = [];
+    public $temporaryFiles = [];
+    public $existingFiles = [];
+
     public $negocio, $nombres, $correo, $numero, $crms;
     public $fecha, $oc, $precio, $soluciones, $linea, $codlinea;
     public $nomgerente, $telgerente, $corgerente, $director, $tel2gerente, $cor2gerente;
@@ -29,6 +35,7 @@ class EditarFormulario extends Component
     public $aplicagarantia, $terminogarantia, $aplicapoliza, $porcentaje;
     public $formapago, $moneda, $incluye_iva, $fecha_pago, $otros;
 
+    protected $listener = ['removeUpload'];
     public $marcaId;
     public $documentos;
     protected $listeners = ['editFormulario'];
@@ -160,12 +167,54 @@ class EditarFormulario extends Component
             'fecha_pago.required' => 'El campo "Fecha de Pago" es obligatorio.',
             'fecha_pago.date' => 'El campo "Fecha de Pago" debe ser una fecha válida.',
             'otros.string' => 'El campo "Otros" debe ser una cadena de texto.'
-        ];
+    ];
 
 
+    public function handleDrop($files)
+    {
+        foreach ($files as $file) {
+            $this->handleFileUpload($file);
+        }
+    }
 
+    public function updatedAttachments($files)
+    {
+        if (!is_array($files)) {
+            $files = [$files];
+        }
 
+        foreach ($files as $file) {
+            $this->handleFileUpload($file);
+        }
+    }
 
+    private function handleFileUpload($file)
+    {
+        try {
+            $originalName = $file->getClientOriginalName();
+            $path = $file->store('documents', 'public');
+
+            $this->temporaryFiles[] = [
+                'name' => $originalName,
+                'path' => $path,
+            ];
+
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error al subir el archivo: ' . $e->getMessage());
+        }
+    }
+
+    public function removeUpload($index)
+    {
+        if (isset($this->temporaryFiles[$index])) {
+
+            Storage::disk('public')->delete($this->temporaryFiles[$index]['path']);
+
+            // Remove from array
+            unset($this->temporaryFiles[$index]);
+            $this->temporaryFiles = array_values($this->temporaryFiles);
+        }
+    }
 
     public function mount($formulario,)
     {
@@ -235,8 +284,29 @@ class EditarFormulario extends Component
             $this->moneda = $financiera->moneda;
             $this->otros = $financiera->otros;
         }
+
+        $this->existingFiles = $formulario->documento->map(function($documento) {
+            return [
+                'id' => $documento->id,
+                'name' => $documento->nombre_original,
+                'path' => $documento->ruta_documento,
+                'tipo' => $documento->tipo_documento
+            ];
+        })->toArray();
     }
 
+
+    public function removeExistingFile($documentId)
+    {
+        $documento = Documento::find($documentId);
+        if ($documento) {
+            Storage::disk('public')->delete($documento->ruta_documento);
+            $documento->delete();
+            $this->existingFiles = array_filter($this->existingFiles, function($file) use ($documentId) {
+                return $file['id'] != $documentId;
+            });
+        }
+    }
 
     public function submit()
     {

@@ -53,16 +53,17 @@
                             [
                                 'name' => 'Recibidos',
                                 'route' => 'formularios-recibidos',
-                                'icon' => 'M22 12h-6l-2 3h-4l-2-3H2 M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z M9 13l2 2 4-4',
+                                'icon' =>
+                                    'M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z M17 21V13H7v8 M7 3v5h8',
                                 'color' => 'text-red-500',
                             ],
                             [
                                 'name' => 'Crear Usuario',
                                 'route' => 'crear-usuario',
-                                'icon' => 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22M17 8h-2v2h-2v2h2v2h2v-2h2v-2h-2V8z',
+                                'icon' =>
+                                    'M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M8.5 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M20 8v6 M23 11h-6',
                                 'color' => 'text-blue-500',
                             ],
-
                         ];
                     } else {
                         $menuItems = [
@@ -79,33 +80,42 @@
                                 'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
                                 'color' => 'text-purple-500',
                             ],
-
-
                         ];
                     }
                 @endphp
 
+                @php
+                    $currentRoute = session('current_route', request()->route()->getName());
+                @endphp
+
+
 
                 @foreach ($menuItems as $item)
                     <a href="{{ route($item['route']) }}"
+                        onclick="event.preventDefault(); document.getElementById('set-current-route-{{ $item['route'] }}').submit();"
                         class="
                         group flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 ease-in-out
-                        {{ request()->routeIs($item['route']) || request()->is('enviar-formulario*')
+                        {{ $currentRoute === $item['route'] || request()->is('enviar-formulario*')
                         ? 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600'
                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800' }}
                         ">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 {{ $item['color'] }}" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 {{ $item['color'] }}"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="{{ $item['icon'] }}" />
                         </svg>
                         <span class="font-medium">{{ $item['name'] }}</span>
-                        @if (request()->routeIs($item['route']) || request()->is('enviar-formulario*'))
+                        @if ($currentRoute === $item['route'] || request()->is('enviar-formulario*'))
                             <span class="ml-auto bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full text-xs">
                                 Actual
                             </span>
                         @endif
                     </a>
+                    <form id="set-current-route-{{ $item['route'] }}" action="{{ route('set.current.route') }}"
+                        method="POST" style="display: none;">
+                        @csrf
+                        <input type="hidden" name="route" value="{{ $item['route'] }}">
+                    </form>
                 @endforeach
             </nav>
 
@@ -135,7 +145,8 @@
         </aside>
 
         <!-- Main Content Area -->
-        <main class="flex-1 min-h-screen bg-gradient-to-br from-red-50 via-indigo-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8 transition-all duration-300 overflow-y-auto">
+        <main
+            class="flex-1 min-h-screen bg-gradient-to-br from-red-50 via-indigo-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8 transition-all duration-300 overflow-y-auto">
             <div class="p-6 max-w-7xl mx-auto">
                 {{ $slot }}
             </div>

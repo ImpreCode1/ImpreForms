@@ -28,7 +28,7 @@ Route::view('profile', 'profile')
 
 // redireccionamiento a la vista de formulario enviado  del formulario
     Route::view('successful', 'successful')
-    ->middleware(['auth', 'admin', 'verified'])
+    ->middleware(['auth', 'verified'])
     ->name('crear-usuario');
 
 //sidebar users
@@ -36,9 +36,9 @@ Route::get('/user-dashboard', function () {
     return view('livewire.layout.user-sidebar');
 })->name('user.dashboard');
 
-// Route::get('/manager-dashboard', function () {
-//     return view('livewire.layout.manager-sidebar');
-// })->name('manager.dashboard');
+Route::get('/manager-dashboard', function () {
+    return view('livewire.layout.manager-sidebar');
+})->name('manager.dashboard');
 
 
 // rutas sin recragra
@@ -120,8 +120,12 @@ Route::get('/formulario-financiera/{link}', function ($link) {
         'moneda' => $record->moneda,
         'otros' => $record->otros,
     ]);
-});
+})->name('formulario-financiera');
 
+Route::post('/set-current-route', function (Illuminate\Http\Request $request) {
+    session(['current_route' => $request->route]);
+    return redirect()->route($request->route);
+})->name('set.current.route');
 
 require __DIR__ . '/auth.php';
 

@@ -59,7 +59,7 @@ class Marca extends Model
         return $this->hasMany(Financiera::class, 'marcas_id');
     }
 
-    public function documentos()
+    public function documento()
     {
         return $this->hasMany(Documento::class, 'marcas_id');
     }
@@ -69,5 +69,9 @@ class Marca extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function formLinks()
+    {
+        return $this->hasMany(FormLink::class);
+    }
 
 }

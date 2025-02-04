@@ -1,12 +1,6 @@
 <div>
     <x-app-layout>
         {{-- <div class="py-12"> --}}
-
-
-
-
-
-
         <div class="font-sans text-gray-900 antialiased">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
                 <form wire:submit.prevent="submit" id="operacionesForm" class="space-y-8">
@@ -158,7 +152,7 @@
                                     <select id="soluciones" wire:model="soluciones"
                                         class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('soluciones') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                         <option value="">Seleccionar Solución</option>
-                                        <option value="huawei">Soluciones</option>
+                                        {{-- <option value="huawei">Soluciones</option> --}}
                                         <option value="huawei">Líneas Huawei EBG, Datacenter y Solar, líneas de paneles
                                             solares</option>
                                         <option value="datacenter">Oportunidades cerradas con condiciones particulares
@@ -631,284 +625,306 @@
 
 
                         <!-- Área de Archivos -->
-{{-- inicio subida de documentos --}}
-<div>
-    <!-- Zona de arrastrar y soltar -->
-    <div class="border-dashed border-2 border-gray-300 p-6 text-center"
-         wire:drop.prevent="handleDrop($event.dataTransfer.files)"
-         wire:dragover.prevent="dragOver"
-         wire:dragleave.prevent="dragLeave">
-        <input type="file" wire:model="attachments" multiple class="hidden" id="file-upload"
-               accept=".pdf,.doc,.docx,.xls,.xlsx" />
-        <label for="file-upload" class="cursor-pointer">
-            <div class="flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-4"
-                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <p class="text-gray-600">
-                    Por favor, <span class="text-blue-600 hover:underline">seleccione los archivos
-                        que desea agregar</span>.
-                </p>
-                <p class="text-sm text-gray-500 mt-2">
-                    Archivos permitidos: PDF, DOC, XLSX. Tamaño máximo: 10MB.
-                </p>
-            </div>
-        </label>
-    </div>
-
-    <!-- Mensajes de error -->
-    @error('attachments.*')
-        <span class="text-red-500">{{ $message }}</span>
-    @enderror
-
-    <!-- Mensajes de éxito -->
-    @if (session()->has('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <!-- Lista de documentos -->
-   
-
-{{--final subida de documentos  --}}
-                        @if (count($files) > 0)
-                            <div class="mt-4">
-                                <h3 class="text-sm font-medium text-gray-700 mb-2">Archivos Seleccionados:</h3>
-                                <ul class="space-y-2">
-                                    @foreach ($files as $index => $file)
-                                        <li
-                                            class="bg-gray-50 rounded-lg p-3 flex items-center justify-between group hover:bg-gray-100 transition-all duration-200">
-                                            <div class="flex items-center space-x-3">
-                                                <div class="p-2 bg-blue-100 rounded-lg">
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="h-5 w-5 text-blue-600" fill="none"
-                                                        viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                                    </svg>
-                                                </div>
-                                                <div class="flex flex-col">
-                                                    <span
-                                                        class="text-sm font-medium text-gray-700">{{ $file['name'] }}</span>
-                                                    <span class="text-xs text-gray-500">{{ $file['size'] }} KB</span>
-                                                </div>
-                                            </div>
-                                            <button type="button" wire:click="removeFile({{ $index }})"
-                                                class="hidden group-hover:flex items-center space-x-1 text-sm text-red-500 hover:text-red-700 transition-colors duration-200">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                                <span>Eliminar</span>
-                                            </button>
-                                        </li>
-                                    @endforeach
-                                </ul>
-
-                            </div>
-                        @endif
-                        <div class="flex flex-col mt-6">
-                        @error('archivos.*')
-                            <span class="text-red-500 text-sm mt-2">{{ $message }}</span>
-                        @enderror
-                <br>
-
-                        <div class="flex flex-col mt-6">
-                            @if ($errors->any())
-                            <div class="alert alert-danger mb-4 text-center">
-                                <span class="text-red-500">Parece que algunos campos del formulario aún no están completos o contienen información incorrecta.</span>
-                            </div>
-                            @endif
-
-                        <div class="flex justify-center space-x-6">
-                            <button wire:click="changeStep(1)" type="button"
-                                class="group relative bg-white border-2 border-gray-300 text-gray-700 py-3 px-8 rounded-xl hover:border-gray-400 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3">
-                                <div
-                                    class="absolute inset-0 bg-gray-100 rounded-xl transform scale-0 group-hover:scale-100 transition-transform duration-300 -z-10">
-                                </div>
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-5 w-5 text-gray-600 group-hover:text-gray-800 transition-colors duration-300"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                </svg>
-                                <span class="font-semibold">Atrás</span>
-                            </button>
-
-                            <button wire:click="submit" type="button"
-                                class="group relative bg-blue-600 py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3 overflow-hidden">
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                                </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="relative h-5 w-5 text-white"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <span class="relative font-semibold text-white">Enviar Formulario</span>
-                            </button>
-                        </div>
-                </div>
-                        <br>
-                        <div id="modalContainer">
-                            @if ($mmd)
-                                <div
-                                    class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm">
-                                    <div
-                                        class="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-lg border border-gray-100 bg-white p-6 shadow-xl sm:p-8">
-                                        <div class="mb-6 text-center md:mb-10">
-                                            <h4 class="mb-4 text-2xl font-bold text-black md:text-3xl">Links para
-                                                Completar Información</h4>
-                                            <p class="leading-relaxed text-gray-600">
-                                                A continuación, se generarán dos enlaces para completar la información
-                                                faltante de las secciones de
-                                                <span class="font-semibold text-blue-600">Operaciones</span> y <span
-                                                    class="font-semibold text-green-600">Financiera</span>.
-                                            </p>
-                                        </div>
-
-                                        <div
-                                            class="mb-6 rounded-r-lg border-l-4 border-amber-500 bg-amber-50 p-4 md:mb-8">
-                                            <div class="flex items-center">
-                                                <div class="flex-shrink-0">
-                                                    <svg class="h-5 w-5 text-amber-500" viewBox="0 0 24 24"
-                                                        fill="none" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
-                                                </div>
-                                                <div class="ml-3">
-                                                    <p class="text-sm text-amber-700">Los enlaces tienen una validez de
-                                                        <span class="font-bold">3 días</span>. Por favor, complete
-                                                        ambos formularios dentro de este plazo.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="max-h-[60vh] space-y-4 overflow-y-auto md:space-y-6">
-                                            <div class="group">
-                                                <div
-                                                    class="rounded-xl border-2 border-blue-100 bg-white p-4 transition-all duration-300 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-100 sm:p-6">
-                                                    <div class="flex items-center justify-between">
-                                                        <div class="flex-1">
-                                                            <div class="mb-3 flex items-center space-x-3">
-                                                                <span
-                                                                    class="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">Operaciones</span>
-                                                                <span class="text-sm text-gray-400">•</span>
-                                                                <span class="text-sm text-gray-500">Obligatorio</span>
-                                                            </div>
-                                                            <p id="operaciones" class="break-all text-gray-600">
-                                                                {{ session('operacionesUrl') }}</p>
-                                                        </div>
-                                                        <button type="button"
-                                                            onclick="copyToClipboard('{{ session('operacionesUrl') }}')"
-                                                            class="ml-4 rounded-lg p-3 text-blue-500 transition-colors duration-200 hover:bg-blue-50">
-                                                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                                                stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    stroke-width="2"
-                                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2z" />
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="group">
-                                                <div
-                                                    class="rounded-xl border-2 border-green-100 bg-white p-4 transition-all duration-300 hover:border-green-300 hover:shadow-lg hover:shadow-green-100 sm:p-6">
-                                                    <div class="flex items-center justify-between">
-                                                        <div class="flex-1">
-                                                            <div class="mb-3 flex items-center space-x-3">
-                                                                <span
-                                                                    class="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">Financiera</span>
-                                                                <span class="text-sm text-gray-400">•</span>
-                                                                <span class="text-sm text-gray-500">Obligatorio</span>
-                                                            </div>
-                                                            <p id="financiera" class="break-all text-gray-600">
-                                                                {{ session('financieraUrl') }}</p>
-                                                        </div>
-                                                        <button type="button"
-                                                            onclick="copyToClipboard('{{ session('financieraUrl') }}')"
-                                                            class="ml-4 rounded-lg p-3 text-green-500 transition-colors duration-200 hover:bg-green-50">
-                                                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                                                stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    stroke-width="2"
-                                                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2z" />
-                                                            </svg>
-                                                        </button>
-
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="mt-6 text-center text-sm text-gray-500 md:mt-8">
-                                            <p>Si no completa ambos formularios, la información no podrá ser procesada.
-                                            </p>
-                                        </div>
-                                        <!-- Información adicional -->
-                                        <div class="mt-8 rounded-lg border-l-4 border-red-500 bg-red-50 p-4 shadow-md">
-                                            <div class="flex items-start">
-                                                <div class="flex-shrink-0">
-                                                    <svg class="h-6 w-6 text-red-500"
-                                                        xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 110 20 10 10 0 010-20z" />
-                                                    </svg>
-                                                </div>
-                                                <div class="ml-3">
-                                                    <h5 class="mb-1 text-lg font-semibold text-red-700">Nota importante
-                                                    </h5>
-                                                    <p class="text-sm leading-relaxed text-gray-700">Los enlaces de
-                                                        <span class="font-medium text-black-600">Operaciones</span> y
-                                                        <span class="font-medium text-black-600">Financiera</span> se
-                                                        han guardado en tu carpeta de <span
-                                                            class="font-medium">Descargas</span>. Puedes utilizarlos
-                                                        para completar la información requerida o compartirlos con las
-                                                        personas responsables.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                        <div class="mt-4 flex justify-end">
-                                            <button wire:click="cerrarmodal"
-                                                class="rounded-lg bg-red-500 px-4 py-2 text-white transition-colors hover:bg-red-600">Cerrar</button>
-                                        </div>
+                        {{-- inicio subida de documentos --}}
+                        <div>
+                            <!-- Zona de arrastrar y soltar -->
+                            <div class="border-dashed border-2 border-gray-300 p-6 text-center"
+                                wire:drop.prevent="handleDrop($event.dataTransfer.files)"
+                                wire:dragover.prevent="dragOver" wire:dragleave.prevent="dragLeave">
+                                <input type="file" wire:model="attachments" multiple class="hidden"
+                                    id="file-upload" accept=".pdf,.doc,.docx,.xls,.xlsx" />
+                                <label for="file-upload" class="cursor-pointer">
+                                    <div class="flex flex-col items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-4"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <p class="text-gray-600">
+                                            Por favor, <span class="text-blue-600 hover:underline">seleccione los
+                                                archivos
+                                                que desea agregar</span>.
+                                        </p>
+                                        <p class="text-sm text-gray-500 mt-2">
+                                            Archivos permitidos: PDF, DOC, XLSX. Tamaño máximo: 10MB.
+                                        </p>
                                     </div>
-                                    {{-- inicio diseño de copiado en portapapeles --}}
-                                    <div id="alert"
-                                        class="hidden fixed bottom-5 right-5 flex items-center rounded-md bg-white h-12 px-4 py-2 text-black shadow-md">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            viewBox="0 0 24 24" class="mr-2">
-                                            <g fill="none" stroke="currentColor" stroke-linecap="round"
-                                                stroke-linejoin="round" stroke-width="2">
-                                                <path d="M16 3H4v13" />
-                                                <path d="M8 7h12v12a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2z" />
-                                            </g>
-                                        </svg> Enlace Copiado. </div>
-                                        <div>
+                                </label>
+                            </div>
 
-                                        </div>
-                                    {{-- fin diseño copiado en portapapeles --}}
+                            <!-- Mensajes de error -->
+                            @error('attachments.*')
+                                <span class="text-red-500">{{ $message }}</span>
+                            @enderror
+
+                            <!-- Mensajes de éxito -->
+                            @if (session()->has('success'))
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
                                 </div>
                             @endif
 
-                        </div>
+                            <!-- Lista de documentos -->
+
+
+                            {{-- final subida de documentos  --}}
+                            @if (count($files) > 0)
+                                <div class="mt-4">
+                                    <h3 class="text-sm font-medium text-gray-700 mb-2">Archivos Seleccionados:</h3>
+                                    <ul class="space-y-2">
+                                        @foreach ($files as $index => $file)
+                                            <li
+                                                class="bg-gray-50 rounded-lg p-3 flex items-center justify-between group hover:bg-gray-100 transition-all duration-200">
+                                                <div class="flex items-center space-x-3">
+                                                    <div class="p-2 bg-blue-100 rounded-lg">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            class="h-5 w-5 text-blue-600" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                        </svg>
+                                                    </div>
+                                                    <div class="flex flex-col">
+                                                        <span
+                                                            class="text-sm font-medium text-gray-700">{{ $file['name'] }}</span>
+                                                        <span class="text-xs text-gray-500">{{ $file['size'] }}
+                                                            KB</span>
+                                                    </div>
+                                                </div>
+                                                <button type="button" wire:click="removeFile({{ $index }})"
+                                                    class="hidden group-hover:flex items-center space-x-1 text-sm text-red-500 hover:text-red-700 transition-colors duration-200">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                    <span>Eliminar</span>
+                                                </button>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+
+                                </div>
+                            @endif
+                            <div class="flex flex-col mt-6">
+                                @error('archivos.*')
+                                    <span class="text-red-500 text-sm mt-2">{{ $message }}</span>
+                                @enderror
+                                <br>
+
+                                <div class="flex flex-col mt-6">
+                                    @if ($errors->any())
+                                        <div class="alert alert-danger mb-4 text-center">
+                                            <span class="text-red-500">Parece que algunos campos del formulario aún no
+                                                están completos o contienen información incorrecta.</span>
+                                        </div>
+                                    @endif
+
+                                    <div class="flex justify-center space-x-6">
+                                        <button wire:click="changeStep(1)" type="button"
+                                            class="group relative bg-white border-2 border-gray-300 text-gray-700 py-3 px-8 rounded-xl hover:border-gray-400 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3">
+                                            <div
+                                                class="absolute inset-0 bg-gray-100 rounded-xl transform scale-0 group-hover:scale-100 transition-transform duration-300 -z-10">
+                                            </div>
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-5 w-5 text-gray-600 group-hover:text-gray-800 transition-colors duration-300"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                            </svg>
+                                            <span class="font-semibold">Atrás</span>
+                                        </button>
+
+                                        <button wire:click="submit" type="button"
+                                            class="group relative bg-blue-600 py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3 overflow-hidden">
+                                            <div
+                                                class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                                            </div>
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="relative h-5 w-5 text-white" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span class="relative font-semibold text-white">Enviar Formulario</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <br>
+                                <div id="modalContainer">
+                                    @if ($mmd)
+                                        <div
+                                            class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm">
+                                            <div
+                                                class="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-lg border border-gray-100 bg-white p-6 shadow-xl sm:p-8">
+                                                <div class="mb-6 text-center md:mb-10">
+                                                    <h4 class="mb-4 text-2xl font-bold text-black md:text-3xl">Links
+                                                        para
+                                                        Completar Información</h4>
+                                                    <p class="leading-relaxed text-gray-600">
+                                                        A continuación, se generarán dos enlaces para completar la
+                                                        información
+                                                        faltante de las secciones de
+                                                        <span class="font-semibold text-blue-600">Operaciones</span> y
+                                                        <span class="font-semibold text-green-600">Financiera</span>.
+                                                    </p>
+                                                </div>
+
+                                                <div
+                                                    class="mb-6 rounded-r-lg border-l-4 border-amber-500 bg-amber-50 p-4 md:mb-8">
+                                                    <div class="flex items-center">
+                                                        <div class="flex-shrink-0">
+                                                            <svg class="h-5 w-5 text-amber-500" viewBox="0 0 24 24"
+                                                                fill="none" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div class="ml-3">
+                                                            <p class="text-sm text-amber-700">Los enlaces tienen una
+                                                                validez de
+                                                                <span class="font-bold">3 días</span>. Por favor,
+                                                                complete
+                                                                ambos formularios dentro de este plazo.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="max-h-[60vh] space-y-4 overflow-y-auto md:space-y-6">
+                                                    <div class="group">
+                                                        <div
+                                                            class="rounded-xl border-2 border-blue-100 bg-white p-4 transition-all duration-300 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-100 sm:p-6">
+                                                            <div class="flex items-center justify-between">
+                                                                <div class="flex-1">
+                                                                    <div class="mb-3 flex items-center space-x-3">
+                                                                        <span
+                                                                            class="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">Operaciones</span>
+                                                                        <span class="text-sm text-gray-400">•</span>
+                                                                        <span
+                                                                            class="text-sm text-gray-500">Obligatorio</span>
+                                                                    </div>
+                                                                    <p id="operaciones"
+                                                                        class="break-all text-gray-600">
+                                                                        {{ session('operacionesUrl') }}</p>
+                                                                </div>
+                                                                <button type="button"
+                                                                    onclick="copyToClipboard('{{ session('operacionesUrl') }}')"
+                                                                    class="ml-4 rounded-lg p-3 text-blue-500 transition-colors duration-200 hover:bg-blue-50">
+                                                                    <svg class="h-5 w-5" fill="none"
+                                                                        viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2z" />
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="group">
+                                                        <div
+                                                            class="rounded-xl border-2 border-green-100 bg-white p-4 transition-all duration-300 hover:border-green-300 hover:shadow-lg hover:shadow-green-100 sm:p-6">
+                                                            <div class="flex items-center justify-between">
+                                                                <div class="flex-1">
+                                                                    <div class="mb-3 flex items-center space-x-3">
+                                                                        <span
+                                                                            class="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">Financiera</span>
+                                                                        <span class="text-sm text-gray-400">•</span>
+                                                                        <span
+                                                                            class="text-sm text-gray-500">Obligatorio</span>
+                                                                    </div>
+                                                                    <p id="financiera"
+                                                                        class="break-all text-gray-600">
+                                                                        {{ session('financieraUrl') }}</p>
+                                                                </div>
+                                                                <button type="button"
+                                                                    onclick="copyToClipboard('{{ session('financieraUrl') }}')"
+                                                                    class="ml-4 rounded-lg p-3 text-green-500 transition-colors duration-200 hover:bg-green-50">
+                                                                    <svg class="h-5 w-5" fill="none"
+                                                                        viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2z" />
+                                                                    </svg>
+                                                                </button>
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-6 text-center text-sm text-gray-500 md:mt-8">
+                                                    <p>Si no completa ambos formularios, la información no podrá ser
+                                                        procesada.
+                                                    </p>
+                                                </div>
+                                                <!-- Información adicional -->
+                                                <div
+                                                    class="mt-8 rounded-lg border-l-4 border-red-500 bg-red-50 p-4 shadow-md">
+                                                    <div class="flex items-start">
+                                                        <div class="flex-shrink-0">
+                                                            <svg class="h-6 w-6 text-red-500"
+                                                                xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 110 20 10 10 0 010-20z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div class="ml-3">
+                                                            <h5 class="mb-1 text-lg font-semibold text-red-700">Nota
+                                                                importante
+                                                            </h5>
+                                                            <p class="text-sm leading-relaxed text-gray-700">Los
+                                                                enlaces de
+                                                                <span
+                                                                    class="font-medium text-black-600">Operaciones</span>
+                                                                y
+                                                                <span
+                                                                    class="font-medium text-black-600">Financiera</span>
+                                                                se
+                                                                han guardado en tu carpeta de <span
+                                                                    class="font-medium">Descargas</span>. Puedes
+                                                                utilizarlos
+                                                                para completar la información requerida o compartirlos
+                                                                con las
+                                                                personas responsables.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="mt-4 flex justify-end">
+                                                    <button wire:click="cerrarmodal"
+                                                        class="rounded-lg bg-red-500 px-4 py-2 text-white transition-colors hover:bg-red-600">Cerrar</button>
+                                                </div>
+                                            </div>
+                                            {{-- inicio diseño de copiado en portapapeles --}}
+                                            <div id="alert"
+                                                class="hidden fixed bottom-5 right-5 flex items-center rounded-md bg-white h-12 px-4 py-2 text-black shadow-md">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" class="mr-2">
+                                                    <g fill="none" stroke="currentColor" stroke-linecap="round"
+                                                        stroke-linejoin="round" stroke-width="2">
+                                                        <path d="M16 3H4v13" />
+                                                        <path d="M8 7h12v12a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2z" />
+                                                    </g>
+                                                </svg> Enlace Copiado.
+                                            </div>
+                                            <div>
+
+                                            </div>
+                                            {{-- fin diseño copiado en portapapeles --}}
+                                        </div>
+                                    @endif
+
+                    </div>
                 </form>
             </div>
         </div>

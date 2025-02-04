@@ -6,9 +6,8 @@
         </h1>
 
         <div class="overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
-            <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-                <table class="w-full border-collapse text-left">
-
+            <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+                <table class="w-full min-w-max border-collapse text-left">
                     <tbody class="divide-y divide-slate-100">
                         @if ($formularios->isEmpty())
                             <div class="rounded-lg border-2 border-dashed border-slate-300 bg-white p-8">
@@ -63,6 +62,7 @@
                                     </th>
                                 </tr>
                             </thead>
+
                             @foreach ($formularios as $formulario)
                                 <tr class="group transition-colors hover:bg-slate-50/70">
                                     <td class="px-6 py-4">
@@ -93,18 +93,130 @@
                                     </td>
 
                                     <td class="px-6 py-4">
-                                        <div class="flex gap-2">
-                                            @if ($formulario->adjunto_cotizacion)
-                                                <span
-                                                    class="inline-flex items-center gap-2 rounded-md bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-600 ring-1 ring-inset ring-indigo-200 group-hover:bg-indigo-100 transition-colors">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                        class="w-3.5 h-3.5">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                                                    </svg>
-                                                    {{ pathinfo($formulario->adjunto_cotizacion, PATHINFO_EXTENSION) }}
-                                                </span>
+                                        <div class="flex flex-col gap-1.5 max-w-md p-2 rounded-lg bg-slate-50/50">
+                                            @php
+                                                $documentos = $formulario->documento;
+                                                $totalDocumentos = $documentos->count();
+                                            @endphp
+
+                                            @if ($totalDocumentos > 1)
+                                                <div class="relative">
+                                                    <!-- Main document item -->
+                                                    <a href="{{ asset('storage/' . $documentos->first()->ruta_documento) }}"
+                                                        target="_blank"
+                                                        class="group flex items-center gap-2 p-2.5 rounded-md bg-white shadow-sm border border-slate-200 hover:border-blue-500 hover:shadow-md transition-all duration-200">
+                                                        <div class="flex items-center gap-2 flex-1 min-w-0">
+                                                            <div
+                                                                class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-blue-50 group-hover:bg-blue-100 transition-colors">
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    class="w-4 h-4 text-blue-500" fill="none"
+                                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        stroke-width="2"
+                                                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                                </svg>
+                                                            </div>
+                                                            <div class="min-w-0 flex-1">
+                                                                <span
+                                                                    class="block text-sm font-medium text-slate-700 group-hover:text-blue-600 truncate">
+                                                                    {{ $documentos->first()->nombre_original }}
+                                                                </span>
+                                                                <span class="text-xs text-slate-400">
+                                                                    {{ $totalDocumentos - 1 }} documentos adicionales
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+
+                                                    <button wire:click="toggleMostrarMas"
+                                                        class="absolute right-2.5 top-2.5 flex items-center gap-1 px-2 py-1 rounded-full bg-slate-100 hover:bg-blue-100 transition-all duration-200">
+                                                        <span
+                                                            class="text-xs font-semibold {{ $mostrarMas ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600' }}">
+                                                            {{ $mostrarMas ? 'Ocultar' : 'Ver' }}
+                                                        </span>
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            class="w-3.5 h-3.5 transform transition-transform duration-200 {{ $mostrarMas ? 'rotate-180 text-blue-600' : 'text-slate-400 group-hover:text-blue-600' }}"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M19 9l-7 7-7-7" />
+                                                        </svg>
+                                                    </button>
+
+
+                                                    @if ($mostrarMas)
+                                                        <div
+                                                            class="mt-2 space-y-2 overflow-hidden transition-all duration-300">
+                                                            @foreach ($documentos->skip(1) as $documento)
+                                                                <a href="{{ asset('storage/' . $documento->ruta_documento) }}"
+                                                                    target="_blank"
+                                                                    class="group flex items-center gap-2 p-2.5 rounded-md bg-white shadow-sm border border-slate-200 hover:border-blue-500 hover:shadow-md transition-all duration-200">
+                                                                    <div
+                                                                        class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 group-hover:bg-blue-50 transition-colors">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                                            class="w-4 h-4 text-slate-400 group-hover:text-blue-500"
+                                                                            fill="none" viewBox="0 0 24 24"
+                                                                            stroke="currentColor">
+                                                                            <path stroke-linecap="round"
+                                                                                stroke-linejoin="round"
+                                                                                stroke-width="2"
+                                                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                                        </svg>
+                                                                    </div>
+                                                                    <div class="min-w-0 flex-1">
+                                                                        <span
+                                                                            class="block text-sm font-medium text-slate-600 group-hover:text-blue-600 truncate">
+                                                                            {{ $documento->nombre_original }}
+                                                                        </span>
+                                                                    </div>
+                                                                </a>
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            @elseif($totalDocumentos === 1)
+                                                @foreach ($documentos as $documento)
+                                                    <a href="{{ asset('storage/' . $documento->ruta_documento) }}"
+                                                        target="_blank"
+                                                        class="group flex items-center gap-2 p-2.5 rounded-md bg-white shadow-sm border border-slate-200 hover:border-blue-500 hover:shadow-md transition-all duration-200">
+                                                        <div
+                                                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 group-hover:bg-blue-50 transition-colors">
+                                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                                class="w-4 h-4 text-slate-400 group-hover:text-blue-500"
+                                                                fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div class="min-w-0 flex-1">
+                                                            <span
+                                                                class="block text-sm font-medium text-slate-600 group-hover:text-blue-600 truncate">
+                                                                {{ $documento->nombre_original }}
+                                                            </span>
+                                                        </div>
+                                                    </a>
+                                                @endforeach
+                                            @else
+                                                <div
+                                                    class="flex items-center gap-3 p-3 rounded-md bg-slate-50 border border-slate-200">
+                                                    <div
+                                                        class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            class="w-4 h-4 text-slate-400" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        </svg>
+                                                    </div>
+                                                    <div>
+                                                        <span class="block text-sm font-medium text-slate-600">No hay
+                                                            documentos</span>
+                                                        <span class="text-xs text-slate-400">No se han adjuntado
+                                                            documentos</span>
+                                                    </div>
+                                                </div>
                                             @endif
                                         </div>
                                     </td>
@@ -112,8 +224,9 @@
                                     <td class="px-6 py-4">
                                         <span
                                             class="inline-flex items-center gap-2 rounded-md bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-600 ring-1 ring-inset ring-amber-200 group-hover:bg-amber-100 transition-colors">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                class="w-3.5 h-3.5">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                                             </svg>
@@ -126,14 +239,15 @@
                                         <div x-data="{ showModal: false, formularioId: {{ $formulario->id }} }" class="relative">
                                             <!-- Botón de editar con efecto hover suave -->
                                             <button @click="showModal = true"
-                                                class="group inline-flex items-center justify-center rounded-full border border-transparent bg-emerald-50/50 p-2.5 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 ring-0 transition-all duration-200 hover:shadow-lg hover:shadow-emerald-100">
+                                                class="group inline-flex items-center justify-center rounded-full border border-transparent bg-emerald-50/50 p-1.5 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 ring-0 transition-all duration-200 hover:shadow-lg hover:shadow-emerald-100">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                    class="h-5 w-5 transform transition-transform group-hover:scale-110">
+                                                    class="h-4 w-4 transform transition-transform group-hover:scale-110">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="M16.862 4.487l3.621 3.621a2.25 2.25 0 010 3.182l-8.465 8.465a2.25 2.25 0 01-1.306.615l-4.404.845a2.25 2.25 0 01-2.697-2.698l.845-4.404a2.25 2.25 0 01.615-1.306l8.465-8.465a2.25 2.25 0 013.182 0z" />
                                                 </svg>
                                             </button>
+
 
                                             <!-- Modal con diseño moderno -->
                                             <div x-show="showModal" x-cloak @keydown.escape.window="showModal = false"
@@ -190,7 +304,7 @@
                                                             <div
                                                                 class="px-6 py-8 max-h-[calc(100vh-200px)] overflow-y-auto">
                                                                 <div class="space-y-6">
-                                                                    <livewire:editar-formulario :formulario="$formulario" 
+                                                                    <livewire:editar-formulario :formulario="$formulario"
                                                                         wire:key="edit-{{ $formulario->id }}" />
                                                                 </div>
                                                             </div>
@@ -198,27 +312,7 @@
                                                             <!-- Footer moderno -->
                                                             <div
                                                                 class="bg-gray-50 px-6 py-4 flex items-center justify-end gap-3">
-                                                                {{-- <button @click="showModal = false"
-                                                                    class="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 hover:border-gray-400 transition-colors duration-200">
-                                                                    Cancelar
-                                                                </button> --}}
-                                                                {{-- <button type="submit"
-                                                                    class="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm transition-colors duration-200">
-                                                                    <svg wire:loading wire:target="submit"
-                                                                        class="animate-spin w-5 h-5 mr-2"
-                                                                        fill="none" viewBox="0 0 24 24"
-                                                                        xmlns="http://www.w3.org/2000/svg"
-                                                                        aria-hidden="true">
-                                                                        <circle class="opacity-25" cx="12"
-                                                                            cy="12" r="10"
-                                                                            stroke="currentColor" stroke-width="4">
-                                                                        </circle>
-                                                                        <path class="opacity-75" fill="currentColor"
-                                                                            d="M4 12a8 8 0 0116 0v5.5h-3.5v-5.5a4.5 4.5 0 00-9 0v5.5H4V12z">
-                                                                        </path>
-                                                                    </svg>
-                                                                    Guardar Cambios
-                                                                </button> --}}
+
                                                             </div>
                                                         </div>
                                                     </div>

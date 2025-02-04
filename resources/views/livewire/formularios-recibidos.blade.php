@@ -21,7 +21,8 @@
                                     </svg>
                                     <div
                                         class="absolute inset-0 flex items-center justify-center text-white text-3xl font-bold">
-                                        {{ $totalFormularios }}
+                                        {{-- {{ $totalFormularios }} --}}
+                                        #
                                     </div>
                                 </div>
                                 <div class="text-gray-800">
@@ -30,7 +31,7 @@
                                 </div>
                             </div>
 
-                            <!-- Promedio de ventas  -->
+                            <!-- Promedio de ventas -->
                             <div
                                 class="bg-gradient-to-br from-purple-100 to-purple-300 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 p-5 text-center">
                                 <div class="relative mx-auto w-24 h-24 mb-4">
@@ -44,14 +45,14 @@
                                     </svg>
                                     <div
                                         class="absolute inset-0 flex items-center justify-center text-white text-2xl font-bold">
-                                        $</div>
+                                        $
+                                    </div>
                                 </div>
                                 <div class="text-gray-800">
                                     <p class="text-sm font-medium">Promedio de Precio de Venta</p>
-                                    <p class="text-xl font-bold">$ 5,000</p>
+                                    <p class="text-xl font-bold">${{ number_format($averageSalePrice, 2) }}</p>
                                 </div>
                             </div>
-
 
                             <!-- Porcentaje de Anticipo -->
                             <div
@@ -67,11 +68,12 @@
                                     </svg>
                                     <div
                                         class="absolute inset-0 flex items-center justify-center text-white text-3xl font-bold">
-                                        65%</div>
+                                        %
+                                    </div>
                                 </div>
                                 <div class="text-gray-800">
                                     <p class="text-sm font-medium">Porcentaje de Anticipo</p>
-                                    <p class="text-xl font-bold">65%</p>
+                                    <p class="text-xl font-bold">{{ number_format($advancePercentage, 2) }}%</p>
                                 </div>
                             </div>
 
@@ -124,13 +126,13 @@
 
                                 <button
                                     class="group relative px-4 py-2 text-xs font-semibold text-white
-               bg-gradient-to-r from-blue-500 to-blue-600
-               rounded-lg shadow-md
-               hover:from-blue-600 hover:to-blue-700
-               focus:outline-none focus:ring-4 focus:ring-blue-300
-               transition-all duration-300
-               transform hover:scale-105 active:scale-95
-               flex items-center justify-center gap-2">
+                                        bg-gradient-to-r from-blue-500 to-blue-600
+                                        rounded-lg shadow-md
+                                      hover:from-blue-600 hover:to-blue-700
+                                        focus:outline-none focus:ring-4 focus:ring-blue-300
+                                        transition-all duration-300
+                                        transform hover:scale-105 active:scale-95
+                                        flex items-center justify-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white"
                                         viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd"
@@ -139,6 +141,7 @@
                                     </svg>
                                     Generar Reporte
                                 </button>
+
 
 
                             </div>
@@ -165,7 +168,7 @@
 
                     <!-- Tabla -->
                     @if ($formularios->isNotEmpty())
-                        <div class="overflow-x-auto">
+                        <div class="overflow-x-auto" wire:poll.visible.60s>
                             <table class="w-full table-auto border-collapse border border-gray-200 shadow-sm">
                                 <thead>
                                     <tr class="bg-gray-50 border-b border-gray-200">
@@ -181,6 +184,10 @@
                                             Contrato</th>
                                         <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">Fecha
                                             de envío</th>
+                                        <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">Info
+                                            Marcas</th>
+                                        <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">Links
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
@@ -196,7 +203,8 @@
                                                 {{ $formulario->infonegocio->n_oportunidad_crm }}
                                             </td>
                                             <td class="px-4 py-3">
-                                                <button wire:click="loadFormulario({{ $formulario->id }})"
+                                                <button x-data
+                                                    x-on:click="$dispatch('show-modal'); $wire.loadFormulario({{ $formulario->id }})"
                                                     class="inline-flex items-center px-3 py-1.5 rounded-md bg-teal-50 text-teal-600 text-xs font-medium hover:bg-teal-100 transition-colors">
                                                     <svg class="w-4 h-4 mr-1" fill="currentColor"
                                                         viewBox="0 0 24 24">
@@ -204,7 +212,7 @@
                                                             d="M12 22a10 10 0 110-20 10 10 0 010 20zm1 12h-2v-2h2v2zm0-4h-2V7h2v5z">
                                                         </path>
                                                     </svg>
-                                                    Información
+                                                    Ver detalles
                                                 </button>
                                             </td>
                                             <td class="px-4 py-3">
@@ -225,6 +233,37 @@
                                                     {{ $formulario->created_at->format('d/m/Y') }}
                                                 </span>
                                             </td>
+                                            <td class="px-4 py-3 flex justify-center items-center">
+                                                <a href="" download class="cursor-pointer group">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="h-6 w-6 text-blue-500 group-hover:text-blue-700 transition-all duration-300 ease-in-out transform group-hover:scale-110"
+                                                         viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         stroke="currentColor"
+                                                         stroke-width="2">
+                                                        <path d="M12 15V3m0 12l-4-4m4 4l4-4" />
+                                                        <path d="M20 16v2a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-2" />
+                                                    </svg>
+                                                </a>
+                                            </td>
+                                            <td class="px-4 py-3 text-sm text-gray-600">
+
+                                                @foreach ($formulario->formLinks as $link)
+                                                    @if ($link->type === 'operaciones')
+                                                        <a href="{{ route('formulario-operaciones', ['link' => $link->link]) }}"
+                                                            target="_blank" class="text-blue-500 hover:underline">
+                                                            {{ ucfirst($link->type) }}
+                                                        </a><br>
+                                                    @elseif ($link->type === 'financiera')
+                                                        <a href="{{ route('formulario-financiera', ['link' => $link->link]) }}"
+                                                            target="_blank" class="text-blue-500 hover:underline">
+                                                            {{ ucfirst($link->type) }}
+                                                        </a><br>
+                                                    @endif
+                                                @endforeach
+
+                                            </td>
+
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -266,8 +305,12 @@
 
                 </div>
                 @if ($selectedFormulario)
-                    <div x-data="{ open: true }" x-init="$watch('open', value => { if (!value) $wire.closeModal() })" x-show="open" x-cloak wire:ignore
-                        class="fixed inset-0 z-50 overflow-y-auto">
+                    <div x-data="{
+                        open: @entangle('open')
+                    }" x-show="open" x-cloak class="fixed inset-0 z-50 overflow-y-auto"
+                        x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+                        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
                         <div class="fixed inset-0 bg-black opacity-50"></div>
                         <div class="relative min-h-screen flex items-center justify-center p-4">
                             <div
@@ -275,7 +318,7 @@
                                 <div
                                     class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
                                     <h2 class="text-xl font-semibold text-gray-800">Información Detallada</h2>
-                                    <button @click="open = false" class="text-gray-400 hover:text-gray-600">
+                                    <button wire:click="closeModal" class="text-gray-400 hover:text-gray-600">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -361,7 +404,7 @@
 
                                     <!-- Gerente de producto -->
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200">
-                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50" >
+                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
                                             <h2 class="text-lg font-semibold text-slate-900">Gerente de producto</h2>
                                         </div>
 
@@ -470,7 +513,7 @@
 
                                     <!-- Orden de compra -->
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200">
-                                        <div  class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
+                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
                                             <h2 class="text-lg font-semibold text-slate-900">Orden de compra</h2>
                                         </div>
 
@@ -515,7 +558,7 @@
 
                                     <!-- Información de Entrega -->
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200">
-                                        <div  class="border-b border-slate-200 px-6 py-4 bg-indigo-50" >
+                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
                                             <h2 class="text-lg font-semibold text-slate-900">Información de Entrega
                                             </h2>
                                         </div>
@@ -909,73 +952,67 @@
 
 
                                     <!-- Archivos Adjuntos -->
-                                    <div class="bg-white rounded-lg shadow-md border border-slate-200 mt-6">
-                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
-                                            <h2 class="text-lg font-semibold text-black">Archivos Adjuntos</h2>
+                                    <div class="bg-white rounded-xl shadow-lg border border-slate-200 mt-6">
+                                        <div
+                                            class="border-b border-slate-200 px-6 py-4 bg-gradient-to-r from-indigo-50 to-white">
+                                            <h2 class="text-lg font-semibold text-gray-800">Archivos Adjuntos</h2>
                                         </div>
 
                                         <div class="p-6">
-                                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                                <!-- Archivo Excel -->
-                                                <div
-                                                    class="flex items-center p-4 bg-green-50 rounded-lg border border-green-200 hover:shadow-md transition-shadow">
-                                                    <div class="flex-shrink-0 mr-4">
-                                                        <svg class="w-8 h-8 text-green-600" fill="none"
-                                                            stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2"
-                                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                        </svg>
-                                                    </div>
-                                                    <div>
-                                                        <p class="text-sm font-medium text-green-700">Reporte.xlsx</p>
-                                                        <p class="text-xs text-green-600">Excel • 2.4 MB</p>
-                                                    </div>
+                                            @if ($selectedFormulario->documento->count() > 0)
+                                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                                    @foreach ($selectedFormulario->documento as $documento)
+                                                        <div
+                                                            class="bg-white border border-slate-100 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 ease-in-out">
+                                                            <div
+                                                                class="p-4 flex items-center justify-between border-b border-slate-100">
+                                                                <div class="flex items-center space-x-3">
+                                                                    <div class="bg-indigo-50 p-2 rounded-lg">
+                                                                        <i
+                                                                            class="fas fa-{{ $this->getFileIcon($documento->nombre_original) }} text-3xl text-indigo-600"></i>
+                                                                    </div>
+                                                                    <div>
+                                                                        <p
+                                                                            class="text-sm font-medium truncate max-w-[200px]">
+                                                                            {{ $documento->nombre_original }}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="p-4 text-center">
+                                                                <a href="{{ asset('storage/' . $documento->ruta_documento) }}"
+                                                                    target="_blank"
+                                                                    class="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-md text-xs transition-colors duration-300 flex items-center">
+                                                                    <i class="ri-eye-line mr-1"></i>
+                                                                    Ver
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
                                                 </div>
 
-                                                <!-- Archivo PDF -->
-                                                <div
-                                                    class="flex items-center p-4 bg-red-50 rounded-lg border border-red-200 hover:shadow-md transition-shadow">
-                                                    <div class="flex-shrink-0 mr-4">
-                                                        <svg class="w-8 h-8 text-red-600" fill="none"
-                                                            stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2"
-                                                                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                                        </svg>
+                                                {{-- Commented out section remains the same as original --}}
+                                                {{-- @if ($selectedFormulario->documento->count() > 3)
+                                                    <div class="mt-4 text-center">
+                                                        <button wire:click="toggleMostrarMas" class="text-blue-600 hover:text-blue-800 transition-colors">
+                                                            {{ $mostrarMas ? 'Mostrar menos' : 'Mostrar todos los archivos' }}
+                                                            ({{ $selectedFormulario->documento->count() }})
+                                                        </button>
                                                     </div>
-                                                    <div>
-                                                        <p class="text-sm font-medium text-red-700">Documento.pdf</p>
-                                                        <p class="text-xs text-red-600">PDF • 1.8 MB</p>
-                                                    </div>
+                                                @endif --}}
+                                            @else
+                                                <div class="text-center text-gray-500 p-4 bg-gray-100 rounded-lg">
+                                                    <p>No se han adjuntado archivos para este formulario.</p>
                                                 </div>
-
-                                                <!-- Archivo Word -->
-                                                <div
-                                                    class="flex items-center p-4 bg-blue-50 rounded-lg border border-blue-200 hover:shadow-md transition-shadow">
-                                                    <div class="flex-shrink-0 mr-4">
-                                                        <svg class="w-8 h-8 text-blue-600" fill="none"
-                                                            stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2"
-                                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                        </svg>
-                                                    </div>
-                                                    <div>
-                                                        <p class="text-sm font-medium text-blue-700">Contrato.docx</p>
-                                                        <p class="text-xs text-blue-600">Word • 985 KB</p>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            @endif
                                         </div>
                                     </div>
 
-                                    <div class="sticky bottom-0 bg-gray-50 px-6 py-4 border-t">
-                                        <button @click="open = false"
-                                            class="w-full sm:w-auto px-6 py-2.5 bg-gray-800 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors">
-                                            Cerrar
-                                        </button>
-                                    </div>
+                                    {{-- <button
+                                        wire:click="closeModal"
+                                        class="px-4 py-2 bg-gray-600 text-white rounded-lg">
+                                        Cerrar
+                                    </button> --}}
                                 </div>
                             </div>
 
@@ -983,6 +1020,6 @@
                 @endif
 
 
-            </div>
+        </div>
     </x-app-layout>
 </div>

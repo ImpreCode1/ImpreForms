@@ -349,7 +349,7 @@ class EnviarFormulario extends Component
             'director' => $this->director, // obligatorio vacrhar
             'numero' => $this->tel2gerente, // obligatorio numerico
             'correo_director' => $this->cor2gerente, // obligatorio tipo correo
-]);
+        ]);
 
         $this->marcaId = $marca->id;
 

@@ -11,11 +11,12 @@ class Historial extends Component
     public $formularios;
     public $editingFormulario;
     public $showEditModal = false;
+    public $mostrarMas = false;
 
     #[On('formularioUpdated')]
     public function mount()
     {
-        $this->formularios = Marca::with('infonegocio','informacion')
+        $this->formularios = Marca::with('infonegocio','informacion','documento')
             ->where('user_id', auth()->id())
             ->get();
     }
@@ -31,12 +32,18 @@ class Historial extends Component
         $this->showEditModal = false;
     }
 
+    public function toggleMostrarMas()
+    {
+
+        $this->mostrarMas = !$this->mostrarMas;
+    }
 
 
     public function render()
     {
         return view('livewire.historial', [
             'formularios' => $this->formularios,
+            'mostrarMas' => $this->mostrarMas,
 
         ]);
     }

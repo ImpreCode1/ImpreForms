@@ -2,35 +2,59 @@
 
 namespace App\Livewire;
 
+use App\Models\Financiera;
 use App\Models\Marca;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class FormulariosRecibidos extends Component
 {
     use WithPagination;
-
-    public $negocio, $nombres, $correo, $numero, $crms;
-    public $fecha, $oc, $precio, $soluciones, $linea, $codlinea;
-    public $nomgerente, $telgerente, $corgerente, $director, $tel2gerente, $cor2gerente;
-    public $entregacliente, $lugarentrega, $espais, $tiempoentrega, $terminoentrega, $tipoicoterm;
-    public $prestar, $suministrar, $inicio, $finalizacion;
-    public $clientcode, $clientname, $mail, $details;
-    public $aplicagarantia, $terminogarantia, $aplicapoliza, $porcentaje;
-    public $formapago, $moneda, $incluye_iva, $fecha_pago, $otros;
     public $formulario;
     public $search = '';
     public $sortBy = 'created_at';
     public $sortDirection = 'desc';
     // public $results = [];
     public $totalFormularios = 0;
-
+    public $mostrarMas = false;
     // public $showModal = false;
+    public $totalDocumentos = 0;
+    public $averageSalePrice = 0;
+    public $advancePercentage = 0;
 
-    public $selectedFormulario;
+    public $selectedFormulario = null;
     protected $paginationTheme = 'tailwind';
 
     public $open = false;
+
+    protected $listeners = ['openModal' => 'loadFormulario'];
+
+
+    public function getFileIcon($fileName)
+    {
+        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        $icons = [
+            'pdf' => 'file-pdf',
+            'doc' => 'file-word',
+            'docx' => 'file-word',
+            'xls' => 'file-excel',
+            'xlsx' => 'file-excel',
+            'jpg' => 'file-image',
+            'jpeg' => 'file-image',
+            'png' => 'file-image',
+            'zip' => 'file-zipper',
+            'rar' => 'file-zipper',
+        ];
+
+        return $icons[$extension] ?? 'file';
+    }
+
+    public function toggleMostrarMas()
+    {
+        $this->mostrarMas = !$this->mostrarMas;
+    }
 
     public function updatingSearch()
     {
@@ -54,8 +78,12 @@ class FormulariosRecibidos extends Component
     public function mount()
     {
         $this->totalFormularios = Marca::count();
+        $this->averageSalePrice = Marca::avg('precio_venta');
+        $this->advancePercentage = Financiera::avg('porcentaje');
     }
 
+
+    #[On('openModal')]
     public function loadFormulario($id)
     {
         $this->selectedFormulario = Marca::with([
@@ -64,13 +92,22 @@ class FormulariosRecibidos extends Component
             'pago',
             'financiera',
             'infoEntrega',
+            'documento',
+            'formLinks',
         ])->findOrFail($id);
+
+        // dd($this->selectedFormulario->documento);
+        $this->open = true;
     }
 
     public function closeModal()
     {
         $this->selectedFormulario = null;
+        $this->open = false;
     }
+
+
+
 
     public function render()
     {
