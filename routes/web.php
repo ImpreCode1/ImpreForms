@@ -28,7 +28,7 @@ Route::view('profile', 'profile')
 
 // redireccionamiento a la vista de formulario enviado  del formulario
     Route::view('successful', 'successful')
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'admin', 'verified'])
     ->name('crear-usuario');
 
 //sidebar users

@@ -206,7 +206,7 @@
                                         wire:model="no" wire:click="setAdvancePayment('no')" checked>
                                     <span class="ml-2 text-gray-500">No</span>
                             </div>
-                            @error('no')
+                            @error('si')
                             <span class="text-sm text-red-500">{{ $message }}</span>
                         @enderror
                         </div>
@@ -214,7 +214,7 @@
 
 
 
-                        <div id="advancePaymentFields"
+                        <div id="advancePaymentFieldsi
                             class="{{ $hasAdvancePayment === 'si' ? '' : 'hidden' }} space-y-4">
 
                             <div>

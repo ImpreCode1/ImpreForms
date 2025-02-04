@@ -54,42 +54,41 @@
                 </ul>
             </div>
 
-        </div>
 
+  <div class=" rounded-xl p-2 mb-8">
+
+                <ul class="space-y-3">
+                    <li class="flex items-center  text-amber-600  rounded-r-lg border-l-4  bg-amber-50 p-4">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                        Su formulario se podra editar hasta que el proceso termine.
+                    </li>
+
+            </div>
+  <div>
+
+
+    <button onclick="window.history.back()" class="cursor-pointer bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded shadow transition duration-200">Regresar</button>
+    {{-- <button wire:click="regresar" class="cursor-pointer bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded shadow transition duration-200">
+    Editar
+</button> --}}
+  </div>
+        </div>
+<div>
+
+
+</div>
     </div>
 
     <style>
-    @keyframes success-check {
-        0% {
-            transform: scale(0);
-            opacity: 0;
-        }
-        50% {
-            transform: scale(1.2);
-        }
-        100% {
-            transform: scale(1);
-            opacity: 1;
-        }
-    }
+    @keyframes success-check {0% {transform: scale(0);opacity: 0;}50% {transform: scale(1.2);}100% {transform: scale(1);opacity: 1;}}
 
-    .animate-success-check {
-        animation: success-check 0.5s ease-out forwards;
-    }
+    .animate-success-check {animation: success-check 0.5s ease-out forwards;}
 
-    @keyframes fade-in-up {
-        0% {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
+    @keyframes fade-in-up {0% {opacity: 0;transform: translateY(20px);}100% {opacity: 1;transform: translateY(0);}}
 
-    .animate-fade-in-up {
-        animation: fade-in-up 0.6s ease-out forwards;
-    }
+    .animate-fade-in-up {animation: fade-in-up 0.6s ease-out forwards;}
     </style>
+
 </div>

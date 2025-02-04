@@ -34,6 +34,7 @@ class Formulariofinanciera extends Component
     public $otros;
     public $no;
     public $link;
+
     public $marcaId;
 //mostrar el mensaje personalizado en caso de que el formulario no tenga todos los campos llenos
     public $errorMessage;
@@ -55,7 +56,7 @@ class Formulariofinanciera extends Component
         'garantia.required' => 'El espacio es requerido.',
         'garantia.min' => 'El espacio debe tener mínimo 2 caracteres',
 
-        'no.required' => 'El espacio es requerido.',
+        'hasAdvancePayment.required' => 'El espacio es requerido.',
 
     ];
 
@@ -66,19 +67,19 @@ class Formulariofinanciera extends Component
             'moneda' => 'required|string|min:2',
             'pago' => 'required|string|min:2',
             'garantia' =>'required|string|min:2',
-            'no' => 'required|string',
+            'hasAdvancePayment' => 'required|string',
 
         ];
 
-        // Verifica si hay un pago anticipado
+        //! Verifica si hay un pago anticipado
         if ($this->hasAdvancePayment !== 'no') {
-            // Si hay un pago anticipado, el anticipo y la fecha son requeridos
-            $rules['anticipo'] = 'nullable|numeric'; // Asegura que el anticipo sea numérico si se proporciona
-            $rules['fecha'] = 'nullable|date'; // Asegúrate de que la fecha sea válida si se proporciona
+            //! Si hay un pago anticipado, el anticipo y la fecha son requeridos
+            $rules['anticipo'] = 'required|numeric'; //! Asegura que el anticipo sea numérico si se proporciona
+            $rules['fecha'] = 'required|date'; //! Asegúrate de que la fecha sea válida si se proporciona
         } else {
-            // Si no hay pago anticipado, se puede omitir la validación de los campos
-            $rules['anticipo'] = 'nullable|numeric'; // Opcional y debe ser numérico si se proporciona
-            $rules['fecha'] = 'nullable|date'; // Opcional y debe ser válida si se proporciona
+            //! Si no hay pago anticipado, se puede omitir la validación de los campos
+            $rules['anticipo'] = 'nullable|numeric'; //! Opcional y debe ser numérico si se proporciona
+            $rules['fecha'] = 'nullable|date'; //! Opcional y debe ser válida si se proporciona
         }
 
         return $rules;
@@ -94,7 +95,7 @@ class Formulariofinanciera extends Component
         $this->hasAdvancePayment = $value;
 
         if ($value === 'no') {
-            // Resetear otros campos si no hay pago anticipado
+            //* Resetear otros campos si no hay pago anticipado
             $this->advancePaymentPercentage = null;
             $this->advancePaymentDate = null;
             $this->anticipo = null;
@@ -111,6 +112,8 @@ class Formulariofinanciera extends Component
             abort(404, 'El enlace ha expirado o no es válido.');
         }
 
+
+
         $this->cliente = $record->cliente;
         $this->nombre = $record->nombre;
         $this->crm = $record->crm;
@@ -123,9 +126,15 @@ class Formulariofinanciera extends Component
 
         $financiera = Financiera::where('marcas_id', $this->marcaId)->first();
         if ($financiera) {
+
+            $this->plazo = $financiera ->plazo;
             $this->pago = $financiera->forma_pago;
             $this->moneda = $financiera->moneda;
             $this->otros = $financiera->otros;
+            $this->garantia =$financiera->garantiascredit;
+            $this->anticipo = $financiera ->porcentaje;
+
+
         }
         if (Session::has('form_submited')){
             return redirect()->to('/successful');
@@ -134,23 +143,16 @@ class Formulariofinanciera extends Component
 
     public function submit()
     {
+        //TODO Validar los datos del formulario
 
-        $DataValidate=$this->validate();
+        $DataValidate = $this->validate();
 
+        //TODO Buscar si existe un registro de 'Financiera' para el 'marcas_id'
 
-        Financiera::create([
-            'marcas_id' => 2,
-            'plazo' => $this->plazo,
-            'forma_pago' => $this->pago,
-            'moneda' => $this->moneda,
-            'garantiascredit' => $this->garantia,
-            'existencia_anticipo' => $this->hasAdvancePayment ? 1 : 0,
-            'porcentaje' => $this->anticipo,
-            'fecha_pago' => $this->fecha,
-            'otros' => $this->otros,
-
-        ]);
         $financiera = Financiera::where('marcas_id', $this->marcaId)->first();
+
+        //TODO Si existe un registro, actualízalo
+
         if ($financiera) {
             $financiera->update([
                 'plazo' => $this->plazo,
@@ -161,46 +163,43 @@ class Formulariofinanciera extends Component
                 'porcentaje' => $this->anticipo,
                 'fecha_pago' => $this->fecha,
                 'otros' => $this->otros,
-            ]);
-        } else {
-            Financiera::create([
-                'marcas_id' => $this->marcaId,
-                'plazo' => $this->plazo,
-                'forma_pago' => $this->pago,
-                'moneda' => $this->moneda,
-                'garantiascredit' => $this->garantia,
-                'existencia_anticipo' => $this->hasAdvancePayment ? 1 : 0,
-                'porcentaje' => $this->anticipo,
-                'fecha_pago' => $this->fecha,
-                'otros' => $this->otros,
+
+
             ]);
 
+            session()->flash('mensaje', 'Formulario actualizado correctamente.');
+        } else {
+
+
+            //TODO Si no existe el registro, puedes mostrar un mensaje o manejarlo de alguna manera
+
+
+        session()->flash('mensaje', 'No se encontró el registro de financiera para actualizar.');
         }
+
+        //TODO Establecer variable de sesión para indicar que el formulario fue enviado
+
         Session::put('form_submitted', true);
 
+        //TODO Limpiar los campos del formulario en caso de que sea necesario
+        //* En este caso no los limpio para que el usuario pueda ver la informacon anterior y poder editar
 
+        // $this->reset(['plazo', 'pago', 'moneda', 'garantia', 'hasAdvancePayment', 'anticipo', 'fecha', 'otros']);
 
+        //TODO Marcar como exitoso y redirigir
 
-
-            session()->flash('mensaje', 'Formulario enviado correctamente.');
-
-
-        $this->reset(['plazo', 'pago', 'moneda', 'garantia', 'hasAdvancePayment', 'anticipo', 'fecha', 'otros']);
-
-
- 
-        $this->success= true;
-        return Redirect ()->to('/successful');
-
-
+        $this->success = true;
+        return redirect()->to('/successful');
     }
-
     public function render()
     {
         return view('livewire.formulariofinanciera');
 
 
     }
+
+
+
 
     public function getStepIconClasses($stepNumber)
     {

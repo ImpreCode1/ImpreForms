@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
+
 class FormularioInteractivo extends Component
 {
     public $cliente;
@@ -23,6 +24,7 @@ class FormularioInteractivo extends Component
     public $destino;
     public $entregalocal;
     public $clientes;
+    public $fecha;
     public $link;
     public $marcaId;
 
@@ -85,6 +87,24 @@ class FormularioInteractivo extends Component
         if (is_null($this->marcaId)) {
             abort(500, 'Marca ID is null');
         }
+
+        $infoEntrega = Infoentrega::where('marcas_id', $this->marcaId)->first();
+        if  ($infoEntrega){
+                $this -> marcaId = $infoEntrega -> marcas_id;
+           $this ->clientes = $infoEntrega-> entrega_cliente;
+           $this-> lugar = $infoEntrega->lugar_entrega;
+            $this->pais = $infoEntrega->pais;
+            $this-> puerto = $infoEntrega->puerto;
+            $this -> icoterm = $infoEntrega->incoterm;
+            $this-> transporte = $infoEntrega->transporte;
+            $this   ->  origen = $infoEntrega->origen;
+            $this -> destino = $infoEntrega -> destino;
+            $this -> entregalocal = $infoEntrega->condiciones;
+
+
+
+            }
+
     }
 
     public $currentStep = 1;
@@ -114,45 +134,52 @@ class FormularioInteractivo extends Component
 
     public function submit()
     {
-        // dd('Método submit llamado', $this->all());
-
+        // Validar los datos antes de proceder
         $this->validate();
 
-        Infoentrega::create([
+        // Buscar el registro existente en Infoentrega
+        $infoEntrega = Infoentrega::where('marcas_id', $this->marcaId)->first();
 
-            'marcas_id' => 2,
-            'entrega_cliente' => $this->cliente,
-            'lugar_entrega'=> $this->lugar,
-            'pais' =>  $this->pais,
-            'puerto' =>  $this->puerto,
-            'incoterm' =>  $this->icoterm,
-            'transporte' =>  $this->transporte,
-            'origen' =>  $this->origen,
-            'destino' =>  $this->destino,
-            'condiciones' =>  $this->entregalocal,
+        if ($infoEntrega) {
+            // Si el registro ya existe, actualizarlo con los nuevos valores
+            $infoEntrega->update([
 
-            'marcas_id' => $this->marcaId,
-            'entrega_cliente' => $this->clientes,
-            'lugar_entrega' => $this->lugar,
-            'pais' => $this->pais,
-            'puerto' => $this->puerto,
-            'incoterm' => $this->icoterm,
-            'transporte' => $this->transporte,
-            'origen' => $this->origen,
-            'destino' => $this->destino,
-            'condiciones' => $this->entregalocal,
-
-        ]);
+                'entrega_cliente' => $this->clientes,
+                'lugar_entrega' => $this->lugar,
+                'pais' => $this->pais,
+                'puerto' => $this->puerto,
+                'incoterm' => $this->icoterm,
+                'transporte' => $this->transporte,
+                'origen' => $this->origen,
+                'destino' => $this->destino,
+                'condiciones' => $this->entregalocal
 
 
+            ]);
+        } else {
+            // Si no se encuentra el registro, crear uno nuevo
+            Infoentrega::create([
+                'marcas_id' => $this->marcaId,
+                'entrega_cliente' => $this->clientes,
+                'lugar_entrega' => $this->lugar,
+                'pais' => $this->pais,
+                'puerto' => $this->puerto,
+                'incoterm' => $this->icoterm,
+                'transporte' => $this->transporte,
+                'origen' => $this->origen,
+                'destino' => $this->destino,
+                'condiciones' => $this->entregalocal
+            ]);
+        }
 
+        // Resetear los campos del formulario
+        // $this->reset(['cliente', 'nombre', 'crm', 'icoterm', 'lugar', 'puerto', 'pais', 'transporte', 'origen', 'destino', 'entregalocal', 'clientes', 'link']);
 
-$this->reset(['cliente', 'nombre', 'crm', 'icoterm', 'lugar', 'puerto', 'pais', 'transporte', 'origen', 'destino', 'entregalocal', 'clientes', 'link',]);
-        return redirect ()->to('/successful');
+        // Redirigir a la página de éxito
+        return redirect()->to('/successful');
 
+        // Despachar el evento de recarga y redirección (si es necesario)
         $this->dispatchBrowserEvent('reloadAndRedirect');
-
-
     }
 
 
