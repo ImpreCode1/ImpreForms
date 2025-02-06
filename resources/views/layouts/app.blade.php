@@ -11,18 +11,19 @@
     <!-- Fonts and Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+
 </head>
 
-<body class="font-sans antialiased bg-gray-100">
-    <div class="flex h-screen overflow-hidden">
+<body class="font-sans antialiased bg-gray-100 h-full">
+    <div class="flex h-full min-h-screen overflow-hidden">
         <!-- Elegant Sidebar -->
         <aside
-            class="relative w-72 bg-white shadow-2xl border-r border-gray-200 transform transition-all duration-300 ease-in-out">
+            class="relative w-64 bg-white shadow-2xl border-r border-gray-200 transform transition-all duration-300 ease-in-out">
             <!-- Curved Top Decoration -->
             <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 via-teal-400 to-white"></div>
 
             <!-- Logo and Branding -->
-            <div class="pt-8 pb-6 px-6 border-b border-gray-200">
+            <div class="pt-4 pb-4 px-4 border-b border-gray-200">
                 <div class="flex items-center space-x-3">
                     <img src="/resource/logo2.jpg" alt="Logo" class="w-8 h-8 object-contain">
                     <h1 class="text-2xl font-bold text-gray-800 tracking-tight">ImpreForms</h1>
@@ -43,6 +44,7 @@
                 <p class="text-sm text-gray-500">{{ Auth::user()->email }}</p>
             </div>
 
+
             <!-- Navigation Menu -->
             <nav class="px-4 space-y-1">
                 @php
@@ -54,14 +56,14 @@
                                 'name' => 'Recibidos',
                                 'route' => 'formularios-recibidos',
                                 'icon' =>
-                                    'M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z M17 21V13H7v8 M7 3v5h8',
+                                    'M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', // Ícono de documento con una marca de verificación
                                 'color' => 'text-red-500',
                             ],
                             [
                                 'name' => 'Crear Usuario',
                                 'route' => 'crear-usuario',
                                 'icon' =>
-                                    'M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M8.5 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M20 8v6 M23 11h-6',
+                                    'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', // Ícono de persona con un símbolo de plus
                                 'color' => 'text-blue-500',
                             ],
                         ];
@@ -88,16 +90,14 @@
                     $currentRoute = session('current_route', request()->route()->getName());
                 @endphp
 
-
-
                 @foreach ($menuItems as $item)
                     <a href="{{ route($item['route']) }}"
                         onclick="event.preventDefault(); document.getElementById('set-current-route-{{ $item['route'] }}').submit();"
                         class="
                         group flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 ease-in-out
                         {{ $currentRoute === $item['route'] || request()->is('enviar-formulario*')
-                        ? 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600'
-                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800' }}
+                            ? 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600'
+                            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800' }}
                         ">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 {{ $item['color'] }}"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,9 +145,8 @@
         </aside>
 
         <!-- Main Content Area -->
-        <main
-            class="flex-1 min-h-screen bg-gradient-to-br from-red-50 via-indigo-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8 transition-all duration-300 overflow-y-auto">
-            <div class="p-6 max-w-7xl mx-auto">
+        <main class="flex-1 bg-gradient-to-br from-red-50 via-indigo-50 to-purple-50">
+            <div class="content-container page-transition">
                 {{ $slot }}
             </div>
         </main>
@@ -158,3 +157,24 @@
 </body>
 
 </html>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.body.style.zoom = "100%";
+        const links = document.querySelectorAll('nav a');
+        links.forEach(link => {
+            link.addEventListener('click', function(e) {
+                const content = document.querySelector('.content-container');
+                content.style.opacity = '0';
+                content.style.transform = 'translateY(10px)';
+
+                setTimeout(() => {
+                    content.style.opacity = '1';
+                    content.style.transform = 'translateY(0)';
+                }, 50);
+            });
+        });
+    });
+</script>
