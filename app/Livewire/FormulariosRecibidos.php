@@ -3,10 +3,14 @@
 namespace App\Livewire;
 
 use App\Models\Financiera;
+use App\Models\FormLink;
 use App\Models\Marca;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Str;
 
 class FormulariosRecibidos extends Component
 {
@@ -29,7 +33,6 @@ class FormulariosRecibidos extends Component
     public $open = false;
 
     protected $listeners = ['openModal' => 'loadFormulario'];
-
 
     public function getFileIcon($fileName)
     {
@@ -80,21 +83,14 @@ class FormulariosRecibidos extends Component
         $this->totalFormularios = Marca::count();
         $this->averageSalePrice = Marca::avg('precio_venta');
         $this->advancePercentage = Financiera::avg('porcentaje');
-    }
 
+        // $this->formulario = FormLink::all();
+    }
 
     #[On('openModal')]
     public function loadFormulario($id)
     {
-        $this->selectedFormulario = Marca::with([
-            'infonegocio',
-            'informacion.producto',
-            'pago',
-            'financiera',
-            'infoEntrega',
-            'documento',
-            'formLinks',
-        ])->findOrFail($id);
+        $this->selectedFormulario = Marca::with(['infonegocio', 'informacion.producto', 'pago', 'financiera', 'infoEntrega', 'documento', 'formLinks'])->findOrFail($id);
 
         // dd($this->selectedFormulario->documento);
         $this->open = true;
@@ -106,8 +102,29 @@ class FormulariosRecibidos extends Component
         $this->open = false;
     }
 
+    public function resetLinks($marcaId)
+    {
+        try {
+            $formLinks = FormLink::where('marca_id', $marcaId)->get();
 
+            if ($formLinks->isEmpty()) {
+                session()->flash('error', 'No se encontraron enlaces para restablecer.');
+                return;
+            }
 
+            $newExpiryTime = Carbon::now()->addMinutes(40);
+
+            foreach ($formLinks as $link) {
+                $link->expires_at = $newExpiryTime;
+                $link->save();
+            }
+
+            $this->dispatch('links-reset');
+            session()->flash('message', 'Enlaces restablecidos y extendidos por 40 minutos.');
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error al restablecer los enlaces: ' . $e->getMessage());
+        }
+    }
 
     public function render()
     {
