@@ -2,6 +2,7 @@
     <x-app-layout>
         <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
                 <!-- Header con estadísticas -->
                 <div class="mb-8">
                     <div class="container mx-auto px-4 py-8">
@@ -84,7 +85,23 @@
 
                 </div>
 
+                @if (session()->has('message'))
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+                        id="alert">
+                        <span class="block sm:inline">{{ session('message') }}</span>
+                        <button
+                            class="absolute top-0 right-0 p-2 text-green-700 hover:text-green-900 focus:outline-none"
+                            onclick="closeAlert()">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                @endif
 
+                <br>
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                     <!-- Barra de herramientas -->
                     <div class="p-6 border-b border-gray-200 bg-gray-50">
@@ -181,12 +198,13 @@
                                         <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">
                                             Información Completa</th>
                                         <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">
-                                            Contrato</th>
+                                            Descargar Información</th>
                                         <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">Fecha
                                             de envío</th>
-                                        <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">Info
-                                            Marcas</th>
                                         <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">Links
+                                        </th>
+                                        <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">
+                                            Restablecer Links
                                         </th>
                                     </tr>
                                 </thead>
@@ -196,74 +214,100 @@
                                             <td class="px-4 py-3 text-sm text-gray-600">
                                                 {{ $formulario->infonegocio->codigo_cliente }}
                                             </td>
+
                                             <td class="px-4 py-3 text-sm text-gray-600">
                                                 {{ $formulario->infonegocio->nombre }}
                                             </td>
+
                                             <td class="px-4 py-3 text-sm text-gray-600">
                                                 {{ $formulario->infonegocio->n_oportunidad_crm }}
                                             </td>
+
                                             <td class="px-4 py-3">
                                                 <button x-data
                                                     x-on:click="$dispatch('show-modal'); $wire.loadFormulario({{ $formulario->id }})"
-                                                    class="inline-flex items-center px-3 py-1.5 rounded-md bg-teal-50 text-teal-600 text-xs font-medium hover:bg-teal-100 transition-colors">
-                                                    <svg class="w-4 h-4 mr-1" fill="currentColor"
-                                                        viewBox="0 0 24 24">
+                                                    class="group inline-flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-teal-50 to-teal-100 hover:from-teal-100 hover:to-teal-200 text-teal-600 text-sm font-medium transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+                                                    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:scale-110"
+                                                        fill="currentColor" viewBox="0 0 24 24">
                                                         <path
                                                             d="M12 22a10 10 0 110-20 10 10 0 010 20zm1 12h-2v-2h2v2zm0-4h-2V7h2v5z">
                                                         </path>
                                                     </svg>
-                                                    Ver detalles
+                                                    <span class="relative">
+                                                        Ver
+                                                        <span
+                                                            class="absolute bottom-0 left-0 w-full h-0.5 bg-teal-300 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+                                                    </span>
                                                 </button>
                                             </td>
+
                                             <td class="px-4 py-3">
-                                                <span
-                                                    class="inline-flex items-center px-3 py-1.5 rounded-md bg-amber-50 text-amber-600 text-xs font-medium hover:bg-amber-100 transition-colors">
-                                                    <svg class="w-4 h-4 mr-1" fill="currentColor"
-                                                        viewBox="0 0 24 24">
+                                                <button
+                                                    class="group relative inline-flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-amber-50 to-amber-100 hover:from-amber-100 hover:to-amber-200 text-amber-600 text-sm font-medium transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+                                                    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-12"
+                                                        fill="currentColor" viewBox="0 0 24 24">
                                                         <path
                                                             d="M12 22a10 10 0 110-20 10 10 0 010 20zm-1-6h2v-6h-2v6zm0-8h2V7h-2v1z">
                                                         </path>
                                                     </svg>
-                                                    Contrato
-                                                </span>
+                                                    <span class="relative">
+                                                        Descargar
+                                                        <span
+                                                            class="absolute bottom-0 left-0 w-full h-0.5 bg-amber-300 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+                                                    </span>
+                                                </button>
                                             </td>
+
                                             <td class="px-4 py-3 text-sm text-gray-600">
                                                 <span
                                                     class="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-50 text-slate-600 text-xs font-medium hover:bg-slate-100 transition-colors">
                                                     {{ $formulario->created_at->format('d/m/Y') }}
                                                 </span>
                                             </td>
-                                            <td class="px-4 py-3 flex justify-center items-center">
-                                                <a href="" download class="cursor-pointer group">
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                         class="h-6 w-6 text-blue-500 group-hover:text-blue-700 transition-all duration-300 ease-in-out transform group-hover:scale-110"
-                                                         viewBox="0 0 24 24"
-                                                         fill="none"
-                                                         stroke="currentColor"
-                                                         stroke-width="2">
-                                                        <path d="M12 15V3m0 12l-4-4m4 4l4-4" />
-                                                        <path d="M20 16v2a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-2" />
-                                                    </svg>
-                                                </a>
-                                            </td>
-                                            <td class="px-4 py-3 text-sm text-gray-600">
 
+                                            <td class="px-4 py-3">
                                                 @foreach ($formulario->formLinks as $link)
-                                                    @if ($link->type === 'operaciones')
-                                                        <a href="{{ route('formulario-operaciones', ['link' => $link->link]) }}"
-                                                            target="_blank" class="text-blue-500 hover:underline">
-                                                            {{ ucfirst($link->type) }}
-                                                        </a><br>
-                                                    @elseif ($link->type === 'financiera')
-                                                        <a href="{{ route('formulario-financiera', ['link' => $link->link]) }}"
-                                                            target="_blank" class="text-blue-500 hover:underline">
-                                                            {{ ucfirst($link->type) }}
-                                                        </a><br>
-                                                    @endif
+                                                    <div class="mb-2">
+                                                        @if (!$link->isExpired())
+                                                            @if ($link->type === 'operaciones')
+                                                                <a href="{{ route('formulario-operaciones', ['link' => $link->link]) }}"
+                                                                   target="_blank"
+                                                                   class="inline-flex items-center px-3 py-1 text-sm font-medium text-blue-700 bg-blue-100 rounded-sm hover:bg-blue-200">
+                                                                    <span>{{ ucfirst($link->type) }}</span>
+                                                                </a>
+                                                            @elseif ($link->type === 'financiera')
+                                                                <a href="{{ route('formulario-financiera', ['link' => $link->link]) }}"
+                                                                   target="_blank"
+                                                                   class="inline-flex items-center px-3 py-1 text-sm font-medium text-green-700 bg-green-100 rounded-sm hover:bg-green-200">
+                                                                    <span>{{ ucfirst($link->type) }}</span>
+                                                                </a>
+                                                            @endif
+                                                        @else
+                                                            <span class="inline-flex items-center px-3 py-1 text-sm font-medium text-red-700 bg-red-100 rounded-sm">
+                                                                Expirado
+                                                            </span>
+                                                        @endif
+                                                    </div>
                                                 @endforeach
-
                                             </td>
 
+                                            <td class="px-4 py-3">
+                                                @if ($formulario->formLinks->contains(function($link) { return $link->isExpired(); }))
+                                                    <button wire:click="resetLinks({{ $formulario->id }})"
+                                                            wire:loading.attr="disabled"
+                                                            class="group inline-flex items-center justify-center w-8 h-8 rounded-full border-2 border-indigo-500 hover:bg-indigo-50 transition-all duration-300 hover:scale-110">
+                                                        {{-- <span wire:loading.remove wire:target="resetLinks">Restablecer Enlaces</span>
+                                                        <span wire:loading wire:target="resetLinks">Restableciendo...</span> --}}
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="w-5 h-5 text-indigo-500 group-hover:rotate-180 transition-all duration-300"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                        stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                                    </svg>
+                                                    </button>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -1020,6 +1064,13 @@
                 @endif
 
 
-        </div>
+            </div>
     </x-app-layout>
 </div>
+
+
+<script>
+    function closeAlert() {
+        document.getElementById('alert').style.display = 'none';
+    }
+</script>

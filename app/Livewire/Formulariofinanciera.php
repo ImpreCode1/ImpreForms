@@ -108,11 +108,18 @@ class Formulariofinanciera extends Component
         $this->link = $link;
 
         $record = DB::table('form_links')->where('link', $link)->where('type', 'financiera')->first();
-        if (!$record || Carbon::parse($record->created_at)->addMinutes(40)->isPast()) {
-            abort(404, 'El enlace ha expirado o no es válido.');
+        // if (!$record || Carbon::parse($record->created_at)->addMinutes(40)->isPast()) {
+        //     abort(404, 'El enlace ha expirado o no es válido.');
+        // }
+
+
+        if (!$record) {
+            abort(404, 'El enlace no es válido.');
         }
 
-
+        if (!$record->expires_at || Carbon::parse($record->expires_at)->isPast()) {
+            abort(404, 'El enlace ha expirado.');
+        }
 
         $this->cliente = $record->cliente;
         $this->nombre = $record->nombre;
