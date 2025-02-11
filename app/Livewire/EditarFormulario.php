@@ -38,6 +38,9 @@ class EditarFormulario extends Component
     protected $listener = ['removeUpload'];
     public $marcaId;
     public $documentos;
+    public $documento;
+    public $files =[];
+
     protected $listeners = ['editFormulario'];
 
 
@@ -245,7 +248,7 @@ class EditarFormulario extends Component
         $this->director = $formulario->director;
         $this->tel2gerente = $formulario->numero;
         $this->cor2gerente = $formulario->correo_director;
-
+                $this->marcaId = $formulario->id;
         if ($formulario->informacion->isNotEmpty()) {
             $info = $formulario->informacion->first();
             $this->entregacliente = $info->realiza_entrega_cliente;
@@ -382,7 +385,16 @@ class EditarFormulario extends Component
                 'otros' => $this->otros
             ]);
         }
-
+        foreach ($this->attachments as $file) {
+            $originalName = $file->getClientoriginalName();
+            $path = $file->storeAs('documents',$originalName, 'public');
+                Documento::create([
+                'nombre_original' => $originalName,
+                'marcas_id' => $this->marcaId,
+                'ruta_documento' => $path,
+            ]);
+        }
+        $this->documentos = Documento::where('marcas_id', $this->marcaId)->get();
         // return redirect()->route('formularios.index');
         $this->dispatch('formularioUpdated');
         return redirect()->route('historial');

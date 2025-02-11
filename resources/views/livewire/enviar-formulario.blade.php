@@ -126,7 +126,7 @@
                                             cotización</label>
                                         <input id="cotizacion" type="file" wire:model="cotizacion"
                                             class="w-full text-gray-500 font-medium text-sm bg-gray-100 file:cursor-pointer cursor-pointer file:border-0 file:py-2 file:px-4 file:mr-4 file:bg-gray-800 file:hover:bg-gray-700 file:text-white rounded" />
-                                        @error('cotizaccion')
+                                        @error('cotizacion')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
