@@ -655,12 +655,23 @@
                             @endforeach
                         </div>
                     </div>
-                @endif
+                    {{-- <div>
+                        <label for="documento">Subir Documento:</label>
+                        <input type="file" wire:model="documento" id="documento">
+                        @error('documento') <span class="error">{{ $message }}</span> @enderror
+                    </div> --}}
+                    @endif
 
                 <!-- New Files Preview Section -->
+
+
                 @if (count($temporaryFiles) > 0)
-                    <div class="mt-4 space-y-2">
+
+                <div class="mt-4 space-y-2">
                         <h3 class="text-sm font-medium text-gray-700">Nuevos archivos seleccionados:</h3>
+
+
+
                         <div class="space-y-2">
                             @foreach ($temporaryFiles as $index => $file)
                                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -686,12 +697,7 @@
                     </div>
 
                     <!-- Save Button for new files -->
-                    <div class="mt-4">
-                        <button wire:click="save"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                            Guardar Nuevos Documentos
-                        </button>
-                    </div>
+
                 @endif
 
                 @if (session()->has('message'))

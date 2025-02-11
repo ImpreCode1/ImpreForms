@@ -14,7 +14,7 @@ class Documento extends Model
     protected $fillable = [
         'marcas_id',
         'tipo_documento',
-        // 'nombre_original',
+        'nombre_original',
         'ruta_documento',
         'fecha_subida',
     ];

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\Storage;
 class EnviarFormulario extends Component
 {
     public $currentStep = 1;
@@ -85,7 +85,7 @@ class EnviarFormulario extends Component
     public $tipodocumento;
     public $rutadocumento;
     public $fechasubida;
-
+            public $existingFiles;
     public $attachments = [];
 
     public $marca_id;
@@ -106,17 +106,17 @@ class EnviarFormulario extends Component
     protected $rules = [
 
         // 'attachments.*' => 'file|mimes:pdf,docx|max:10240',
-        'attachments.*' => 'nullable|file|mimes:pdf,docx,xlsx,eml|max:10240',
+        'attachments.*' => 'required|file|mimes:pdf,docx,xlsx,eml,msj|max:10240',
 
 
-        // Infonegocio
+        //* Infonegocio
         'negocio' => 'required|numeric|unique:infonegocio,codigo_cliente',
         'nombre' => 'required|string|min:2',
         'correo' => 'required|email',
         'numero' => 'required|numeric',
         'crm' => 'required|numeric',
 
-        // Marca
+        //* Marca
         'fecha' => 'required',
         'oc' => 'required|string|min:2',
         'precio' => 'required|numeric|min:2',
@@ -131,12 +131,12 @@ class EnviarFormulario extends Component
         'tel2gerente' => 'required|numeric',
         'cor2gerente' => 'required|email',
 
-        // Campos opcionales en Marca
+        //* Campos opcionales en Marca
         'clientcode' => 'nullable|string|min:2',
         'clientname' => 'nullable|numeric',
         'mail' => 'nullable|email',
 
-        // Información
+        //* Información
         'entregacliente' => 'required|string|min:2',
         'lugarentrega' => 'required|string|min:2',
         'espais' => 'required|string|min:2',
@@ -148,14 +148,14 @@ class EnviarFormulario extends Component
         'inicio' => 'required|date',
         'finalizacion' => 'required|date',
 
-        // Producto
+        //* Producto
         'details' => 'required|string|min:2',
         'aplicagarantia' => 'required|string|min:2',
         'terminogarantia' => 'required|string|min:2',
         'aplicapoliza' => 'required|string|min:2',
         'porcentaje' => 'required|numeric|min:0|max:100',
 
-        // Condiciones de Pago
+        //* Condiciones de Pago
         'formapago' => 'required|string',
         'moneda' => 'required|string',
         'incluye_iva' => 'required|boolean',
@@ -165,7 +165,8 @@ class EnviarFormulario extends Component
     ];
 
     protected $messages = [
-        // Mensajes generales de validación
+        //* Mensajes generales de validación
+        
         'required' => 'El campo :attribute es obligatorio.',
         'string' => 'El campo :attribute debe ser texto.',
         'numeric' => 'El campo :attribute debe ser un número.',
@@ -183,7 +184,7 @@ class EnviarFormulario extends Component
         'mimes' => 'El archivo :attribute debe ser de tipo: :values.',
         'unique' => 'El valor del campo :attribute ya está en uso.',
 
-        // Infonegocio
+        //* Infonegocio
         'negocio.required' => 'El código del cliente es obligatorio.',
         'negocio.numeric' => 'El código del cliente debe ser un número.',
         'negocio.unique' => 'El código del cliente ya está registrado.',
@@ -196,7 +197,7 @@ class EnviarFormulario extends Component
         'crm.required' => 'El número CRM es obligatorio.',
         'crm.numeric' => 'El número CRM debe ser numérico.',
 
-        // Marca
+        //* Marca
         'fecha.required' => 'La fecha es obligatoria.',
         'fecha.date' => 'La fecha debe tener un formato válido.',
         'oc.required' => 'La orden de compra es obligatoria.',
@@ -227,12 +228,12 @@ class EnviarFormulario extends Component
         'cor2gerente.required' => 'El correo del segundo gerente es obligatorio.',
         'cor2gerente.email' => 'El correo del segundo gerente debe ser válido.',
 
-        // Campos opcionales en Marca
+        //* Campos opcionales en Marca
         'clientcode.min' => 'El código de cliente debe tener al menos 2 caracteres.',
         'clientname.numeric' => 'El numero del cliente debe ser numérico.',
         'mail.email' => 'El correo debe ser una dirección válida.',
 
-        // Información
+        //* Información
         'entregacliente.required' => 'Debe especificar si realiza la entrega al cliente.',
         'entregacliente.min' => 'La especificación de entrega debe tener al menos 2 caracteres.',
         'lugarentrega.required' => 'El lugar de entrega es obligatorio.',
@@ -254,7 +255,7 @@ class EnviarFormulario extends Component
         'finalizacion.required' => 'La fecha de finalización es obligatoria.',
         'finalizacion.date' => 'La fecha de finalización debe ser válida.',
 
-        // Producto
+        //* Producto
         'details.required' => 'Los detalles del producto son obligatorios.',
         'details.min' => 'Los detalles del producto deben tener al menos 2 caracteres.',
         'aplicagarantia.required' => 'Debe especificar si aplica garantía.',
@@ -268,7 +269,7 @@ class EnviarFormulario extends Component
         'porcentaje.min' => 'El porcentaje no puede ser menor que 0.',
         'porcentaje.max' => 'El porcentaje no puede ser mayor que 100.',
 
-        // Condiciones de Pago
+        //* Condiciones de Pago
         'formapago.required' => 'La forma de pago es obligatoria.',
         'formapago.string' => 'La forma de pago debe ser texto.',
         'moneda.required' => 'La moneda es obligatoria.',
@@ -280,7 +281,7 @@ class EnviarFormulario extends Component
 
 
 
-        //documentos
+        //* documentos
         'attachments.*.nullable' => 'El archivo adjunto es opcional, pero si se incluye, debe ser válido.',
         'attachments.*.file' => 'El campo :attribute debe ser un archivo válido.',
         'attachments.*.mimes' => 'El archivo :attribute debe ser de tipo PDF, Word (.docx), Excel (.xlsx) o correo electrónico (.eml).',
@@ -318,8 +319,6 @@ class EnviarFormulario extends Component
     public function submit()
     {
         $this->validate();
-
-
         $infonegocio = Infonegocio::create([
             'codigo_cliente' => $this->negocio, // * no puede ser igual a otro y es numerico obligatorio
             'nombre' => $this->nombre,
@@ -331,24 +330,24 @@ class EnviarFormulario extends Component
         $marca = Marca::create([
             'infonegocio_id' => $infonegocio->id,
             'user_id'=> auth()->id(),
-            'fecha' => $this->fecha, // tipo fecha obligatorio
-            'n_oc' => $this->oc, // obligatorio varchar
-            'precio_venta' => $this->precio, // obligatorio varchar
-            'adjunto_cotizacion' => $this->cotizacion, // puede soportar archivos de tipo pdf,doc,docx,xls,xlsx y es nulo
-            'tipo_contrato' => $this->soluciones, // obligatorio
-            'linea' => $this->linea, // obligatorio
-            'codigo_linea' => $this->codlinea, // obligatorio
-            'nombre' => $this->nomgerente, // obligatorio
-            'telefono' => $this->telgerente, //obligatorio
-            'correo_electronico' => $this->corgerente, // obligatorio
+            'fecha' => $this->fecha, //! tipo fecha obligatorio
+            'n_oc' => $this->oc, //! obligatorio varchar
+            'precio_venta' => $this->precio, //! obligatorio varchar
+            'adjunto_cotizacion' => $this->cotizacion, //! puede soportar archivos de tipo pdf,doc,docx,xls,xlsx y es nulo
+            'tipo_contrato' => $this->soluciones, //! obligatorio
+            'linea' => $this->linea, //! obligatorio
+            'codigo_linea' => $this->codlinea, //! obligatorio
+            'nombre' => $this->nomgerente, //! obligatorio
+            'telefono' => $this->telgerente, //! obligatorio
+            'correo_electronico' => $this->corgerente, //! obligatorio
 
-            'otro' => $this->clientcode, //nulo varchar
-            'cel' => $this->clientname, //nulo tipo numerico
-            'email' => $this->mail, //nulo tipo email
+            'otro' => $this->clientcode, //! nulo varchar
+            'cel' => $this->clientname, //! nulo tipo numerico
+            'email' => $this->mail, //! nulo tipo email
 
-            'director' => $this->director, // obligatorio vacrhar
-            'numero' => $this->tel2gerente, // obligatorio numerico
-            'correo_director' => $this->cor2gerente, // obligatorio tipo correo
+            'director' => $this->director, //! obligatorio vacrhar
+            'numero' => $this->tel2gerente, //! obligatorio numerico
+            'correo_director' => $this->cor2gerente, //! obligatorio tipo correo
         ]);
 
         $this->marcaId = $marca->id;
@@ -356,25 +355,25 @@ class EnviarFormulario extends Component
 
         $informacion = Informacion::create([
             'marcas_id' => $this->marcaId,
-            'realiza_entrega_cliente' => $this->entregacliente, // obligatorio varchar
-            'lugar_entrega' => $this->lugarentrega, // obligatorio varchar
-            'pais' => $this->espais, // obligatorio varchar
-            'tiempo_entrega' => $this->tiempoentrega, //obligatorio
-            'fecha_inicio_termino' => $this->terminoentrega, // obligatorio
-            'tipo_incoterms' => $this->tipoicoterm, // obligatorio
-            'servicio_a_prestar' => $this->prestar, // obligatorio
-            'frecuencia_suministro' => $this->suministrar, // obligatorio
-            'fecha_inicio' => $this->inicio, // obligatorio
-            'fecha_finalizacion' => $this->finalizacion, // obligatorio
+            'realiza_entrega_cliente' => $this->entregacliente, //! obligatorio varchar
+            'lugar_entrega' => $this->lugarentrega, //! obligatorio varchar
+            'pais' => $this->espais, //! obligatorio varchar
+            'tiempo_entrega' => $this->tiempoentrega, //!  obligatorio
+            'fecha_inicio_termino' => $this->terminoentrega, //! obligatorio
+            'tipo_incoterms' => $this->tipoicoterm, //! obligatorio
+            'servicio_a_prestar' => $this->prestar, //! obligatorio
+            'frecuencia_suministro' => $this->suministrar, //! obligatorio
+            'fecha_inicio' => $this->inicio, //!cobligatorio
+            'fecha_finalizacion' => $this->finalizacion, //! obligatorio
         ]);
 
         Producto::create([
             'informacion_id' => $informacion->id,
-            'detalles_equipos' => $this->details, // obligatorio
-            'aplica_garantia' => $this->aplicagarantia, // obligatorio
-            'termino_garantia' => $this->terminogarantia, // obligatorio
-            'aplica_poliza' => $this->aplicapoliza, // obligatorio
-            'porcentaje_poliza' => $this->porcentaje, // obligatorio tipo porcentaje sin acpetar valores negativos
+            'detalles_equipos' => $this->details, //! obligatorio
+            'aplica_garantia' => $this->aplicagarantia, //! obligatorio
+            'termino_garantia' => $this->terminogarantia, //! obligatorio
+            'aplica_poliza' => $this->aplicapoliza, //! obligatorio
+            'porcentaje_poliza' => $this->porcentaje, //! obligatorio tipo porcentaje sin acpetar valores negativos
         ]);
 
         Pago::create([
@@ -387,25 +386,28 @@ class EnviarFormulario extends Component
             'marcas_id' => $this->marcaId,
             'forma_pago' => $this->formapago,
             'moneda' => $this->moneda,
-            // 'garantiascredit' => $this->garantia,
-            // 'existencia_anticipo' => $this->hasAdvancePayment ? 1 : 0,
-            // 'porcentaje' => $this->anticipo,
-            // 'fecha_pago' => $this->fecha_pago,
+            //? 'garantiascredit' => $this->garantia,
+            // ?'existencia_anticipo' => $this->hasAdvancePayment ? 1 : 0,
+            //? 'porcentaje' => $this->anticipo,
+            //? 'fecha_pago' => $this->fecha_pago,
             'otros' => $this->otros,
         ]);
 
 
-        // Documento::create([
-        //     'marca_id' => $marca->id,
-        //     'tipo_documento' => $this->tipodocumento,
-        //     'ruta_documento' => $this->rutadocumento,
-        //     'fecha_subida' => date('Y-m-d H:i:s'),
-        // ]);
+        //? Documento::create([
+        // ?    'marca_id' => $marca->id,
+        //  ?   'tipo_documento' => $this->tipodocumento,
+        //   ?  'ruta_documento' => $this->rutadocumento,
+        //    ? 'fecha_subida' => date('Y-m-d H:i:s'),
+        //?       ]);
 
 
 
         $this->operacionesLink = (string) Str::uuid();
         $this->financieraLink = (string) Str::uuid();
+
+
+        $expirationTime =Carbon::now ()->addMinutes(5);
 
         DB::table('form_links')->insert([
             [
@@ -420,6 +422,7 @@ class EnviarFormulario extends Component
                 'otros' => $this->otros,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
+                'expires_at' =>$expirationTime,
             ],
             [
                 'link' => $this->financieraLink,
@@ -433,12 +436,12 @@ class EnviarFormulario extends Component
                 'otros' => $this->otros,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-
+                'expires_at' => $expirationTime,
             ]
         ]);
 
         foreach ($this->attachments as $file) {
-            $originalName = $file->getClientoriginalName();
+            $originalName = $file->getClientOriginalName();
 
             $path = $file->storeAs('documents',$originalName, 'public');
             Documento::create([
@@ -448,14 +451,30 @@ class EnviarFormulario extends Component
             ]);
         }
 
+        if ($this->cotizacion) {
+            $originalName = $this->cotizacion->getClientOriginalName();
+            $path = $this->cotizacion->storeAs('public/cotizacion', $originalName);
+
+            // Actualizamos el campo adjunto_cotizacion en el registro de Marca ya creado
+                $marca->update([
+                'adjunto_cotizacion' => $path,
+            ]);
+        }
+
+
+
+
 
         $this->documentos = Documento::where('marcas_id', $this->marcaId)->get();
+
+
         $this->mmd = true;
 
         $operacionesUrl = url("formulario-operaciones/{$this->operacionesLink}");
         $financieraUrl = url("formulario-financiera/{$this->financieraLink}");
 
-        session()->flash('message', 'Formulario enviado correctamente. Enlaces generados:');
+        $expirationTimeFormatted = $expirationTime->format('H:i');
+        session()->flash('message', "Formulario enviado correctamente. Enlaces generados (expiran a las {$expirationTimeFormatted}):");
         session()->flash('operacionesUrl', $operacionesUrl);
         session()->flash('financieraUrl', $financieraUrl);
     }
@@ -475,50 +494,59 @@ class EnviarFormulario extends Component
 
         $this->marcaId = $marcaId ?? 'valor_por_defecto';
         $this->documentos = Documento::where('marcas_id', $this->marcaId)->get();
+
+    }
+    public function removeExistingFile($documentId)
+    {
+        $documento = Documento::find($documentId);
+        if ($documento) {
+            Storage::disk('public')->delete($documento->ruta_documento);
+            $documento->delete();
+            $this->existingFiles = array_filter($this->existingFiles, function($file) use ($documentId) {
+                return $file['id'] != $documentId;
+            });
+        }
     }
 
 
     public function updatedAttachments()
     {
-        $this->updateFilesList();
-    }
+        // Validar que los archivos sean correctos
+        $this->validate([
+            'attachments.*' => 'file|max:10240|mimes:pdf,doc,docx,xls,xlsx,msj', // Validación para permitir PDFs, DOC, DOCX, XLSX y msj
+        ]);
 
-    public function handleDrop($files)
-    {
-        // dd($files);
-        foreach ($files as $file) {
-            $this->attachments[] = $file;
-        }
-
-        $this->updateFilesList();
-    }
-
-    public function updateFilesList()
-    {
-        $this->files = [];
-        foreach ($this->attachments as $attachment) {
-            if (is_array($attachment)) {
-                foreach ($attachment as $file) {
-                    $this->files[] = [
-                        'name' => $file->getClientOriginalName(),
-                        'size' => round($file->getSize() / 1024, 2),
-                    ];
- }
-            } else {
-                $this->files[] = [
-                    'name' => $attachment->getClientOriginalName(),
-                    'size' => round($attachment->getSize() / 1024, 2),
-                ];
-            }
+        foreach ($this->attachments as $file) {
+            $this->files[] = [
+                'name' => $file->getClientOriginalName(),
+                'size' => round($file->getSize() / 1024, 2), // Tamaño en KB
+                'path' => $file->store('documents', 'public'), // Guardamos el archivo en el disco 'public'
+            ];
         }
     }
 
+    
     public function removeFile($index)
-    {
-        unset($this->attachments[$index]);
-        $this->attachments = array_values($this->attachments);
-        $this->updateFilesList();
+{
+    if (isset($this->files[$index])) {
+        // Eliminar el archivo del almacenamiento si tiene una ruta
+        if (isset($this->files[$index]['path'])) {
+            Storage::disk('public')->delete($this->files[$index]['path']);
+        }
+
+        // Eliminar el archivo del array
+        unset($this->files[$index]);
+
+        // Reindexar el array para que los índices sean consecutivos
+        $this->files = array_values($this->files);
     }
+}
+    
+
+
+
+
+
 
     public function dragOver()
     {
@@ -545,7 +573,7 @@ class EnviarFormulario extends Component
     public function render()
     {
         return view('livewire.enviar-formulario', [
-            // 'fragmento '=> $this->fragmento,
+            //* 'fragmento '=> $this->fragmento,
             'currentStep' => $this->currentStep,
             'operacionesLink' => $this->operacionesLink,
             'financieraLink' => $this->financieraLink,
