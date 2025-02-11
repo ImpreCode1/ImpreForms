@@ -6,6 +6,7 @@ use App\Livewire\Auth\Login;
 use App\Livewire\EnviarFormulario;
 use App\Livewire\Formulariofinanciera;
 use App\Livewire\FormularioInteractivo;
+use App\Livewire\FormulariosRecibidos;
 use App\Livewire\Historial;
 use App\Livewire\Layout\ManagerSidebar;
 use Illuminate\Support\Facades\DB;
@@ -126,6 +127,8 @@ Route::post('/set-current-route', function (Illuminate\Http\Request $request) {
     session(['current_route' => $request->route]);
     return redirect()->route($request->route);
 })->name('set.current.route');
+
+Route::get('/formularios/{id}/download', [FormulariosRecibidos::class, 'downloadFormulario'])->name('formularios.download');
 
 require __DIR__ . '/auth.php';
 

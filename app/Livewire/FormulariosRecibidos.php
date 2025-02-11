@@ -5,12 +5,15 @@ namespace App\Livewire;
 use App\Models\Financiera;
 use App\Models\FormLink;
 use App\Models\Marca;
+// use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class FormulariosRecibidos extends Component
 {
@@ -123,6 +126,22 @@ class FormulariosRecibidos extends Component
             session()->flash('message', 'Enlaces restablecidos y extendidos por 40 minutos.');
         } catch (\Exception $e) {
             session()->flash('error', 'Error al restablecer los enlaces: ' . $e->getMessage());
+        }
+    }
+
+    //! generar pdf
+
+    public function downloadFormulario($id)
+    {
+        try {
+            $formulario = Marca::with(['infonegocio', 'informacion.producto', 'pago', 'financiera', 'infoEntrega', 'documento', 'formLinks'])->findOrFail($id);
+
+            $pdf = FacadePdf::loadView('pdf.formulario', compact('formulario'));
+
+            return $pdf->download('formulario_' . $formulario->id . '.pdf');
+        } catch (\Exception $e) {
+            // Log the error or return a specific error response
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
