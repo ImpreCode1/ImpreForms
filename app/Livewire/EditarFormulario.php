@@ -25,6 +25,7 @@ class EditarFormulario extends Component
     public $attachments = [];
     public $temporaryFiles = [];
     public $existingFiles = [];
+    public $archivosNuevos = [];
 
     public $negocio, $nombres, $correo, $numero, $crms;
     public $fecha, $oc, $precio, $soluciones, $linea, $codlinea;
@@ -35,26 +36,24 @@ class EditarFormulario extends Component
     public $aplicagarantia, $terminogarantia, $aplicapoliza, $porcentaje;
     public $formapago, $moneda, $incluye_iva, $fecha_pago, $otros;
 
-    protected $listener = ['removeUpload'];
+    protected $listener = ['removeUpload', 'removeExistingFile', 'editFormulario'];
+
     public $marcaId;
     public $documentos;
     public $documento;
-    public $files =[];
-
-    protected $listeners = ['editFormulario'];
-
+    public $files = [];
 
     protected $rules = [
         // validaciones
 
         'negocio' => 'required|numeric|',
-        'nombres' =>  'required|string|',
-        'correo' =>  'required|email|',
+        'nombres' => 'required|string|',
+        'correo' => 'required|email|',
         'numero' => 'required|numeric',
         'crms' => 'required|string|',
         'fecha' => 'required|date',
-        'oc' =>  'required|string|',
-        'precio' =>  'required|numeric',
+        'oc' => 'required|string|',
+        'precio' => 'required|numeric',
         'soluciones' => 'required|string|',
         'linea' => 'required|string|',
         'codlinea' => 'required|string|',
@@ -85,93 +84,91 @@ class EditarFormulario extends Component
         'formapago' => 'required|string|',
         'moneda' => 'required|string|',
         'incluye_iva' => 'required',
-        'fecha_pago'  => 'required|date',
-        'otros'  => 'string|',
+        'fecha_pago' => 'required|date',
+        'otros' => 'string|',
     ];
 
     protected $messages = [
-
-            'negocio.required' => 'El campo "Negocio" es obligatorio.',
-            'negocio.numeric' => 'El campo "Negocio" debe ser un número.',
-            'nombres.required' => 'El campo "Nombres" es obligatorio.',
-            'nombres.string' => 'El campo "Nombres" debe ser una cadena de texto.',
-            'correo.required' => 'El campo "Correo" es obligatorio.',
-            'correo.email' => 'El campo "Correo" debe ser un correo electrónico válido.',
-            'numero.required' => 'El campo "Número" es obligatorio.',
-            'numero.numeric' => 'El campo "Número" debe ser un número.',
-            'crms.required' => 'El campo "CRM" es obligatorio.',
-            'crms.string' => 'El campo "CRM" debe ser una cadena de texto.',
-            'fecha.required' => 'El campo "Fecha" es obligatorio.',
-            'fecha.date' => 'El campo "Fecha" debe ser una fecha válida.',
-            'oc.required' => 'El campo "OC" es obligatorio.',
-            'oc.string' => 'El campo "OC" debe ser una cadena de texto.',
-            'precio.required' => 'El campo "Precio" es obligatorio.',
-            'precio.numeric' => 'El campo "Precio" debe ser un número.',
-            'soluciones.required' => 'El campo "Soluciones" es obligatorio.',
-            'soluciones.string' => 'El campo "Soluciones" debe ser una cadena de texto.',
-            'linea.required' => 'El campo "Línea" es obligatorio.',
-            'linea.string' => 'El campo "Línea" debe ser una cadena de texto.',
-            'codlinea.required' => 'El campo "Código de línea" es obligatorio.',
-            'codlinea.string' => 'El campo "Código de línea" debe ser una cadena de texto.',
-            'nomgerente.required' => 'El campo "Nombre del Gerente" es obligatorio.',
-            'nomgerente.string' => 'El campo "Nombre del Gerente" debe ser una cadena de texto.',
-            'telgerente.required' => 'El campo "Teléfono del Gerente" es obligatorio.',
-            'telgerente.numeric' => 'El campo "Teléfono del Gerente" debe ser un número.',
-            'corgerente.required' => 'El campo "Correo del Gerente" es obligatorio.',
-            'corgerente.email' => 'El campo "Correo del Gerente" debe ser un correo electrónico válido.',
-            'director.required' => 'El campo "Director" es obligatorio.',
-            'director.string' => 'El campo "Director" debe ser una cadena de texto.',
-            'tel2gerente.required' => 'El campo "Teléfono 2 del Gerente" es obligatorio.',
-            'tel2gerente.numeric' => 'El campo "Teléfono 2 del Gerente" debe ser un número.',
-            'cor2gerente.required' => 'El campo "Correo 2 del Gerente" es obligatorio.',
-            'cor2gerente.email' => 'El campo "Correo 2 del Gerente" debe ser un correo electrónico válido.',
-            'entregacliente.required' => 'El campo "Entrega Cliente" es obligatorio.',
-            'entregacliente.string' => 'El campo "Entrega Cliente" debe ser una cadena de texto.',
-            'lugarentrega.required' => 'El campo "Lugar de Entrega" es obligatorio.',
-            'lugarentrega.string' => 'El campo "Lugar de Entrega" debe ser una cadena de texto.',
-            'espais.required' => 'El campo "Espacio" es obligatorio.',
-            'espais.string' => 'El campo "Espacio" debe ser una cadena de texto.',
-            'tiempoentrega.required' => 'El campo "Tiempo de Entrega" es obligatorio.',
-            'tiempoentrega.string' => 'El campo "Tiempo de Entrega" debe ser una cadena de texto.',
-            'terminoentrega.required' => 'El campo "Término de Entrega" es obligatorio.',
-            'terminoentrega.string' => 'El campo "Término de Entrega" debe ser una cadena de texto.',
-            'tipoicoterm.required' => 'El campo "Tipo Incoterm" es obligatorio.',
-            'tipoicoterm.string' => 'El campo "Tipo Incoterm" debe ser una cadena de texto.',
-            'tipoicoterm.max' => 'El campo "Tipo Incoterm" no puede superar los 255 caracteres.',
-            'prestar.required' => 'El campo "Prestar" es obligatorio.',
-            'prestar.string' => 'El campo "Prestar" debe ser una cadena de texto.',
-            'suministrar.required' => 'El campo "Suministrar" es obligatorio.',
-            'suministrar.string' => 'El campo "Suministrar" debe ser una cadena de texto.',
-            'inicio.required' => 'El campo "Inicio" es obligatorio.',
-            'inicio.date' => 'El campo "Inicio" debe ser una fecha válida.',
-            'finalizacion.required' => 'El campo "Finalización" es obligatorio.',
-            'finalizacion.date' => 'El campo "Finalización" debe ser una fecha válida.',
-            'clientcode.required' => 'El campo "Código del Cliente" es obligatorio.',
-            'clientcode.string' => 'El campo "Código del Cliente" debe ser una cadena de texto.',
-            'clientname.required' => 'El campo "Nombre del Cliente" es obligatorio.',
-            'clientname.string' => 'El campo "Nombre del Cliente" debe ser una cadena de texto.',
-            'mail.required' => 'El campo "Correo del Cliente" es obligatorio.',
-            'mail.email' => 'El campo "Correo del Cliente" debe ser un correo electrónico válido.',
-            'details.required' => 'El campo "Detalles" es obligatorio.',
-            'details.string' => 'El campo "Detalles" debe ser una cadena de texto.',
-            'aplicagarantia.required' => 'El campo "Aplicar Garantía" es obligatorio.',
-            'aplicagarantia.string' => 'El campo "Aplicar Garantía" debe ser una cadena de texto.',
-            'terminogarantia.required' => 'El campo "Término de Garantía" es obligatorio.',
-            'terminogarantia.string' => 'El campo "Término de Garantía" debe ser una cadena de texto.',
-            'aplicapoliza.required' => 'El campo "Aplicar Póliza" es obligatorio.',
-            'aplicapoliza.string' => 'El campo "Aplicar Póliza" debe ser una cadena de texto.',
-            'porcentaje.required' => 'El campo "Porcentaje" es obligatorio.',
-            'porcentaje.numeric' => 'El campo "Porcentaje" debe ser un número.',
-            'formapago.required' => 'El campo "Forma de Pago" es obligatorio.',
-            'formapago.string' => 'El campo "Forma de Pago" debe ser una cadena de texto.',
-            'moneda.required' => 'El campo "Moneda" es obligatorio.',
-            'moneda.string' => 'El campo "Moneda" debe ser una cadena de texto.',
-            'incluye_iva.required' => 'Este espacio es requerido.',
-            'fecha_pago.required' => 'El campo "Fecha de Pago" es obligatorio.',
-            'fecha_pago.date' => 'El campo "Fecha de Pago" debe ser una fecha válida.',
-            'otros.string' => 'El campo "Otros" debe ser una cadena de texto.'
+        'negocio.required' => 'El campo "Negocio" es obligatorio.',
+        'negocio.numeric' => 'El campo "Negocio" debe ser un número.',
+        'nombres.required' => 'El campo "Nombres" es obligatorio.',
+        'nombres.string' => 'El campo "Nombres" debe ser una cadena de texto.',
+        'correo.required' => 'El campo "Correo" es obligatorio.',
+        'correo.email' => 'El campo "Correo" debe ser un correo electrónico válido.',
+        'numero.required' => 'El campo "Número" es obligatorio.',
+        'numero.numeric' => 'El campo "Número" debe ser un número.',
+        'crms.required' => 'El campo "CRM" es obligatorio.',
+        'crms.string' => 'El campo "CRM" debe ser una cadena de texto.',
+        'fecha.required' => 'El campo "Fecha" es obligatorio.',
+        'fecha.date' => 'El campo "Fecha" debe ser una fecha válida.',
+        'oc.required' => 'El campo "OC" es obligatorio.',
+        'oc.string' => 'El campo "OC" debe ser una cadena de texto.',
+        'precio.required' => 'El campo "Precio" es obligatorio.',
+        'precio.numeric' => 'El campo "Precio" debe ser un número.',
+        'soluciones.required' => 'El campo "Soluciones" es obligatorio.',
+        'soluciones.string' => 'El campo "Soluciones" debe ser una cadena de texto.',
+        'linea.required' => 'El campo "Línea" es obligatorio.',
+        'linea.string' => 'El campo "Línea" debe ser una cadena de texto.',
+        'codlinea.required' => 'El campo "Código de línea" es obligatorio.',
+        'codlinea.string' => 'El campo "Código de línea" debe ser una cadena de texto.',
+        'nomgerente.required' => 'El campo "Nombre del Gerente" es obligatorio.',
+        'nomgerente.string' => 'El campo "Nombre del Gerente" debe ser una cadena de texto.',
+        'telgerente.required' => 'El campo "Teléfono del Gerente" es obligatorio.',
+        'telgerente.numeric' => 'El campo "Teléfono del Gerente" debe ser un número.',
+        'corgerente.required' => 'El campo "Correo del Gerente" es obligatorio.',
+        'corgerente.email' => 'El campo "Correo del Gerente" debe ser un correo electrónico válido.',
+        'director.required' => 'El campo "Director" es obligatorio.',
+        'director.string' => 'El campo "Director" debe ser una cadena de texto.',
+        'tel2gerente.required' => 'El campo "Teléfono 2 del Gerente" es obligatorio.',
+        'tel2gerente.numeric' => 'El campo "Teléfono 2 del Gerente" debe ser un número.',
+        'cor2gerente.required' => 'El campo "Correo 2 del Gerente" es obligatorio.',
+        'cor2gerente.email' => 'El campo "Correo 2 del Gerente" debe ser un correo electrónico válido.',
+        'entregacliente.required' => 'El campo "Entrega Cliente" es obligatorio.',
+        'entregacliente.string' => 'El campo "Entrega Cliente" debe ser una cadena de texto.',
+        'lugarentrega.required' => 'El campo "Lugar de Entrega" es obligatorio.',
+        'lugarentrega.string' => 'El campo "Lugar de Entrega" debe ser una cadena de texto.',
+        'espais.required' => 'El campo "Espacio" es obligatorio.',
+        'espais.string' => 'El campo "Espacio" debe ser una cadena de texto.',
+        'tiempoentrega.required' => 'El campo "Tiempo de Entrega" es obligatorio.',
+        'tiempoentrega.string' => 'El campo "Tiempo de Entrega" debe ser una cadena de texto.',
+        'terminoentrega.required' => 'El campo "Término de Entrega" es obligatorio.',
+        'terminoentrega.string' => 'El campo "Término de Entrega" debe ser una cadena de texto.',
+        'tipoicoterm.required' => 'El campo "Tipo Incoterm" es obligatorio.',
+        'tipoicoterm.string' => 'El campo "Tipo Incoterm" debe ser una cadena de texto.',
+        'tipoicoterm.max' => 'El campo "Tipo Incoterm" no puede superar los 255 caracteres.',
+        'prestar.required' => 'El campo "Prestar" es obligatorio.',
+        'prestar.string' => 'El campo "Prestar" debe ser una cadena de texto.',
+        'suministrar.required' => 'El campo "Suministrar" es obligatorio.',
+        'suministrar.string' => 'El campo "Suministrar" debe ser una cadena de texto.',
+        'inicio.required' => 'El campo "Inicio" es obligatorio.',
+        'inicio.date' => 'El campo "Inicio" debe ser una fecha válida.',
+        'finalizacion.required' => 'El campo "Finalización" es obligatorio.',
+        'finalizacion.date' => 'El campo "Finalización" debe ser una fecha válida.',
+        'clientcode.required' => 'El campo "Código del Cliente" es obligatorio.',
+        'clientcode.string' => 'El campo "Código del Cliente" debe ser una cadena de texto.',
+        'clientname.required' => 'El campo "Nombre del Cliente" es obligatorio.',
+        'clientname.string' => 'El campo "Nombre del Cliente" debe ser una cadena de texto.',
+        'mail.required' => 'El campo "Correo del Cliente" es obligatorio.',
+        'mail.email' => 'El campo "Correo del Cliente" debe ser un correo electrónico válido.',
+        'details.required' => 'El campo "Detalles" es obligatorio.',
+        'details.string' => 'El campo "Detalles" debe ser una cadena de texto.',
+        'aplicagarantia.required' => 'El campo "Aplicar Garantía" es obligatorio.',
+        'aplicagarantia.string' => 'El campo "Aplicar Garantía" debe ser una cadena de texto.',
+        'terminogarantia.required' => 'El campo "Término de Garantía" es obligatorio.',
+        'terminogarantia.string' => 'El campo "Término de Garantía" debe ser una cadena de texto.',
+        'aplicapoliza.required' => 'El campo "Aplicar Póliza" es obligatorio.',
+        'aplicapoliza.string' => 'El campo "Aplicar Póliza" debe ser una cadena de texto.',
+        'porcentaje.required' => 'El campo "Porcentaje" es obligatorio.',
+        'porcentaje.numeric' => 'El campo "Porcentaje" debe ser un número.',
+        'formapago.required' => 'El campo "Forma de Pago" es obligatorio.',
+        'formapago.string' => 'El campo "Forma de Pago" debe ser una cadena de texto.',
+        'moneda.required' => 'El campo "Moneda" es obligatorio.',
+        'moneda.string' => 'El campo "Moneda" debe ser una cadena de texto.',
+        'incluye_iva.required' => 'Este espacio es requerido.',
+        'fecha_pago.required' => 'El campo "Fecha de Pago" es obligatorio.',
+        'fecha_pago.date' => 'El campo "Fecha de Pago" debe ser una fecha válida.',
+        'otros.string' => 'El campo "Otros" debe ser una cadena de texto.',
     ];
-
 
     public function handleDrop($files)
     {
@@ -191,7 +188,7 @@ class EditarFormulario extends Component
         }
     }
 
-    private function handleFileUpload($file)
+    public function handleFileUpload($file)
     {
         try {
             $originalName = $file->getClientOriginalName();
@@ -201,30 +198,25 @@ class EditarFormulario extends Component
                 'name' => $originalName,
                 'path' => $path,
             ];
-
         } catch (\Exception $e) {
             session()->flash('error', 'Error al subir el archivo: ' . $e->getMessage());
         }
     }
 
-    public function removeUpload($index)
+     public function quitarArchivo($index)
     {
-        if (isset($this->temporaryFiles[$index])) {
-
-            Storage::disk('public')->delete($this->temporaryFiles[$index]['path']);
-
-            // Remove from array
-            unset($this->temporaryFiles[$index]);
-            $this->temporaryFiles = array_values($this->temporaryFiles);
-        }
+        unset($this->archivosNuevos[$index]);
     }
 
-    public function mount($formulario,)
+    public function mount($formulario)
     {
         // $this->marcaId = $marcaId;
         // $this->obtenerDocumentos();
 
         $this->formulario = $formulario;
+        $this->marcaId = $formulario->marca_id;
+        // $this->loadExistingFiles();
+
         $this->negocio = $formulario->infonegocio->codigo_cliente;
         $this->nombres = $formulario->infonegocio->nombre;
         $this->correo = $formulario->infonegocio->correo;
@@ -248,7 +240,7 @@ class EditarFormulario extends Component
         $this->director = $formulario->director;
         $this->tel2gerente = $formulario->numero;
         $this->cor2gerente = $formulario->correo_director;
-                $this->marcaId = $formulario->id;
+        $this->marcaId = $formulario->id;
         if ($formulario->informacion->isNotEmpty()) {
             $info = $formulario->informacion->first();
             $this->entregacliente = $info->realiza_entrega_cliente;
@@ -288,16 +280,33 @@ class EditarFormulario extends Component
             $this->otros = $financiera->otros;
         }
 
-        $this->existingFiles = $formulario->documento->map(function($documento) {
-            return [
-                'id' => $documento->id,
-                'name' => $documento->nombre_original,
-                'path' => $documento->ruta_documento,
-                'tipo' => $documento->tipo_documento
-            ];
-        })->toArray();
+        $this->existingFiles = $formulario->documento
+            ->map(function ($documento) {
+                return [
+                    'id' => $documento->id,
+                    'name' => $documento->nombre_original,
+                    'path' => $documento->ruta_documento,
+                    'tipo' => $documento->tipo_documento,
+                ];
+            })
+            ->toArray();
+        $this->loadExistingFiles();
     }
 
+    public function loadExistingFiles()
+    {
+        $this->existingFiles = Documento::where('marcas_id', $this->marcaId)
+            ->get()
+            ->map(function ($documento) {
+                return [
+                    'id' => $documento->id,
+                    'name' => $documento->nombre_original,
+                    'path' => $documento->ruta_documento,
+                    'tipo' => $documento->tipo_documento,
+                ];
+            })
+            ->toArray();
+    }
 
     public function removeExistingFile($documentId)
     {
@@ -305,11 +314,33 @@ class EditarFormulario extends Component
         if ($documento) {
             Storage::disk('public')->delete($documento->ruta_documento);
             $documento->delete();
-            $this->existingFiles = array_filter($this->existingFiles, function($file) use ($documentId) {
+            $this->existingFiles = array_filter($this->existingFiles, function ($file) use ($documentId) {
                 return $file['id'] != $documentId;
             });
         }
     }
+
+    public function saveNewFiles()
+    {
+        foreach ($this->archivosNuevos as $file) {
+            $originalName = $file->getClientOriginalName();
+            $path = $file->store('documents', 'public');
+
+            Documento::create([
+                'nombre_original' => $originalName,
+                'marcas_id' => $this->marcaId,
+                'ruta_documento' => $path,
+            ]);
+        }
+
+        // Reset the new files array
+        $this->archivosNuevos = [];
+
+        // Reload existing files
+        $this->loadExistingFiles();
+    }
+
+
 
     public function submit()
     {
@@ -329,9 +360,7 @@ class EditarFormulario extends Component
             'email' => $this->mail,
             'director' => $this->director,
             'numero' => $this->tel2gerente,
-            'correo_director' => $this->cor2gerente
-
-
+            'correo_director' => $this->cor2gerente,
         ]);
 
         // Actualizar información del negocio
@@ -340,12 +369,11 @@ class EditarFormulario extends Component
             'nombre' => $this->nombres,
             'correo' => $this->correo,
             'numero_celular' => $this->numero,
-            'n_oportunidad_crm' => $this->crms
+            'n_oportunidad_crm' => $this->crms,
         ]);
 
         // Actualizar información
         if ($info = $this->formulario->informacion->first()) {
-
             $info->update([
                 'realiza_entrega_cliente' => $this->entregacliente,
                 'lugar_entrega' => $this->lugarentrega,
@@ -356,7 +384,7 @@ class EditarFormulario extends Component
                 'servicio_a_prestar' => $this->prestar,
                 'frecuencia_suministro' => $this->suministrar,
                 'fecha_inicio' => $this->inicio,
-                'fecha_finalizacion' => $this->finalizacion
+                'fecha_finalizacion' => $this->finalizacion,
             ]);
 
             // Actualizar producto
@@ -366,7 +394,7 @@ class EditarFormulario extends Component
                     'aplica_garantia' => $this->aplicagarantia,
                     'termino_garantia' => $this->terminogarantia,
                     'aplica_poliza' => $this->aplicapoliza,
-                    'porcentaje_poliza' => $this->porcentaje
+                    'porcentaje_poliza' => $this->porcentaje,
                 ]);
             }
         }
@@ -374,7 +402,7 @@ class EditarFormulario extends Component
         if ($pago = $this->formulario->pago->first()) {
             $pago->update([
                 'fecha_pago' => $this->fecha_pago,
-                'incluye_iva' => $this->incluye_iva
+                'incluye_iva' => $this->incluye_iva,
             ]);
         }
         // Actualizar información financiera
@@ -382,19 +410,22 @@ class EditarFormulario extends Component
             $financiera->update([
                 'forma_pago' => $this->formapago,
                 'moneda' => $this->moneda,
-                'otros' => $this->otros
+                'otros' => $this->otros,
             ]);
         }
-        foreach ($this->attachments as $file) {
-            $originalName = $file->getClientoriginalName();
-            $path = $file->storeAs('documents',$originalName, 'public');
-                Documento::create([
-                'nombre_original' => $originalName,
-                'marcas_id' => $this->marcaId,
-                'ruta_documento' => $path,
-            ]);
-        }
-        $this->documentos = Documento::where('marcas_id', $this->marcaId)->get();
+
+        $this->saveNewFiles();
+        // Actualizar archivos existentes
+        // foreach ($this->attachments as $file) {
+        //     $originalName = $file->getClientoriginalName();
+        //     $path = $file->storeAs('documents',$originalName, 'public');
+        //         Documento::create([
+        //         'nombre_original' => $originalName,
+        //         'marcas_id' => $this->marcaId,
+        //         'ruta_documento' => $path,
+        //     ]);
+        // }
+        // $this->documentos = Documento::where('marcas_id', $this->marcaId)->get();
         // return redirect()->route('formularios.index');
         $this->dispatch('formularioUpdated');
         return redirect()->route('historial');

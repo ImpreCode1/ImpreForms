@@ -91,6 +91,8 @@ class EnviarFormulario extends Component
     public $marca_id;
     public $archivos = [];
     public $documentosGuardados = [];
+    public $archivosNuevos = [];
+
 
 
     public $operacionesLink;
@@ -166,7 +168,7 @@ class EnviarFormulario extends Component
 
     protected $messages = [
         //* Mensajes generales de validación
-        
+
         'required' => 'El campo :attribute es obligatorio.',
         'string' => 'El campo :attribute debe ser texto.',
         'numeric' => 'El campo :attribute debe ser un número.',
@@ -305,6 +307,23 @@ class EnviarFormulario extends Component
     {
         $this->currentStep = $step;
     }
+
+
+    public function removeFile($fileId)
+    {
+        if (isset($this->files[$fileId])) {
+            unset($this->files[$fileId]);
+        }
+
+        $this->attachments = array_filter($this->attachments, function($file) use ($fileId) {
+            return $file->getClientOriginalName() !== ($this->files[$fileId]['name'] ?? '');
+        });
+
+        $this->files = array_values($this->files);
+    }
+
+
+
 
     public function setAdvancePayment($value)
     {
@@ -464,7 +483,7 @@ class EnviarFormulario extends Component
 
 
 
-
+        $this->attachments = array_values($this->files);
         $this->documentos = Documento::where('marcas_id', $this->marcaId)->get();
 
 
@@ -524,27 +543,6 @@ class EnviarFormulario extends Component
             ];
         }
     }
-
-    
-    public function removeFile($index)
-{
-    if (isset($this->files[$index])) {
-        // Eliminar el archivo del almacenamiento si tiene una ruta
-        if (isset($this->files[$index]['path'])) {
-            Storage::disk('public')->delete($this->files[$index]['path']);
-        }
-
-        // Eliminar el archivo del array
-        unset($this->files[$index]);
-
-        // Reindexar el array para que los índices sean consecutivos
-        $this->files = array_values($this->files);
-    }
-}
-    
-
-
-
 
 
 

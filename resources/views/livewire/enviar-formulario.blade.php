@@ -669,45 +669,36 @@
 
                             {{-- final subida de documentos  --}}
                             @if (count($files) > 0)
-                                <div class="mt-4">
-                                    <h3 class="text-sm font-medium text-gray-700 mb-2">Archivos Seleccionados:</h3>
-                                    <ul class="space-y-2">
-                                        @foreach ($files as $index => $file)
-                                            <li
-                                                class="bg-gray-50 rounded-lg p-3 flex items-center justify-between group hover:bg-gray-100 transition-all duration-200">
-                                                <div class="flex items-center space-x-3">
-                                                    <div class="p-2 bg-blue-100 rounded-lg">
-                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                            class="h-5 w-5 text-blue-600" fill="none"
-                                                            viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2"
-                                                                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                                        </svg>
-                                                    </div>
-                                                    <div class="flex flex-col">
-                                                        <span
-                                                            class="text-sm font-medium text-gray-700">{{ $file['name'] }}</span>
-                                                        <span class="text-xs text-gray-500">{{ $file['size'] }}
-                                                            KB</span>
-                                                    </div>
-                                                </div>
-                                                <button type="button" wire:click="removeFile({{ $index }})"
-                                                    class="hidden group-hover:flex items-center space-x-1 text-sm text-red-500 hover:text-red-700 transition-colors duration-200">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                    </svg>
-                                                    <span>Eliminar</span>
-                                                </button>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-
-                                </div>
-                            @endif
+                            <div class="mt-4">
+                                <h3 class="text-sm font-medium text-gray-700 mb-2">Archivos Seleccionados:</h3>
+                                <ul class="space-y-2">
+                                    @foreach ($files as $id => $file)
+                                    <li wire:key="file-{{ $id }}" class="bg-gray-50 rounded-lg p-3 flex items-center justify-between group hover:bg-gray-100 transition-all duration-200">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="p-2 bg-blue-100 rounded-lg">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                </svg>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="text-sm font-medium text-gray-700">{{ $file['name'] }}</span>
+                                                <span class="text-xs text-gray-500">{{ $file['size'] }} KB</span>
+                                            </div>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            wire:click="removeFile('{{ $id }}')"
+                                            class="hidden group-hover:flex items-center space-x-1 text-sm text-red-500 hover:text-red-700 transition-colors duration-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                            <span>Eliminar</span>
+                                        </button>
+                                    </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                             <div class="flex flex-col mt-6">
                                 @error('archivos.*')
                                     <span class="text-red-500 text-sm mt-2">{{ $message }}</span>
@@ -902,7 +893,7 @@
 
                                                 <div class="mt-4 flex justify-end">
                                                     <button wire:click="cerrarmodal"
-                                                        class="rounded-lg bg-red-500 px-4 py-2 text-white transition-colors hover:bg-red-600">Cerrar</button>
+                                                        class="rounded-lg bg-red-500 px-4 py-2 text-white transition-colors hover:bg-red-600" type="button">Cerrar</button>
                                                 </div>
                                             </div>
                                             {{-- inicio diseño de copiado en portapapeles --}}

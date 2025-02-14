@@ -602,9 +602,7 @@
 
                 <!-- Área de Archivos -->
 
-                <div class="border-dashed border-2 border-gray-300 p-6 text-center"
-                    wire:drop.prevent="handleDrop($event.dataTransfer.files)" wire:dragover.prevent="dragOver"
-                    wire:dragleave.prevent="dragLeave">
+                {{-- <div class="border-dashed border-2 border-gray-300 p-6 text-center">
                     <input type="file" wire:model="attachments" multiple class="hidden" id="file-upload"
                         accept=".pdf,.doc,.docx,.xls,.xlsx" />
                     <label for="file-upload" class="cursor-pointer">
@@ -623,7 +621,7 @@
                             </p>
                         </div>
                     </label>
-                </div>
+                </div> --}}
 
                 <!-- Existing Files Section -->
                 @if (count($existingFiles) > 0)
@@ -660,45 +658,11 @@
                         <input type="file" wire:model="documento" id="documento">
                         @error('documento') <span class="error">{{ $message }}</span> @enderror
                     </div> --}}
-                    @endif
-
-                <!-- New Files Preview Section -->
-
-
-                @if (count($temporaryFiles) > 0)
-
-                <div class="mt-4 space-y-2">
-                        <h3 class="text-sm font-medium text-gray-700">Nuevos archivos seleccionados:</h3>
-
-
-
-                        <div class="space-y-2">
-                            @foreach ($temporaryFiles as $index => $file)
-                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                    <div class="flex items-center space-x-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                        </svg>
-                                        <span class="text-sm text-gray-600">{{ $file['name'] }}</span>
-                                    </div>
-                                    <button type="button" wire:click="removeUpload({{ $index }})"
-                                        class="text-red-500 hover:text-red-700">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    <!-- Save Button for new files -->
-
                 @endif
+
+
+
+
 
                 @if (session()->has('message'))
                     <div class="mt-4 p-4 bg-green-100 text-green-700 rounded-lg">
@@ -751,9 +715,9 @@
                         </div>
                     @endif --}}
 
-                @error('archivos.*')
+                {{-- @error('archivos.*')
                     <span class="text-red-500 text-sm mt-2">{{ $message }}</span>
-                @enderror
+                @enderror --}}
 
 
 
@@ -762,11 +726,81 @@
 
             </div>
 
+            <div x-data="{
+                dragging: false,
+                handleDrop(e) {
+                    e.preventDefault();
+                    this.dragging = false;
+                    @this.uploadMultiple('archivosNuevos', e.dataTransfer.files);
+                },
+                handleDragOver(e) {
+                    e.preventDefault();
+                    this.dragging = true;
+                },
+                handleDragLeave() {
+                    this.dragging = false;
+                }
+            }" class="w-full">
+                <!-- Upload Zone -->
+                <div @dragover.prevent="handleDragOver" @dragleave.prevent="handleDragLeave"
+                    @drop.prevent="handleDrop" :class="{ 'border-blue-500 bg-blue-50': dragging }"
+                    class="relative border-2 border-dashed border-gray-300 rounded-lg p-8 text-center transition-all duration-200 ease-in-out hover:border-blue-400">
+                    <input type="file" wire:model="archivosNuevos" multiple
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+
+                    <div class="space-y-4">
+
+                        <div class="flex flex-col items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-4"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="text-gray-600">
+                                Por favor, <span class="text-blue-600 hover:underline">seleccione los
+                                    archivos
+                                    que desea agregar</span>.
+                            </p>
+                            <p class="text-sm text-gray-500 mt-2">
+                                Puedes subir múltiples archivos
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selected Files List -->
+                @if (count($archivosNuevos) > 0)
+                    <div class="mt-6">
+                        <h3 class="text-sm font-semibold text-gray-700 mb-3">
+                            Archivos seleccionados ({{ count($archivosNuevos) }})
+                        </h3>
+                        <div class="space-y-3">
+                            @foreach ($archivosNuevos as $index => $archivo)
+                                <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+                                    wire:key="file-{{ $index }}">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 mr-3"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                        </svg>
+                                        <span class="text-gray-700">{{ $archivo->getClientOriginalName() }}</span>
+                                    </div>
+                                    <button wire:click="quitarArchivo({{ $index }})" type="button" class="text-red-500">
+                                        Eliminar
+                                    </button>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+            </div>
+
             <div class="bg-gray-50 px-6 py-4 flex items-center justify-end gap-3">
-                <button type="button" @click="showModal = false"
+                {{-- <button type="button" @click="showModal = false"
                     class="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 hover:border-gray-400 transition-colors duration-200">
                     Cancelar
-                </button>
+                </button> --}}
                 <button type="submit"
                     class="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm transition-colors duration-200">
                     <svg wire:loading wire:target="submit" class="animate-spin w-5 h-5 mr-2" fill="none"

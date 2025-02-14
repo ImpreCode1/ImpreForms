@@ -1,6 +1,9 @@
 <div>
     <x-app-layout>
 
+        <br>
+        <br>
+
         <h1 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
             Historial de formularios
         </h1>
@@ -237,7 +240,6 @@
                                     <td class="px-6 py-4">
                                         {{-- @dd($formulario) --}}
                                         <div x-data="{ showModal: false, formularioId: {{ $formulario->id }} }" class="relative">
-                                            <!-- Botón de editar con efecto hover suave -->
                                             <button @click="showModal = true"
                                                 class="group inline-flex items-center justify-center rounded-full border border-transparent bg-emerald-50/50 p-1.5 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 ring-0 transition-all duration-200 hover:shadow-lg hover:shadow-emerald-100">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -281,17 +283,17 @@
                                                                     Editar Formulario
                                                                 </h3>
                                                                 <div class="absolute right-6 top-6">
-                                                                    <button @click="showModal = false"
-                                                                        class="rounded-full p-2 inline-flex text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-all duration-200">
-                                                                        <span class="sr-only">Cerrar</span>
-                                                                        <svg class="h-6 w-6" fill="none"
-                                                                            viewBox="0 0 24 24" stroke-width="2"
-                                                                            stroke="currentColor">
-                                                                            <path stroke-linecap="round"
-                                                                                stroke-linejoin="round"
-                                                                                d="M6 18L18 6M6 6l12 12" />
-                                                                        </svg>
-                                                                    </button>
+                                                                    <button @click="showModal = false; Livewire.emit('resetForm')"
+                                                                    class="rounded-full p-2 inline-flex text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-all duration-200">
+                                                                    <span class="sr-only">Cerrar</span>
+                                                                    <svg class="h-6 w-6" fill="none"
+                                                                        viewBox="0 0 24 24" stroke-width="2"
+                                                                        stroke="currentColor">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round"
+                                                                            d="M6 18L18 6M6 6l12 12" />
+                                                                    </svg>
+                                                                </button>
                                                                 </div>
                                                             </div>
 
