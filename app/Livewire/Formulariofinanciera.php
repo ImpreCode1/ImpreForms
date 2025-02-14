@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Financiera;
+use App\Models\Marca;
 use Carbon\Carbon;
 use Illuminate\Cache\RedisLock;
 use Illuminate\Cache\RedisStore;
@@ -19,7 +20,9 @@ class Formulariofinanciera extends Component
     public $cliente;
     public $nombre;
     public $crm;
-
+// subida de archivos
+    public $archivoscotizacion =[];
+    
     public $currentStep = 1;
     public $hasAdvancePayment = null;
     public $advancePaymentPercentage = null;
@@ -148,17 +151,17 @@ class Formulariofinanciera extends Component
         }
     }
 
+
+
+
     public function submit()
     {
-        //TODO Validar los datos del formulario
+       
+$DataValidate = $this->validate();
 
-        $DataValidate = $this->validate();
+    $financiera = Financiera::where('marcas_id', $this->marcaId)->first();
 
-        //TODO Buscar si existe un registro de 'Financiera' para el 'marcas_id'
-
-        $financiera = Financiera::where('marcas_id', $this->marcaId)->first();
-
-        //TODO Si existe un registro, actualízalo
+    
 
         if ($financiera) {
             $financiera->update([
@@ -172,28 +175,21 @@ class Formulariofinanciera extends Component
                 'otros' => $this->otros,
 
 
-            ]);
+            ]);           
 
             session()->flash('mensaje', 'Formulario actualizado correctamente.');
-        } else {
-
-
-            //TODO Si no existe el registro, puedes mostrar un mensaje o manejarlo de alguna manera
+        } else {          
 
 
         session()->flash('mensaje', 'No se encontró el registro de financiera para actualizar.');
         }
 
-        //TODO Establecer variable de sesión para indicar que el formulario fue enviado
+    
 
         Session::put('form_submitted', true);
 
-        //TODO Limpiar los campos del formulario en caso de que sea necesario
-        //* En este caso no los limpio para que el usuario pueda ver la informacon anterior y poder editar
 
-        // $this->reset(['plazo', 'pago', 'moneda', 'garantia', 'hasAdvancePayment', 'anticipo', 'fecha', 'otros']);
-
-        //TODO Marcar como exitoso y redirigir
+        // $this->reset(['plazo', 'pago', 'moneda', 'garantia', 'hasAdvancePayment', 'anticipo', 'fecha', 'otros']); 
 
         $this->success = true;
         return redirect()->to('/successful');

@@ -25,6 +25,7 @@
                                         {{-- {{ $totalFormularios }} --}}
                                         #
                                     </div>
+
                                 </div>
                                 <div class="text-gray-800">
                                     <p class="text-sm font-medium">Total Formularios</p>
@@ -141,7 +142,7 @@
                                     <option value="created_at_asc">Fecha - Antiguo</option>
                                 </select>
 
-                                <button
+                                <button wire:click="exportar"
                                     class="group relative px-4 py-2 text-xs font-semibold text-white
                                         bg-gradient-to-r from-blue-500 to-blue-600
                                         rounded-lg shadow-md
@@ -242,7 +243,7 @@
                                             </td>
 
                                             <td class="px-4 py-3">
-                                                <a  href="{{ route('formularios.download', $formulario->id) }}"
+                                                <a href="{{ route('formularios.download', $formulario->id) }}"
                                                     class="group relative inline-flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-amber-50 to-amber-100 hover:from-amber-100 hover:to-amber-200 text-amber-600 text-sm font-medium transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
                                                     <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-12"
                                                         fill="currentColor" viewBox="0 0 24 24">
@@ -278,19 +279,20 @@
                                                         @if (!$link->isExpired())
                                                             @if ($link->type === 'operaciones')
                                                                 <a href="{{ route('formulario-operaciones', ['link' => $link->link]) }}"
-                                                                   target="_blank"
-                                                                   class="inline-flex items-center px-3 py-1 text-sm font-medium text-blue-700 bg-blue-100 rounded-sm hover:bg-blue-200">
+                                                                    target="_blank"
+                                                                    class="inline-flex items-center px-3 py-1 text-sm font-medium text-blue-700 bg-blue-100 rounded-sm hover:bg-blue-200">
                                                                     <span>{{ ucfirst($link->type) }}</span>
                                                                 </a>
                                                             @elseif ($link->type === 'financiera')
                                                                 <a href="{{ route('formulario-financiera', ['link' => $link->link]) }}"
-                                                                   target="_blank"
-                                                                   class="inline-flex items-center px-3 py-1 text-sm font-medium text-green-700 bg-green-100 rounded-sm hover:bg-green-200">
+                                                                    target="_blank"
+                                                                    class="inline-flex items-center px-3 py-1 text-sm font-medium text-green-700 bg-green-100 rounded-sm hover:bg-green-200">
                                                                     <span>{{ ucfirst($link->type) }}</span>
                                                                 </a>
                                                             @endif
                                                         @else
-                                                            <span class="inline-flex items-center px-3 py-1 text-sm font-medium text-red-700 bg-red-100 rounded-sm">
+                                                            <span
+                                                                class="inline-flex items-center px-3 py-1 text-sm font-medium text-red-700 bg-red-100 rounded-sm">
                                                                 Expirado
                                                             </span>
                                                         @endif
@@ -299,19 +301,22 @@
                                             </td>
 
                                             <td class="px-4 py-3">
-                                                @if ($formulario->formLinks->contains(function($link) { return $link->isExpired(); }))
+                                                @if (
+                                                    $formulario->formLinks->contains(function ($link) {
+                                                        return $link->isExpired();
+                                                    }))
                                                     <button wire:click="resetLinks({{ $formulario->id }})"
-                                                            wire:loading.attr="disabled"
-                                                            class="group inline-flex items-center justify-center w-8 h-8 rounded-full border-2 border-indigo-500 hover:bg-indigo-50 transition-all duration-300 hover:scale-110">
+                                                        wire:loading.attr="disabled"
+                                                        class="group inline-flex items-center justify-center w-8 h-8 rounded-full border-2 border-indigo-500 hover:bg-indigo-50 transition-all duration-300 hover:scale-110">
                                                         {{-- <span wire:loading.remove wire:target="resetLinks">Restablecer Enlaces</span>
                                                         <span wire:loading wire:target="resetLinks">Restableciendo...</span> --}}
                                                         <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="w-5 h-5 text-indigo-500 group-hover:rotate-180 transition-all duration-300"
-                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                                        stroke-width="2">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                                    </svg>
+                                                            class="w-5 h-5 text-indigo-500 group-hover:rotate-180 transition-all duration-300"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                            stroke-width="2">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                                        </svg>
                                                     </button>
                                                 @endif
                                             </td>
@@ -1013,28 +1018,31 @@
                                             @if ($selectedFormulario->documento->count() > 0)
                                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                                                     @foreach ($selectedFormulario->documento as $documento)
-                                                    <div class="max-w-sm bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-slate-200">
-                                                        <div class="flex items-center p-3 space-x-3">
-                                                            <!-- Icono con estilo que combina -->
-                                                            <div class="p-2.5 rounded-lg bg-blue-50 border border-blue-100">
-                                                                <i class="fas fa-{{ $this->getFileIcon($documento->nombre_original) }} text-2xl text-blue-600"></i>
+                                                        <div
+                                                            class="max-w-sm bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-slate-200">
+                                                            <div class="flex items-center p-3 space-x-3">
+                                                                <!-- Icono con estilo que combina -->
+                                                                <div
+                                                                    class="p-2.5 rounded-lg bg-blue-50 border border-blue-100">
+                                                                    <i
+                                                                        class="fas fa-{{ $this->getFileIcon($documento->nombre_original) }} text-2xl text-blue-600"></i>
+                                                                </div>
+
+                                                                <!-- Nombre del documento -->
+                                                                <h3 class="flex-1 text-sm font-medium text-slate-700 truncate"
+                                                                    title="{{ $documento->nombre_original }}">
+                                                                    {{ $documento->nombre_original }}
+                                                                </h3>
+
+                                                                <!-- Botón de ver -->
+                                                                <a href="{{ asset('storage/' . $documento->ruta_documento) }}"
+                                                                    target="_blank"
+                                                                    class="inline-flex items-center px-3.5 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 rounded-md hover:bg-blue-100 border border-blue-200 transition-colors duration-200">
+                                                                    <i class="ri-eye-line mr-1.5"></i>
+                                                                    Ver
+                                                                </a>
                                                             </div>
-
-                                                            <!-- Nombre del documento -->
-                                                            <h3 class="flex-1 text-sm font-medium text-slate-700 truncate"
-                                                                title="{{ $documento->nombre_original }}">
-                                                                {{ $documento->nombre_original }}
-                                                            </h3>
-
-                                                            <!-- Botón de ver -->
-                                                            <a href="{{ asset('storage/' . $documento->ruta_documento) }}"
-                                                               target="_blank"
-                                                               class="inline-flex items-center px-3.5 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 rounded-md hover:bg-blue-100 border border-blue-200 transition-colors duration-200">
-                                                                <i class="ri-eye-line mr-1.5"></i>
-                                                                Ver
-                                                            </a>
                                                         </div>
-                                                    </div>
                                                     @endforeach
                                                 </div>
 
@@ -1056,29 +1064,34 @@
                                     </div>
 
                                     <div class="bg-white rounded-xl shadow-lg border border-slate-200 mt-6">
-                                        <div class="border-b border-slate-200 px-6 py-4 bg-gradient-to-r from-indigo-50 to-white">
+                                        <div
+                                            class="border-b border-slate-200 px-6 py-4 bg-gradient-to-r from-indigo-50 to-white">
                                             <h2 class="text-lg font-semibold text-gray-800">Cotizaciones</h2>
                                         </div>
 
                                         <div class="p-6">
                                             @if ($selectedFormulario->adjunto_cotizacion)
                                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                                                    <div class="max-w-sm bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-slate-200">
+                                                    <div
+                                                        class="max-w-sm bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-slate-200">
                                                         <div class="flex items-center p-3 space-x-3">
                                                             <!-- Icono con estilo que combina -->
-                                                            <div class="p-2.5 rounded-lg bg-blue-50 border border-blue-100">
+                                                            <div
+                                                                class="p-2.5 rounded-lg bg-blue-50 border border-blue-100">
                                                                 <i class="fas fa-file-alt text-2xl text-blue-600"></i>
                                                             </div>
 
                                                             <!-- Nombre del documento -->
-                                                            <h3 class="flex-1 text-sm font-medium text-slate-700 truncate" title="{{ $selectedFormulario->adjunto_cotizacion }}">
+                                                            <h3 class="flex-1 text-sm font-medium text-slate-700 truncate"
+                                                                title="{{ $selectedFormulario->adjunto_cotizacion }}">
                                                                 {{-- {{ $selectedFormulario->adjunto_cotizacion }} --}}
                                                                 cotización contrato
                                                             </h3>
 
                                                             <!-- Botón de ver -->
-                                                            <a href="{{ asset('storage/' . $selectedFormulario->adjunto_cotizacion) }}" target="_blank"
-                                                               class="inline-flex items-center px-3.5 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 rounded-md hover:bg-blue-100 border border-blue-200 transition-colors duration-200">
+                                                            <a href="{{ asset('storage/' . $selectedFormulario->adjunto_cotizacion) }}"
+                                                                target="_blank"
+                                                                class="inline-flex items-center px-3.5 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 rounded-md hover:bg-blue-100 border border-blue-200 transition-colors duration-200">
                                                                 <i class="ri-eye-line mr-1.5"></i>
                                                                 Ver
                                                             </a>

@@ -431,9 +431,6 @@
 
         location.reload();
         @this.submit('submit');
-
-
-
     }
 
     document.addEventListener('livewire:load', function () {

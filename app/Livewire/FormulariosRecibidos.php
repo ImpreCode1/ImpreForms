@@ -4,35 +4,48 @@ namespace App\Livewire;
 
 use App\Models\Financiera;
 use App\Models\FormLink;
+use App\Models\Informacion;
+// use App\Models\Infonegocio;
 use App\Models\Marca;
 // use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Support\Str;
-use Barryvdh\DomPDF\Facade as PDF;
-use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
-class FormulariosRecibidos extends Component
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\WithStyles;  
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;  
+use Maatwebsite\Excel\Concerns\FromCollection;
+
+use Maatwebsite\Excel\Concerns\WithColumnWidths;  
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;  
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Concerns\WithMapping;
+class FormulariosRecibidos extends Component implements FromCollection, WithMapping, WithStyles, WithColumnWidths, WithColumnFormatting,  WithHeadings  
 {
     use WithPagination;
     public $formulario;
     public $search = '';
     public $sortBy = 'created_at';
     public $sortDirection = 'desc';
-    // public $results = [];
+
     public $totalFormularios = 0;
     public $mostrarMas = false;
     // public $showModal = false;
     public $totalDocumentos = 0;
     public $averageSalePrice = 0;
     public $advancePercentage = 0;
-
+    public $noc;
     public $selectedFormulario = null;
     protected $paginationTheme = 'tailwind';
-
+   
+    
     public $open = false;
 
     protected $listeners = ['openModal' => 'loadFormulario'];
@@ -57,6 +70,7 @@ class FormulariosRecibidos extends Component
         return $icons[$extension] ?? 'file';
     }
 
+   
     public function toggleMostrarMas()
     {
         $this->mostrarMas = !$this->mostrarMas;
@@ -129,8 +143,125 @@ class FormulariosRecibidos extends Component
         }
     }
 
-    //! generar pdf
+    // exportar a exel 
 
+    public function exportar()
+    {
+        return Excel::download(new self(), 'formularios.xlsx');
+    }
+    public function collection()
+    {
+        $marcas = Marca::with('infonegocio', 'financiera','informacion')->get();
+
+
+
+        return $marcas;
+    }
+
+    public function map($marca): array
+{
+    $infonegocio = $marca->infonegocio;
+    
+    $financiera = $marca->financiera->first();
+    $operaciones = $marca->informacion->first();
+
+    // Obtener las fechas de actualización o NULL si no existen
+    $fechaFinanciera = $financiera ? $financiera->updated_at : null;
+    $fechaOperaciones = $operaciones ? $operaciones->updated_at : null;
+
+    // Comparar las fechas y tomar la más reciente
+    $fechaMasReciente = null;
+    
+    if ($fechaFinanciera && $fechaOperaciones) {
+        $fechaMasReciente = $fechaFinanciera > $fechaOperaciones ? $fechaFinanciera : $fechaOperaciones;
+    } elseif ($fechaFinanciera) {
+        $fechaMasReciente = $fechaFinanciera;
+    } elseif ($fechaOperaciones) {
+        $fechaMasReciente = $fechaOperaciones;
+    }
+
+    return [
+        $infonegocio ? $infonegocio->codigo_cliente : 'No Completado',
+        $infonegocio ? $infonegocio->nombre : 'No Completado',
+        $infonegocio ? $infonegocio->n_oportunidad_crm : 'No Completado',
+        $marca->created_at ? $marca->created_at->format('Y-m-d') : 'No Completado',
+        $financiera ? $financiera->created_at->format('Y-m-d') : 'No Completado', 
+        $operaciones ? $operaciones->created_at->format('Y-m-d') : 'No Completado', 
+        $fechaMasReciente ? $fechaMasReciente->format('Y-m-d') : 'No fue terminado'
+    ];
+
+}
+
+
+    //! generar pdf
+   
+    public function headings(): array
+    {
+        return [
+            'Código Cliente',
+            'Nombre',
+            'Número de Oportunidad CRM',
+            'Fecha Creación',
+            'Inicio Financiera',
+            'Inicio Operaciones',
+            'Última Actualización'
+        ];
+    }
+    public function styles(Worksheet $sheet)
+{
+    //Calcula y toma los datos con informacion para poder pintarlos 
+
+    $usedRange = $sheet->calculateWorksheetDimension();
+
+    //* Se toman y se les aplica color solamente a las casillas y columnas especificadas para pintarlas
+    $highestRow = $sheet->getHighestRow();
+
+    return [
+       1 => [
+            'fill' => [
+                'fillType' => 'solid',
+                'startColor' => ['rgb' => 'FDE68A']
+            ],
+        ],
+        'E2:E' . $highestRow => [
+            'fill' => [
+                'fillType' => 'solid',
+                'startColor' => ['rgb' => 'BBF7D0']
+            ],
+        ],
+        'F2:F' . $highestRow => [
+            'fill' => [
+                'fillType' => 'solid',
+                'startColor' => ['rgb' => '93C5FD']
+            ],
+        ],
+    ];
+}
+
+    public function columnWidths(): array  
+    {  
+        return [  
+            'A' => 20,  
+            'B' => 25,  
+            'C' => 20,  
+            'D' => 25,  
+            'E' => 25,  
+            'F' => 25,  
+            'G' => 25,  
+            'H' => 25,  
+        ];  
+    }  
+
+    public function columnFormats(): array  
+    {  
+        return [  
+            'D' => NumberFormat::FORMAT_DATE_YYYYMMDD,  
+            'E' => NumberFormat::FORMAT_DATE_YYYYMMDD,  
+            'F' => NumberFormat::FORMAT_DATE_YYYYMMDD,  
+        ];  
+    }  
+
+   
     public function downloadFormulario($id)
     {
         try {
