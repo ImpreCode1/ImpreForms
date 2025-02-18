@@ -307,7 +307,13 @@ class EnviarFormulario extends Component
     {
         $this->currentStep = $step;
     }
-
+    public function eliminarArchivo()
+    {
+        // Verifica si hay un archivo cargado y lo elimina
+        if ($this->cotizacion) {
+            $this->cotizacion = null;
+        }
+    }
 
     public function removeFile($fileId)
     {
@@ -405,20 +411,12 @@ class EnviarFormulario extends Component
             'marcas_id' => $this->marcaId,
             'forma_pago' => $this->formapago,
             'moneda' => $this->moneda,
-            //? 'garantiascredit' => $this->garantia,
-            // ?'existencia_anticipo' => $this->hasAdvancePayment ? 1 : 0,
-            //? 'porcentaje' => $this->anticipo,
-            //? 'fecha_pago' => $this->fecha_pago,
+
             'otros' => $this->otros,
         ]);
 
 
-        //? Documento::create([
-        // ?    'marca_id' => $marca->id,
-        //  ?   'tipo_documento' => $this->tipodocumento,
-        //   ?  'ruta_documento' => $this->rutadocumento,
-        //    ? 'fecha_subida' => date('Y-m-d H:i:s'),
-        //?       ]);
+
 
 
 
@@ -530,16 +528,16 @@ class EnviarFormulario extends Component
 
     public function updatedAttachments()
     {
-        // Validar que los archivos sean correctos
+
         $this->validate([
-            'attachments.*' => 'file|max:10240|mimes:pdf,doc,docx,xls,xlsx,msj', // Validación para permitir PDFs, DOC, DOCX, XLSX y msj
+            'attachments.*' => 'file|max:10240|mimes:pdf,doc,docx,xls,xlsx,msj',
         ]);
 
         foreach ($this->attachments as $file) {
             $this->files[] = [
                 'name' => $file->getClientOriginalName(),
-                'size' => round($file->getSize() / 1024, 2), // Tamaño en KB
-                'path' => $file->store('documents', 'public'), // Guardamos el archivo en el disco 'public'
+                'size' => round($file->getSize() / 1024, 2),
+                'path' => $file->store('documents', 'public'),
             ];
         }
     }

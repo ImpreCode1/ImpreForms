@@ -121,14 +121,40 @@
                                         @enderror
                                     </div>
 
-                                    <div>
-                                        <label for="cotizacion" class="block text-sm font-medium text-gray-700">Adjuntar
-                                            cotización</label>
-                                        <input id="cotizacion" type="file" wire:model="cotizacion"
-                                            class="w-full text-gray-500 font-medium text-sm bg-gray-100 file:cursor-pointer cursor-pointer file:border-0 file:py-2 file:px-4 file:mr-4 file:bg-gray-800 file:hover:bg-gray-700 file:text-white rounded" />
+                                    <div class=" rounded-lg bg-white p-6 shadow-lg">
+                                        <h2 class="mb-4 text-2xl font-bold text-gray-800">Adjuntar Cotización</h2>
+
+                                        <label for="cotizacion" class="block text-sm font-medium text-gray-700 mb-2">Sube tu archivo aquí</label>
+
+                                        <div
+                                            class="relative flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50 hover:bg-gray-100 cursor-pointer"
+                                            onclick="document.getElementById('cotizacion').click()"
+                                        >
+                                            <svg class="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16v-4m4 4v-8m4 8V4m5 16H5"></path>
+                                            </svg>
+                                            <p class="text-gray-600 text-sm">Admite Archivos Xlsx,Word,Exel,Msj. </p>
+                                            <p class="text-orange-500 text-sm">Maximo 10MB </p>
+
+                                            <p class="text-blue-600 font-semibold text-sm mt-1">o haz clic para seleccionar</p>
+                                            <input id="cotizacion" type="file" wire:model="cotizacion" class="hidden" />
+                                        </div>
+
                                         @error('cotizacion')
-                                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                                        <span class="text-sm text-red-500 mt-2 block">{{ $message }}</span>
                                         @enderror
+
+                                        @if ($cotizacion)
+                                        <div class="mt-4 flex items-center justify-between rounded-lg bg-gray-100 p-3 shadow">
+                                            <span class="text-gray-700 font-medium">{{ $cotizacion->getClientOriginalName() }}</span>
+                                            <button type="button" wire:click="eliminarArchivo" class="flex items-center text-red-500 hover:text-red-700 transition">
+                                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                                Eliminar
+                                            </button>
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

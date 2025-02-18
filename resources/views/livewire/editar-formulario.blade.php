@@ -115,17 +115,29 @@
                                 @enderror
                             </div>
 
-                            <div>
-                                <label for="cotizacion" class="block text-sm font-medium text-gray-700">Adjuntar
-                                    cotización</label>
-                                <input id="cotizacion" type="file" wire:model="cotizacion"
-                                    class="w-full text-gray-500 font-medium text-sm bg-gray-100 file:cursor-pointer cursor-pointer file:border-0 file:py-2 file:px-4 file:mr-4 file:bg-gray-800 file:hover:bg-gray-700 file:text-white rounded" />
-                                @error('cotizaccion')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
+                            <div class="mx-auto max-w-2xl rounded-lg bg-white p-6 shadow-md">
+                                <h2 class="mb-4 text-xl font-bold">Cotización</h2>
+                                <label for="cotizacion" class="block text-sm font-medium text-gray-700">Adjuntar Cotización</label>
+                                <input id="cotizacion" type="file" wire:model="cotizacion" class="mt-2 w-full cursor-pointer rounded bg-gray-100 text-sm font-medium text-gray-500 file:mr-4 file:cursor-pointer file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-white file:hover:bg-blue-500" />
+
+                                @error('cotizacion')
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                                @enderror @if ($cotizacion)
+                                <div class="mt-4 flex items-center justify-between rounded bg-gray-100 p-3">
+
+                                    <a href="{{ asset('storage/cotizacion/' . basename($cotizacion)) }}" target="_blank" class="text-blue-500 underline">
+                                    ver cotización
+                                    </a>
+                                  <button type="button" wire:click="eliminarArchivo" class="text-red-500 hover:text-red-700">Eliminar</button>
+                                </div>
+                                @endif
+
+
+
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <!--Tipo de Contrato -->
@@ -741,49 +753,38 @@
                     this.dragging = false;
                 }
             }" class="w-full">
-                <!-- Upload Zone -->
+
+                <!-- Zona de subida de archivos -->
                 <div @dragover.prevent="handleDragOver" @dragleave.prevent="handleDragLeave"
                     @drop.prevent="handleDrop" :class="{ 'border-blue-500 bg-blue-50': dragging }"
                     class="relative border-2 border-dashed border-gray-300 rounded-lg p-8 text-center transition-all duration-200 ease-in-out hover:border-blue-400">
-                    <input type="file" wire:model="archivosNuevos" multiple
-                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-
+                    <input type="file" wire:model="archivosNuevos" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                     <div class="space-y-4">
-
                         <div class="flex flex-col items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-4"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                             <p class="text-gray-600">
-                                Por favor, <span class="text-blue-600 hover:underline">seleccione los
-                                    archivos
-                                    que desea agregar</span>.
+                                Por favor, <span class="text-blue-600 hover:underline">seleccione los archivos que desea agregar</span>.
                             </p>
                             <p class="text-sm text-gray-500 mt-2">
-                                Puedes subir múltiples archivos
+                                Puedes subir múltiples archivos y se mostrarán automáticamente.
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Selected Files List -->
-                @if (count($archivosNuevos) > 0)
+                <!-- Archivos seleccionados (Aún no guardados en la base de datos) -->
+                @if (count($archivosMostrados) > 0)
                     <div class="mt-6">
                         <h3 class="text-sm font-semibold text-gray-700 mb-3">
-                            Archivos seleccionados ({{ count($archivosNuevos) }})
+                            Archivos seleccionados ({{ count($archivosMostrados) }})
                         </h3>
                         <div class="space-y-3">
-                            @foreach ($archivosNuevos as $index => $archivo)
-                                <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
-                                    wire:key="file-{{ $index }}">
+                            @foreach ($archivosMostrados as $index => $archivo)
+                                <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
                                     <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 mr-3"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 13l-3-3m0 0l-3 3m3-3v12" />
-                                        </svg>
                                         <span class="text-gray-700">{{ $archivo->getClientOriginalName() }}</span>
                                     </div>
                                     <button wire:click="quitarArchivo({{ $index }})" type="button" class="text-red-500">
@@ -794,6 +795,7 @@
                         </div>
                     </div>
                 @endif
+
             </div>
 
             <div class="bg-gray-50 px-6 py-4 flex items-center justify-end gap-3">
