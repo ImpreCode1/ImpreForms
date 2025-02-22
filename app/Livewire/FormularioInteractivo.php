@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
-
 class FormularioInteractivo extends Component
 {
     public $cliente;
@@ -27,13 +26,13 @@ class FormularioInteractivo extends Component
     public $fecha;
     public $link;
     public $marcaId;
+    public $otros;
 
     protected $rules = [
         'clientes' => 'required|string|min:3',
-
         'icoterm' => 'required|string|min:3',
         'lugar' => 'required|string|min:3',
-        'puerto' => 'required|string|min:3',
+        // 'puerto' => 'required|string|min:3',
         'pais' => 'required|string|min:3',
         // 'entrega'=> 'required|string|min:3',
         'transporte' => 'required|string|min:3',
@@ -97,22 +96,19 @@ class FormularioInteractivo extends Component
         }
 
         $infoEntrega = Infoentrega::where('marcas_id', $this->marcaId)->first();
-        if  ($infoEntrega){
-                $this -> marcaId = $infoEntrega -> marcas_id;
-           $this ->clientes = $infoEntrega-> entrega_cliente;
-           $this-> lugar = $infoEntrega->lugar_entrega;
+        if ($infoEntrega) {
+            $this->marcaId = $infoEntrega->marcas_id;
+            $this->clientes = $infoEntrega->entrega_cliente;
+            $this->lugar = $infoEntrega->lugar_entrega;
             $this->pais = $infoEntrega->pais;
-            $this-> puerto = $infoEntrega->puerto;
-            $this -> icoterm = $infoEntrega->incoterm;
-            $this-> transporte = $infoEntrega->transporte;
-            $this   ->  origen = $infoEntrega->origen;
-            $this -> destino = $infoEntrega -> destino;
-            $this -> entregalocal = $infoEntrega->condiciones;
-
-
-
-            }
-
+            $this->puerto = $infoEntrega->puerto;
+            $this->icoterm = $infoEntrega->incoterm;
+            $this->transporte = $infoEntrega->transporte;
+            $this->origen = $infoEntrega->origen;
+            $this->destino = $infoEntrega->destino;
+            $this->entregalocal = $infoEntrega->condiciones;
+            $this->otros = $infoEntrega->otros;
+        }
     }
 
     public $currentStep = 1;
@@ -151,7 +147,6 @@ class FormularioInteractivo extends Component
         if ($infoEntrega) {
             // Si el registro ya existe, actualizarlo con los nuevos valores
             $infoEntrega->update([
-
                 'entrega_cliente' => $this->clientes,
                 'lugar_entrega' => $this->lugar,
                 'pais' => $this->pais,
@@ -160,9 +155,8 @@ class FormularioInteractivo extends Component
                 'transporte' => $this->transporte,
                 'origen' => $this->origen,
                 'destino' => $this->destino,
-                'condiciones' => $this->entregalocal
-
-
+                'condiciones' => $this->entregalocal,
+                'otros' => $this->otros,
             ]);
         } else {
             // Si no se encuentra el registro, crear uno nuevo
@@ -176,7 +170,8 @@ class FormularioInteractivo extends Component
                 'transporte' => $this->transporte,
                 'origen' => $this->origen,
                 'destino' => $this->destino,
-                'condiciones' => $this->entregalocal
+                'condiciones' => $this->entregalocal,
+                'otros' => $this->otros,
             ]);
         }
 
@@ -189,7 +184,6 @@ class FormularioInteractivo extends Component
         // Despachar el evento de recarga y redirección (si es necesario)
         $this->dispatchBrowserEvent('reloadAndRedirect');
     }
-
 
     public function render()
     {

@@ -22,7 +22,7 @@ class Formulariofinanciera extends Component
     public $crm;
 // subida de archivos
     public $archivoscotizacion =[];
-    
+
     public $currentStep = 1;
     public $hasAdvancePayment = null;
     public $advancePaymentPercentage = null;
@@ -156,14 +156,15 @@ class Formulariofinanciera extends Component
 
     public function submit()
     {
-       
-$DataValidate = $this->validate();
+
+     $this->validate();
 
     $financiera = Financiera::where('marcas_id', $this->marcaId)->first();
 
-    
+
 
         if ($financiera) {
+            // dd($financiera);
             $financiera->update([
                 'plazo' => $this->plazo,
                 'forma_pago' => $this->pago,
@@ -175,21 +176,21 @@ $DataValidate = $this->validate();
                 'otros' => $this->otros,
 
 
-            ]);           
+            ]);
 
             session()->flash('mensaje', 'Formulario actualizado correctamente.');
-        } else {          
+        } else {
 
 
         session()->flash('mensaje', 'No se encontró el registro de financiera para actualizar.');
         }
 
-    
+
 
         Session::put('form_submitted', true);
 
 
-        // $this->reset(['plazo', 'pago', 'moneda', 'garantia', 'hasAdvancePayment', 'anticipo', 'fecha', 'otros']); 
+        // $this->reset(['plazo', 'pago', 'moneda', 'garantia', 'hasAdvancePayment', 'anticipo', 'fecha', 'otros']);
 
         $this->success = true;
         return redirect()->to('/successful');

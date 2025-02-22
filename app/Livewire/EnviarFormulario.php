@@ -18,22 +18,16 @@ use Illuminate\Support\Facades\Storage;
 class EnviarFormulario extends Component
 {
     public $currentStep = 1;
-
-
-
     use WithFileUploads;
 
     // identificadores de archivos por id
-
     public $marcasId;
     public $documento;
     public $documentos;
     // fin de manejo de documentos
-
     public $hasAdvancePayment = null;
     public $advancePaymentPercentage = null;
     public $advancePaymentDate = null;
-
     public $negocio;
     public $nombre;
     public $correo;
@@ -43,7 +37,7 @@ class EnviarFormulario extends Component
     public $oc;
     public $precio;
     public $cotizacion;
-    public $soluciones;
+    public $soluciones = '';
     public $linea;
     public $codlinea;
     public $nomgerente;
@@ -62,13 +56,14 @@ class EnviarFormulario extends Component
     public $suministrar;
     public $inicio;
     public $finalizacion;
-    public $details;
-    public $aplicagarantia;
+    public $nom_rep;
+    // public $details;
+    public $aplicagarantia = '';
     public $terminogarantia;
 
-    public $formapago;
-    public $moneda;
-    public $incluye_iva;
+    // public $formapago;
+    // public $moneda;
+    public $incluye_iva = '';
 
     public $clientcode;
     public $clientname;
@@ -79,7 +74,7 @@ class EnviarFormulario extends Component
     public $actualpago;
     public $monedaactual;
     public $porcentaje;
-    public $aplicapoliza;
+    public $aplicapoliza = '';
     public $fecha_pago;
 
     public $tipodocumento;
@@ -94,6 +89,11 @@ class EnviarFormulario extends Component
     public $archivosNuevos = [];
 
 
+    public $cod_ejc;
+    public $nombre_ejc;
+    public $telefono_ejc;
+    public $email_ejc;
+    public $tipo_solicitud = '';
 
     public $operacionesLink;
     public $financieraLink;
@@ -151,17 +151,17 @@ class EnviarFormulario extends Component
         'finalizacion' => 'required|date',
 
         //* Producto
-        'details' => 'required|string|min:2',
+        // 'details' => 'required|string|min:2',
         'aplicagarantia' => 'required|string|min:2',
         'terminogarantia' => 'required|string|min:2',
         'aplicapoliza' => 'required|string|min:2',
         'porcentaje' => 'required|numeric|min:0|max:100',
 
         //* Condiciones de Pago
-        'formapago' => 'required|string',
-        'moneda' => 'required|string',
+        // 'formapago' => 'required|string',
+        // 'moneda' => 'required|string',
         'incluye_iva' => 'required|boolean',
-        'fecha_pago' => 'required|date',
+        // 'fecha_pago' => 'required|date',
 
 
     ];
@@ -350,6 +350,7 @@ class EnviarFormulario extends Component
             'correo' => $this->correo,
             'numero_celular' => $this->numero,
             'n_oportunidad_crm' => $this->crm, // *  es numerico obligatorio
+            'nom_rep' => $this->nom_rep,
         ]);
 
         $marca = Marca::create([
@@ -366,6 +367,7 @@ class EnviarFormulario extends Component
             'telefono' => $this->telgerente, //! obligatorio
             'correo_electronico' => $this->corgerente, //! obligatorio
 
+
             'otro' => $this->clientcode, //! nulo varchar
             'cel' => $this->clientname, //! nulo tipo numerico
             'email' => $this->mail, //! nulo tipo email
@@ -373,6 +375,15 @@ class EnviarFormulario extends Component
             'director' => $this->director, //! obligatorio vacrhar
             'numero' => $this->tel2gerente, //! obligatorio numerico
             'correo_director' => $this->cor2gerente, //! obligatorio tipo correo
+
+
+            'cod_ejc' => $this->cod_ejc,
+            'nombre_ejc' => $this->nombre_ejc,
+            'telefono_ejc' => $this->telefono_ejc,
+            'email_ejc' => $this->email_ejc,
+
+            'tipo_solicitud' =>$this->tipo_solicitud,
+
         ]);
 
         $this->marcaId = $marca->id;
@@ -394,7 +405,7 @@ class EnviarFormulario extends Component
 
         Producto::create([
             'informacion_id' => $informacion->id,
-            'detalles_equipos' => $this->details, //! obligatorio
+            // 'detalles_equipos' => $this->details, //! obligatorio
             'aplica_garantia' => $this->aplicagarantia, //! obligatorio
             'termino_garantia' => $this->terminogarantia, //! obligatorio
             'aplica_poliza' => $this->aplicapoliza, //! obligatorio
@@ -403,14 +414,14 @@ class EnviarFormulario extends Component
 
         Pago::create([
             'marcas_id' => $this->marcaId,
-            'fecha_pago' => $this->fecha_pago,
+            // 'fecha_pago' => $this->fecha_pago,
             'incluye_iva' => $this->incluye_iva,
         ]);
 
         Financiera::create([
             'marcas_id' => $this->marcaId,
-            'forma_pago' => $this->formapago,
-            'moneda' => $this->moneda,
+            // 'forma_pago' => $this->formapago,
+            // 'moneda' => $this->moneda,
 
             'otros' => $this->otros,
         ]);
@@ -434,9 +445,9 @@ class EnviarFormulario extends Component
                 'cliente' => $this->negocio,
                 'nombre' => $this->nombre,
                 'crm' => $this->crm,
-                'forma_pago' => $this->formapago,
-                'moneda' => $this->moneda,
-                'otros' => $this->otros,
+                // 'forma_pago' => $this->formapago,
+                // 'moneda' => $this->moneda,
+                // 'otros' => $this->otros,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'expires_at' =>$expirationTime,
@@ -448,23 +459,20 @@ class EnviarFormulario extends Component
                 'cliente' => $this->negocio,
                 'nombre' => $this->nombre,
                 'crm' => $this->crm,
-                'forma_pago' => $this->formapago,
-                'moneda' => $this->moneda,
-                'otros' => $this->otros,
+                // 'forma_pago' => $this->formapago,
+                // 'moneda' => $this->moneda,
+                // 'otros' => $this->otros,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'expires_at' => $expirationTime,
             ]
         ]);
 
-        foreach ($this->attachments as $file) {
-            $originalName = $file->getClientOriginalName();
-
-            $path = $file->storeAs('documents',$originalName, 'public');
+        foreach ($this->files as $file) {
             Documento::create([
                 'marcas_id' => $this->marcaId,
-                'nombre_original' => $originalName,
-                'ruta_documento' => $path,
+                'nombre_original' => $file['name'],
+                'ruta_documento' => $file['path'],
             ]);
         }
 
@@ -500,11 +508,10 @@ class EnviarFormulario extends Component
 
     public function cerrarmodal()
     {
-
-        $this->mmd = false;
+        $this->dispatch('reloadPage');
     }
-    public function mount($marcaId = null)
 
+    public function mount($marcaId = null)
     {
 
         $this->files = [];
@@ -534,10 +541,11 @@ class EnviarFormulario extends Component
         ]);
 
         foreach ($this->attachments as $file) {
+            $originalName = $file->getClientOriginalName();
             $this->files[] = [
                 'name' => $file->getClientOriginalName(),
                 'size' => round($file->getSize() / 1024, 2),
-                'path' => $file->store('documents', 'public'),
+                'path' => $file->storeAS('documents', $originalName, 'public'),
             ];
         }
     }

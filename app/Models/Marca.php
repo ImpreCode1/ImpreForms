@@ -20,6 +20,7 @@ class Marca extends Model
         'precio_venta',
         'adjunto_cotizacion',
         'tipo_contrato',
+        'tipo_solicitud',
         'linea',
         'codigo_linea',
         'nombre',
@@ -31,6 +32,11 @@ class Marca extends Model
         'director',
         'numero',
         'correo_director',
+        'cod_ejc',
+        'nombre_ejc',
+        'telefono_ejc',
+        'email_ejc',
+
     ];
 
     public function infonegocio()

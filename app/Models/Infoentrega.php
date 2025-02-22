@@ -22,6 +22,7 @@ class Infoentrega extends Model
         'origen',
         'destino',
         'condiciones',
+        'otros',
     ];
 
     public function marca()

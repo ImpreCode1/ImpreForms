@@ -117,9 +117,9 @@ Route::get('/formulario-financiera/{link}', function ($link) {
         'cliente' => $record->cliente,
         'nombre' => $record->nombre,
         'crm' => $record->crm,
-        'forma_pago' => $record->forma_pago,
-        'moneda' => $record->moneda,
-        'otros' => $record->otros,
+        // 'forma_pago' => $record->forma_pago,
+        // 'moneda' => $record->moneda,
+        // 'otros' => $record->otros,
     ]);
 })->name('formulario-financiera');
 

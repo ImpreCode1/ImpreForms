@@ -26,21 +26,33 @@ class EditarFormulario extends Component
     public $temporaryFiles = [];
     public $existingFiles = [];
     public $archivosNuevos = [];
-    public $archivosMostrados =[];
+    public $archivosMostrados = [];
+
     public $negocio, $nombres, $correo, $numero, $crms;
     public $fecha, $oc, $precio, $soluciones, $linea, $codlinea;
     public $nomgerente, $telgerente, $corgerente, $director, $tel2gerente, $cor2gerente;
     public $entregacliente, $lugarentrega, $espais, $tiempoentrega, $terminoentrega, $tipoicoterm;
     public $prestar, $suministrar, $inicio, $finalizacion;
-    public $clientcode, $clientname, $mail, $details;
+    public $clientcode, $clientname, $mail;
+    // $details
     public $aplicagarantia, $terminogarantia, $aplicapoliza, $porcentaje;
-    public $formapago, $moneda, $incluye_iva, $fecha_pago, $otros;
+    public $incluye_iva, $otros;
+    // $moneda,
+    // $formapago,
+    // $fecha_pago,
     public $cotizacion;
     protected $listener = ['removeUpload', 'removeExistingFile', 'editFormulario'];
 
     public $marcaId;
+    public $cod_ejc;
+    public $nombre_ejc;
+    public $telefono_ejc;
+    public $email_ejc;
+
     public $documentos;
     public $documento;
+    public $tipo_solicitud;
+    public $nom_rep;
     public $files = [];
 
     protected $rules = [
@@ -54,6 +66,7 @@ class EditarFormulario extends Component
         'fecha' => 'required|date',
         'oc' => 'required|string|',
         'precio' => 'required|numeric',
+        // 'cotizacion' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         'soluciones' => 'required|string|',
         'linea' => 'required|string|',
         'codlinea' => 'required|string|',
@@ -63,6 +76,7 @@ class EditarFormulario extends Component
         'director' => 'required|string|',
         'tel2gerente' => 'required|numeric',
         'cor2gerente' => 'required|email|',
+
         'entregacliente' => 'required|string|',
         'lugarentrega' => 'required|string|',
         'espais' => 'required|string|',
@@ -76,18 +90,16 @@ class EditarFormulario extends Component
 
         'clientname' => 'required|string|',
         'mail' => 'required|email|',
-        'details' => 'required|string|',
+        // 'details' => 'required|string|',
         'aplicagarantia' => 'required|string|',
         'terminogarantia' => 'required|string|',
         'aplicapoliza' => 'required|string|',
         'porcentaje' => 'required|numeric',
-        'formapago' => 'required|string|',
-        'moneda' => 'required|string|',
+        // 'formapago' => 'required|string|',
+        // 'moneda' => 'required|string|',
         'incluye_iva' => 'required',
-        'fecha_pago' => 'required|date',
-        'otros' => 'string|',
-                'cotizacion' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
-
+        // 'fecha_pago' => 'required|date',
+        // 'otros' => 'string|',
     ];
 
     protected $messages = [
@@ -205,21 +217,24 @@ class EditarFormulario extends Component
         }
     }
 
-
-
     public function mount($formulario)
     {
-
-
         $this->formulario = $formulario;
         $this->marcaId = $formulario->marca_id;
-
 
         $this->negocio = $formulario->infonegocio->codigo_cliente;
         $this->nombres = $formulario->infonegocio->nombre;
         $this->correo = $formulario->infonegocio->correo;
         $this->numero = $formulario->infonegocio->numero_celular;
         $this->crms = $formulario->infonegocio->n_oportunidad_crm;
+        $this->nom_rep = $formulario->infonegocio->nom_rep;
+
+        $this->tipo_solicitud = $formulario->tipo_solicitud;
+
+        $this->cod_ejc = $formulario->cod_ejc;
+        $this->nombre_ejc = $formulario->nombre_ejc;
+        $this->telefono_ejc = $formulario->telefono_ejc;
+        $this->email_ejc = $formulario->email_ejc;
 
         $this->fecha = $this->formatearFecha($formulario->fecha);
         $this->oc = $formulario->n_oc;
@@ -234,6 +249,7 @@ class EditarFormulario extends Component
         $this->clientcode = $formulario->otro;
         $this->clientname = $formulario->cel;
         $this->mail = $formulario->email;
+        $this->cotizacion = $formulario->adjunto_cotizacion;
 
         $this->director = $formulario->director;
         $this->tel2gerente = $formulario->numero;
@@ -256,7 +272,7 @@ class EditarFormulario extends Component
 
             if ($info->producto->isNotEmpty()) {
                 $producto = $info->producto->first();
-                $this->details = $producto->detalles_equipos;
+                // $this->details = $producto->detalles_equipos;
                 $this->aplicagarantia = $producto->aplica_garantia;
                 $this->terminogarantia = $producto->termino_garantia;
                 $this->aplicapoliza = $producto->aplica_poliza;
@@ -266,17 +282,17 @@ class EditarFormulario extends Component
 
         if ($formulario->pago && $formulario->pago->isNotEmpty()) {
             $pago = $formulario->pago->first();
-            $this->fecha_pago = $this->formatearFecha($pago->fecha_pago);
+            // $this->fecha_pago = $this->formatearFecha($pago->fecha_pago);
             $this->incluye_iva = $pago->incluye_iva;
             // dd($formulario->pago);
         }
 
-        if ($formulario->financiera->isNotEmpty()) {
-            $financiera = $formulario->financiera->first();
-            $this->formapago = $financiera->forma_pago;
-            $this->moneda = $financiera->moneda;
-            $this->otros = $financiera->otros;
-        }
+        // if ($formulario->financiera->isNotEmpty()) {
+        //     $financiera = $formulario->financiera->first();
+        // $this->formapago = $financiera->forma_pago;
+        // $this->moneda = $financiera->moneda;
+        // $this->otros = $financiera->otros;
+        // }
 
         $this->existingFiles = $formulario->documento
             ->map(function ($documento) {
@@ -289,20 +305,20 @@ class EditarFormulario extends Component
             })
             ->toArray();
 
-            // $this->loadExistingFiles();
+        // $this->loadExistingFiles();
 
-            // if ($this->cotizacion ) { // Verifica si es un archivo
-            //     $originalName = $this->cotizacion->getClientOriginalName();
-            //     $path = $this->cotizacion->storeAs('public/cotizacion', $originalName);
+        // if ($this->cotizacion ) { // Verifica si es un archivo
+        //     $originalName = $this->cotizacion->getClientOriginalName();
+        //     $path = $this->cotizacion->storeAs('public/cotizacion', $originalName);
 
-            //     // Actualizamos el campo adjunto_cotizacion en el registro de Marca ya creado
-            //     $formulario->update([
-            //         'adjunto_cotizacion' => $this-> cotizacion,
-            //     ]);
-            // } else {
-            //     // Si $this->cotizacion no es un archivo, significa que ya es una ruta almacenada en la base de datos.
-            //     // Puedes dejarla como está o manejar el error según sea necesario.
-            // }
+        //     // Actualizamos el campo adjunto_cotizacion en el registro de Marca ya creado
+        //     $formulario->update([
+        //         'adjunto_cotizacion' => $this-> cotizacion,
+        //     ]);
+        // } else {
+        //     // Si $this->cotizacion no es un archivo, significa que ya es una ruta almacenada en la base de datos.
+        //     // Puedes dejarla como está o manejar el error según sea necesario.
+        // }
 
     }
 
@@ -324,43 +340,87 @@ class EditarFormulario extends Component
     public function removeExistingFile($documentId)
     {
         $documento = Documento::find($documentId);
+
         if ($documento) {
             Storage::disk('public')->delete($documento->ruta_documento);
             $documento->delete();
-            $this->existingFiles = array_filter($this->existingFiles, function ($file) use ($documentId) {
-                return $file['id'] != $documentId;
-            });
+
+            $this->existingFiles = array_filter(
+                array_filter($this->existingFiles, function ($file) use ($documentId) {
+                    return $file['id'] != $documentId;
+                }),
+            );
         }
     }
+
+    public function saveNewFiles()
+    {
+        foreach ($this->archivosNuevos as $file) {
+            try {
+                $originalName = $file->getClientOriginalName();
+                $path = $file->store('documents', 'public');
+
+                Documento::create([
+                    'nombre_original' => $originalName,
+                    'marcas_id' => $this->marcaId,
+                    'ruta_documento' => $path,
+                ]);
+            } catch (\Exception $e) {
+                session()->flash('error', 'Error al guardar el archivo: ' . $e->getMessage());
+            }
+        }
+
+        // Reinicia la lista de archivos nuevos
+        $this->archivosNuevos = [];
+
+        // Recargar los archivos existentes
+        $this->loadExistingFiles();
+    }
+
     public function updatedArchivosNuevos()
     {
-        // Agregar los archivos seleccionados al array de archivos mostrados sin borrar los anteriores
         foreach ($this->archivosNuevos as $file) {
             $this->archivosMostrados[] = $file;
         }
-
-        // Limpiar el input de archivos para evitar conflictos en la selección
-        $this->archivosNuevos = [];
     }
 
     public function quitarArchivo($index)
     {
-        unset($this->archivosMostrados[$index]);
-        $this->archivosMostrados = array_values($this->archivosMostrados); // Reindexar el array
+        if (isset($this->archivosMostrados[$index])) {
+            unset($this->archivosMostrados[$index]);
+            $this->archivosMostrados = array_values($this->archivosMostrados);
+        }
     }
 
     public function eliminarArchivo()
     {
-        // Verifica si hay un archivo cargado y lo elimina
         if ($this->cotizacion) {
+            Storage::disk('public')->delete($this->cotizacion);
+            $this->formulario->update(['adjunto_cotizacion' => null]);
             $this->cotizacion = null;
         }
     }
 
-
     public function submit()
     {
         $this->validate();
+
+        $rutaAnterior = $this->formulario->adjunto_cotizacion;
+
+        if ($this->cotizacion instanceof \Illuminate\Http\UploadedFile) {
+            $originalName = $this->cotizacion->getClientOriginalName();
+            $path = "public/cotizacion/{$originalName}";
+
+            if ($rutaAnterior && Storage::exists($rutaAnterior)) {
+                Storage::delete($rutaAnterior);
+            }
+
+            $this->cotizacion->storeAs('public/cotizacion', $originalName);
+            $this->formulario->update([
+                'adjunto_cotizacion' => $path,
+            ]);
+        }
+
         $this->formulario->update([
             'n_oc' => $this->oc,
             'fecha' => $this->fecha,
@@ -377,8 +437,18 @@ class EditarFormulario extends Component
             'director' => $this->director,
             'numero' => $this->tel2gerente,
 
+
             'correo_director' => $this->cor2gerente,
-            'adjunto_cotizacion' => $this->cotizacion,
+
+            // public $nombre_ejc;
+            // public $telefono_ejc;
+            // public $email_ejc;
+            //datos agregados
+            'tipo_solicitud' => $this->tipo_solicitud,
+            'cod_ejc' => $this->cod_ejc,
+            'nombre_ejc' => $this->nombre_ejc,
+            'telefono_ejc' => $this->telefono_ejc,
+            'email_ejc' => $this->email_ejc,
         ]);
 
         // Actualizar información del negocio
@@ -388,6 +458,7 @@ class EditarFormulario extends Component
             'correo' => $this->correo,
             'numero_celular' => $this->numero,
             'n_oportunidad_crm' => $this->crms,
+            'nom_rep' => $this->nom_rep,
         ]);
 
         // Actualizar información
@@ -408,7 +479,7 @@ class EditarFormulario extends Component
             // Actualizar producto
             if ($producto = $info->producto->first()) {
                 $producto->update([
-                    'detalles_equipos' => $this->details,
+                    // 'detalles_equipos' => $this->details,
                     'aplica_garantia' => $this->aplicagarantia,
                     'termino_garantia' => $this->terminogarantia,
                     'aplica_poliza' => $this->aplicapoliza,
@@ -419,25 +490,25 @@ class EditarFormulario extends Component
         // Actualizar pago
         if ($pago = $this->formulario->pago->first()) {
             $pago->update([
-                'fecha_pago' => $this->fecha_pago,
+                // 'fecha_pago' => $this->fecha_pago,
                 'incluye_iva' => $this->incluye_iva,
             ]);
         }
         // Actualizar información financiera
-        if ($financiera = $this->formulario->financiera->first()) {
-            $financiera->update([
-                'forma_pago' => $this->formapago,
-                'moneda' => $this->moneda,
-                'otros' => $this->otros,
-            ]);
-        }
+        // if ($financiera = $this->formulario->financiera->first()) {
+        //     $financiera->update([
+        //         'forma_pago' => $this->formapago,
+        //         'moneda' => $this->moneda,
+        //         'otros' => $this->otros,
+        //     ]);
+        // }
         // $path = $this->cotizacion->store('cotizacion/public');
-        // $this->saveNewFiles();
+        $this->saveNewFiles();
 
         $this->dispatch('formularioUpdated');
         return redirect()->route('historial');
-
     }
+
 
     public function render()
     {
