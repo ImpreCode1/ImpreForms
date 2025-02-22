@@ -53,7 +53,7 @@
                                     <th scope="col" class="px-6 py-5 text-sm font-semibold text-slate-900">Codigo
                                         Cliente</th>
                                     <th scope="col" class="px-6 py-5 text-sm font-semibold text-slate-900">Tipo de
-                                        contrato
+                                        solicitud
                                     </th>
                                     <th scope="col" class="px-6 py-5 text-sm font-semibold text-slate-900">N OC</th>
                                     <th scope="col" class="px-6 py-5 text-sm font-semibold text-slate-900">Archivos
@@ -87,7 +87,7 @@
                                     <td class="px-6 py-4">
                                         <span
                                             class="inline-flex items-center gap-1.5 rounded-md bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-600">
-                                            {{ $formulario->tipo_contrato }}
+                                            {{ $formulario->tipo_solicitud }}
                                         </span>
                                     </td>
 
@@ -283,17 +283,18 @@
                                                                     Editar Formulario
                                                                 </h3>
                                                                 <div class="absolute right-6 top-6">
-                                                                    <button @click="showModal = false; Livewire.emit('resetForm')"
-                                                                    class="rounded-full p-2 inline-flex text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-all duration-200">
-                                                                    <span class="sr-only">Cerrar</span>
-                                                                    <svg class="h-6 w-6" fill="none"
-                                                                        viewBox="0 0 24 24" stroke-width="2"
-                                                                        stroke="currentColor">
-                                                                        <path stroke-linecap="round"
-                                                                            stroke-linejoin="round"
-                                                                            d="M6 18L18 6M6 6l12 12" />
-                                                                    </svg>
-                                                                </button>
+                                                                    <button
+                                                                        @click="showModal = false; Livewire.emit('resetForm')"
+                                                                        class="rounded-full p-2 inline-flex text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-all duration-200">
+                                                                        <span class="sr-only">Cerrar</span>
+                                                                        <svg class="h-6 w-6" fill="none"
+                                                                            viewBox="0 0 24 24" stroke-width="2"
+                                                                            stroke="currentColor">
+                                                                            <path stroke-linecap="round"
+                                                                                stroke-linejoin="round"
+                                                                                d="M6 18L18 6M6 6l12 12" />
+                                                                        </svg>
+                                                                    </button>
                                                                 </div>
                                                             </div>
 

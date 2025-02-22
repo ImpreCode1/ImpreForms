@@ -2,12 +2,41 @@
     <div class="font-sans text-gray-900 antialiased">
         {{-- <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6"> --}}
         <form wire:submit.prevent="submit" class="space-y-8">
-
             <div class="form-step">
                 {{-- <h1 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
                        Edición Información Proporcionada por Marcas
                     </h1> --}}
+                <div class="bg-gray-50 p-6 rounded-lg mt-6">
+                    <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-yellow-500" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h4l2 2h4a2 2 0 012 2v12a2 2 0 01-2 2z" />
+                        </svg>
+                        Tipo de Solicitud
+                    </h2>
 
+                    <div class="relative">
+                        <label for="tipo_solicitud" class="block text-sm font-medium text-gray-700">Solicitud</label>
+
+
+                        <i
+                            class="ri-file-text-line absolute left-3 top-1/2 transform -translate-y-1/2
+                                {{ $errors->has('tipo_solicitud') ? 'text-red-500' : 'text-gray-400' }}"></i>
+                        <select id="tipo_solicitud" wire:model="tipo_solicitud"
+                            class="mt-1 block w-full rounded-md border-gray-300
+                                {{ $errors->has('tipo_solicitud') ? 'border-red-300' : 'border-blue-100' }}
+                                rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300">
+                            <option value="" disabled>Seleccione tipo de solicitud</option>
+                            <option value="contrato">Contrato</option>
+                            <option value="otrosi">Otrosí</option>
+                        </select>
+                    </div>
+                    @error('tipo_solicitud')
+                        <span class="text-sm text-red-500 text-center block">{{ $message }}</span>
+                    @enderror
+
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Información del Negocio -->
                     <div class="bg-gray-50 p-6 rounded-lg">
@@ -39,6 +68,13 @@
                                 @error('nombres')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
                                 @enderror
+                            </div>
+
+                            <div>
+                                <label for="nom_rep"
+                                    class="block text-sm font-medium text-gray-700">Nombre del representante legal</label>
+                                <input id="nom_rep" type="text" wire:model="nom_rep"
+                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('nom_rep') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                             </div>
 
                             <div>
@@ -104,6 +140,20 @@
                             </div>
 
                             <div>
+                                <label for="incluye_iva" class="block text-sm font-medium text-gray-700">Incluye
+                                    IVA</label>
+                                <select id="incluye_iva" wire:model="incluye_iva"
+                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('incluye_iva') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                    <option value="">Seleccione</option>
+                                    <option value="1">Sí</option>
+                                    <option value="0">No</option>
+                                </select>
+                                @error('incluye_iva')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div>
                                 <label for="precio" class="block text-sm font-medium text-gray-700">Precio de
                                     venta que debe
                                     quedar
@@ -115,21 +165,27 @@
                                 @enderror
                             </div>
 
+
                             <div class="mx-auto max-w-2xl rounded-lg bg-white p-6 shadow-md">
                                 <h2 class="mb-4 text-xl font-bold">Cotización</h2>
-                                <label for="cotizacion" class="block text-sm font-medium text-gray-700">Adjuntar Cotización</label>
-                                <input id="cotizacion" type="file" wire:model="cotizacion" class="mt-2 w-full cursor-pointer rounded bg-gray-100 text-sm font-medium text-gray-500 file:mr-4 file:cursor-pointer file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-white file:hover:bg-blue-500" />
+                                <label for="cotizacion" class="block text-sm font-medium text-gray-700">Adjuntar
+                                    Cotización</label>
+                                <input id="cotizacion" type="file" wire:model="cotizacion"
+                                    class="mt-2 w-full cursor-pointer rounded bg-gray-100 text-sm font-medium text-gray-500 file:mr-4 file:cursor-pointer file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-white file:hover:bg-blue-500" />
 
                                 @error('cotizacion')
-                                <span class="text-sm text-red-500">{{ $message }}</span>
-                                @enderror @if ($cotizacion)
-                                <div class="mt-4 flex items-center justify-between rounded bg-gray-100 p-3">
+                                    <span class="text-sm text-red-500">{{ $message }}</span>
+                                @enderror
+                                @if ($cotizacion)
+                                    <div class="mt-4 flex items-center justify-between rounded bg-gray-100 p-3">
 
-                                    <a href="{{ asset('storage/cotizacion/' . basename($cotizacion)) }}" target="_blank" class="text-blue-500 underline">
-                                    ver cotización
-                                    </a>
-                                  <button type="button" wire:click="eliminarArchivo" class="text-red-500 hover:text-red-700">Eliminar</button>
-                                </div>
+                                        <a href="{{ asset('storage/' . $cotizacion) }}"
+                                            target="_blank" class="text-blue-500 underline">
+                                            Cotización
+                                        </a>
+                                        <button type="button" wire:click="eliminarArchivo"
+                                            class="text-red-500 hover:text-red-700">Eliminar</button>
+                                    </div>
                                 @endif
 
 
@@ -156,13 +212,15 @@
                             <label for="soluciones" class="block text-sm font-medium text-gray-700">Soluciones</label>
                             <select id="soluciones" wire:model="soluciones"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('soluciones') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
-                                <option value="">Seleccionar Solución</option>
-                                <option value="huawei">Soluciones</option>
-                                <option value="huawei">Líneas Huawei EBG, Datacenter y Solar, líneas de paneles
+                                <option value="" disabled>Seleccionar Solución</option>
+                                <option value="Líneas Huawei EBG, Datacenter y Solar, líneas de paneles solares">
+                                    Líneas Huawei EBG, Datacenter y Solar, líneas de paneles
                                     solares</option>
-                                <option value="datacenter">Oportunidades cerradas con condiciones particulares
+                                <option value="Oportunidades cerradas con condiciones particulares">
+                                    Oportunidades cerradas con condiciones particulares
                                 </option>
-                                <option value="solar">Productos que no sean de línea para un negocio
+                                <option value="Productos que no sean de línea para un negocio específico">
+                                    Productos que no sean de línea para un negocio
                                     específico
                                 </option>
                             </select>
@@ -232,33 +290,11 @@
                             @enderror
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Otro</label>
-                            <input type="text" wire:model="clientcode"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
-                                placeholder="Opcional" />
-                        </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Teléfono</label>
-                            <input type="text" wire:model="clientname"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
-                                placeholder="Opcional" />
-                            @error('clientname')
-                                <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
-                            @enderror
-                        </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Correo electrónico</label>
-                            <input type="text" wire:model="mail"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
-                                placeholder="Opcional" />
-                            @error('mail')
-                                <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
-                            @enderror
-                        </div>
-
+                        <h5 class="text-xl font-semibold mb-4 col-span-2  text-stone-950 tracking-wide">
+                            Información Director
+                        </h5>
                         <div>
                             <label for="director" class="block text-sm font-medium text-gray-700">Director</label>
                             <input id="director" type="text" wire:model="director"
@@ -286,6 +322,66 @@
                                 <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                             @enderror
                         </div>
+
+
+                        <h5 class="text-xl font-semibold mb-4 col-span-2 text-stone-950 tracking-wide">
+                            Información Ejecutivo
+                        </h5>
+                        {{-- informacion ejecutivo --}}
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Cod</label>
+                            <input type="text" wire:model="cod_ejc"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Nombre</label>
+                            <input type="text" wire:model="nombre_ejc"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Teléfono</label>
+                            <input type="text" wire:model="telefono_ejc"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">E-mail</label>
+                            <input type="text" wire:model="email_ejc"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                        </div>
+                        <h5 class="text-xl font-semibold mb-4 col-span-2 text-stone-950 tracking-wide">
+                            Información Adicional (si se requiere)
+                        </h5>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Otro</label>
+                            <input type="text" wire:model="clientcode"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
+                                placeholder="Opcional" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Teléfono</label>
+                            <input type="text" wire:model="clientname"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
+                                placeholder="Opcional" />
+                            @error('clientname')
+                                <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Correo electrónico</label>
+                            <input type="text" wire:model="mail"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
+                                placeholder="Opcional" />
+                            @error('mail')
+                                <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
+                            @enderror
+                        </div>
+
                     </div>
                 </div>
 
@@ -426,53 +522,10 @@
 
                     </div>
                 </div>
-
-                <!-- Botón Siguiente -->
-                {{-- <div class="flex justify-center">
-                        <button wire:click="changeStep(2)" type="button"
-                            class="group relative bg-blue-600 py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3 overflow-hidden">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                            </div>
-                            <span class="relative font-semibold text-white">Siguiente paso</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="relative h-5 w-5 text-white"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
-                        </button>
-                    </div> --}}
             </div>
 
             <div class="form-step">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Productos Section -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-green-500"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 6h16l2 12H6L4 6z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18a2 2 0 100 4 2 2 0 000-4zM18 18a2 2 0 100 4 2 2 0 000-4z" />
-                            </svg>
-                            Productos
-                        </h2>
-                        <div class="grid gap-4">
-                            <div>
-                                <label for="detalles_equipos" class="block text-sm font-medium text-gray-700">Detalles
-                                    de los equipos
-                                    a
-                                    entregar</label>
-                                <input id="details" type="text" wire:model="details"
-                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('details') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                @error('details')
-                                    <span class="text-red-500 text-sm"> {{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Garantías Section -->
                     <div class="bg-gray-50 p-6 rounded-lg">
                         <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
@@ -487,13 +540,17 @@
                         </h2>
                         <div class="grid gap-4">
                             <div>
-                                <label for="    garantia" class="block text-sm font-medium text-gray-700">¿Aplica
-                                    algún tipo de
+                                <label for="garantia" class="block text-sm font-medium text-gray-700">¿Aplica algún
+                                    tipo de
                                     garantía?</label>
-                                <input id="aplicagarantia" type="text" wire:model="aplicagarantia"
-                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicagarantia') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                <select wire:model="aplicagarantia" id="garantia"
+                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicagarantia') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                    <option value="" disabled>Selecciona una opción</option>
+                                    <option value="sí">Sí</option>
+                                    <option value="no">No</option>
+                                </select>
                                 @error('aplicagarantia')
-                                    <span class="text-red-500 text-sm"> {{ $message }}</span>
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div>
@@ -509,75 +566,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Condiciones de Pago Section -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-blue-500" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 14h6m-3-3v6" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 2v6h6" />
-                            </svg>
-                            Condiciones de Pago
-                        </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="formapago" class="block text-sm font-medium text-gray-700">Forma de
-                                    Pago</label>
-                                <input id="formapago" type="text" wire:model="formapago"
-                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('formapago') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                @error('formapago')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div>
-                                <label for="moneda" class="block text-sm font-medium text-gray-700">Moneda</label>
-                                <input id="moneda" type="text" wire:model="moneda"
-                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('moneda') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                @error('moneda')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div>
-                                <label for="incluye_iva" class="block text-sm font-medium text-gray-700">Incluye
-                                    IVA</label>
-                                <select id="incluye_iva" wire:model="incluye_iva"
-                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('incluye_iva') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
-                                    <option value="">Seleccione</option>
-                                    <option value="1">Sí</option>
-                                    <option value="0">No</option>
-                                </select>
-                                @error('incluye_iva')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div>
-                                <label for="fecha_pago" class="block text-sm font-medium text-gray-700">Fecha de
-                                    Pago</label>
-                                <input id="fecha_pago" type="date" wire:model="fecha_pago"
-                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('fecha_pago') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                @error('fecha_pago')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <div>
-                                <label for="otros" class="block text-sm font-medium text-gray-700">Otros</label>
-                                <input id="otros" type="text" wire:model="otros"
-                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('otros') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                @error('otros')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <!-- Pólizas Section -->
+                    <!-- Productos Section -->
                     <div class="bg-gray-50 p-6 rounded-lg">
                         <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-purple-500"
@@ -589,10 +579,15 @@
                         </h2>
                         <div class="grid gap-4">
                             <div>
-                                <label for="aplicapoliza" class="block text-sm font-medium text-gray-700">Aplica
-                                    Póliza</label>
-                                <input id="aplicapoliza" type="text" wire:model="aplicapoliza"
-                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicapoliza') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                <label for="aplicapoliza" class="block text-sm font-medium text-gray-700">¿Aplica
+                                    algún tipo de
+                                    póliza?</label>
+                                <select wire:model="aplicapoliza" id="aplicapoliza"
+                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicapoliza') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                    <option value="" disabled>Selecciona una opción</option>
+                                    <option value="sí">Sí</option>
+                                    <option value="no">No</option>
+                                </select>
                                 @error('aplicapoliza')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
                                 @enderror
@@ -612,28 +607,8 @@
                 </div>
 
 
-                <!-- Área de Archivos -->
 
-                {{-- <div class="border-dashed border-2 border-gray-300 p-6 text-center">
-                    <input type="file" wire:model="attachments" multiple class="hidden" id="file-upload"
-                        accept=".pdf,.doc,.docx,.xls,.xlsx" />
-                    <label for="file-upload" class="cursor-pointer">
-                        <div class="flex flex-col items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-4"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            <p class="text-gray-600">
-                                Por favor, <span class="text-blue-600 hover:underline">seleccione los archivos
-                                    que desea agregar</span>.
-                            </p>
-                            <p class="text-sm text-gray-500 mt-2">
-                                Archivos permitidos: PDF, DOC, XLSX. Tamaño máximo: 10MB.
-                            </p>
-                        </div>
-                    </label>
-                </div> --}}
+
 
                 <!-- Existing Files Section -->
                 @if (count($existingFiles) > 0)
@@ -648,10 +623,10 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                         </svg>
-                                        <a href="{{ Storage::disk('public')->url($file['path']) }}" target="_blank"
-                                            class="text-sm text-blue-600 hover:underline">
+                                        <a target="_blank" class="text-sm text-blue-600 hover:underline">
                                             {{ $file['name'] }}
                                         </a>
+
                                     </div>
                                     <button type="button" wire:click="removeExistingFile({{ $file['id'] }})"
                                         class="text-red-500 hover:text-red-700">
@@ -758,15 +733,18 @@
                 <div @dragover.prevent="handleDragOver" @dragleave.prevent="handleDragLeave"
                     @drop.prevent="handleDrop" :class="{ 'border-blue-500 bg-blue-50': dragging }"
                     class="relative border-2 border-dashed border-gray-300 rounded-lg p-8 text-center transition-all duration-200 ease-in-out hover:border-blue-400">
-                    <input type="file" wire:model="archivosNuevos" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    <input type="file" wire:model="archivosNuevos" multiple
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                     <div class="space-y-4">
                         <div class="flex flex-col items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-4"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                             <p class="text-gray-600">
-                                Por favor, <span class="text-blue-600 hover:underline">seleccione los archivos que desea agregar</span>.
+                                Por favor, <span class="text-blue-600 hover:underline">seleccione los archivos que
+                                    desea agregar</span>.
                             </p>
                             <p class="text-sm text-gray-500 mt-2">
                                 Puedes subir múltiples archivos y se mostrarán automáticamente.
@@ -783,11 +761,13 @@
                         </h3>
                         <div class="space-y-3">
                             @foreach ($archivosMostrados as $index => $archivo)
-                                <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
+                                <div
+                                    class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
                                     <div class="flex items-center">
                                         <span class="text-gray-700">{{ $archivo->getClientOriginalName() }}</span>
                                     </div>
-                                    <button wire:click="quitarArchivo({{ $index }})" type="button" class="text-red-500">
+                                    <button wire:click="quitarArchivo({{ $index }})" type="button"
+                                        class="text-red-500">
                                         Eliminar
                                     </button>
                                 </div>

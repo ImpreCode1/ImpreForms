@@ -16,7 +16,7 @@
             <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-center">
                 <h1 class="text-2xl font-bold text-center tracking-wide text-white">
                     <i class="ri-file-list-3-line mr-3"></i>
-                    Información Suministrada Por Financieras
+                    Información de Condiciones Financieras
                 </h1>
             </div>
 
@@ -151,17 +151,16 @@
                                 Moneda
                             </label>
                             <div class="relative">
-                                <i
-                                    class="ri-money-dollar-circle-line absolute left-3 top-1/2 transform -translate-y-1/2
-                                {{ $errors->has('moneda') ? 'text-red-500' : 'text-gray-400' }}"></i>
-
-                                <input id="moneda" wire:model="moneda" autocomplete="off"
+                                <i class="ri-money-dollar-circle-line absolute left-3 top-1/2 transform -translate-y-1/2
+                                    {{ $errors->has('moneda') ? 'text-red-500' : 'text-gray-400' }}"></i>
+                                <select id="moneda" wire:model="moneda"
                                     class="pl-12 w-full input-gradient border-2
                                     {{ $errors->has('moneda') ? 'border-red-300' : 'border-blue-100' }}
-                                    rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
-                                    type="text" value="{{$moneda}}" placeholder="Moneda">
-
-
+                                    rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300">
+                                    <option value="">Seleccione una moneda</option>
+                                    <option value="USD">USD</option>
+                                    <option value="COP">COP</option>
+                                </select>
                             </div>
                             @error('moneda')
                                 <span class="text-sm text-red-500">{{ $message }}</span>

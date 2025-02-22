@@ -13,7 +13,7 @@
         <div class="w-full max-w-xl bg-white shadow-2xl rounded-3xl overflow-hidden">
             <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-6 px-8">
                 <h1 class="text-2xl font-bold text-center tracking-wide">
-                    Información Suministrada Por Operaciones
+                    Información de Condiciones de Operaciones
                 </h1>
                 <p class="text-center text-indigo-100 mt-2 text-sm">
                     Formulario de Condiciones del Negocio
@@ -94,9 +94,9 @@
                                     </svg>
                                 </div>
                                 <input
-                                class="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 cursor-not-allowed"
-                                id="clientCode" name="clientCode" type="text" placeholder="Código de cliente"
-                                value="{{ $cliente }}" disabled>
+                                    class="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 cursor-not-allowed"
+                                    id="clientCode" name="clientCode" type="text" placeholder="Código de cliente"
+                                    value="{{ $cliente }}" disabled>
                             </div>
                         </div>
 
@@ -113,9 +113,9 @@
                                     </svg>
                                 </div>
                                 <input
-                                class="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 cursor-not-allowed"
-                                id="clientName" name="clientName" type="text" placeholder="Nombre completo"
-                                value="{{ $nombre }}" disabled>
+                                    class="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 cursor-not-allowed"
+                                    id="clientName" name="clientName" type="text" placeholder="Nombre completo"
+                                    value="{{ $nombre }}" disabled>
                             </div>
                         </div>
 
@@ -132,9 +132,9 @@
                                     </svg>
                                 </div>
                                 <input
-                                class="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 cursor-not-allowed"
-                                id="crmOpportunityNumber" name="crmOpportunityNumber" type="text"
-                                placeholder="Número de oportunidad" value="{{ $crm }}" disabled>
+                                    class="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 cursor-not-allowed"
+                                    id="crmOpportunityNumber" name="crmOpportunityNumber" type="text"
+                                    placeholder="Número de oportunidad" value="{{ $crm }}" disabled>
                             </div>
                         </div>
                     </div>
@@ -206,23 +206,6 @@
                             @enderror
                         </div>
 
-                        <div>
-                            <label for="puerto" class="block text-gray-700 text-sm font-semibold mb-3">
-                                Puerto
-                            </label>
-                            <div class="relative">
-                                <i
-                                    class="ri-anchor-line absolute left-3 top-1/2 transform -translate-y-1/2  @error('puerto') text-red-500 @enderror"></i>
-
-                                <input id="puerto" wire:model="puerto" autocomplete="off"
-                                    class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
-                                    @error('puerto') border-red-300 @else border-gray-300 @enderror"
-                                    type="text" placeholder="Puerto">
-                            </div>
-                            @error('puerto')
-                                <span class="text-sm text-red-500"> {{ $message }}</span>
-                            @enderror
-                        </div>
                     </div>
 
 
@@ -337,25 +320,43 @@
                             @enderror
                         </div>
 
+                        <div>
+                            <label for="otros" class="block text-gray-700 text-sm font-semibold mb-3">
+                                Otros
+                            </label>
+                            <div class="relative">
+                                <i class="ri-more-2-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-700"></i>
+
+                                <input id="otros" wire:model="otros" autocomplete="off"
+                                    class="pl-12 w-full input-gradient  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                    @error('otros') border-red-300 @else border-gray-300 @enderror"
+                                    type="text" placeholder="Otros (Opcional)">
+                            </div>
+                            @error('otros')
+                                <span class="text-sm text-red-500">{{ $message }}</span>
+                            @enderror
+                        </div>
+
 
                     </div>
                     <div class="flex flex-col mt-6">
                         @if ($errors->any())
-                        <div class="alert alert-danger mb-4 text-center">
-                            <span class="text-red-500">Parece que algunos campos del formulario aún no están completos o contienen información incorrecta.</span>
-                        </div>
+                            <div class="alert alert-danger mb-4 text-center">
+                                <span class="text-red-500">Parece que algunos campos del formulario aún no están
+                                    completos o contienen información incorrecta.</span>
+                            </div>
                         @endif
-                    <div class="flex justify-between mt-6">
-                        <button wire:click="changeStep(2 )" type="button"
-                            class="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg">
-                            <i class="ri-arrow-left-line mr-2"></i> Anterior
-                        </button>
-                        <button  type="button" onclick="confirmarEnvio()"
-                            class="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 transition duration-300 shadow-md hover:shadow-lg">
-                            Enviar <i class="ri-send-plane-line ml-2"></i>
-                        </button>
+                        <div class="flex justify-between mt-6">
+                            <button wire:click="changeStep(2 )" type="button"
+                                class="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg">
+                                <i class="ri-arrow-left-line mr-2"></i> Anterior
+                            </button>
+                            <button type="button" onclick="confirmarEnvio()"
+                                class="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 transition duration-300 shadow-md hover:shadow-lg">
+                                Enviar <i class="ri-send-plane-line ml-2"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
                 </div>
             </form>
         </div>
@@ -363,55 +364,64 @@
 
 
 
-    @if(session('success'))
-    <div class="w-3/5 fixed top-0  right-0 z-50 flex items-center p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg shadow-lg" role="alert">
-        <div
-                    class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
-  <svg class="h-6 w-6 text-green-600" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-  </svg>
-  </div>
-        <span class="font-medium">Éxito!</span> {{ session('success') }}
-        <button  type="button" class="ml-auto -mx-1.5 -my-1.5 rounded-md focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center" aria-label="Close"
-                onclick="this.parentElement.style.display='none';">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.293 7.293a1 1 0 011.414 0L10 10.586l2.293-2.293a1 1 0 011.414 1.414L11.414 12l2.293 2.293a1 1 0 01-1.414 1.414L10 13.414l-2.293 2.293a1 1 0 01-1.414-1.414L8.586 12 6.293 9.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-        </button>
+    @if (session('success'))
+        <div class="w-3/5 fixed top-0  right-0 z-50 flex items-center p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg shadow-lg"
+            role="alert">
+            <div
+                class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                <svg class="h-6 w-6 text-green-600" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <span class="font-medium">Éxito!</span> {{ session('success') }}
+            <button type="button"
+                class="ml-auto -mx-1.5 -my-1.5 rounded-md focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center"
+                aria-label="Close" onclick="this.parentElement.style.display='none';">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M6.293 7.293a1 1 0 011.414 0L10 10.586l2.293-2.293a1 1 0 011.414 1.414L11.414 12l2.293 2.293a1 1 0 01-1.414 1.414L10 13.414l-2.293 2.293a1 1 0 01-1.414-1.414L8.586 12 6.293 9.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd" />
+                </svg>
+            </button>
 
-      </div>
-  @endif
-
-
-
-
-
-        <!-- Modal de Confirmación -->
-
-
-        <div id="modalConfirm" class="fixed inset-0  bg-gray-500 bg-opacity-75 transition-opacity hidden">
-            <div class="flex items-center justify-center h-full">
-                <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
-    <div class="flex items-center">
-        <div class="flex-shrink-0 h-12 w-12 rounded-full bg-yellow-100 sm:h-10 sm:w-10 flex items-center justify-center mr-3">
-            <svg class="h-6 w-6 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
         </div>
-        <h3 class="text-lg font-medium text-gray-900">Enviar Formulario</h3>
-    </div>
-    <p class="mt-2 text-sm text-gray-600">¿Está seguro de que desea enviar el formulario?</p>
-    <div class="mt-4 flex justify-end">
-        <button onclick="cancelarEnvio()" class="mr-2 px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">No</button>
-        <button wire:click="submit" onclick="submit()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Sí, Enviar</button>
-    </div>
-  </div>
+    @endif
+
+
+
+
+
+    <!-- Modal de Confirmación -->
+
+
+    <div id="modalConfirm" class="fixed inset-0  bg-gray-500 bg-opacity-75 transition-opacity hidden">
+        <div class="flex items-center justify-center h-full">
+            <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
+                <div class="flex items-center">
+                    <div
+                        class="flex-shrink-0 h-12 w-12 rounded-full bg-yellow-100 sm:h-10 sm:w-10 flex items-center justify-center mr-3">
+                        <svg class="h-6 w-6 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900">Enviar Formulario</h3>
+                </div>
+                <p class="mt-2 text-sm text-gray-600">¿Está seguro de que desea enviar el formulario?</p>
+                <div class="mt-4 flex justify-end">
+                    <button onclick="cancelarEnvio()"
+                        class="mr-2 px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">No</button>
+                    <button wire:click="submit" onclick="submit()"
+                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Sí, Enviar</button>
+                </div>
             </div>
         </div>
+    </div>
 
 
 
-      </div>
+</div>
 <script>
     function confirmarEnvio() {
         // Mostrar el modal
@@ -433,8 +443,8 @@
         @this.submit('submit');
     }
 
-    document.addEventListener('livewire:load', function () {
-        Livewire.on('submitForm', function () {
+    document.addEventListener('livewire:load', function() {
+        Livewire.on('submitForm', function() {
             @this.submit(); // Llama al método para enviar el formulario
             @this.validate();
 
@@ -457,7 +467,8 @@
 
         // Aquí puedes enviar el formulario si es necesario
         // event.target.submit();
-        console.log('Formulario enviado con valores limpiados:', Object.fromEntries(new FormData(event.target)));
+        console.log('Formulario enviado con valores limpiados:', Object.fromEntries(new FormData(event
+        .target)));
     });
     window.addEventListener('reloadAndRedirect', () => {
         // Recargar la página

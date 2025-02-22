@@ -71,33 +71,82 @@
     </style>
 </head>
 <body>
+
+   {{-- tipo de solicitud --}}
+    <div class="header">
+        <h1>Tipo de solicitud</h1>
+    </div>
+
+
+    <div class="info-section">
+        <span class="info-label">Tipo de Contrato</span>
+        <div class="info-value">{{ $formulario->tipo_solicitud }}</div>
+    </div>
+
+
+    {{-- informacion --}}
     <div class="header">
         <h1>Información del Cliente</h1>
     </div>
 
     <div class="info-section">
         <span class="info-label">Código del Cliente</span>
-        <div class="info-value">{{ $formulario->infonegocio->codigo_cliente }}</div>
+        <div class="info-value">{{ $formulario->infonegocio->codigo_cliente ?? 'No especificado'  }}</div>
     </div>
 
     <div class="info-section">
         <span class="info-label">Nombre del Cliente</span>
-        <div class="info-value">{{ $formulario->infonegocio->nombre }}</div>
+        <div class="info-value">{{ $formulario->infonegocio->nombre ?? 'No especificado'  }}</div>
     </div>
 
     <div class="info-section">
-        <span class="info-label">Correo Electrónico</span>
-        <div class="info-value">{{ $formulario->infonegocio->correo }}</div>
+        <span class="info-label">Nombre del Representante Legal</span>
+        <div class="info-value">{{ $formulario->infonegocio->nom_rep ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Correo electrónico del representante legal</span>
+        <div class="info-value">{{ $formulario->infonegocio->correo ?? 'No especificado' }}</div>
     </div>
 
     <div class="info-section">
         <span class="info-label">Número de Celular</span>
-        <div class="info-value">{{ $formulario->infonegocio->numero_celular }}</div>
+        <div class="info-value">{{ $formulario->infonegocio->numero_celular  ?? 'No especificado' }}</div>
     </div>
 
     <div class="info-section">
         <span class="info-label">N° Oportunidad CRM</span>
-        <div class="info-value">{{ $formulario->infonegocio->n_oportunidad_crm }}</div>
+        <div class="info-value">{{ $formulario->infonegocio->n_oportunidad_crm ?? 'No especificado'  }}</div>
+    </div>
+
+
+    <br>
+    <br>
+
+
+    {{-- orden de compra --}}
+    <div class="header">
+        <h1>Orden de compra</h1>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Fecha</span>
+        <div class="info-value">{{ \Carbon\Carbon::parse($formulario->fecha)->format('Y-m-d') ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">N° OC</span>
+        <div class="info-value">{{ $formulario->n_oc ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">¿Incluye IVA?</span>
+        <div class="info-value">{{ $formulario->pago->isNotEmpty() && $formulario->pago->first()->incluye_iva ? 'Sí' : 'No' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Precio de venta</span>
+        <div class="info-value">$ {{ $formulario->precio_venta ?? 'No especificado' }}</div>
     </div>
 
     <br>
@@ -116,8 +165,11 @@
     <br>
     <br>
 
+
+
+    {{-- gerente de producto --}}
     <div class="header">
-        <h1>Gerente de producto</h1>
+        <h1> Información del Equipo Comercial</h1>
     </div>
 
     <div class="info-section">
@@ -146,6 +198,50 @@
         <div class="info-value">{{ $formulario->correo_electronico ?? 'No especificado' }}</div>
     </div>
 
+    <div class="header">
+        <h3 style="color: #005a8c">Información del Director</h3>
+    </div>
+    {{-- informacion director --}}
+    <div class="info-section">
+        <span class="info-label">Director</span>
+        <div class="info-value">{{ $formulario->director ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Teléfono</span>
+        <div class="info-value">{{ $formulario->numero ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Correo electrónico</span>
+        <div class="info-value">{{ $formulario->correo_director ?? 'No especificado' }}</div>
+    </div>
+
+    <br>
+    <br>
+    <div class="header">
+        <h3 style="color: #005a8c">Información del Ejecutivo</h3>
+    </div>
+    {{-- informacion ejecutivo --}}
+    <div class="info-section">
+        <span class="info-label">Cod</span>
+        <div class="info-value">{{ $formulario->cod_ejc ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Nombre</span>
+        <div class="info-value">{{ $formulario->nombre_ejc ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Teléfono</span>
+        <div class="info-value">{{ $formulario->telefono_ejc ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Correo electronico</span>
+        <div class="info-value">{{ $formulario->email_ejc ?? 'No especificado' }}</div>
+    </div>
 
     <div class="header">
         <h3 style="color: #005a8c">Información adiccional (si se requiere)</h3>
@@ -168,53 +264,7 @@
     </div>
 
 
-    <div class="header">
-        <h3 style="color: #005a8c">Información del Director</h3>
-    </div>
-    {{-- informacion director --}}
-    <div class="info-section">
-        <span class="info-label">Director</span>
-        <div class="info-value">{{ $formulario->director ?? 'No especificado' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Teléfono</span>
-        <div class="info-value">{{ $formulario->numero ?? 'No especificado' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Correo electrónico</span>
-        <div class="info-value">{{ $formulario->correo_director ?? 'No especificado' }}</div>
-    </div>
-
-
-    {{-- Orden de compra --}}
-    <br>
-    <br>
-
-    <div class="header">
-        <h1>Orden de compra</h1>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Fecha</span>
-        <div class="info-value">{{ \Carbon\Carbon::parse($formulario->fecha)->format('Y-m-d') ?? 'No especificado' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">N° OC</span>
-        <div class="info-value">{{ $formulario->n_oc ?? 'No especificado' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Precio de venta</span>
-        <div class="info-value">{{ $formulario->precio_venta ?? 'No especificado' }}</div>
-    </div>
-
-
      {{-- informacion de entrega --}}
-
-
      <br>
      <br>
 
@@ -252,52 +302,6 @@
         <div class="info-value">{{ $formulario->informacion->first()->tipo_incoterms ?? 'No especificado' }}</div>
     </div>
 
-
-    {{-- logistica --}}
-    <br>
-    <br>
-
-    <div class="header">
-        <h1>Logistica</h1>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Icoterm</span>
-        <div class="info-value">{{ $formulario->infoEntrega->first()->incoterm ?? 'No especificado' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Puerto</span>
-        <div class="info-value">{{ $formulario->infoEntrega->first()->puerto ?? 'No especificado' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Transporte</span>
-        <div class="info-value">{{ $formulario->infoEntrega->first()->transporte ?? 'No especificado' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Origen</span>
-        <div class="info-value">{{ $formulario->infoEntrega->first()->origen ?? 'No especificado' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Destino</span>
-        <div class="info-value">{{ $formulario->infoEntrega->first()->destino ?? 'No especificado' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Condiciones de entrega local</span>
-        <div class="info-value">{{ $formulario->infoEntrega->first()->condiciones ?? 'No especificado' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Otros</span>
-        <div class="info-value">{{ $formulario->infoEntrega->first()->otros ?? 'No especificado' }}</div>
-    </div>
-
-
-
     <br>
     <br>
 
@@ -324,27 +328,6 @@
     <div class="info-section">
         <span class="info-label">Fecha de finalización</span>
         <div class="info-value">{{ \Carbon\Carbon::parse($formulario->informacion->first()->fecha_finalizacion)->format('Y-m-d') ?? 'No especificado' }}</div>
-    </div>
-
-
-    <br>
-    <br>
-
-    {{-- productos --}}
-    <div class="header">
-        <h1>Productos</h1>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Anexar detalle de los equipos que se van a entregar</span>
-        <div class="info-value">
-            @foreach ($formulario->informacion as $informacion)
-                @foreach ($informacion->producto as $producto)
-                    {{ $producto->detalles_equipos ?? 'No especificado' }}
-                    @if (!$loop->last), @endif
-                @endforeach
-            @endforeach
-        </div>
     </div>
 
     <br>
@@ -385,61 +368,6 @@
     <br>
     <br>
 
-    {{-- condiciones  --}}
-    <div class="header">
-        <h1>Condiciones Pago</h1>
-    </div>
-
-
-    <div class="info-section">
-        <span class="info-label">Forma De Pago</span>
-        <div class="info-value">{{ $formulario->financiera->first()->forma_pago ?? 'No especificado' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Plazo</span>
-        <div class="info-value">{{ $formulario->financiera->first()->plazo ?? 'No especificado' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Moneda</span>
-        <div class="info-value">{{ $formulario->financiera->first()->moneda ?? 'No especificado' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Garantías de Crédito</span>
-        <div class="info-value">{{ $formulario->financiera->first()->garantiascredit ?? 'No especificado' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">¿Incluye IVA?</span>
-        <div class="info-value">{{ $formulario->financiera->first()->incluye_iva ? 'Sí' : 'No' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">¿Hay existencia de anticipo?</span>
-        <div class="info-value">{{ $formulario->financiera->first()->existencia_anticipo ? 'Sí' : 'No' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">¿Qué porcentaje?</span>
-        <div class="info-value">{{ number_format($formulario->financiera->first()->porcentaje ?? 0, 0) ?? 'No especificado' }}%</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Fecha de pago del anticipo</span>
-        <div class="info-value">{{ \Carbon\Carbon::parse($formulario->financiera->first()->fecha_pago)->format('Y-m-d') ?? 'No especificado' }}</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Otros</span>
-        <div class="info-value">{{ $formulario->financiera->first()->otros ?? 'No especificado' }}</div>
-    </div>
-
-
-    <br>
-    <br>
-
     {{-- polizas --}}
     <div class="header">
         <h1>Polizas</h1>
@@ -471,6 +399,135 @@
             @endforeach
         </div>
     </div>
+
+
+    <br>
+    <br>
+    {{-- <h4 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
+        Información condiciones operaciones
+    </h4> --}}
+
+    {{-- logistica --}}
+
+    <div class="header">
+        <h1>Información condiciones operaciones</h1>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Icoterm</span>
+        <div class="info-value">{{ $formulario->infoEntrega->first()->incoterm ?? 'No especificado' }}</div>
+    </div>
+
+    {{-- <div class="info-section">
+        <span class="info-label">Puerto</span>
+        <div class="info-value">{{ $formulario->infoEntrega->first()->puerto ?? 'No especificado' }}</div>
+    </div> --}}
+
+    <div class="info-section">
+        <span class="info-label">Transporte</span>
+        <div class="info-value">{{ $formulario->infoEntrega->first()->transporte ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Origen</span>
+        <div class="info-value">{{ $formulario->infoEntrega->first()->origen ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Destino</span>
+        <div class="info-value">{{ $formulario->infoEntrega->first()->destino ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Condiciones de entrega local</span>
+        <div class="info-value">{{ $formulario->infoEntrega->first()->condiciones ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Otros</span>
+        <div class="info-value">{{ $formulario->infoEntrega->first()->otros ?? 'No especificado' }}</div>
+    </div>
+
+
+
+
+    {{-- productos --}}
+    {{-- <div class="header">
+        <h1>Productos</h1>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Anexar detalle de los equipos que se van a entregar</span>
+        <div class="info-value">
+            @foreach ($formulario->informacion as $informacion)
+                @foreach ($informacion->producto as $producto)
+                    {{ $producto->detalles_equipos ?? 'No especificado' }}
+                    @if (!$loop->last), @endif
+                @endforeach
+            @endforeach
+        </div>
+    </div> --}}
+
+    <br>
+    <br>
+
+
+    {{-- <h4 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
+        Información condiciones financieras
+    </h4> --}}
+
+    {{-- condiciones  --}}
+    <div class="header">
+        <h1>Información condiciones financieras</h1>
+    </div>
+
+
+    <div class="info-section">
+        <span class="info-label">Forma De Pago</span>
+        <div class="info-value">{{ $formulario->financiera->first()->forma_pago ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Plazo</span>
+        <div class="info-value">{{ $formulario->financiera->first()->plazo ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Moneda</span>
+        <div class="info-value">{{ $formulario->financiera->first()->moneda ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Garantías de Crédito</span>
+        <div class="info-value">{{ $formulario->financiera->first()->garantiascredit ?? 'No especificado' }}</div>
+    </div>
+
+    {{-- <div class="info-section">
+        <span class="info-label">¿Incluye IVA?</span>
+        <div class="info-value">{{ $formulario->financiera->first()->incluye_iva ? 'Sí' : 'No' }}</div>
+    </div> --}}
+
+    <div class="info-section">
+        <span class="info-label">¿Hay existencia de anticipo?</span>
+        <div class="info-value">{{ $formulario->financiera->first()->existencia_anticipo ? 'Sí' : 'No' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">¿Qué porcentaje?</span>
+        <div class="info-value">{{ number_format($formulario->financiera->first()->porcentaje ?? 0, 0) ?? 'No especificado' }}%</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Fecha de pago del anticipo</span>
+        <div class="info-value">{{ \Carbon\Carbon::parse($formulario->financiera->first()->fecha_pago)->format('Y-m-d') ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Otros</span>
+        <div class="info-value">{{ $formulario->financiera->first()->otros ?? 'No especificado' }}</div>
+    </div>
+
+
 
     <div class="footer">
         Documento generado automáticamente | Impresistem S.A.S 2025 | {{ now()->format('d/m/Y') }}

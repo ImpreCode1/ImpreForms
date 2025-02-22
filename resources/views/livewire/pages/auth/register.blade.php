@@ -99,6 +99,9 @@ new #[Layout('layouts.guest')] class extends Component
 <div>
     <x-app-layout>
 
+        <br>
+        <br>
+
         <div class="max-w-md mx-auto">
             <div class="text-center mb-2">
                 <div class="inline-flex p-3 rounded-full bg-indigo-100 mb-4">

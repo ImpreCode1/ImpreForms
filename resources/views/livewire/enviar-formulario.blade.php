@@ -1,6 +1,5 @@
 <div>
     <x-app-layout>
-        {{-- <div class="py-12"> --}}
         <div class="font-sans text-gray-900 antialiased">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
                 <form wire:submit.prevent="submit" id="operacionesForm" class="space-y-8">
@@ -9,6 +8,37 @@
                         <h1 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
                             Información Proporcionada por Marcas
                         </h1>
+
+                        <div class="bg-gray-50 p-6 rounded-lg mt-6">
+                            <div class="grid grid-cols-1 gap-4">
+                                <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-yellow-500"
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h4l2 2h4a2 2 0 012 2v12a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Tipo de Solicitud
+                                </h2>
+
+                                <div class="relative">
+                                    <i
+                                        class="ri-file-text-line absolute left-3 top-1/2 transform -translate-y-1/2
+                                        {{ $errors->has('tipo_solicitud') ? 'text-red-500' : 'text-gray-400' }}"></i>
+                                    <select id="tipo_solicitud" wire:model="tipo_solicitud"
+                                        class="mt-1 block w-full rounded-md border-gray-300
+                                        {{ $errors->has('tipo_solicitud') ? 'border-red-300' : 'border-blue-100' }}
+                                        rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300">
+                                        <option value="" disabled>Seleccione tipo de solicitud</option>
+                                        <option value="contrato">Contrato</option>
+                                        <option value="otrosi">Otrosí</option>
+                                    </select>
+                                </div>
+                                @error('tipo_solicitud')
+                                    <span class="text-sm text-red-500 text-center block">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Información del Negocio -->
@@ -35,8 +65,8 @@
                                     </div>
 
                                     <div>
-                                        <label for="nombre"
-                                            class="block text-sm font-medium text-gray-700">Nombre</label>
+                                        <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre del
+                                            cliente</label>
                                         <input id="nombre" wire:model="nombre" type="text"
                                             class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('nombre') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('nombre')
@@ -44,8 +74,26 @@
                                         @enderror
                                     </div>
 
+                                    {{-- <div>
+                                        <label for="nombre"
+                                            class="block text-sm font-medium text-gray-700">Representante legal</label>
+                                        <input id="nombre" wire:model="nombre" type="text"
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('nombre') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        @error('nombre')
+                                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                                        @enderror
+                                    </div> --}}
+
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700">Correo</label>
+                                        <label for="nom_rep"
+                                            class="block text-sm font-medium text-gray-700">Nombre del representante legal</label>
+                                        <input id="nom_rep" type="text" wire:model="nom_rep"
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('nom_rep') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    </div>
+                                    <div>
+                                        <label for="correo"
+                                        class="block text-sm font-medium text-gray-700">Correo electronico del
+                                            representante legal</label>
                                         <input id="correo" type="email" wire:model="correo"
                                             class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('correo') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('correo')
@@ -85,7 +133,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9 12h6m-6 4h6M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z" />
                                     </svg>
-                                    Orden Compra Cliente
+                                    Orden Compra del Cliente a Impresistem
                                 </h2>
 
                                 <div class="grid grid-cols-1 gap-4">
@@ -109,8 +157,24 @@
                                         @enderror
                                     </div>
 
+                                    {{-- iva --}}
                                     <div>
-                                        <label for="precio" class="block text-sm font-medium text-gray-700">Precio de
+                                        <label for="incluye_iva"
+                                            class="block text-sm font-medium text-gray-700">¿Incluye IVA?</label>
+                                        <select id="incluye_iva" wire:model="incluye_iva"
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('incluye_iva') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                            <option value="" disabled>Seleccione</option>
+                                            <option value="1">Sí</option>
+                                            <option value="0">No</option>
+                                        </select>
+                                        @error('incluye_iva')
+                                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div>
+                                        <label for="precio" class="block text-sm font-medium text-gray-700">Precio
+                                            de
                                             venta que debe
                                             quedar
                                             en el contrato</label>
@@ -122,38 +186,52 @@
                                     </div>
 
                                     <div class=" rounded-lg bg-white p-6 shadow-lg">
-                                        <h2 class="mb-4 text-2xl font-bold text-gray-800">Adjuntar Cotización</h2>
+                                        <h5
+                                            class="text-xl font-semibold mb-4 col-span-2  text-stone-950 tracking-wide">
+                                            Adjuntar Cotización
+                                        </h5>
 
-                                        <label for="cotizacion" class="block text-sm font-medium text-gray-700 mb-2">Sube tu archivo aquí</label>
+                                        <label for="cotizacion"
+                                            class="block text-sm font-medium text-gray-700 mb-2">Sube tu archivo
+                                            aquí</label>
 
-                                        <div
-                                            class="relative flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50 hover:bg-gray-100 cursor-pointer"
-                                            onclick="document.getElementById('cotizacion').click()"
-                                        >
-                                            <svg class="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16v-4m4 4v-8m4 8V4m5 16H5"></path>
+                                        <div class="relative flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50 hover:bg-gray-100 cursor-pointer"
+                                            onclick="document.getElementById('cotizacion').click()">
+                                            <svg class="w-12 h-12 text-gray-400 mb-2" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M7 16v-4m4 4v-8m4 8V4m5 16H5"></path>
                                             </svg>
-                                            <p class="text-gray-600 text-sm">Admite Archivos Xlsx,Word,Exel,Msj. </p>
-                                            <p class="text-orange-500 text-sm">Maximo 10MB </p>
+                                            <p class="text-black font-semibold text-sm mt-1">Seleccione el archivo
+                                            </p>
+                                            <p class="text-black text-sm">Maximo 10MB </p>
+                                            <p class="text-gray-600 text-sm">Admite Archivos Xlsx,Word,Exel. </p>
 
-                                            <p class="text-blue-600 font-semibold text-sm mt-1">o haz clic para seleccionar</p>
-                                            <input id="cotizacion" type="file" wire:model="cotizacion" class="hidden" />
+
+                                            <input id="cotizacion" type="file" wire:model="cotizacion"
+                                                class="hidden" />
                                         </div>
 
                                         @error('cotizacion')
-                                        <span class="text-sm text-red-500 mt-2 block">{{ $message }}</span>
+                                            <span class="text-sm text-red-500 mt-2 block">{{ $message }}</span>
                                         @enderror
 
                                         @if ($cotizacion)
-                                        <div class="mt-4 flex items-center justify-between rounded-lg bg-gray-100 p-3 shadow">
-                                            <span class="text-gray-700 font-medium">{{ $cotizacion->getClientOriginalName() }}</span>
-                                            <button type="button" wire:click="eliminarArchivo" class="flex items-center text-red-500 hover:text-red-700 transition">
-                                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                                </svg>
-                                                Eliminar
-                                            </button>
-                                        </div>
+                                            <div
+                                                class="mt-4 flex items-center justify-between rounded-lg bg-gray-100 p-3 shadow">
+                                                <span
+                                                    class="text-gray-700 font-medium">{{ $cotizacion->getClientOriginalName() }}</span>
+                                                <button type="button" wire:click="eliminarArchivo"
+                                                    class="flex items-center text-red-500 hover:text-red-700 transition">
+                                                    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                    </svg>
+                                                    Eliminar
+                                                </button>
+                                            </div>
                                         @endif
                                     </div>
                                 </div>
@@ -177,13 +255,17 @@
                                         class="block text-sm font-medium text-gray-700">Soluciones</label>
                                     <select id="soluciones" wire:model="soluciones"
                                         class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('soluciones') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
-                                        <option value="">Seleccionar Solución</option>
+                                        <option value="" disabled>Seleccionar Solución</option>
                                         {{-- <option value="huawei">Soluciones</option> --}}
-                                        <option value="huawei">Líneas Huawei EBG, Datacenter y Solar, líneas de paneles
+                                        <option
+                                            value="Líneas Huawei EBG, Datacenter y Solar, líneas de paneles solares">
+                                            Líneas Huawei EBG, Datacenter y Solar, líneas de paneles
                                             solares</option>
-                                        <option value="datacenter">Oportunidades cerradas con condiciones particulares
+                                        <option value="Oportunidades cerradas con condiciones particulares">
+                                            Oportunidades cerradas con condiciones particulares
                                         </option>
-                                        <option value="solar">Productos que no sean de línea para un negocio
+                                        <option value="Productos que no sean de línea para un negocio específico">
+                                            Productos que no sean de línea para un negocio
                                             específico
                                         </option>
                                     </select>
@@ -194,6 +276,10 @@
                             </div>
                         </div>
 
+
+                        <h3 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
+                            Informacion del Equipo Comercial
+                        </h3>
                         <!-- Gerente de producto -->
                         <div class="bg-gray-50 p-6 rounded-lg">
                             <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
@@ -236,6 +322,8 @@
                                     @enderror
                                 </div>
 
+
+
                                 <div>
                                     <label for="telgerente"
                                         class="block text-sm font-medium text-gray-700">Teléfono</label>
@@ -255,7 +343,74 @@
                                         <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                                     @enderror
                                 </div>
+                                <h5 class="text-xl font-semibold mb-4 col-span-2  text-stone-950 tracking-wide">
+                                    Información Director
+                                </h5>
+                                {{-- informacion director  --}}
 
+                                <div>
+                                    <label for="director"
+                                        class="block text-sm font-medium text-gray-700">Director</label>
+                                    <input id="director" type="text" wire:model="director"
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('director') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    @error('director')
+                                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="tel2gerente"
+                                        class="block text-sm font-medium text-gray-700">Teléfono</label>
+                                    <input id="tel2gerente" type="text" wire:model="tel2gerente"
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tel2gerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    @error('tel2gerente')
+                                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="cor2gerente" class="block text-sm font-medium text-gray-700">Correo
+                                        electrónico</label>
+                                    <input id="cor2gerente" type="text" wire:model="cor2gerente"
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('cor2gerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    @error('cor2gerente')
+                                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <h5 class="text-xl font-semibold mb-4 col-span-2 text-stone-950 tracking-wide">
+                                    Información Ejecutivo
+                                </h5>
+                                {{-- informacion ejecutivo --}}
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Cod</label>
+                                    <input type="text" wire:model="cod_ejc"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Nombre</label>
+                                    <input type="text" wire:model="nombre_ejc"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Teléfono</label>
+                                    <input type="text" wire:model="telefono_ejc"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">E-mail</label>
+                                    <input type="text" wire:model="email_ejc"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                </div>
+
+                                <h5 class="text-xl font-semibold mb-4 col-span-2 text-stone-950 tracking-wide">
+                                    Información Adicional (si se requiere)
+                                </h5>
+                                {{-- informacion Adicional --}}
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Otro</label>
                                     <input type="text" wire:model="clientcode"
@@ -269,7 +424,7 @@
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
                                         placeholder="Opcional" />
                                     @error('clientname')
-                                        <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
+                                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
                                     @enderror
                                 </div>
 
@@ -279,45 +434,64 @@
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
                                         placeholder="Opcional" />
                                     @error('mail')
-                                        <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
+                                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
                                     @enderror
                                 </div>
 
-                                <div>
-                                    <label for="director"
-                                        class="block text-sm font-medium text-gray-700">Director</label>
-                                    <input id="director" type="text" wire:model="director"
-                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('director') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                    @error('director')
-                                        <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
-                                    @enderror
-                                </div>
 
-                                <div>
-                                    <label for="tel2gerente"
-                                        class="block text-sm font-medium text-gray-700">Teléfono</label>
-                                    <input id="tel2gerente" type="text" wire:model="tel2gerente"
-                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tel2gerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                    @error('tel2gerente')
-                                        <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
-                                    @enderror
-                                </div>
-
-                                <div>
-                                    <label for="cor2gerente" class="block text-sm font-medium text-gray-700">Correo
-                                        electrónico</label>
-                                    <input id="cor2gerente" type="text" wire:model="cor2gerente"
-                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('cor2gerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                    @error('cor2gerente')
-                                        <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
-                                    @enderror
-                                </div>
                             </div>
                         </div>
 
 
                         {{-- Información de Entrega --}}
+                        {{-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        </div> --}}
+
+                        <!-- Botón Siguiente -->
+                        <div class="flex justify-center">
+                            <button wire:click="changeStep(2)" type="button"
+                                class="group relative bg-blue-600 py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3 overflow-hidden">
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                                </div>
+                                <span class="relative font-semibold text-white">Siguiente paso</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="relative h-5 w-5 text-white"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="step2" class="{{ $currentStep === 2 ? '' : 'hidden' }} form-step">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Productos Section -->
+                            {{-- <div class="bg-gray-50 p-6 rounded-lg">
+                                <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-green-500"
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 6h16l2 12H6L4 6z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18a2 2 0 100 4 2 2 0 000-4zM18 18a2 2 0 100 4 2 2 0 000-4z" />
+                                    </svg>
+                                    Productos
+                                </h2>
+                                <div class="grid gap-4">
+                                    <div>
+                                        <label for="details" class="block text-sm font-medium text-gray-700">Detalles
+                                            de los equipos
+                                            a
+                                            entregar</label>
+                                        <input id="details" type="text" wire:model="details"
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('details') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        @error('details')
+                                            <span class="text-red-500 text-sm"> {{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div> --}}
 
                             <div class="bg-gray-50 p-6 rounded-lg">
                                 <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
@@ -401,6 +575,7 @@
                                 </div>
                             </div>
 
+
                             <!-- Información del Servicio -->
                             <div class="bg-gray-50 p-6 rounded-lg">
                                 <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
@@ -459,53 +634,11 @@
 
 
                             </div>
+
                         </div>
 
-                        <!-- Botón Siguiente -->
-                        <div class="flex justify-center">
-                            <button wire:click="changeStep(2)" type="button"
-                                class="group relative bg-blue-600 py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3 overflow-hidden">
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                                </div>
-                                <span class="relative font-semibold text-white">Siguiente paso</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="relative h-5 w-5 text-white"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="step2" class="{{ $currentStep === 2 ? '' : 'hidden' }} form-step">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Productos Section -->
-                            <div class="bg-gray-50 p-6 rounded-lg">
-                                <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-green-500"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 6h16l2 12H6L4 6z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18a2 2 0 100 4 2 2 0 000-4zM18 18a2 2 0 100 4 2 2 0 000-4z" />
-                                    </svg>
-                                    Productos
-                                </h2>
-                                <div class="grid gap-4">
-                                    <div>
-                                        <label for="details" class="block text-sm font-medium text-gray-700">Detalles
-                                            de los equipos
-                                            a
-                                            entregar</label>
-                                        <input id="details" type="text" wire:model="details"
-                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('details') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('details')
-                                            <span class="text-red-500 text-sm"> {{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
+
 
                             <!-- Garantías Section -->
                             <div class="bg-gray-50 p-6 rounded-lg">
@@ -521,13 +654,17 @@
                                 </h2>
                                 <div class="grid gap-4">
                                     <div>
-                                        <label for="    garantia"
-                                            class="block text-sm font-medium text-gray-700">¿Aplica algún tipo de
+                                        <label for="garantia" class="block text-sm font-medium text-gray-700">¿Aplica
+                                            algún tipo de
                                             garantía?</label>
-                                        <input id="aplicagarantia" type="text" wire:model="aplicagarantia"
-                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicagarantia') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        <select wire:model="aplicagarantia" id="garantia"
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicagarantia') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                            <option value="" disabled>Selecciona una opción</option>
+                                            <option value="sí">Sí</option>
+                                            <option value="no">No</option>
+                                        </select>
                                         @error('aplicagarantia')
-                                            <span class="text-red-500 text-sm"> {{ $message }}</span>
+                                            <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div>
@@ -543,11 +680,48 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Condiciones de Pago Section -->
+                            <!-- Pólizas Section -->
                             <div class="bg-gray-50 p-6 rounded-lg">
+                                <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-purple-500"
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 3H5c-1.104 0-2 .896-2 2v14c0 1.104.896 2 2 2h14c1.104 0 2-.896 2-2V5c0-1.104-.896-2-2-2z" />
+                                    </svg>
+                                    Pólizas
+                                </h2>
+                                <div class="grid gap-4">
+                                    <div>
+                                        <label for="aplicapoliza"
+                                            class="block text-sm font-medium text-gray-700">¿Aplica algún tipo de
+                                            póliza?</label>
+                                        <select wire:model="aplicapoliza" id="aplicapoliza"
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicapoliza') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                            <option value="" disabled>Selecciona una opción</option>
+                                            <option value="sí">Sí</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                        @error('aplicapoliza')
+                                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div>
+                                        <label for="porcentaje" class="block text-sm font-medium text-gray-700">¿Cuál
+                                            es el
+                                            porcentaje?</label>
+                                        <input id="porcentaje" type="number" step="0.01" wire:model="porcentaje"
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('porcentaje') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        @error('porcentaje')
+                                            <span class="text-red-500 text-sm"> {{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Condiciones de Pago Section -->
+                            {{-- <div class="bg-gray-50 p-6 rounded-lg">
                                 <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-blue-500"
                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -586,19 +760,7 @@
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    <div>
-                                        <label for="incluye_iva"
-                                            class="block text-sm font-medium text-gray-700">¿Incluye IVA?</label>
-                                        <select id="incluye_iva" wire:model="incluye_iva"
-                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('incluye_iva') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
-                                            <option value="">Seleccione</option>
-                                            <option value="1">Sí</option>
-                                            <option value="0">No</option>
-                                        </select>
-                                        @error('incluye_iva')
-                                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                                        @enderror
-                                    </div>
+
                                     <div>
                                         <label for="otros"
                                             class="block text-sm font-medium text-gray-700">Otros</label>
@@ -610,43 +772,10 @@
                                         @enderror
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
 
-                            <!-- Pólizas Section -->
-                            <div class="bg-gray-50 p-6 rounded-lg">
-                                <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-purple-500"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 3H5c-1.104 0-2 .896-2 2v14c0 1.104.896 2 2 2h14c1.104 0 2-.896 2-2V5c0-1.104-.896-2-2-2z" />
-                                    </svg>
-                                    Pólizas
-                                </h2>
-                                <div class="grid gap-4">
-                                    <div>
-                                        <label id="aplicapoliza"
-                                            class="block text-sm font-medium text-gray-700">¿Aplica algún tipo de
-                                            póliza?</label>
-                                        <input id="aplicapoliza" type="text" wire:model="aplicapoliza"
-                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicapoliza') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('aplicapoliza')
-                                            <span class="text-red-500 text-sm"> {{ $message }}</span>
-                                        @enderror
-                                    </div>
 
-                                    <div>
-                                        <label for="porcentaje" class="block text-sm font-medium text-gray-700">¿Cuál
-                                            es el
-                                            porcentaje?</label>
-                                        <input id="porcentaje" type="number" step="0.01" wire:model="porcentaje"
-                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('porcentaje') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('porcentaje')
-                                            <span class="text-red-500 text-sm"> {{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
 
@@ -669,7 +798,7 @@
                                         <p class="text-gray-600">
                                             Por favor, <span class="text-blue-600 hover:underline">seleccione los
                                                 archivos
-                                                que desea agregar</span>.
+                                                que desea agregar o anexe los detalles de producto(s)</span>.
                                         </p>
                                         <p class="text-sm text-gray-500 mt-2">
                                             Archivos permitidos: PDF, DOC, XLSX. Tamaño máximo: 10MB.
@@ -695,36 +824,44 @@
 
                             {{-- final subida de documentos  --}}
                             @if (count($files) > 0)
-                            <div class="mt-4">
-                                <h3 class="text-sm font-medium text-gray-700 mb-2">Archivos Seleccionados:</h3>
-                                <ul class="space-y-2">
-                                    @foreach ($files as $id => $file)
-                                    <li wire:key="file-{{ $id }}" class="bg-gray-50 rounded-lg p-3 flex items-center justify-between group hover:bg-gray-100 transition-all duration-200">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="p-2 bg-blue-100 rounded-lg">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                                </svg>
-                                            </div>
-                                            <div class="flex flex-col">
-                                                <span class="text-sm font-medium text-gray-700">{{ $file['name'] }}</span>
-                                                <span class="text-xs text-gray-500">{{ $file['size'] }} KB</span>
-                                            </div>
-                                        </div>
-                                        <button
-                                            type="button"
-                                            wire:click="removeFile('{{ $id }}')"
-                                            class="hidden group-hover:flex items-center space-x-1 text-sm text-red-500 hover:text-red-700 transition-colors duration-200">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                            <span>Eliminar</span>
-                                        </button>
-                                    </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
+                                <div class="mt-4">
+                                    <h3 class="text-sm font-medium text-gray-700 mb-2">Archivos Seleccionados:</h3>
+                                    <ul class="space-y-2">
+                                        @foreach ($files as $id => $file)
+                                            <li wire:key="file-{{ $id }}"
+                                                class="bg-gray-50 rounded-lg p-3 flex items-center justify-between group hover:bg-gray-100 transition-all duration-200">
+                                                <div class="flex items-center space-x-3">
+                                                    <div class="p-2 bg-blue-100 rounded-lg">
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            class="h-5 w-5 text-blue-600" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                        </svg>
+                                                    </div>
+                                                    <div class="flex flex-col">
+                                                        <span
+                                                            class="text-sm font-medium text-gray-700">{{ $file['name'] }}</span>
+                                                        <span class="text-xs text-gray-500">{{ $file['size'] }}
+                                                            KB</span>
+                                                    </div>
+                                                </div>
+                                                <button type="button" wire:click="removeFile('{{ $id }}')"
+                                                    class="hidden group-hover:flex items-center space-x-1 text-sm text-red-500 hover:text-red-700 transition-colors duration-200">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                    <span>Eliminar</span>
+                                                </button>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
                             <div class="flex flex-col mt-6">
                                 @error('archivos.*')
                                     <span class="text-red-500 text-sm mt-2">{{ $message }}</span>
@@ -919,7 +1056,9 @@
 
                                                 <div class="mt-4 flex justify-end">
                                                     <button wire:click="cerrarmodal"
-                                                        class="rounded-lg bg-red-500 px-4 py-2 text-white transition-colors hover:bg-red-600" type="button">Cerrar</button>
+                                                        class="rounded-lg bg-red-500 px-4 py-2 text-white transition-colors hover:bg-red-600"
+                                                        type="button">Cerrar
+                                                    </button>
                                                 </div>
                                             </div>
                                             {{-- inicio diseño de copiado en portapapeles --}}
@@ -941,7 +1080,7 @@
                                         </div>
                                     @endif
 
-                    </div>
+                                </div>
                 </form>
             </div>
         </div>
@@ -991,4 +1130,10 @@
             this.submit();
         }, 500); // Esperar 500 milisegundos (0.5 segundos)
     });
+
+
+    Livewire.on('reloadPage', () => {
+        location.reload();
+    });
+
 </script>

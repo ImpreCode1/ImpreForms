@@ -384,6 +384,25 @@
                                 </div>
 
                                 <div class="max-w-4xl mx-auto p-6 space-y-6 bg-blue-50">
+                                    {{-- tipo solicitud  --}}
+                                    <div class="bg-white rounded-lg shadow-md border border-slate-200 max-w-full">
+
+                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
+                                            <h2 class="text-lg font-semibold text-slate-900">Tipo de solicitud</h2>
+                                            </h2>
+                                        </div>
+
+                                        <div class="p-6">
+                                            <div class="grid md:grid">
+                                                <div class="">
+                                                    <p class="text-sm text-slate-900">
+                                                        {{ $selectedFormulario->tipo_solicitud ?? 'No especificado' }}
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <!-- Información del Negocio -->
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200">
                                         <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
@@ -403,7 +422,7 @@
                                                 </div>
 
                                                 <div class="space-y-1">
-                                                    <p class="text-sm font-medium text-black">Nombre</p>
+                                                    <p class="text-sm font-medium text-black">Nombre del cliente</p>
                                                     <p class="text-sm text-slate-900">
                                                         {{ $selectedFormulario->infonegocio->nombre ?? 'No especificado' }}
                                                     </p>
@@ -411,7 +430,15 @@
                                                 </div>
 
                                                 <div class="space-y-1">
-                                                    <p class="text-sm font-medium text-black">Correo electrónico
+                                                    <p class="text-sm font-medium text-black">Nombre del representante legal</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        {{ $selectedFormulario->infonegocio->nom_rep ?? 'No especificado' }}
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">Correo electrónico del representante legal
                                                     </p>
                                                     <p class="text-sm text-slate-900">
                                                         {{ $selectedFormulario->infonegocio->correo ?? 'No especificado' }}
@@ -439,16 +466,70 @@
                                         </div>
                                     </div>
 
-                                    {{-- tipo contrato  --}}
+                                    <!-- Orden de compra -->
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200">
+                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
+                                            <h2 class="text-lg font-semibold text-slate-900">Orden de compra</h2>
+                                        </div>
+
+                                        <div class="p-6">
+                                            <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">Fecha</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        {{ \Carbon\Carbon::parse($selectedFormulario->fecha)->format('Y-m-d') ?? 'No especificado' }}
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">N° OC</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        {{ $selectedFormulario->n_oc ?? 'No especificado' }}
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">¿Incluye IVA?</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        {{ $this->selectedFormulario->pago->isNotEmpty() && $this->selectedFormulario->pago->first()->incluye_iva ? 'Sí' : 'No' }}
+                                                    </p>
+
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">Precio de venta</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        $ {{ $selectedFormulario->precio_venta ?? 'No especificado' }}
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+
+                                                {{-- <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">Adjuntar cotización
+                                                    </p>
+                                                    <p class="text-sm text-slate-900">
+                                                        {{ $selectedFormulario->adjunto_cotizacion ?? 'No especificado' }}
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div> --}}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- tipo contrato  --}}
+                                    <div class="bg-white rounded-lg shadow-md border border-slate-200 max-w-full">
+
                                         <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
                                             <h2 class="text-lg font-semibold text-slate-900">Tipo de contrato</h2>
                                             </h2>
                                         </div>
 
                                         <div class="p-6">
-                                            <div class="grid md:grid-cols-3 gap-x-8 gap-y-6">
-                                                <div class="space-y-1">
+                                            <div class="grid md:grid">
+                                                <div class="">
                                                     <p class="text-sm text-slate-900">
                                                         {{ $selectedFormulario->tipo_contrato ?? 'No especificado' }}
                                                     </p>
@@ -458,6 +539,9 @@
                                         </div>
                                     </div>
 
+                                    <h4 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
+                                        Información del Equipo Comercial
+                                    </h4>
                                     <!-- Gerente de producto -->
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200">
                                         <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
@@ -507,38 +591,12 @@
                                                 </div>
                                             </div>
 
-                                            <div class="mt-8 pt-6 border-t border-slate-200">
-                                                <h3 class="text-sm font-medium text-slate-900 mb-4">Información
-                                                    adiccional (si se requiere)</h3>
-                                                <div class="grid md:grid-cols-3 gap-x-8 gap-y-6">
-                                                    <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">Nombre</p>
-                                                        <p class="text-sm text-slate-900">
-                                                            {{ $selectedFormulario->otro ?? 'No especificado' }}</p>
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
-
-                                                    <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">Telefono</p>
-                                                        <p class="text-sm text-slate-900">
-                                                            {{ $selectedFormulario->cel ?? 'No especificado' }}</p>
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
-
-                                                    <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">Correo
-                                                            electrónico</p>
-                                                        <p class="text-sm text-slate-900">
-                                                            {{ $selectedFormulario->email ?? 'No especificado' }}</p>
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
 
                                             <div class="mt-8 pt-6 border-t border-slate-200">
-                                                <h3 class="text-sm font-medium text-slate-900 mb-4">Información del
-                                                    Director</h3>
+                                                <p class="text-sm font-medium text-black">Información Director</p>
+                                                <br>
                                                 <div class="grid md:grid-cols-3 gap-x-8 gap-y-6">
+
                                                     <div class="space-y-1">
                                                         <p class="text-sm font-medium text-black">Director</p>
                                                         <p class="text-sm text-slate-900">
@@ -564,53 +622,75 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
 
-                                    <!-- Orden de compra -->
-                                    <div class="bg-white rounded-lg shadow-md border border-slate-200">
-                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
-                                            <h2 class="text-lg font-semibold text-slate-900">Orden de compra</h2>
-                                        </div>
 
-                                        <div class="p-6">
-                                            <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
-                                                <div class="space-y-1">
-                                                    <p class="text-sm font-medium text-black">Fecha</p>
-                                                    <p class="text-sm text-slate-900">
-                                                        {{ \Carbon\Carbon::parse($selectedFormulario->fecha)->format('Y-m-d') ?? 'No especificado' }}
-                                                    </p>
-                                                    <div class="h-px bg-slate-200 mt-2"></div>
-                                                </div>
+                                            <div class="mt-8 pt-6 border-t border-slate-200">
+                                                <p class="text-sm font-medium text-black">Información Ejecutivo</p>
+                                                <br>
+                                                <div class="grid md:grid-cols-3 gap-x-8 gap-y-6">
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">Cod</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ $selectedFormulario->cod_ejc ?? 'No especificado' }}
+                                                        </p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
 
-                                                <div class="space-y-1">
-                                                    <p class="text-sm font-medium text-black">N° OC</p>
-                                                    <p class="text-sm text-slate-900">
-                                                        {{ $selectedFormulario->n_oc ?? 'No especificado' }}
-                                                    </p>
-                                                    <div class="h-px bg-slate-200 mt-2"></div>
-                                                </div>
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">Nombre</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ $selectedFormulario->nombre_ejc ?? 'No especificado' }}</p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
 
-                                                <div class="space-y-1">
-                                                    <p class="text-sm font-medium text-black">Precio de venta</p>
-                                                    <p class="text-sm text-slate-900">
-                                                        $ {{ $selectedFormulario->precio_venta ?? 'No especificado' }}
-                                                    </p>
-                                                    <div class="h-px bg-slate-200 mt-2"></div>
-                                                </div>
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">Teléfono</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ $selectedFormulario->telefono_ejc ?? 'No especificado' }}
+                                                        </p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
 
-                                                <div class="space-y-1">
-                                                    <p class="text-sm font-medium text-black">Adjuntar cotización
-                                                    </p>
-                                                    <p class="text-sm text-slate-900">
-                                                        {{ $selectedFormulario->adjunto_cotizacion ?? 'No especificado' }}
-                                                    </p>
-                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">Correo electronico</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ $selectedFormulario->email_ejc ?? 'No especificado' }}
+                                                        </p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
                                                 </div>
                                             </div>
+
+                                            <div class="mt-8 pt-6 border-t border-slate-200">
+                                                <p class="text-sm font-medium text-black">Información adiccional (si se requiere)</p>
+                                                <br>
+                                                <div class="grid md:grid-cols-3 gap-x-8 gap-y-6">
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">Nombre</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ $selectedFormulario->otro ?? 'No especificado' }}</p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
+
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">Telefono</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ $selectedFormulario->cel ?? 'No especificado' }}</p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
+
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">Correo
+                                                            electrónico</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ $selectedFormulario->email ?? 'No especificado' }}</p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
-
 
                                     <!-- Información de Entrega -->
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200">
@@ -683,6 +763,135 @@
                                         </div>
                                     </div>
 
+                                     <!-- Información del Servicio -->
+                                    <div class="bg-white rounded-lg shadow-md border border-slate-200">
+                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
+                                            <h2 class="text-lg font-semibold text-slate-900">Información del Servicio
+                                            </h2>
+                                        </div>
+
+                                        <div class="p-6">
+                                            <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                                                @foreach ($this->selectedFormulario->informacion as $informacion)
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">Servicio a
+                                                            prestar</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ $informacion->servicio_a_prestar ?? 'No especificado' }}
+                                                        </p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
+
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">Frecuencia de
+                                                            suministro</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ $informacion->frecuencia_suministro ?? 'No especificado' }}
+                                                        </p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
+
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">Fecha de inicio
+                                                        </p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ \Carbon\Carbon::parse($informacion->fecha_inicio)->format('Y-m-d') ?? 'No especificado' }}
+                                                        </p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
+
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">Fecha de
+                                                            finalización</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ \Carbon\Carbon::parse($informacion->fecha_finalizacion)->format('Y-m-d') ?? 'No especificado' }}
+                                                        </p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                     <!-- Garantia -->
+                                    <div class="bg-white rounded-lg shadow-md border border-slate-200">
+                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
+                                            <h2 class="text-lg font-semibold text-slate-900">Garantias</h2>
+                                        </div>
+
+                                        <div class="p-6">
+                                            <div class="flex space-x-8">
+                                                @foreach ($this->selectedFormulario->informacion as $informacion)
+                                                    @foreach ($informacion->producto as $producto)
+                                                        <div class="space-y-1 w-1/2">
+                                                            <p class="text-sm font-medium text-black">¿Aplica algún
+                                                                tipo de garantía?</p>
+                                                            <p class="text-sm text-slate-900">
+                                                                {{ $producto->aplica_garantia ?? 'No especificado' }}
+                                                            </p>
+                                                            <div class="h-px bg-slate-200 mt-2"></div>
+                                                        </div>
+
+
+                                                        <div class="space-y-1 w-1/2">
+                                                            <p class="text-sm font-medium text-black">¿Cuál es el
+                                                                termino de la garantía?</p>
+                                                            <p class="text-sm text-slate-900">
+                                                                {{ $producto->termino_garantia ?? 'No especificado' }}
+                                                            </p>
+                                                            <div class="h-px bg-slate-200 mt-2"></div>
+                                                        </div>
+                                                    @endforeach
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                     <!-- Pólizas -->
+                                    <div class="bg-white rounded-lg shadow-md border border-slate-200">
+                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
+                                            <h2 class="text-lg font-semibold text-slate-900">Pólizas</h2>
+                                        </div>
+
+                                        <div class="p-6">
+                                            <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                                                @foreach ($this->selectedFormulario->informacion as $informacion)
+                                                    @foreach ($informacion->producto as $producto)
+                                                        <div>
+                                                            <p
+                                                                class="text-sm font-medium text-black whitespace-nowrap mb-2">
+                                                                ¿Aplica algún tipo de póliza?
+                                                            <p class="text-sm text-slate-900 whitespace-nowrap">
+                                                                {{ $producto->aplica_poliza ?? 'No especificado' }}
+                                                            </p>
+                                                            <div class="h-px bg-slate-200 mt-2"></div>
+                                                        </div>
+                                                        <div>
+                                                            <p
+                                                                class="text-sm font-medium text-black whitespace-nowrap mb-2">
+                                                                ¿Cuál es el porcentaje?
+                                                            <p class="text-sm text-slate-900 whitespace-nowrap">
+                                                                {{-- {{ $producto->porcentaje_poliza ?? 'No especificado' }} --}}
+                                                                {{ number_format($producto->porcentaje_poliza ?? 0, 0) ?? 'No especificado' }}
+                                                                %
+
+                                                            </p>
+                                                            <div class="h-px bg-slate-200 mt-2"></div>
+                                                        </div>
+                                                    @endforeach
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+
+
+                                    <h4 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
+                                        Información condiciones operaciones
+                                    </h4>
                                     <!-- logística -->
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200">
                                         <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
@@ -701,14 +910,14 @@
                                                         <div class="h-px bg-slate-200 mt-2"></div>
                                                     </div>
 
-                                                    <!-- Puerto -->
+                                                    {{-- <!-- Puerto -->
                                                     <div class="space-y-1">
                                                         <p class="text-sm font-medium text-black">Puerto</p>
                                                         <p class="text-sm text-slate-900">
                                                             {{ $infoEntrega->puerto ?? 'No especificado' }}
                                                         </p>
                                                         <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
+                                                    </div> --}}
 
                                                     <!-- Transporte -->
                                                     <div class="space-y-1">
@@ -760,115 +969,12 @@
                                         </div>
                                     </div>
 
-                                    <!-- Información del Servicio -->
-                                    <div class="bg-white rounded-lg shadow-md border border-slate-200">
-                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
-                                            <h2 class="text-lg font-semibold text-slate-900">Información del Servicio
-                                            </h2>
-                                        </div>
-
-                                        <div class="p-6">
-                                            <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
-                                                @foreach ($this->selectedFormulario->informacion as $informacion)
-                                                    <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">Servicio a
-                                                            prestar</p>
-                                                        <p class="text-sm text-slate-900">
-                                                            {{ $informacion->servicio_a_prestar ?? 'No especificado' }}
-                                                        </p>
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
-
-                                                    <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">Frecuencia de
-                                                            suministro</p>
-                                                        <p class="text-sm text-slate-900">
-                                                            {{ $informacion->frecuencia_suministro ?? 'No especificado' }}
-                                                        </p>
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
-
-                                                    <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">Fecha de inicio
-                                                        </p>
-                                                        <p class="text-sm text-slate-900">
-                                                            {{ \Carbon\Carbon::parse($informacion->fecha_inicio)->format('Y-m-d') ?? 'No especificado' }}
-                                                        </p>
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
-
-                                                    <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">Fecha de
-                                                            finalización</p>
-                                                        <p class="text-sm text-slate-900">
-                                                            {{ \Carbon\Carbon::parse($informacion->fecha_finalizacion)->format('Y-m-d') ?? 'No especificado' }}
-                                                        </p>
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Productos -->
-                                    <div class="bg-white rounded-lg shadow-md border border-slate-200">
-                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
-                                            <h2 class="text-lg font-semibold text-slate-900">Productos</h2>
-                                        </div>
-
-                                        <div class="p-6">
-                                            <div class="grid md:grid-cols-3 gap-x-8 gap-y-6">
-                                                @foreach ($this->selectedFormulario->informacion as $informacion)
-                                                    @foreach ($informacion->producto as $producto)
-                                                        <div>
-                                                            <p
-                                                                class="text-sm font-medium text-black whitespace-nowrap mb-2">
-                                                                Anexar detalle de los equipos que se van a entregar.</p>
-                                                            <p class="text-sm text-slate-900 whitespace-nowrap">
-                                                                {{ $producto->detalles_equipos ?? 'No especificado' }}
-                                                            </p>
-                                                            <div class="h-px bg-slate-200 mt-2"></div>
-                                                        </div>
-                                                    @endforeach
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Garantia -->
-                                    <div class="bg-white rounded-lg shadow-md border border-slate-200">
-                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
-                                            <h2 class="text-lg font-semibold text-slate-900">Garantias</h2>
-                                        </div>
-
-                                        <div class="p-6">
-                                            <div class="flex space-x-8">
-                                                @foreach ($this->selectedFormulario->informacion as $informacion)
-                                                    @foreach ($informacion->producto as $producto)
-                                                        <div class="space-y-1 w-1/2">
-                                                            <p class="text-sm font-medium text-black">¿Aplica algún
-                                                                tipo de garantía?</p>
-                                                            <p class="text-sm text-slate-900">
-                                                                {{ $producto->aplica_garantia ?? 'No especificado' }}
-                                                            </p>
-                                                            <div class="h-px bg-slate-200 mt-2"></div>
-                                                        </div>
 
 
-                                                        <div class="space-y-1 w-1/2">
-                                                            <p class="text-sm font-medium text-black">¿Cuál es el
-                                                                termino de la garantía?</p>
-                                                            <p class="text-sm text-slate-900">
-                                                                {{ $producto->termino_garantia ?? 'No especificado' }}
-                                                            </p>
-                                                            <div class="h-px bg-slate-200 mt-2"></div>
-                                                        </div>
-                                                    @endforeach
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
 
+                                    <h4 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
+                                        Información condiciones financieras
+                                    </h4>
                                     {{-- condiciones de pago  --}}
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200">
                                         <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
@@ -919,15 +1025,6 @@
                                                     </div>
 
                                                     <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">¿Incluye IVA?</p>
-                                                        <p class="text-sm text-slate-900">
-                                                            {{ $this->selectedFormulario->pago->isNotEmpty() && $this->selectedFormulario->pago->first()->incluye_iva ? 'Sí' : 'No' }}
-                                                        </p>
-
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
-
-                                                    <div class="space-y-1">
                                                         <p class="text-sm font-medium text-black">¿Hay existencia
                                                             de anticipo?</p>
                                                         <p class="text-sm text-slate-900">
@@ -969,42 +1066,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- Pólizas -->
-                                    <div class="bg-white rounded-lg shadow-md border border-slate-200">
-                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
-                                            <h2 class="text-lg font-semibold text-slate-900">Pólizas</h2>
-                                        </div>
 
-                                        <div class="p-6">
-                                            <div class="grid md:grid-cols-3 gap-x-8 gap-y-6">
-                                                @foreach ($this->selectedFormulario->informacion as $informacion)
-                                                    @foreach ($informacion->producto as $producto)
-                                                        <div>
-                                                            <p
-                                                                class="text-sm font-medium text-black whitespace-nowrap mb-2">
-                                                                ¿Aplica algún tipo de póliza?
-                                                            <p class="text-sm text-slate-900 whitespace-nowrap">
-                                                                {{ $producto->aplica_poliza ?? 'No especificado' }}
-                                                            </p>
-                                                            <div class="h-px bg-slate-200 mt-2"></div>
-                                                        </div>
-                                                        <div>
-                                                            <p
-                                                                class="text-sm font-medium text-black whitespace-nowrap mb-2">
-                                                                ¿Cuál es el porcentaje?
-                                                            <p class="text-sm text-slate-900 whitespace-nowrap">
-                                                                {{-- {{ $producto->porcentaje_poliza ?? 'No especificado' }} --}}
-                                                                {{ number_format($producto->porcentaje_poliza ?? 0, 0) ?? 'No especificado' }}
-                                                                %
-
-                                                            </p>
-                                                            <div class="h-px bg-slate-200 mt-2"></div>
-                                                        </div>
-                                                    @endforeach
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
 
 
                                     <!-- Archivos Adjuntos -->
@@ -1105,11 +1167,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    {{-- <button
-                                        wire:click="closeModal"
-                                        class="px-4 py-2 bg-gray-600 text-white rounded-lg">
-                                        Cerrar
-                                    </button> --}}
+
                                 </div>
                             </div>
 
