@@ -21,6 +21,8 @@ class EnviarFormulario extends Component
     use WithFileUploads;
 
     // identificadores de archivos por id
+
+
     public $marcasId;
     public $documento;
     public $documentos;
@@ -61,6 +63,9 @@ class EnviarFormulario extends Component
     public $aplicagarantia = '';
     public $terminogarantia;
 
+
+
+
     // public $formapago;
     // public $moneda;
     public $incluye_iva = '';
@@ -98,7 +103,7 @@ class EnviarFormulario extends Component
     public $operacionesLink;
     public $financieraLink;
     public $marcaId;
-
+    public $cod;
     public $files = [];
     public $dragging = false;
 
@@ -108,10 +113,12 @@ class EnviarFormulario extends Component
     protected $rules = [
 
         // 'attachments.*' => 'file|mimes:pdf,docx|max:10240',
-        'attachments.*' => 'required|file|mimes:pdf,docx,xlsx,eml,msj|max:10240',
+        'attachments.*' => 'required|file|mimes:pdf,docx,xlsx,eml,msj,msg|max:10240',
 
+        'cod_ejc' => 'required|numeric|',
 
         //* Infonegocio
+        'tipo_solicitud' => 'required',
         'negocio' => 'required|numeric|unique:infonegocio,codigo_cliente',
         'nombre' => 'required|string|min:2',
         'correo' => 'required|email',
@@ -128,16 +135,19 @@ class EnviarFormulario extends Component
         'codlinea' => 'required|string|min:2',
         'nomgerente' => 'required|string|min:2',
         'telgerente' => 'required|numeric',
+        'nom_rep' => 'required|string',
+        'email_ejc' => 'required|email',
+
         'corgerente' => 'required|email',
         'director' => 'required|string|min:2',
         'tel2gerente' => 'required|numeric',
         'cor2gerente' => 'required|email',
-
+        'telefono_ejc' => 'required|numeric',
         //* Campos opcionales en Marca
         'clientcode' => 'nullable|string|min:2',
         'clientname' => 'nullable|numeric',
         'mail' => 'nullable|email',
-
+        'nombre_ejc' =>  'required|string|min:4',
         //* Información
         'entregacliente' => 'required|string|min:2',
         'lugarentrega' => 'required|string|min:2',
@@ -153,9 +163,9 @@ class EnviarFormulario extends Component
         //* Producto
         // 'details' => 'required|string|min:2',
         'aplicagarantia' => 'required|string|min:2',
-        'terminogarantia' => 'required|string|min:2',
+        'terminogarantia' => 'nullable|string|min:2',
         'aplicapoliza' => 'required|string|min:2',
-        'porcentaje' => 'required|numeric|min:0|max:100',
+        'porcentaje' => 'nullable|numeric|min:0|max:100',
 
         //* Condiciones de Pago
         // 'formapago' => 'required|string',
@@ -168,7 +178,9 @@ class EnviarFormulario extends Component
 
     protected $messages = [
         //* Mensajes generales de validación
+        'nom_rep.string' => 'El nombre no debe contener caracteres extraños',
 
+        'nom_rep.required' => 'El campo es requerido',
         'required' => 'El campo :attribute es obligatorio.',
         'string' => 'El campo :attribute debe ser texto.',
         'numeric' => 'El campo :attribute debe ser un número.',
@@ -206,6 +218,20 @@ class EnviarFormulario extends Component
         'oc.min' => 'La orden de compra debe tener al menos 2 caracteres.',
         'precio.required' => 'El precio es obligatorio.',
         'precio.numeric' => 'El campo debe tener solo números',
+        'cod_ejc.required' => 'El campo de codigo es requerido',
+        'cod_ejc.numeric' => 'Este campo debe ser numerico ',
+
+
+        'nombre_ejc.required' =>'Este campo es requerido',
+        'nombre_ejc.string' =>'Este campo es requerido',
+        'nombre_ejc.min' =>'Este campo debe tener minimo 4 caracteres ',
+
+        'telefono_ejc.required' => 'Este campo es requerido',
+        'telefono_ejc.numeric' => 'Este campo es tipo numerico',
+
+        'email_ejc.required' => 'Este campo es requerido',
+        'email_ejc.email' => 'El correo debe ser valido',
+
 
         'precio.min' => 'El precio debe tener al menos 2 caracteres.',
         'cotizacion.file' => 'La cotización debe ser un archivo.',
@@ -266,7 +292,7 @@ class EnviarFormulario extends Component
         'terminogarantia.min' => 'El término de garantía debe tener al menos 2 caracteres.',
         'aplicapoliza.required' => 'Debe especificar si aplica póliza.',
         'aplicapoliza.min' => 'La especificación de póliza debe tener al menos 2 caracteres.',
-        'porcentaje.required' => 'El porcentaje es obligatorio.',
+
         'porcentaje.numeric' => 'El porcentaje debe ser un número.',
         'porcentaje.min' => 'El porcentaje no puede ser menor que 0.',
         'porcentaje.max' => 'El porcentaje no puede ser mayor que 100.',
@@ -291,6 +317,9 @@ class EnviarFormulario extends Component
 
 
     ];
+
+
+//* mostrar garantia
 
     public function updatedHasAdvancePayment($value)
     {
@@ -505,7 +534,27 @@ class EnviarFormulario extends Component
     }
 
 
+    public function updatedAplicagarantia ($value)
+    {
+        // Si la garantía es "sí", hacer que el término de garantía sea obligatorio
+        if ($value === 'si') {
+            $this->rules['terminogarantia'] = 'required|string|min:3';
+        } else {
+            $this->rules['terminogarantia'] = 'nullable';
+            $this->terminogarantia = ''; // Resetear el campo si selecciona "No"
+        }
+    }
 
+    public function updatedPorcentaje ($value)
+    {
+        // Si la garantía es "sí", hacer que el término de garantía sea obligatorio
+        if ($value === 'si') {
+            $this->rules['porcentaje'] = 'required|numeric|min:1';
+        } else {
+            $this->rules['porcentaje'] = 'nullable';
+            $this->terminogarantia = ''; // Resetear el campo si selecciona "No"
+        }
+    }
     public function cerrarmodal()
     {
         $this->dispatch('reloadPage');
@@ -537,7 +586,7 @@ class EnviarFormulario extends Component
     {
 
         $this->validate([
-            'attachments.*' => 'file|max:10240|mimes:pdf,doc,docx,xls,xlsx,msj',
+            'attachments.*' => 'file|max:10240|mimes:pdf,doc,docx,xls,xlsx,msj,msg',
         ]);
 
         foreach ($this->attachments as $file) {
@@ -577,7 +626,7 @@ class EnviarFormulario extends Component
     public function render()
     {
         return view('livewire.enviar-formulario', [
-            //* 'fragmento '=> $this->fragmento,
+
             'currentStep' => $this->currentStep,
             'operacionesLink' => $this->operacionesLink,
             'financieraLink' => $this->financieraLink,

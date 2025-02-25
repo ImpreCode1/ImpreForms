@@ -35,6 +35,8 @@ class EditarFormulario extends Component
     public $prestar, $suministrar, $inicio, $finalizacion;
     public $clientcode, $clientname, $mail;
     // $details
+    public $cod;
+
     public $aplicagarantia, $terminogarantia, $aplicapoliza, $porcentaje;
     public $incluye_iva, $otros;
     // $moneda,
@@ -57,6 +59,12 @@ class EditarFormulario extends Component
 
     protected $rules = [
         // validaciones
+        'cod_ejc' => 'required|numeric|',
+        'email_ejc' => 'required|email',
+        'telefono_ejc' => 'required|numeric',
+        'nombre_ejc' =>  'required|string|min:4',
+        'terminogarantia' => 'nullable|string|min:2',
+        'porcentaje' => 'nullable|numeric|min:0|max:100',
 
         'negocio' => 'required|numeric|',
         'nombres' => 'required|string|',
@@ -103,6 +111,25 @@ class EditarFormulario extends Component
     ];
 
     protected $messages = [
+// mensajes de las nuevas validaciones
+        'cod_ejc.required' => 'El campo de codigo es requerido',
+        'cod_ejc.numeric' => 'Este campo debe ser numerico ',
+
+
+        'nombre_ejc.required' =>'Este campo es requerido',
+        'nombre_ejc.string' =>'Este campo es requerido',
+        'nombre_ejc.min' =>'Este campo debe tener minimo 4 caracteres ',
+
+        'telefono_ejc.required' => 'Este campo es requerido',
+        'telefono_ejc.numeric' => 'Este campo es tipo numerico',
+
+        'email_ejc.required' => 'Este campo es requerido',
+        'email_ejc.email' => 'El correo debe ser valido',
+
+
+
+
+
         'negocio.required' => 'El campo "Negocio" es obligatorio.',
         'negocio.numeric' => 'El campo "Negocio" debe ser un número.',
         'nombres.required' => 'El campo "Nombres" es obligatorio.',
@@ -272,7 +299,7 @@ class EditarFormulario extends Component
 
             if ($info->producto->isNotEmpty()) {
                 $producto = $info->producto->first();
-                // $this->details = $producto->detalles_equipos;
+               
                 $this->aplicagarantia = $producto->aplica_garantia;
                 $this->terminogarantia = $producto->termino_garantia;
                 $this->aplicapoliza = $producto->aplica_poliza;
@@ -282,17 +309,12 @@ class EditarFormulario extends Component
 
         if ($formulario->pago && $formulario->pago->isNotEmpty()) {
             $pago = $formulario->pago->first();
-            // $this->fecha_pago = $this->formatearFecha($pago->fecha_pago);
+
             $this->incluye_iva = $pago->incluye_iva;
-            // dd($formulario->pago);
+
         }
 
-        // if ($formulario->financiera->isNotEmpty()) {
-        //     $financiera = $formulario->financiera->first();
-        // $this->formapago = $financiera->forma_pago;
-        // $this->moneda = $financiera->moneda;
-        // $this->otros = $financiera->otros;
-        // }
+
 
         $this->existingFiles = $formulario->documento
             ->map(function ($documento) {
@@ -305,20 +327,7 @@ class EditarFormulario extends Component
             })
             ->toArray();
 
-        // $this->loadExistingFiles();
 
-        // if ($this->cotizacion ) { // Verifica si es un archivo
-        //     $originalName = $this->cotizacion->getClientOriginalName();
-        //     $path = $this->cotizacion->storeAs('public/cotizacion', $originalName);
-
-        //     // Actualizamos el campo adjunto_cotizacion en el registro de Marca ya creado
-        //     $formulario->update([
-        //         'adjunto_cotizacion' => $this-> cotizacion,
-        //     ]);
-        // } else {
-        //     // Si $this->cotizacion no es un archivo, significa que ya es una ruta almacenada en la base de datos.
-        //     // Puedes dejarla como está o manejar el error según sea necesario.
-        // }
 
     }
 

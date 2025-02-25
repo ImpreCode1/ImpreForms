@@ -15,19 +15,19 @@ use Livewire\WithPagination;
 
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Maatwebsite\Excel\Facades\Excel;
-use Maatwebsite\Excel\Concerns\WithStyles;  
-use Maatwebsite\Excel\Concerns\WithColumnFormatting;  
+use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\FromCollection;
 
-use Maatwebsite\Excel\Concerns\WithColumnWidths;  
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;  
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithMapping;
-class FormulariosRecibidos extends Component implements FromCollection, WithMapping, WithStyles, WithColumnWidths, WithColumnFormatting,  WithHeadings  
+class FormulariosRecibidos extends Component implements FromCollection, WithMapping, WithStyles, WithColumnWidths, WithColumnFormatting,  WithHeadings
 {
     use WithPagination;
     public $formulario;
@@ -44,8 +44,8 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public $noc;
     public $selectedFormulario = null;
     protected $paginationTheme = 'tailwind';
-   
-    
+
+
     public $open = false;
 
     protected $listeners = ['openModal' => 'loadFormulario'];
@@ -70,7 +70,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
         return $icons[$extension] ?? 'file';
     }
 
-   
+
     public function toggleMostrarMas()
     {
         $this->mostrarMas = !$this->mostrarMas;
@@ -143,7 +143,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
         }
     }
 
-    // exportar a exel 
+    // exportar a exel
 
     public function exportar()
     {
@@ -161,7 +161,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public function map($marca): array
 {
     $infonegocio = $marca->infonegocio;
-    
+
     $financiera = $marca->financiera->first();
     $operaciones = $marca->informacion->first();
 
@@ -171,7 +171,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
 
     // Comparar las fechas y tomar la más reciente
     $fechaMasReciente = null;
-    
+
     if ($fechaFinanciera && $fechaOperaciones) {
         $fechaMasReciente = $fechaFinanciera > $fechaOperaciones ? $fechaFinanciera : $fechaOperaciones;
     } elseif ($fechaFinanciera) {
@@ -181,12 +181,14 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     }
 
     return [
+
+        $marca ->tipo_solicitud ? $marca-> tipo_solicitud : ' No Completado',
         $infonegocio ? $infonegocio->codigo_cliente : 'No Completado',
         $infonegocio ? $infonegocio->nombre : 'No Completado',
         $infonegocio ? $infonegocio->n_oportunidad_crm : 'No Completado',
         $marca->created_at ? $marca->created_at->format('Y-m-d') : 'No Completado',
-        $financiera ? $financiera->created_at->format('Y-m-d') : 'No Completado', 
-        $operaciones ? $operaciones->created_at->format('Y-m-d') : 'No Completado', 
+        $financiera ? $financiera->created_at->format('Y-m-d') : 'No Completado',
+        $operaciones ? $operaciones->created_at->format('Y-m-d') : 'No Completado',
         $fechaMasReciente ? $fechaMasReciente->format('Y-m-d') : 'No fue terminado'
     ];
 
@@ -194,10 +196,11 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
 
 
     //! generar pdf
-   
+
     public function headings(): array
     {
         return [
+           'Tipo de Solicitud',
             'Código Cliente',
             'Nombre',
             'Número de Oportunidad CRM',
@@ -209,7 +212,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     }
     public function styles(Worksheet $sheet)
 {
-    //Calcula y toma los datos con informacion para poder pintarlos 
+    //Calcula y toma los datos con informacion para poder pintarlos
 
     $usedRange = $sheet->calculateWorksheetDimension();
 
@@ -238,30 +241,30 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     ];
 }
 
-    public function columnWidths(): array  
-    {  
-        return [  
-            'A' => 20,  
-            'B' => 25,  
-            'C' => 20,  
-            'D' => 25,  
-            'E' => 25,  
-            'F' => 25,  
-            'G' => 25,  
-            'H' => 25,  
-        ];  
-    }  
+    public function columnWidths(): array
+    {
+        return [
+            'A' => 20,
+            'B' => 25,
+            'C' => 20,
+            'D' => 25,
+            'E' => 25,
+            'F' => 25,
+            'G' => 25,
+            'H' => 25,
+        ];
+    }
 
-    public function columnFormats(): array  
-    {  
-        return [  
-            'D' => NumberFormat::FORMAT_DATE_YYYYMMDD,  
-            'E' => NumberFormat::FORMAT_DATE_YYYYMMDD,  
-            'F' => NumberFormat::FORMAT_DATE_YYYYMMDD,  
-        ];  
-    }  
+    public function columnFormats(): array
+    {
+        return [
+            'D' => NumberFormat::FORMAT_DATE_YYYYMMDD,
+            'E' => NumberFormat::FORMAT_DATE_YYYYMMDD,
+            'F' => NumberFormat::FORMAT_DATE_YYYYMMDD,
+        ];
+    }
 
-   
+
     public function downloadFormulario($id)
     {
         try {

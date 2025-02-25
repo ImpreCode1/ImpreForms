@@ -89,7 +89,11 @@
                                             class="block text-sm font-medium text-gray-700">Nombre del representante legal</label>
                                         <input id="nom_rep" type="text" wire:model="nom_rep"
                                             class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('nom_rep') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                    </div>
+                                            @error('nom_rep')
+                                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                                        @enderror
+
+                                        </div>
                                     <div>
                                         <label for="correo"
                                         class="block text-sm font-medium text-gray-700">Correo electronico del
@@ -178,7 +182,7 @@
                                             venta que debe
                                             quedar
                                             en el contrato</label>
-                                        <input id="precio" type="text" wire:model="precio" maxlength="10"
+                                        <input id="precio" type="text" wire:model="precio"
                                             class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('precio') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('precio')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -386,26 +390,39 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Cod</label>
                                     <input type="text" wire:model="cod_ejc"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+
+                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('cor2gerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    @error('cod_ejc')
+                                    <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                                @enderror
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Nombre</label>
                                     <input type="text" wire:model="nombre_ejc"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                </div>
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('cor2gerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        @error('nombre_ejc')
+                                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                                    @enderror
+                                    </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Teléfono</label>
                                     <input type="text" wire:model="telefono_ejc"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                </div>
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('cor2gerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        @error('telefono_ejc')
+                                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                                    @enderror
+                                    </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">E-mail</label>
                                     <input type="text" wire:model="email_ejc"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                </div>
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('cor2gerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        @error('email_ejc')
+                                        <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                                    @enderror
+                                    </div>
 
                                 <h5 class="text-xl font-semibold mb-4 col-span-2 text-stone-950 tracking-wide">
                                     Información Adicional (si se requiere)
@@ -654,31 +671,34 @@
                                 </h2>
                                 <div class="grid gap-4">
                                     <div>
-                                        <label for="garantia" class="block text-sm font-medium text-gray-700">¿Aplica
-                                            algún tipo de
-                                            garantía?</label>
-                                        <select wire:model="aplicagarantia" id="garantia"
+                                        <label for="garantia" class="block text-sm font-medium text-gray-700">
+                                            ¿Aplica algún tipo de garantía?
+                                        </label>
+                                        <select wire:model.live="aplicagarantia" id="garantia"
                                             class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicagarantia') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                             <option value="" disabled>Selecciona una opción</option>
-                                            <option value="sí">Sí</option>
+                                            <option value="si">Sí</option>
                                             <option value="no">No</option>
                                         </select>
                                         @error('aplicagarantia')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    <div>
-                                        <label for="terminogarantia"
-                                            class="block text-sm font-medium text-gray-700">¿Cuál es el término de
-                                            la
-                                            garantía?</label>
-                                        <input id="terminogarantia" type="text" wire:model="terminogarantia"
-                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('terminogarantia') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('terminogarantia')
-                                            <span class="text-red-500 text-sm"> {{ $message }}</span>
-                                        @enderror
-                                    </div>
+
+                                    @if($aplicagarantia === 'si')
+                                        <div>
+                                            <label for="terminogarantia" class="block text-sm font-medium text-gray-700">
+                                                ¿Cuál es el término de la garantía?
+                                            </label>
+                                            <input id="terminogarantia" type="text" wire:model="terminogarantia"
+                                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('terminogarantia') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            @error('terminogarantia')
+                                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    @endif
                                 </div>
+
                             </div>
                             <!-- Pólizas Section -->
                             <div class="bg-gray-50 p-6 rounded-lg">
@@ -695,10 +715,10 @@
                                         <label for="aplicapoliza"
                                             class="block text-sm font-medium text-gray-700">¿Aplica algún tipo de
                                             póliza?</label>
-                                        <select wire:model="aplicapoliza" id="aplicapoliza"
+                                        <select wire:model.live="aplicapoliza" id="aplicapoliza"
                                             class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicapoliza') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                             <option value="" disabled>Selecciona una opción</option>
-                                            <option value="sí">Sí</option>
+                                            <option value="si">Sí</option>
                                             <option value="no">No</option>
                                         </select>
                                         @error('aplicapoliza')
@@ -707,6 +727,7 @@
                                     </div>
 
                                     <div>
+                                        @if($aplicapoliza === 'si')
                                         <label for="porcentaje" class="block text-sm font-medium text-gray-700">¿Cuál
                                             es el
                                             porcentaje?</label>
@@ -716,7 +737,9 @@
                                             <span class="text-red-500 text-sm"> {{ $message }}</span>
                                         @enderror
                                     </div>
+                                           @endif
                                 </div>
+
                             </div>
 
 
