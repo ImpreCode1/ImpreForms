@@ -278,6 +278,11 @@
     </div>
 
     <div class="info-section">
+        <span class="info-label">¿Cuántas entregas se van a realizar al cliente y en que fecha?</span>
+        <div class="info-value">{{ $formulario->informacion->first()->entrega_realizar ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
         <span class="info-label">Lugar de entrega y dirección</span>
         <div class="info-value">{{ $formulario->informacion->first()->lugar_entrega ?? 'No especificado' }}</div>
     </div>
@@ -414,14 +419,30 @@
     </div>
 
     <div class="info-section">
+        <span class="info-label">¿Quien realiza la entrega a cliente?</span>
+        <div class="info-value">{{ $formulario->infoEntrega->first()->entrega_cliente ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Lugar de entrega</span>
+        <div class="info-value">{{ $formulario->infoEntrega->first()->lugar_entrega ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Especificar pais</span>
+        <div class="info-value">{{ $formulario->infoEntrega->first()->pais ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Puerto</span>
+        <div class="info-value">{{ $formulario->infoEntrega->first()->puerto ?? 'No especificado' }}</div>
+    </div>
+
+    <div class="info-section">
         <span class="info-label">Icoterm</span>
         <div class="info-value">{{ $formulario->infoEntrega->first()->incoterm ?? 'No especificado' }}</div>
     </div>
 
-    {{-- <div class="info-section">
-        <span class="info-label">Puerto</span>
-        <div class="info-value">{{ $formulario->infoEntrega->first()->puerto ?? 'No especificado' }}</div>
-    </div> --}}
 
     <div class="info-section">
         <span class="info-label">Transporte</span>

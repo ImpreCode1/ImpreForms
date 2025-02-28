@@ -162,7 +162,7 @@
                             <div class="relative">
                                 <i
                                     class="ri-user-location-line absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400z @error('clientes') text-red-500 @enderror"></i>
-                                <input id="clientes" wire:model="clientes" autocomplete="off"
+                                <input id="clientes" wire:model.live="clientes" autocomplete="off"
                                     class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('clientes') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Entrega">
@@ -179,7 +179,7 @@
                             <div class="relative">
                                 <i
                                     class="ri-map-pin-line absolute left-3 top-1/2 transform -translate-y-1/2 @error('lugar') text-red-500 @enderror"></i>
-                                <input id="lugar" wire:model="lugar" autocomplete="off"
+                                <input id="lugar" wire:model.live="lugar" autocomplete="off"
                                     class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('lugar') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Lugar">
@@ -196,12 +196,28 @@
                             <div class="relative">
                                 <i
                                     class="ri-earth-line absolute left-3 top-1/2 transform -translate-y-1/2 @error('pais') text-red-500 @enderror"></i>
-                                <input id="pais" wire:model="pais" autocomplete="off"
+                                <input id="pais" wire:model.live="pais" autocomplete="off"
                                     class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('pais') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Pais">
                             </div>
                             @error('pais')
+                                <span class="text-sm text-red-500"> {{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="puerto" class="block text-gray-700 text-sm font-semibold mb-3">
+                                Puerto
+                            </label>
+                            <div class="relative">
+                                <i class="ri-anchor-line absolute left-3 top-1/2 transform -translate-y-1/2 @error('puerto') text-red-500 @enderror"></i>
+                                <input id="puerto" wire:model.live="puerto" autocomplete="off"
+                                    class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
+                                    @error('puerto') border-red-300 @else border-gray-300 @enderror"
+                                    type="text" placeholder="puerto">
+                            </div>
+                            @error('puerto')
                                 <span class="text-sm text-red-500"> {{ $message }}</span>
                             @enderror
                         </div>
@@ -239,7 +255,7 @@
                                 <i
                                     class="ri-file-list-3-line absolute left-3 top-1/2 transform -translate-y-1/2  @error('icoterm') text-red-500 @enderror"></i>
 
-                                <input id="icoterm" wire:model="icoterm" autocomplete="off"
+                                <input id="icoterm" wire:model.live="icoterm" autocomplete="off"
                                     class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                    @error('icoterm') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Icoterm">
@@ -256,7 +272,7 @@
                             <div class="relative">
                                 <i
                                     class="ri-truck-line absolute left-3 top-1/2 transform -translate-y-1/2  @error('transporte') text-red-500 @enderror"></i>
-                                <input id="transporte" wire:model="transporte" autocomplete="off"
+                                <input id="transporte" wire:model.live="transporte" autocomplete="off"
                                     class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('transporte') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Transporte">
@@ -274,7 +290,7 @@
                                 <i
                                     class="ri-map-pin-line absolute left-3 top-1/2 transform -translate-y-1/2  @error('origen') text-red-500 @enderror"></i>
 
-                                <input id="origen" wire:model="origen" autocomplete="off"
+                                <input id="origen" wire:model.live="origen" autocomplete="off"
                                     class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('origen') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Origen">
@@ -292,7 +308,7 @@
                             <div class="relative">
                                 <i
                                     class="ri-flag-line absolute left-3 top-1/2 transform -translate-y-1/2  @error('destino') text-red-500 @enderror"></i>
-                                <input id="destino" wire:model="destino" autocomplete="off"
+                                <input id="destino" wire:model.live="destino" autocomplete="off"
                                     class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('destino') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Destino">
@@ -310,7 +326,7 @@
                                 <i
                                     class="ri-map-pin-2-line absolute left-3 top-1/2 transform -translate-y-1/2  @error('entregalocal') text-red-500 @enderror"></i>
 
-                                <input id="entregalocal" wire:model="entregalocal" autocomplete="off"
+                                <input id="entregalocal" wire:model.live="entregalocal" autocomplete="off"
                                     class="pl-12 w-full input-gradient  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('entregalocal') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Entrega Local">
@@ -327,7 +343,7 @@
                             <div class="relative">
                                 <i class="ri-more-2-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-700"></i>
 
-                                <input id="otros" wire:model="otros" autocomplete="off"
+                                <input id="otros" wire:model.live="otros" autocomplete="off"
                                     class="pl-12 w-full input-gradient  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('otros') border-red-300 @else border-gray-300 @enderror"
                                     type="text" placeholder="Otros (Opcional)">

@@ -32,13 +32,14 @@ class FormularioInteractivo extends Component
         'clientes' => 'required|string|min:3',
         'icoterm' => 'required|string|min:3',
         'lugar' => 'required|string|min:3',
-        // 'puerto' => 'required|string|min:3',
+        'puerto' => 'required|string|min:3',
         'pais' => 'required|string|min:3',
         // 'entrega'=> 'required|string|min:3',
         'transporte' => 'required|string|min:3',
         'origen' => 'required|string|min:3',
         'destino' => 'required|string|min:3',
         'entregalocal' => 'required|string|min:3',
+        'otros' => 'nullable|string|min:3',
     ];
 
     protected $messages = [
@@ -67,7 +68,15 @@ class FormularioInteractivo extends Component
 
         'entregalocal.required' => 'El espacio es requerido.',
         'entregalocal.min' => 'El espacio debe tener mínimo 3 caracteres.',
+
+        'otros.min' => 'El espacio debe tener mínimo 3 caracteres.',
+
     ];
+
+    public function updated($propertyName)
+    {
+        $this->validateOnly($propertyName);
+    }
 
     public function mount($link)
     {

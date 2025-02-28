@@ -190,6 +190,7 @@
                             <table class="w-full table-auto border-collapse border border-gray-200 shadow-sm">
                                 <thead>
                                     <tr class="bg-gray-50 border-b border-gray-200">
+                                        <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">Solicitante</th>
                                         <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">Código
                                             del cliente</th>
                                         <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">Nombre
@@ -212,6 +213,10 @@
                                 <tbody class="divide-y divide-gray-200">
                                     @foreach ($formularios as $formulario)
                                         <tr class="hover:bg-gray-100 transition-all duration-200 cursor-pointer">
+                                            <td class="px-4 py-3 text-sm text-gray-600">
+                                                {{ $formulario->user->name ?? 'No especificado' }}
+                                            </td>
+
                                             <td class="px-4 py-3 text-sm text-gray-600">
                                                 {{ $formulario->infonegocio->codigo_cliente }}
                                             </td>
@@ -712,6 +717,14 @@
                                                     </div>
 
                                                     <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">¿Cuántas entregas se van a realizar al cliente y en que fecha?</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ $informacion->entrega_realizar ?? 'No especificado' }}
+                                                        </p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
+
+                                                    <div class="space-y-1">
                                                         <p class="text-sm font-medium text-black">Lugar de entrega
                                                             y dirección</p>
                                                         <p class="text-sm text-slate-900">
@@ -901,6 +914,44 @@
                                         <div class="p-6">
                                             @foreach ($this->selectedFormulario->infoEntrega as $infoEntrega)
                                                 <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
+
+                                                    <!-- entrega a cliente -->
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">¿Quien realiza la entrega a cliente?</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ $infoEntrega->entrega_cliente ?? 'No especificado' }}
+                                                        </p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
+
+                                                    <!-- Lugar de entrega -->
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">Lugar de entrega</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ $infoEntrega->lugar_entrega ?? 'No especificado' }}
+                                                        </p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
+
+                                                     <!-- Icoterm -->
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">Especificar pais</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ $infoEntrega->pais ?? 'No especificado' }}
+                                                        </p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
+
+
+                                                    <!-- Puerto -->
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">Puerto</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ $infoEntrega->puerto ?? 'No especificado' }}
+                                                        </p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
+
                                                     <!-- Icoterm -->
                                                     <div class="space-y-1">
                                                         <p class="text-sm font-medium text-black">Icoterm</p>
@@ -910,14 +961,6 @@
                                                         <div class="h-px bg-slate-200 mt-2"></div>
                                                     </div>
 
-                                                    {{-- <!-- Puerto -->
-                                                    <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">Puerto</p>
-                                                        <p class="text-sm text-slate-900">
-                                                            {{ $infoEntrega->puerto ?? 'No especificado' }}
-                                                        </p>
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div> --}}
 
                                                     <!-- Transporte -->
                                                     <div class="space-y-1">
@@ -1073,7 +1116,7 @@
                                     <div class="bg-white rounded-xl shadow-lg border border-slate-200 mt-6">
                                         <div
                                             class="border-b border-slate-200 px-6 py-4 bg-gradient-to-r from-indigo-50 to-white">
-                                            <h2 class="text-lg font-semibold text-gray-800">Archivos Adjuntos</h2>
+                                            <h2 class="text-lg font-semibold text-gray-800">Archivos Adjuntos o Anexos</h2>
                                         </div>
 
                                         <div class="p-6">

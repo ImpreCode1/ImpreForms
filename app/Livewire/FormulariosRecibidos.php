@@ -137,7 +137,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
             }
 
             $this->dispatch('links-reset');
-            session()->flash('message', 'Enlaces restablecidos y extendidos por 40 minutos.');
+            session()->flash('message', 'Enlaces restablecidos y extendidos por 3 dias.');
         } catch (\Exception $e) {
             session()->flash('error', 'Error al restablecer los enlaces: ' . $e->getMessage());
         }
@@ -181,16 +181,18 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     }
 
     return [
-
-        $marca ->tipo_solicitud ? $marca-> tipo_solicitud : ' No Completado',
-        $infonegocio ? $infonegocio->codigo_cliente : 'No Completado',
+        $marca->user->name ? $marca->user->name : 'No Completado',
+        $marca->precio_venta ? $marca->precio_venta : 'No Completado',
+        $marca->tipo_solicitud ? $marca->tipo_solicitud : 'No Completado',
+        $infonegocio ? preg_replace('/\D/', '', $infonegocio->codigo_cliente) : 'No Completado',  // Elimina caracteres no numéricos
         $infonegocio ? $infonegocio->nombre : 'No Completado',
-        $infonegocio ? $infonegocio->n_oportunidad_crm : 'No Completado',
+        $infonegocio ? preg_replace('/\D/', '', $infonegocio->n_oportunidad_crm) : 'No Completado',  // Elimina caracteres no numéricos
         $marca->created_at ? $marca->created_at->format('Y-m-d') : 'No Completado',
         $financiera ? $financiera->created_at->format('Y-m-d') : 'No Completado',
         $operaciones ? $operaciones->created_at->format('Y-m-d') : 'No Completado',
         $fechaMasReciente ? $fechaMasReciente->format('Y-m-d') : 'No fue terminado'
     ];
+    
 
 }
 
@@ -200,7 +202,9 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public function headings(): array
     {
         return [
-           'Tipo de Solicitud',
+            'Solicitante',
+            'Precio venta',
+            'Tipo de Solicitud',
             'Código Cliente',
             'Nombre',
             'Número de Oportunidad CRM',
@@ -226,13 +230,13 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
                 'startColor' => ['rgb' => 'FDE68A']
             ],
         ],
-        'E2:E' . $highestRow => [
+        'H2:H' . $highestRow => [
             'fill' => [
                 'fillType' => 'solid',
                 'startColor' => ['rgb' => 'BBF7D0']
             ],
         ],
-        'F2:F' . $highestRow => [
+        'I2:I' . $highestRow => [
             'fill' => [
                 'fillType' => 'solid',
                 'startColor' => ['rgb' => '93C5FD']
@@ -258,9 +262,9 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public function columnFormats(): array
     {
         return [
-            'D' => NumberFormat::FORMAT_DATE_YYYYMMDD,
-            'E' => NumberFormat::FORMAT_DATE_YYYYMMDD,
-            'F' => NumberFormat::FORMAT_DATE_YYYYMMDD,
+            // 'D' => NumberFormat::FORMAT_DATE_YYYYMMDD,
+            // 'E' => NumberFormat::FORMAT_DATE_YYYYMMDD,
+            // 'F' => NumberFormat::FORMAT_DATE_YYYYMMDD,
         ];
     }
 

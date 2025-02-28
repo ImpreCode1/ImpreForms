@@ -60,7 +60,8 @@ class Formulariofinanciera extends Component
         'garantia.min' => 'El espacio debe tener mínimo 2 caracteres',
 
         'hasAdvancePayment.required' => 'El espacio es requerido.',
-
+        'otros.required' => 'El espacio es requerido.',
+        'otros.min' => 'El espacio debe tener mínimo 2 caracteres.',
     ];
 
     public function rules()
@@ -71,7 +72,7 @@ class Formulariofinanciera extends Component
             'pago' => 'required|string|min:2',
             'garantia' =>'required|string|min:2',
             'hasAdvancePayment' => 'required|string',
-
+            'otros' => 'nullable|string|min:2',
         ];
 
         //! Verifica si hay un pago anticipado
@@ -86,6 +87,11 @@ class Formulariofinanciera extends Component
         }
 
         return $rules;
+    }
+
+    public function updated($propertyName)
+    {
+        $this->validateOnly($propertyName);
     }
 
     public function changeStep($step)
@@ -170,7 +176,7 @@ class Formulariofinanciera extends Component
                 'forma_pago' => $this->pago,
                 'moneda' => $this->moneda,
                 'garantiascredit' => $this->garantia,
-                'existencia_anticipo' => $this->hasAdvancePayment ? 1 : 0,
+                'existencia_anticipo' => $this->hasAdvancePayment === 'si' ? 1 : 0,
                 'porcentaje' => $this->anticipo,
                 'fecha_pago' => $this->fecha,
                 'otros' => $this->otros,
