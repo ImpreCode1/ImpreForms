@@ -106,74 +106,70 @@ class EnviarFormulario extends Component
     public $cod;
     public $files = [];
     public $dragging = false;
-
+    public $entrega_realizar;
     public $mmd = false;
 
     protected $listeners = ['openModal'];
     protected $rules = [
 
-        // 'attachments.*' => 'file|mimes:pdf,docx|max:10240',
-        'attachments.*' => 'required|file|mimes:pdf,docx,xlsx,eml,msj,msg|max:10240',
-
+        'attachments' => 'required|max:10240',
         'cod_ejc' => 'required|numeric|',
 
         //* Infonegocio
         'tipo_solicitud' => 'required',
-        'negocio' => 'required|numeric|unique:infonegocio,codigo_cliente',
-        'nombre' => 'required|string|min:2',
+        'negocio' => 'required|numeric|unique:infonegocio,codigo_cliente|min:5',
+        'nombre' => 'required|string|min:5',
         'correo' => 'required|email',
         'numero' => 'required|numeric',
         'crm' => 'required|numeric',
 
         //* Marca
         'fecha' => 'required',
-        'oc' => 'required|string|min:2',
-        'precio' => 'required|numeric|min:2',
-        'cotizacion' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
-        'soluciones' => 'required|string|min:2',
-        'linea' => 'required|string|min:2',
-        'codlinea' => 'required|string|min:2',
-        'nomgerente' => 'required|string|min:2',
+        'oc' => 'required|string|min:5',
+        'precio' => [
+            'required',
+            'regex:/^\d{1,3}((\.\d{3})*)?$/',
+            'min:4',
+        ],
+
+        'cotizacion' => 'required|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
+        'soluciones' => 'required|string|min:5',
+        'linea' => 'required|string|min:5',
+        'codlinea' => 'required|string|min:5',
+        'nomgerente' => 'required|string|min:5',
         'telgerente' => 'required|numeric',
         'nom_rep' => 'required|string',
         'email_ejc' => 'required|email',
 
         'corgerente' => 'required|email',
-        'director' => 'required|string|min:2',
+        'director' => 'required|string|min:5',
         'tel2gerente' => 'required|numeric',
         'cor2gerente' => 'required|email',
         'telefono_ejc' => 'required|numeric',
         //* Campos opcionales en Marca
-        'clientcode' => 'nullable|string|min:2',
+        'clientcode' => 'nullable|string|min:5',
         'clientname' => 'nullable|numeric',
         'mail' => 'nullable|email',
-        'nombre_ejc' =>  'required|string|min:4',
+        'nombre_ejc' =>  'required|string|min:5',
         //* Información
-        'entregacliente' => 'required|string|min:2',
-        'lugarentrega' => 'required|string|min:2',
-        'espais' => 'required|string|min:2',
-        'tiempoentrega' => 'required|string|min:2',
+        'entregacliente' => 'required|string|min:5',
+        'entrega_realizar' => 'required|string|min:5',
+        'lugarentrega' => 'required|string|min:5',
+        'espais' => 'required|string|min:5',
+        'tiempoentrega' => 'required|string|min:3',
         'terminoentrega' => 'required|date',
         'tipoicoterm' => 'required|string|min:2',
-        'prestar' => 'required|string|min:2',
-        'suministrar' => 'required|string|min:2',
+        'prestar' => 'required|string|min:4',
+        'suministrar' => 'required|string|min:5',
         'inicio' => 'required|date',
         'finalizacion' => 'required|date',
 
         //* Producto
-        // 'details' => 'required|string|min:2',
-        'aplicagarantia' => 'required|string|min:2',
-        'terminogarantia' => 'nullable|string|min:2',
-        'aplicapoliza' => 'required|string|min:2',
-        'porcentaje' => 'nullable|numeric|min:0|max:100',
+        'aplicagarantia' => 'required|string',
+        'aplicapoliza' => 'required|string',
 
         //* Condiciones de Pago
-        // 'formapago' => 'required|string',
-        // 'moneda' => 'required|string',
         'incluye_iva' => 'required|boolean',
-        // 'fecha_pago' => 'required|date',
-
-
     ];
 
     protected $messages = [
@@ -181,103 +177,95 @@ class EnviarFormulario extends Component
         'nom_rep.string' => 'El nombre no debe contener caracteres extraños',
 
         'nom_rep.required' => 'El campo es requerido',
-        'required' => 'El campo :attribute es obligatorio.',
-        'string' => 'El campo :attribute debe ser texto.',
-        'numeric' => 'El campo :attribute debe ser un número.',
-        'email' => 'El campo :attribute debe ser una dirección de correo válida.',
-        'date' => 'El campo :attribute debe ser una fecha válida.',
-        'min' => [
-            'string' => 'El campo :attribute debe tener al menos :min caracteres.',
-            'numeric' => 'El campo :attribute debe ser al menos :min.',
-        ],
-        'max' => [
-            'numeric' => 'El campo :attribute no puede ser mayor que :max.',
-            'file' => 'El archivo :attribute no debe pesar más de :max kilobytes.',
-        ],
-        'file' => 'El campo :attribute debe ser un archivo.',
-        'mimes' => 'El archivo :attribute debe ser de tipo: :values.',
-        'unique' => 'El valor del campo :attribute ya está en uso.',
 
         //* Infonegocio
         'negocio.required' => 'El código del cliente es obligatorio.',
-        'negocio.numeric' => 'El código del cliente debe ser un número.',
+        'negocio.numeric' => 'El código del cliente debe ser un número sin espacios.',
         'negocio.unique' => 'El código del cliente ya está registrado.',
+        'negocio.min' => 'El código del cliente debe tener almenos :min caracteres.',
+
         'nombre.required' => 'El nombre es obligatorio.',
-        'nombre.min' => 'El nombre debe tener al menos 2 caracteres.',
+        'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
         'correo.required' => 'El correo electrónico es obligatorio.',
         'correo.email' => 'El correo electrónico debe ser válido.',
         'numero.required' => 'El número de teléfono es obligatorio.',
-        'numero.numeric' => 'El número de teléfono debe contener solo números.',
+        'numero.numeric' => 'El número de teléfono debe contener solo números sin espacios.',
         'crm.required' => 'El número CRM es obligatorio.',
-        'crm.numeric' => 'El número CRM debe ser numérico.',
+        'crm.numeric' => 'El número CRM debe ser numérico sin espacios.',
 
         //* Marca
         'fecha.required' => 'La fecha es obligatoria.',
         'fecha.date' => 'La fecha debe tener un formato válido.',
         'oc.required' => 'La orden de compra es obligatoria.',
-        'oc.min' => 'La orden de compra debe tener al menos 2 caracteres.',
-        'precio.required' => 'El precio es obligatorio.',
-        'precio.numeric' => 'El campo debe tener solo números',
+        'oc.min' => 'La orden de compra debe tener al menos :min caracteres.',
         'cod_ejc.required' => 'El campo de codigo es requerido',
-        'cod_ejc.numeric' => 'Este campo debe ser numerico ',
+        'cod_ejc.numeric' => 'Este campo debe ser numerico sin espacios ',
 
 
+        'tipo_solicitud.required' => 'Este campo es requerido',
         'nombre_ejc.required' =>'Este campo es requerido',
         'nombre_ejc.string' =>'Este campo es requerido',
-        'nombre_ejc.min' =>'Este campo debe tener minimo 4 caracteres ',
+        'nombre_ejc.min' =>'Este campo debe tener minimo :min caracteres ',
 
         'telefono_ejc.required' => 'Este campo es requerido',
-        'telefono_ejc.numeric' => 'Este campo es tipo numerico',
+        'telefono_ejc.numeric' => 'Este campo es tipo numerico sin espacios',
 
         'email_ejc.required' => 'Este campo es requerido',
         'email_ejc.email' => 'El correo debe ser valido',
 
 
-        'precio.min' => 'El precio debe tener al menos 2 caracteres.',
+        'precio' => [
+            'required' => 'El campo "Precio" es obligatorio.',
+            'regex' => 'El campo "Precio" debe ser un número válido con formato adecuado. Ejemplo: 1.000.000',
+            'min' => 'El campo "Precio" debe tener al menos :min caracteres.',
+        ],
+
         'cotizacion.file' => 'La cotización debe ser un archivo.',
         'cotizacion.mimes' => 'La cotización debe ser un archivo PDF, Word o Excel.',
         'cotizacion.max' => 'La cotización no debe pesar más de 10MB.',
         'soluciones.required' => 'Las soluciones son obligatorias.',
-        'soluciones.min' => 'Las soluciones deben tener al menos 2 caracteres.',
+        'soluciones.min' => 'Las soluciones deben tener al menos :min caracteres.',
         'linea.required' => 'La línea es obligatoria.',
-        'linea.min' => 'La línea debe tener al menos 2 caracteres.',
+        'linea.min' => 'La línea debe tener al menos :min caracteres.',
         'codlinea.required' => 'El código de línea es obligatorio.',
-        'codlinea.min' => 'El código de línea debe tener al menos 2 caracteres.',
+        'codlinea.min' => 'El código de línea debe tener al menos :min caracteres.',
         'nomgerente.required' => 'El nombre del gerente es obligatorio.',
-        'nomgerente.min' => 'El nombre del gerente debe tener al menos 2 caracteres.',
+        'nomgerente.min' => 'El nombre del gerente debe tener al menos :min caracteres.',
         'telgerente.required' => 'El teléfono del gerente es obligatorio.',
-        'telgerente.numeric' => 'El teléfono del gerente debe contener solo números.',
+        'telgerente.numeric' => 'El teléfono del gerente debe contener solo números sin espacios.',
         'corgerente.required' => 'El correo del gerente es obligatorio.',
         'corgerente.email' => 'El correo del gerente debe ser válido.',
         'director.required' => 'El nombre del director es obligatorio.',
-        'director.min' => 'El nombre del director debe tener al menos 2 caracteres.',
+        'director.min' => 'El nombre del director debe tener al menos :min caracteres.',
         'tel2gerente.required' => 'El teléfono del segundo gerente es obligatorio.',
-        'tel2gerente.numeric' => 'El teléfono del segundo gerente debe contener solo números.',
+        'tel2gerente.numeric' => 'El teléfono del segundo gerente debe contener solo números sin espacios.',
         'cor2gerente.required' => 'El correo del segundo gerente es obligatorio.',
         'cor2gerente.email' => 'El correo del segundo gerente debe ser válido.',
 
         //* Campos opcionales en Marca
-        'clientcode.min' => 'El código de cliente debe tener al menos 2 caracteres.',
-        'clientname.numeric' => 'El numero del cliente debe ser numérico.',
+        'clientcode.min' => 'El código de cliente debe tener al menos :min caracteres.',
+        'clientname.numeric' => 'El numero del cliente debe ser numérico sin espacios.',
         'mail.email' => 'El correo debe ser una dirección válida.',
 
         //* Información
         'entregacliente.required' => 'Debe especificar si realiza la entrega al cliente.',
-        'entregacliente.min' => 'La especificación de entrega debe tener al menos 2 caracteres.',
+        'entregacliente.min' => 'La especificación de entrega debe tener al menos :min caracteres.',
+        'entrega_realizar.required' => 'Debe especificar la entrega realizada.',
+        'entrega_realizar.min' => 'La realizacion de entrega debe tener al menos :min caracteres.',
         'lugarentrega.required' => 'El lugar de entrega es obligatorio.',
-        'lugarentrega.min' => 'El lugar de entrega debe tener al menos 2 caracteres.',
+        'lugarentrega.min' => 'El lugar de entrega debe tener al menos :min caracteres.',
         'espais.required' => 'El país es obligatorio.',
-        'espais.min' => 'El país debe tener al menos 2 caracteres.',
+        'espais.min' => 'El país debe tener al menos :min caracteres.',
         'tiempoentrega.required' => 'El tiempo de entrega es obligatorio.',
-        'tiempoentrega.min' => 'El tiempo de entrega debe tener al menos 2 caracteres.',
+        'tiempoentrega.min' => 'El tiempo de entrega debe tener al menos :min caracteres.',
         'terminoentrega.required' => 'El término de entrega es obligatorio.',
         'terminoentrega.date' => 'El término de entrega debe ser una fecha válida.',
         'tipoicoterm.required' => 'El tipo de Incoterm es obligatorio.',
-        'tipoicoterm.min' => 'El tipo de Incoterm debe tener al menos 2 caracteres.',
+        'tipoicoterm.min' => 'El tipo de Incoterm debe tener al menos :min caracteres.',
         'prestar.required' => 'Debe especificar si se prestará el servicio.',
-        'prestar.min' => 'La especificación de préstamo debe tener al menos 2 caracteres.',
+        'prestar.min' => 'La especificación de préstamo debe tener al menos :min caracteres.',
         'suministrar.required' => 'Debe especificar si se suministrará el producto.',
-        'suministrar.min' => 'La especificación de suministro debe tener al menos 2 caracteres.',
+        'suministrar.min' => 'La especificación de suministro debe tener al menos :min caracteres.',
         'inicio.required' => 'La fecha de inicio es obligatoria.',
         'inicio.date' => 'La fecha de inicio debe ser válida.',
         'finalizacion.required' => 'La fecha de finalización es obligatoria.',
@@ -285,14 +273,15 @@ class EnviarFormulario extends Component
 
         //* Producto
         'details.required' => 'Los detalles del producto son obligatorios.',
-        'details.min' => 'Los detalles del producto deben tener al menos 2 caracteres.',
+        'details.min' => 'Los detalles del producto deben tener al menos :min caracteres.',
         'aplicagarantia.required' => 'Debe especificar si aplica garantía.',
-        'aplicagarantia.min' => 'La especificación de garantía debe tener al menos 2 caracteres.',
+        'aplicagarantia.min' => 'La especificación de garantía debe tener al menos :min caracteres.',
         'terminogarantia.required' => 'El término de garantía es obligatorio.',
-        'terminogarantia.min' => 'El término de garantía debe tener al menos 2 caracteres.',
+        'terminogarantia.min' => 'El término de garantía debe tener al menos :min caracteres.',
         'aplicapoliza.required' => 'Debe especificar si aplica póliza.',
-        'aplicapoliza.min' => 'La especificación de póliza debe tener al menos 2 caracteres.',
+        'aplicapoliza.min' => 'La especificación de póliza debe tener al menos :min caracteres.',
 
+        'porcentaje.required' => 'El porcentaje es obligatorio.',
         'porcentaje.numeric' => 'El porcentaje debe ser un número.',
         'porcentaje.min' => 'El porcentaje no puede ser menor que 0.',
         'porcentaje.max' => 'El porcentaje no puede ser mayor que 100.',
@@ -310,16 +299,16 @@ class EnviarFormulario extends Component
 
 
         //* documentos
-        'attachments.*.nullable' => 'El archivo adjunto es opcional, pero si se incluye, debe ser válido.',
-        'attachments.*.file' => 'El campo :attribute debe ser un archivo válido.',
-        'attachments.*.mimes' => 'El archivo :attribute debe ser de tipo PDF, Word (.docx), Excel (.xlsx) o correo electrónico (.eml).',
-        'attachments.*.max' => 'El archivo :attribute no puede exceder los 10 MB de tamaño.',
-
+        'attachments.required' => 'El campo archivo adjunto es requerido.',
+        'attachments.max' => 'El archivo no puede exceder los 10 MB de tamaño.',
 
     ];
 
-
-//* mostrar garantia
+    //* mostrar garantia
+    public function updated($propertyName)
+    {
+        $this->validateOnly($propertyName);
+    }
 
     public function updatedHasAdvancePayment($value)
     {
@@ -373,6 +362,7 @@ class EnviarFormulario extends Component
     public function submit()
     {
         $this->validate();
+
         $infonegocio = Infonegocio::create([
             'codigo_cliente' => $this->negocio, // * no puede ser igual a otro y es numerico obligatorio
             'nombre' => $this->nombre,
@@ -421,6 +411,7 @@ class EnviarFormulario extends Component
         $informacion = Informacion::create([
             'marcas_id' => $this->marcaId,
             'realiza_entrega_cliente' => $this->entregacliente, //! obligatorio varchar
+            'entrega_realizar' => $this->entrega_realizar,
             'lugar_entrega' => $this->lugarentrega, //! obligatorio varchar
             'pais' => $this->espais, //! obligatorio varchar
             'tiempo_entrega' => $this->tiempoentrega, //!  obligatorio
@@ -434,7 +425,6 @@ class EnviarFormulario extends Component
 
         Producto::create([
             'informacion_id' => $informacion->id,
-            // 'detalles_equipos' => $this->details, //! obligatorio
             'aplica_garantia' => $this->aplicagarantia, //! obligatorio
             'termino_garantia' => $this->terminogarantia, //! obligatorio
             'aplica_poliza' => $this->aplicapoliza, //! obligatorio
@@ -443,22 +433,13 @@ class EnviarFormulario extends Component
 
         Pago::create([
             'marcas_id' => $this->marcaId,
-            // 'fecha_pago' => $this->fecha_pago,
             'incluye_iva' => $this->incluye_iva,
         ]);
 
         Financiera::create([
             'marcas_id' => $this->marcaId,
-            // 'forma_pago' => $this->formapago,
-            // 'moneda' => $this->moneda,
-
             'otros' => $this->otros,
         ]);
-
-
-
-
-
 
         $this->operacionesLink = (string) Str::uuid();
         $this->financieraLink = (string) Str::uuid();
@@ -585,9 +566,10 @@ class EnviarFormulario extends Component
     public function updatedAttachments()
     {
 
-        $this->validate([
-            'attachments.*' => 'file|max:10240|mimes:pdf,doc,docx,xls,xlsx,msj,msg',
-        ]);
+        // $this->validate([
+        //     'attachments.*' => 'file|max:10240|mimes:pdf,doc,docx,xls,xlsx,msj,msg',
+        // ]);
+
 
         foreach ($this->attachments as $file) {
             $originalName = $file->getClientOriginalName();

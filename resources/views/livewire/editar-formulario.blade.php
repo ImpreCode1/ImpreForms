@@ -1,11 +1,7 @@
 <div>
     <div class="font-sans text-gray-900 antialiased">
-        {{-- <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6"> --}}
         <form wire:submit.prevent="submit" class="space-y-8">
             <div class="form-step">
-                {{-- <h1 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
-                       Edición Información Proporcionada por Marcas
-                    </h1> --}}
                 <div class="bg-gray-50 p-6 rounded-lg mt-6">
                     <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-yellow-500" fill="none"
@@ -23,13 +19,14 @@
                         <i
                             class="ri-file-text-line absolute left-3 top-1/2 transform -translate-y-1/2
                                 {{ $errors->has('tipo_solicitud') ? 'text-red-500' : 'text-gray-400' }}"></i>
-                        <select id="tipo_solicitud" wire:model="tipo_solicitud"
+                        <select id="tipo_solicitud" wire:model.live="tipo_solicitud"
                             class="mt-1 block w-full rounded-md border-gray-300
                                 {{ $errors->has('tipo_solicitud') ? 'border-red-300' : 'border-blue-100' }}
                                 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300">
                             <option value="" disabled>Seleccione tipo de solicitud</option>
-                            <option value="contrato">Contrato</option>
-                            <option value="otrosi">Otrosí</option>
+                            <option value="Contrato">Contrato</option>
+                            <option value="Otrosi">Otrosí</option>
+                            <option value="Alcance">Alcance</option>
                         </select>
                     </div>
                     @error('tipo_solicitud')
@@ -54,8 +51,8 @@
                             <div>
                                 <label for="codigo_cliente" class="block text-sm font-medium text-gray-700">Código
                                     Cliente</label>
-                                <input type="text" wire:model="negocio"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                <input type="text" wire:model.live="negocio"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm  {{ $errors->has('negocio') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('negocio')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
                                 @enderror
@@ -63,8 +60,8 @@
 
                             <div>
                                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
-                                <input type="text" wire:model="nombres"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                <input type="text" wire:model.live="nombres"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm {{ $errors->has('nombres') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('nombres')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
                                 @enderror
@@ -73,14 +70,17 @@
                             <div>
                                 <label for="nom_rep"
                                     class="block text-sm font-medium text-gray-700">Nombre del representante legal</label>
-                                <input id="nom_rep" type="text" wire:model="nom_rep"
-                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('nom_rep') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                <input id="nom_rep" type="text" wire:model.live="nom_rep"
+                                    class="mt-1 block w-full rounded-md border-gray-300  shadow-sm {{ $errors->has('nom_rep') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                @error('nom_rep')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
                             </div>
 
                             <div>
                                 <label for="correo" class="block text-sm font-medium text-gray-700">Correo</label>
-                                <input type="email" wire:model="correo"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                <input type="email" wire:model.live="correo"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm {{ $errors->has('correo') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('correo')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
                                 @enderror
@@ -88,8 +88,8 @@
 
                             <div>
                                 <label for="numero" class="block text-sm font-medium text-gray-700">Número</label>
-                                <input type="text" wire:model="numero"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                <input type="text" wire:model.live="numero"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm {{ $errors->has('numero') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('numero')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
                                 @enderror
@@ -98,8 +98,8 @@
                             <div>
                                 <label for="crm" class="block text-sm font-medium text-gray-700">N° oportunidad
                                     CRM</label>
-                                <input type="text" wire:model="crms"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                <input type="text" wire:model.live="crms"
+                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('crms') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('crms')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
                                 @enderror
@@ -122,7 +122,7 @@
                         <div class="grid grid-cols-1 gap-4">
                             <div>
                                 <label for="fecha" class="block text-sm font-medium text-gray-700">Fecha</label>
-                                <input id="fecha" type="date" wire:model="fecha"
+                                <input id="fecha" type="date" wire:model.live="fecha"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('fecha') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('fecha')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -132,7 +132,7 @@
                             <div>
                                 <label for="oc" class="block text-sm font-medium text-gray-700">N°
                                     OC</label>
-                                <input id="oc" type="text" wire:model="oc"
+                                <input id="oc" type="text" wire:model.live="oc"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('oc') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('oc')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -142,7 +142,7 @@
                             <div>
                                 <label for="incluye_iva" class="block text-sm font-medium text-gray-700">Incluye
                                     IVA</label>
-                                <select id="incluye_iva" wire:model="incluye_iva"
+                                <select id="incluye_iva" wire:model.live="incluye_iva"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('incluye_iva') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                     <option value="">Seleccione</option>
                                     <option value="1">Sí</option>
@@ -158,7 +158,7 @@
                                     venta que debe
                                     quedar
                                     en el contrato</label>
-                                <input id="precio" type="text" wire:model="precio"
+                                <input id="precio" type="text" wire:model.live="precio"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('precio') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('precio')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -170,7 +170,7 @@
                                 <h2 class="mb-4 text-xl font-bold">Cotización</h2>
                                 <label for="cotizacion" class="block text-sm font-medium text-gray-700">Adjuntar
                                     Cotización</label>
-                                <input id="cotizacion" type="file" wire:model="cotizacion"
+                                <input id="cotizacion" type="file" wire:model.live="cotizacion"
                                     class="mt-2 w-full cursor-pointer rounded bg-gray-100 text-sm font-medium text-gray-500 file:mr-4 file:cursor-pointer file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-white file:hover:bg-blue-500" />
 
                                 @error('cotizacion')
@@ -210,7 +210,7 @@
                     <div class="grid grid-cols-1 gap-4">
                         <div>
                             <label for="soluciones" class="block text-sm font-medium text-gray-700">Soluciones</label>
-                            <select id="soluciones" wire:model="soluciones"
+                            <select id="soluciones" wire:model.live="soluciones"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('soluciones') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                 <option value="" disabled>Seleccionar Solución</option>
                                 <option value="Líneas Huawei EBG, Datacenter y Solar, líneas de paneles solares">
@@ -245,7 +245,7 @@
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
                             <label for="linea" class="block text-sm font-medium text-gray-700">Linea</label>
-                            <input id="linea" type="text" wire:model="linea"
+                            <input id="linea" type="text" wire:model.live="linea"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('linea') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                             @error('linea')
                                 <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
@@ -255,7 +255,7 @@
                         <div>
                             <label for="codlinea" class="block text-sm font-medium text-gray-700">Código de la
                                 línea</label>
-                            <input id="codlinea" type="text" wire:model="codlinea"
+                            <input id="codlinea" type="text" wire:model.live="codlinea"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('codlinea') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                             @error('codlinea')
                                 <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
@@ -264,7 +264,7 @@
 
                         <div>
                             <label for="nomgerente" class="block text-sm font-medium text-gray-700">Nombre</label>
-                            <input id="nomgerente" type="text" wire:model="nomgerente"
+                            <input id="nomgerente" type="text" wire:model.live="nomgerente"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('nomgerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                             @error('nomgerente')
                                 <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
@@ -273,7 +273,7 @@
 
                         <div>
                             <label for="telgerente" class="block text-sm font-medium text-gray-700">Teléfono</label>
-                            <input id="telgerente" type="text" wire:model="telgerente"
+                            <input id="telgerente" type="text" wire:model.live="telgerente"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('telgerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                             @error('telgerente')
                                 <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
@@ -283,7 +283,7 @@
                         <div>
                             <label for="corgerente" class="block text-sm font-medium text-gray-700">Correo
                                 electrónico</label>
-                            <input id="corgerente" type="text" wire:model="corgerente"
+                            <input id="corgerente" type="text" wire:model.live="corgerente"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('corgerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                             @error('corgerente')
                                 <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
@@ -297,7 +297,7 @@
                         </h5>
                         <div>
                             <label for="director" class="block text-sm font-medium text-gray-700">Director</label>
-                            <input id="director" type="text" wire:model="director"
+                            <input id="director" type="text" wire:model.live="director"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('director') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                             @error('director')
                                 <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
@@ -306,7 +306,7 @@
 
                         <div>
                             <label for="tel2gerente" class="block text-sm font-medium text-gray-700">Teléfono</label>
-                            <input id="tel2gerente" type="text" wire:model="tel2gerente"
+                            <input id="tel2gerente" type="text" wire:model.live="tel2gerente"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tel2gerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                             @error('tel2gerente')
                                 <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
@@ -316,7 +316,7 @@
                         <div>
                             <label for="cor2gerente" class="block text-sm font-medium text-gray-700">Correo
                                 electrónico</label>
-                            <input id="cor2gerente" type="text" wire:model="cor2gerente"
+                            <input id="cor2gerente" type="text" wire:model.live="cor2gerente"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('cor2gerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                             @error('cor2gerente')
                                 <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
@@ -331,40 +331,54 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Cod</label>
-                            <input type="text" wire:model="cod_ejc"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                            <input type="text" wire:model.live="cod_ejc"
+                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('cod_ejc') ? 'border-red-400' : 'border-blue-100' }}  shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                            @error('cod_ejc')
+                                <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Nombre</label>
-                            <input type="text" wire:model="nombre_ejc"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                            <input type="text" wire:model.live="nombre_ejc"
+                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('nombre_ejc') ? 'border-red-400' : 'border-blue-100' }}  shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                            @error('nombre_ejc')
+                                <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Teléfono</label>
-                            <input type="text" wire:model="telefono_ejc"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                            <input type="text" wire:model.live="telefono_ejc"
+                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('telefono_ejc') ? 'border-red-400' : 'border-blue-100' }}  shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                            @error('telefono_ejc')
+                                <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">E-mail</label>
-                            <input type="text" wire:model="email_ejc"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                            <input type="text" wire:model.live="email_ejc"
+                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('email_ejc') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                            @error('email_ejc')
+                                <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
+                            @enderror
                         </div>
+
+
                         <h5 class="text-xl font-semibold mb-4 col-span-2 text-stone-950 tracking-wide">
                             Información Adicional (si se requiere)
                         </h5>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Otro</label>
-                            <input type="text" wire:model="clientcode"
+                            <input type="text" wire:model.live="clientcode"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
                                 placeholder="Opcional" />
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Teléfono</label>
-                            <input type="text" wire:model="clientname"
+                            <input type="text" wire:model.live="clientname"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
                                 placeholder="Opcional" />
                             @error('clientname')
@@ -374,7 +388,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Correo electrónico</label>
-                            <input type="text" wire:model="mail"
+                            <input type="text" wire:model.live="mail"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
                                 placeholder="Opcional" />
                             @error('mail')
@@ -404,7 +418,7 @@
                                 <label for="realiza_entrega_cliente"
                                     class="block text-sm font-medium text-gray-700">¿Quién realiza la entrega a
                                     cliente?</label>
-                                <input id="entregacliente" type="text" wire:model="entregacliente"
+                                <input id="entregacliente" type="text" wire:model.live="entregacliente"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('entregacliente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('entregacliente')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -412,9 +426,18 @@
                             </div>
 
                             <div>
+                                <label for="entrega_realizar"
+                                    class="block text-sm font-medium text-gray-700">¿Cuántas entregas se van a realizar al cliente y en que fecha?</label>
+                                <input id="entrega_realizar" type="text" wire:model.live="entrega_realizar"
+                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('entrega_realizar') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                @error('entrega_realizar')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div>
                                 <label for="lugarentrega" class="block text-sm font-medium text-gray-700">Lugar de
                                     entrega y dirección</label>
-                                <input id="lugarentrega" type="text" wire:model="lugarentrega"
+                                <input id="lugarentrega" type="text" wire:model.live="lugarentrega"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('lugarentrega') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('lugarentrega')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -424,7 +447,7 @@
                             <div>
                                 <label for="espais" class="block text-sm font-medium text-gray-700">Especificar
                                     país</label>
-                                <input id="espais" type="text" wire:model="espais"
+                                <input id="espais" type="text" wire:model.live="espais"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('espais') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('espais')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -434,7 +457,7 @@
                             <div>
                                 <label for="tiempoentrega" class="block text-sm font-medium text-gray-700">Tiempo de
                                     entrega</label>
-                                <input id="tiempoentrega" type="time" wire:model="tiempoentrega"
+                                <input id="tiempoentrega" type="time" wire:model.live="tiempoentrega"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tiempoentrega') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('tiempoentrega')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -444,7 +467,7 @@
                             <div>
                                 <label for="terminoentrega" class="block text-sm font-medium text-gray-700">Fecha de
                                     inicio del término de entrega (día, mes, año)</label>
-                                <input id="terminoentrega" type="date" wire:model="terminoentrega"
+                                <input id="terminoentrega" type="date" wire:model.live="terminoentrega"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('terminoentrega') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('terminoentrega')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -454,7 +477,7 @@
                             <div>
                                 <label for="tipoicoterm" class="block text-sm font-medium text-gray-700">¿Qué tipo de
                                     incoterms aplica?</label>
-                                <input id="tipoicoterm" type="text" wire:model="tipoicoterm"
+                                <input id="tipoicoterm" type="text" wire:model.live="tipoicoterm"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tipoicoterm') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('tipoicoterm')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -480,7 +503,7 @@
                                 <label for="servicio_a_prestar" class="block text-sm font-medium text-gray-700">¿Qué
                                     servicio se va a
                                     prestar?</label>
-                                <input id="prestar" type="text" wire:model="prestar"
+                                <input id="prestar" type="text" wire:model.live="prestar"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('prestar') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('prestar')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -491,7 +514,7 @@
                                     class="block text-sm font-medium text-gray-700">¿Cada
                                     cuanto se va a
                                     suministrar?</label>
-                                <input id="suministrar" type="text" wire:model="suministrar"
+                                <input id="suministrar" type="text" wire:model.live="suministrar"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('suministrar') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('suministrar')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -500,7 +523,7 @@
                             <div>
                                 <label for="inicio" class="block text-sm font-medium text-gray-700">Fecha de
                                     inicio</label>
-                                <input id="inicio" type="date" wire:model="inicio"
+                                <input id="inicio" type="date" wire:model.live="inicio"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('inicio') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('inicio')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -509,7 +532,7 @@
                             <div>
                                 <label for="finalizacion" class="block text-sm font-medium text-gray-700">Fecha de
                                     finalización</label>
-                                <input id="finalizacion" type="date" wire:model="finalizacion"
+                                <input id="finalizacion" type="date" wire:model.live="finalizacion"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('finalizacion') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('finalizacion')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -543,7 +566,7 @@
                                 <label for="garantia" class="block text-sm font-medium text-gray-700">¿Aplica algún
                                     tipo de
                                     garantía?</label>
-                                <select wire:model="aplicagarantia" id="garantia"
+                                <select wire:model.live="aplicagarantia" id="garantia"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicagarantia') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                     <option value="" disabled>Selecciona una opción</option>
                                     <option value="sí">Sí</option>
@@ -558,7 +581,7 @@
                                     el término de
                                     la
                                     garantía?</label>
-                                <input id="terminogarantia" type="text" wire:model="terminogarantia"
+                                <input id="terminogarantia" type="text" wire:model.live="terminogarantia"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('terminogarantia') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('terminogarantia')
                                     <span class="text-red-500 text-sm"> {{ $message }}</span>
@@ -582,7 +605,7 @@
                                 <label for="aplicapoliza" class="block text-sm font-medium text-gray-700">¿Aplica
                                     algún tipo de
                                     póliza?</label>
-                                <select wire:model="aplicapoliza" id="aplicapoliza"
+                                <select wire:model.live="aplicapoliza" id="aplicapoliza"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicapoliza') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                     <option value="" disabled>Selecciona una opción</option>
                                     <option value="sí">Sí</option>
@@ -595,7 +618,7 @@
                             <div>
                                 <label for="porcentaje"
                                     class="block text-sm font-medium text-gray-700">Porcentaje</label>
-                                <input id="porcentaje" type="number" step="0.01" wire:model="porcentaje"
+                                <input id="porcentaje" type="number" step="0.01" wire:model.live="porcentaje"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('porcentaje') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('porcentaje')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -662,54 +685,6 @@
                         {{ session('error') }}
                     </div>
                 @endif
-
-                {{-- @if (count($files) > 0)
-                        <div class="mt-4">
-                            <h3 class="text-sm font-medium text-gray-700 mb-2">Archivos Seleccionados:</h3>
-                            <ul class="space-y-2">
-                                @foreach ($files as $index => $file)
-                                    <li
-                                        class="bg-gray-50 rounded-lg p-3 flex items-center justify-between group hover:bg-gray-100 transition-all duration-200">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="p-2 bg-blue-100 rounded-lg">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                    class="h-5 w-5 text-blue-600" fill="none"
-                                                    viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                                </svg>
-                                            </div>
-                                            <div class="flex flex-col">
-                                                <span
-                                                    class="text-sm font-medium text-gray-700">{{ $file['name'] }}</span>
-                                                <span class="text-xs text-gray-500">{{ $file['size'] }} KB</span>
-                                            </div>
-                                        </div>
-                                        <button type="button" wire:click="removeFile({{ $index }})"
-                                            class="hidden group-hover:flex items-center space-x-1 text-sm text-red-500 hover:text-red-700 transition-colors duration-200">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                            <span>Eliminar</span>
-                                        </button>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif --}}
-
-                {{-- @error('archivos.*')
-                    <span class="text-red-500 text-sm mt-2">{{ $message }}</span>
-                @enderror --}}
-
-
-
-
-
 
             </div>
 
@@ -793,6 +768,6 @@
                 </button>
             </div>
         </form>
-        {{-- </div> --}}
+       
     </div>
 </div>

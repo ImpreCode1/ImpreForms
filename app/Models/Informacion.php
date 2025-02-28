@@ -14,6 +14,7 @@ class Informacion extends Model
     protected $fillable = [
         'marcas_id',
         'realiza_entrega_cliente',
+        'entrega_realizar',
         'lugar_entrega',
         'pais',
         'tiempo_entrega',

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Livewire;
 
 use App\Models\Documento;
@@ -20,41 +19,33 @@ trait FormatearFechas
 class EditarFormulario extends Component
 {
     use WithFileUploads, FormatearFechas;
-
     public $formulario;
     public $attachments = [];
     public $temporaryFiles = [];
     public $existingFiles = [];
     public $archivosNuevos = [];
     public $archivosMostrados = [];
-
     public $negocio, $nombres, $correo, $numero, $crms;
     public $fecha, $oc, $precio, $soluciones, $linea, $codlinea;
     public $nomgerente, $telgerente, $corgerente, $director, $tel2gerente, $cor2gerente;
     public $entregacliente, $lugarentrega, $espais, $tiempoentrega, $terminoentrega, $tipoicoterm;
     public $prestar, $suministrar, $inicio, $finalizacion;
     public $clientcode, $clientname, $mail;
-    // $details
     public $cod;
-
     public $aplicagarantia, $terminogarantia, $aplicapoliza, $porcentaje;
     public $incluye_iva, $otros;
-    // $moneda,
-    // $formapago,
-    // $fecha_pago,
     public $cotizacion;
     protected $listener = ['removeUpload', 'removeExistingFile', 'editFormulario'];
-
     public $marcaId;
     public $cod_ejc;
     public $nombre_ejc;
     public $telefono_ejc;
     public $email_ejc;
-
     public $documentos;
     public $documento;
     public $tipo_solicitud;
     public $nom_rep;
+    public $entrega_realizar;
     public $files = [];
 
     protected $rules = [
@@ -62,19 +53,24 @@ class EditarFormulario extends Component
         'cod_ejc' => 'required|numeric|',
         'email_ejc' => 'required|email',
         'telefono_ejc' => 'required|numeric',
-        'nombre_ejc' =>  'required|string|min:4',
-        'terminogarantia' => 'nullable|string|min:2',
+        'nombre_ejc' =>  'required|string|min:5',
+        'terminogarantia' => 'nullable|string|min:5',
         'porcentaje' => 'nullable|numeric|min:0|max:100',
 
         'negocio' => 'required|numeric|',
         'nombres' => 'required|string|',
+        'nom_rep' => 'required|string',
         'correo' => 'required|email|',
         'numero' => 'required|numeric',
         'crms' => 'required|string|',
         'fecha' => 'required|date',
         'oc' => 'required|string|',
-        'precio' => 'required|numeric',
-        // 'cotizacion' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
+        'precio' => [
+                    'required',
+                    'regex:/^\d{1,3}(?:[\.,]\d{3})*(?:[\.,]\d+)?$/',
+                    'min:5',
+        ],
+        'cotizacion' => 'nullable|max:10240',
         'soluciones' => 'required|string|',
         'linea' => 'required|string|',
         'codlinea' => 'required|string|',
@@ -86,6 +82,7 @@ class EditarFormulario extends Component
         'cor2gerente' => 'required|email|',
 
         'entregacliente' => 'required|string|',
+        'entrega_realizar' => 'required|string|',
         'lugarentrega' => 'required|string|',
         'espais' => 'required|string|',
         'tiempoentrega' => 'required|string|',
@@ -96,29 +93,24 @@ class EditarFormulario extends Component
         'inicio' => 'required|date',
         'finalizacion' => 'required|date',
 
-        'clientname' => 'required|string|',
-        'mail' => 'required|email|',
-        // 'details' => 'required|string|',
+        'clientname' => 'nullable|numeric',
+        'mail' => 'nullable|email',
         'aplicagarantia' => 'required|string|',
-        'terminogarantia' => 'required|string|',
+        'terminogarantia' => 'nullable|string|',
         'aplicapoliza' => 'required|string|',
-        'porcentaje' => 'required|numeric',
-        // 'formapago' => 'required|string|',
-        // 'moneda' => 'required|string|',
+        'porcentaje' => 'nullable|numeric',
         'incluye_iva' => 'required',
-        // 'fecha_pago' => 'required|date',
-        // 'otros' => 'string|',
     ];
 
     protected $messages = [
-// mensajes de las nuevas validaciones
+        // mensajes de las nuevas validaciones
         'cod_ejc.required' => 'El campo de codigo es requerido',
         'cod_ejc.numeric' => 'Este campo debe ser numerico ',
 
 
         'nombre_ejc.required' =>'Este campo es requerido',
         'nombre_ejc.string' =>'Este campo es requerido',
-        'nombre_ejc.min' =>'Este campo debe tener minimo 4 caracteres ',
+        'nombre_ejc.min' =>'Este campo debe tener minimo :min caracteres ',
 
         'telefono_ejc.required' => 'Este campo es requerido',
         'telefono_ejc.numeric' => 'Este campo es tipo numerico',
@@ -131,21 +123,29 @@ class EditarFormulario extends Component
 
 
         'negocio.required' => 'El campo "Negocio" es obligatorio.',
-        'negocio.numeric' => 'El campo "Negocio" debe ser un número.',
+        'negocio.numeric' => 'El campo "Negocio" debe ser un número sin espacios.',
         'nombres.required' => 'El campo "Nombres" es obligatorio.',
         'nombres.string' => 'El campo "Nombres" debe ser una cadena de texto.',
+        'nom_rep.required' => 'El campo "Nombre del representante legal" es obligatorio.',
+        'nom_rep.string' => 'El campo "Nombre del representante legal" debe ser una cadena de texto.',
         'correo.required' => 'El campo "Correo" es obligatorio.',
         'correo.email' => 'El campo "Correo" debe ser un correo electrónico válido.',
         'numero.required' => 'El campo "Número" es obligatorio.',
-        'numero.numeric' => 'El campo "Número" debe ser un número.',
+        'numero.numeric' => 'El campo "Número" debe ser un número sin espacios.',
         'crms.required' => 'El campo "CRM" es obligatorio.',
         'crms.string' => 'El campo "CRM" debe ser una cadena de texto.',
         'fecha.required' => 'El campo "Fecha" es obligatorio.',
         'fecha.date' => 'El campo "Fecha" debe ser una fecha válida.',
         'oc.required' => 'El campo "OC" es obligatorio.',
         'oc.string' => 'El campo "OC" debe ser una cadena de texto.',
-        'precio.required' => 'El campo "Precio" es obligatorio.',
-        'precio.numeric' => 'El campo "Precio" debe ser un número.',
+        'precio' => [
+            'required' => 'El campo "Precio" es obligatorio.',
+            'regex' => 'El campo "Precio" debe ser un número válido con formato adecuado. Ejemplo: 1,000.00 o 1000.00.',
+            'min' => 'El campo "Precio" debe tener al menos :min caracteres.',
+        ],
+
+
+
         'soluciones.required' => 'El campo "Soluciones" es obligatorio.',
         'soluciones.string' => 'El campo "Soluciones" debe ser una cadena de texto.',
         'linea.required' => 'El campo "Línea" es obligatorio.',
@@ -155,17 +155,19 @@ class EditarFormulario extends Component
         'nomgerente.required' => 'El campo "Nombre del Gerente" es obligatorio.',
         'nomgerente.string' => 'El campo "Nombre del Gerente" debe ser una cadena de texto.',
         'telgerente.required' => 'El campo "Teléfono del Gerente" es obligatorio.',
-        'telgerente.numeric' => 'El campo "Teléfono del Gerente" debe ser un número.',
+        'telgerente.numeric' => 'El campo "Teléfono del Gerente" debe ser un número sin espacios.',
         'corgerente.required' => 'El campo "Correo del Gerente" es obligatorio.',
         'corgerente.email' => 'El campo "Correo del Gerente" debe ser un correo electrónico válido.',
         'director.required' => 'El campo "Director" es obligatorio.',
         'director.string' => 'El campo "Director" debe ser una cadena de texto.',
         'tel2gerente.required' => 'El campo "Teléfono 2 del Gerente" es obligatorio.',
-        'tel2gerente.numeric' => 'El campo "Teléfono 2 del Gerente" debe ser un número.',
+        'tel2gerente.numeric' => 'El campo "Teléfono 2 del Gerente" debe ser un número sin espacios.',
         'cor2gerente.required' => 'El campo "Correo 2 del Gerente" es obligatorio.',
         'cor2gerente.email' => 'El campo "Correo 2 del Gerente" debe ser un correo electrónico válido.',
         'entregacliente.required' => 'El campo "Entrega Cliente" es obligatorio.',
         'entregacliente.string' => 'El campo "Entrega Cliente" debe ser una cadena de texto.',
+        'entrega_realizar.required' =>'El campo "Entrega a Realizar" es obligatorio.',
+        'entrega_realizar.string' => 'El campo "Entrega a Realizar" debe ser una cadena de texto.' ,
         'lugarentrega.required' => 'El campo "Lugar de Entrega" es obligatorio.',
         'lugarentrega.string' => 'El campo "Lugar de Entrega" debe ser una cadena de texto.',
         'espais.required' => 'El campo "Espacio" es obligatorio.',
@@ -187,9 +189,7 @@ class EditarFormulario extends Component
         'finalizacion.date' => 'El campo "Finalización" debe ser una fecha válida.',
         'clientcode.required' => 'El campo "Código del Cliente" es obligatorio.',
         'clientcode.string' => 'El campo "Código del Cliente" debe ser una cadena de texto.',
-        'clientname.required' => 'El campo "Nombre del Cliente" es obligatorio.',
-        'clientname.string' => 'El campo "Nombre del Cliente" debe ser una cadena de texto.',
-        'mail.required' => 'El campo "Correo del Cliente" es obligatorio.',
+        'clientname.numeric' => 'El campo "Teléfono" debe ser numerico sin espacios.',
         'mail.email' => 'El campo "Correo del Cliente" debe ser un correo electrónico válido.',
         'details.required' => 'El campo "Detalles" es obligatorio.',
         'details.string' => 'El campo "Detalles" debe ser una cadena de texto.',
@@ -200,7 +200,7 @@ class EditarFormulario extends Component
         'aplicapoliza.required' => 'El campo "Aplicar Póliza" es obligatorio.',
         'aplicapoliza.string' => 'El campo "Aplicar Póliza" debe ser una cadena de texto.',
         'porcentaje.required' => 'El campo "Porcentaje" es obligatorio.',
-        'porcentaje.numeric' => 'El campo "Porcentaje" debe ser un número.',
+        'porcentaje.numeric' => 'El campo "Porcentaje" debe ser un número sin espacios.',
         'formapago.required' => 'El campo "Forma de Pago" es obligatorio.',
         'formapago.string' => 'El campo "Forma de Pago" debe ser una cadena de texto.',
         'moneda.required' => 'El campo "Moneda" es obligatorio.',
@@ -209,7 +209,14 @@ class EditarFormulario extends Component
         'fecha_pago.required' => 'El campo "Fecha de Pago" es obligatorio.',
         'fecha_pago.date' => 'El campo "Fecha de Pago" debe ser una fecha válida.',
         'otros.string' => 'El campo "Otros" debe ser una cadena de texto.',
+        'cotizacion.required' => 'La cotización es requerida.',
+        'cotizacion.max' => 'El tamaño máximo permitido para la cotización es de 10 MB.',
     ];
+
+    public function updated($propertyName)
+    {
+        $this->validateOnly($propertyName);
+    }
 
     public function handleDrop($files)
     {
@@ -272,7 +279,6 @@ class EditarFormulario extends Component
         $this->nomgerente = $formulario->nombre;
         $this->telgerente = $formulario->telefono;
         $this->corgerente = $formulario->correo_electronico;
-        $this->cotizacion = $formulario->adjunto_cotizacion;
         $this->clientcode = $formulario->otro;
         $this->clientname = $formulario->cel;
         $this->mail = $formulario->email;
@@ -285,6 +291,7 @@ class EditarFormulario extends Component
         if ($formulario->informacion->isNotEmpty()) {
             $info = $formulario->informacion->first();
             $this->entregacliente = $info->realiza_entrega_cliente;
+            $this->entrega_realizar = $info->entrega_realizar;
             $this->lugarentrega = $info->lugar_entrega;
             $this->espais = $info->pais;
             $this->tiempoentrega = $info->tiempo_entrega;
@@ -299,7 +306,7 @@ class EditarFormulario extends Component
 
             if ($info->producto->isNotEmpty()) {
                 $producto = $info->producto->first();
-               
+
                 $this->aplicagarantia = $producto->aplica_garantia;
                 $this->terminogarantia = $producto->termino_garantia;
                 $this->aplicapoliza = $producto->aplica_poliza;
@@ -412,7 +419,11 @@ class EditarFormulario extends Component
 
     public function submit()
     {
-        $this->validate();
+        $rules = $this->rules;
+        if (!$this->formulario->adjunto_cotizacion && !$this->cotizacion) {
+            $rules['cotizacion'] = 'required|mimes:pdf,doc,docx,xls,xlsx|max:10240';
+        }
+        $this->validate($rules);
 
         $rutaAnterior = $this->formulario->adjunto_cotizacion;
 
@@ -448,11 +459,6 @@ class EditarFormulario extends Component
 
 
             'correo_director' => $this->cor2gerente,
-
-            // public $nombre_ejc;
-            // public $telefono_ejc;
-            // public $email_ejc;
-            //datos agregados
             'tipo_solicitud' => $this->tipo_solicitud,
             'cod_ejc' => $this->cod_ejc,
             'nombre_ejc' => $this->nombre_ejc,
@@ -474,6 +480,7 @@ class EditarFormulario extends Component
         if ($info = $this->formulario->informacion->first()) {
             $info->update([
                 'realiza_entrega_cliente' => $this->entregacliente,
+                'entrega_realizar' => $this->entrega_realizar,
                 'lugar_entrega' => $this->lugarentrega,
                 'pais' => $this->espais,
                 'tiempo_entrega' => $this->tiempoentrega,
@@ -503,15 +510,7 @@ class EditarFormulario extends Component
                 'incluye_iva' => $this->incluye_iva,
             ]);
         }
-        // Actualizar información financiera
-        // if ($financiera = $this->formulario->financiera->first()) {
-        //     $financiera->update([
-        //         'forma_pago' => $this->formapago,
-        //         'moneda' => $this->moneda,
-        //         'otros' => $this->otros,
-        //     ]);
-        // }
-        // $path = $this->cotizacion->store('cotizacion/public');
+
         $this->saveNewFiles();
 
         $this->dispatch('formularioUpdated');
