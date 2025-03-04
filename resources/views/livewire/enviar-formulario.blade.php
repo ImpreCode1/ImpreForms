@@ -539,7 +539,8 @@
                                             <option value="" disabled>Selecciona una opción</option>
                                             <option value="si">Sí</option>
                                             <option value="no">No</option>
-                                        </select> @error('aplicagarantia')
+                                        </select>
+                                        @error('aplicagarantia')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>

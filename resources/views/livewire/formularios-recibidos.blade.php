@@ -885,7 +885,9 @@
                                                                 ¿Cuál es el porcentaje?
                                                             <p class="text-sm text-slate-900 whitespace-nowrap">
                                                                 {{-- {{ $producto->porcentaje_poliza ?? 'No especificado' }} --}}
-                                                                {{ number_format($producto->porcentaje_poliza ?? 0, 0) ?? 'No especificado' }}
+                                                                {{-- {{ number_format($producto->porcentaje_poliza ?? 0, 0) ?? 'No especificado' }} --}}
+                                                                {{ $producto->porcentaje_poliza ?? 'No especificado' }}
+
                                                                 %
 
                                                             </p>

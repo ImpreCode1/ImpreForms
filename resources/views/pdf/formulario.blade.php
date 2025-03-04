@@ -398,7 +398,7 @@
         <div class="info-value">
             @foreach ($formulario->informacion as $informacion)
                 @foreach ($informacion->producto as $producto)
-                    {{ number_format($producto->porcentaje_poliza ?? 0,0 ) ?? 'No especificado' }}%
+                    {{ $producto->porcentaje_poliza  ?? 'No especificado' }}%
                     @if (!$loop->last), @endif
                 @endforeach
             @endforeach

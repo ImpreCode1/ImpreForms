@@ -276,8 +276,8 @@ class EnviarFormulario extends Component
         'details.min' => 'Los detalles del producto deben tener al menos :min caracteres.',
         'aplicagarantia.required' => 'Debe especificar si aplica garantía.',
         'aplicagarantia.min' => 'La especificación de garantía debe tener al menos :min caracteres.',
-        'terminogarantia.required' => 'El término de garantía es obligatorio.',
-        'terminogarantia.min' => 'El término de garantía debe tener al menos :min caracteres.',
+        // 'terminogarantia.required' => 'El término de garantía es obligatorio.',
+        // 'terminogarantia.min' => 'El término de garantía debe tener al menos :min caracteres.',
         'aplicapoliza.required' => 'Debe especificar si aplica póliza.',
         'aplicapoliza.min' => 'La especificación de póliza debe tener al menos :min caracteres.',
 
@@ -522,7 +522,7 @@ class EnviarFormulario extends Component
             $this->rules['terminogarantia'] = 'required|string|min:3';
         } else {
             $this->rules['terminogarantia'] = 'nullable';
-            $this->terminogarantia = ''; // Resetear el campo si selecciona "No"
+            // $this->terminogarantia = ''; // Resetear el campo si selecciona "No"
         }
     }
 
@@ -533,7 +533,7 @@ class EnviarFormulario extends Component
             $this->rules['porcentaje'] = 'required|numeric|min:1';
         } else {
             $this->rules['porcentaje'] = 'nullable';
-            $this->terminogarantia = ''; // Resetear el campo si selecciona "No"
+            // $this->terminogarantia = ''; // Resetear el campo si selecciona "No"
         }
     }
     public function cerrarmodal()
