@@ -2,15 +2,13 @@
     <x-app-layout>
         <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-
                 <!-- Header con estadísticas -->
                 <div class="mb-8">
                     <div class="container mx-auto px-4 py-8">
-                        <h2 class="text-3xl font-bold text-center text-gray-900 mb-6">Formularios Recibidos</h2>
+                        <h2 class="text-3xl font-bold text-center text-gray-900 mb-6">Solicitudes Recibidas</h2>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                             <!-- Total Formularios -->
-                            <div
-                                class="bg-gradient-to-br from-blue-100 to-blue-300 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 p-5 text-center">
+                            <div class="bg-gradient-to-br from-blue-100 to-blue-300 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 p-5 text-center">
                                 <div class="relative mx-auto w-24 h-24 mb-4">
                                     <svg class="absolute inset-0 w-full h-full" viewBox="0 0 36 36"
                                         xmlns="http://www.w3.org/2000/svg">
@@ -23,19 +21,17 @@
                                     <div
                                         class="absolute inset-0 flex items-center justify-center text-white text-3xl font-bold">
                                         {{-- {{ $totalFormularios }} --}}
-                                        #
+                                        =
                                     </div>
 
                                 </div>
                                 <div class="text-gray-800">
-                                    <p class="text-sm font-medium">Total Formularios</p>
+                                    <p class="text-sm font-medium">Total de Solicitudes</p>
                                     <p class="text-xl font-bold">{{ $totalFormularios }}</p>
                                 </div>
                             </div>
 
-                            <!-- Promedio de ventas -->
-                            <div
-                                class="bg-gradient-to-br from-purple-100 to-purple-300 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 p-5 text-center">
+                            <div class="bg-gradient-to-br from-purple-100 to-purple-300 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 p-5 text-center">
                                 <div class="relative mx-auto w-24 h-24 mb-4">
                                     <svg class="absolute inset-0 w-full h-full" viewBox="0 0 36 36"
                                         xmlns="http://www.w3.org/2000/svg">
@@ -47,18 +43,19 @@
                                     </svg>
                                     <div
                                         class="absolute inset-0 flex items-center justify-center text-white text-2xl font-bold">
-                                        $
+                                        #
                                     </div>
                                 </div>
+
+                                {{-- contratos completados --}}
                                 <div class="text-gray-800">
-                                    <p class="text-sm font-medium">Promedio de Precio de Venta</p>
-                                    <p class="text-xl font-bold">${{ number_format($averageSalePrice, 2) }}</p>
+                                    <p class="text-sm font-medium">Total solicitudes completadas</p>
+                                    <p class="text-xl font-bold">{{ $completedContracts->count() }}</p>
                                 </div>
                             </div>
 
                             <!-- Porcentaje de Anticipo -->
-                            <div
-                                class="bg-gradient-to-br from-yellow-100 to-yellow-300 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 p-5 text-center">
+                            <div class="bg-gradient-to-br from-yellow-100 to-yellow-300 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 p-5 text-center">
                                 <div class="relative mx-auto w-24 h-24 mb-4">
                                     <svg class="absolute inset-0 w-full h-full" viewBox="0 0 36 36"
                                         xmlns="http://www.w3.org/2000/svg">
@@ -74,18 +71,14 @@
                                     </div>
                                 </div>
                                 <div class="text-gray-800">
-                                    <p class="text-sm font-medium">Porcentaje de Anticipo</p>
-                                    <p class="text-xl font-bold">{{ number_format($advancePercentage, 2) }}%</p>
+                                    <p class="text-sm font-medium">Total solicitudes en proceso</p>
+                                    <p class="text-xl font-bold">{{$incompleteContracts->count()}}</p>
                                 </div>
                             </div>
 
                         </div>
                     </div>
-
-
-
                 </div>
-
                 @if (session()->has('message'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
                         id="alert">
@@ -101,7 +94,6 @@
                         </button>
                     </div>
                 @endif
-
                 <br>
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                     <!-- Barra de herramientas -->
@@ -186,152 +178,208 @@
 
                     <!-- Tabla -->
                     @if ($formularios->isNotEmpty())
-                        <div class="overflow-x-auto" wire:poll.visible.60s>
-                            <table class="w-full table-auto border-collapse border border-gray-200 shadow-sm">
+                        <div class="overflow-x-auto rounded-lg shadow-lg" wire:poll.visible.60s>
+                            <table class="w-full border-collapse bg-white">
                                 <thead>
-                                    <tr class="bg-gray-50 border-b border-gray-200">
-                                        <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">Solicitante</th>
-                                        <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">Código
-                                            del cliente</th>
-                                        <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">Nombre
-                                            cliente</th>
-                                        <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">N°
-                                            oportunidad</th>
-                                        <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">
-                                            Información Completa</th>
-                                        <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">
-                                            Descargar Información</th>
-                                        <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">Fecha
-                                            de envío</th>
-                                        <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">Links
-                                        </th>
-                                        <th class="group px-6 py-4 text-left text-sm font-medium text-gray-700">
-                                            Restablecer Links
-                                        </th>
+                                    <tr class="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+                                        <th
+                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
+                                            Solicitante</th>
+                                        <th
+                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
+                                            Código cliente</th>
+                                        <th
+                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
+                                            Nombre cliente</th>
+                                        <th
+                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
+                                            N° oportunidad</th>
+                                        <th
+                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
+                                            Información</th>
+                                        <th
+                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
+                                            Descargar</th>
+                                        <th
+                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
+                                            Fecha de envío</th>
+                                        <th
+                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
+                                            Links</th>
+                                        <th
+                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
+                                            Restablecer</th>
+                                        <th
+                                            class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700">
+                                            Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
                                     @foreach ($formularios as $formulario)
-                                        <tr class="hover:bg-gray-100 transition-all duration-200 cursor-pointer">
-                                            <td class="px-4 py-3 text-sm text-gray-600">
+                                        <tr class="hover:bg-gray-50 transition-all duration-200">
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700">
                                                 {{ $formulario->user->name ?? 'No especificado' }}
                                             </td>
 
-                                            <td class="px-4 py-3 text-sm text-gray-600">
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                                 {{ $formulario->infonegocio->codigo_cliente }}
                                             </td>
 
-                                            <td class="px-4 py-3 text-sm text-gray-600">
-                                                {{ $formulario->infonegocio->nombre }}
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                                <div class="max-w-xs truncate">
+                                                    {{ $formulario->infonegocio->nombre }}
+                                                </div>
                                             </td>
 
-                                            <td class="px-4 py-3 text-sm text-gray-600">
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                                 {{ $formulario->infonegocio->n_oportunidad_crm }}
                                             </td>
 
-                                            <td class="px-4 py-3">
+                                            <td class="px-6 py-4 whitespace-nowrap">
                                                 <button x-data
                                                     x-on:click="$dispatch('show-modal'); $wire.loadFormulario({{ $formulario->id }})"
-                                                    class="group inline-flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-teal-50 to-teal-100 hover:from-teal-100 hover:to-teal-200 text-teal-600 text-sm font-medium transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
-                                                    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:scale-110"
-                                                        fill="currentColor" viewBox="0 0 24 24">
-                                                        <path
-                                                            d="M12 22a10 10 0 110-20 10 10 0 010 20zm1 12h-2v-2h2v2zm0-4h-2V7h2v5z">
-                                                        </path>
+                                                    class="inline-flex items-center px-3 py-2 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all duration-200">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                     </svg>
-                                                    <span class="relative">
-                                                        Ver
-                                                        <span
-                                                            class="absolute bottom-0 left-0 w-full h-0.5 bg-teal-300 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
-                                                    </span>
+                                                    <span class="text-sm font-medium">Ver detalles</span>
                                                 </button>
                                             </td>
 
-                                            <td class="px-4 py-3">
+                                            <td class="px-6 py-4 whitespace-nowrap">
                                                 <a href="{{ route('formularios.download', $formulario->id) }}"
-                                                    class="group relative inline-flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-amber-50 to-amber-100 hover:from-amber-100 hover:to-amber-200 text-amber-600 text-sm font-medium transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
-                                                    <svg class="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-12"
-                                                        fill="currentColor" viewBox="0 0 24 24">
-                                                        <path
-                                                            d="M12 22a10 10 0 110-20 10 10 0 010 20zm-1-6h2v-6h-2v6zm0-8h2V7h-2v1z">
-                                                        </path>
+                                                    class="inline-flex items-center px-3 py-2 rounded-md bg-amber-50 text-amber-600 hover:bg-amber-100 transition-all duration-200">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                                     </svg>
-                                                    <span class="relative">
-                                                        Descargar
-                                                        <span
-                                                            class="absolute bottom-0 left-0 w-full h-0.5 bg-amber-300 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
-                                                    </span>
+                                                    <span class="text-sm font-medium">Descargar</span>
                                                 </a>
                                             </td>
 
-                                            {{-- <td class="px-4 py-3">
-                                                <a href="{{ route('formularios.download', $formulario->id) }}"
-                                                   class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                    Descargar
-                                                </a>
-                                            </td> --}}
-
-                                            <td class="px-4 py-3 text-sm text-gray-600">
+                                            <td class="px-6 py-4 whitespace-nowrap">
                                                 <span
-                                                    class="inline-flex items-center px-2.5 py-1 rounded-md bg-slate-50 text-slate-600 text-xs font-medium hover:bg-slate-100 transition-colors">
+                                                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                                                     {{ $formulario->created_at->format('d/m/Y') }}
                                                 </span>
                                             </td>
 
-                                            <td class="px-4 py-3">
-                                                @foreach ($formulario->formLinks as $link)
-                                                    <div class="mb-2">
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex flex-col gap-2">
+                                                    @foreach ($formulario->formLinks as $link)
                                                         @if (!$link->isExpired())
                                                             @if ($link->type === 'operaciones')
                                                                 <a href="{{ route('formulario-operaciones', ['link' => $link->link]) }}"
                                                                     target="_blank"
-                                                                    class="inline-flex items-center px-3 py-1 text-sm font-medium text-blue-700 bg-blue-100 rounded-sm hover:bg-blue-200">
-                                                                    <span>{{ ucfirst($link->type) }}</span>
+                                                                    class="inline-flex items-center px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-all duration-200">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        class="h-3.5 w-3.5 mr-1" fill="none"
+                                                                        viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                                    </svg>
+                                                                    <span
+                                                                        class="text-xs font-medium">Operaciones</span>
                                                                 </a>
                                                             @elseif ($link->type === 'financiera')
                                                                 <a href="{{ route('formulario-financiera', ['link' => $link->link]) }}"
                                                                     target="_blank"
-                                                                    class="inline-flex items-center px-3 py-1 text-sm font-medium text-green-700 bg-green-100 rounded-sm hover:bg-green-200">
-                                                                    <span>{{ ucfirst($link->type) }}</span>
+                                                                    class="inline-flex items-center px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-all duration-200">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        class="h-3.5 w-3.5 mr-1" fill="none"
+                                                                        viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                                    </svg>
+                                                                    <span class="text-xs font-medium">Financiera</span>
                                                                 </a>
                                                             @endif
                                                         @else
                                                             <span
-                                                                class="inline-flex items-center px-3 py-1 text-sm font-medium text-red-700 bg-red-100 rounded-sm">
-                                                                Expirado
+                                                                class="inline-flex items-center px-2.5 py-1 rounded-md bg-red-50 text-red-700">
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    class="h-3.5 w-3.5 mr-1" fill="none"
+                                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round"
+                                                                        stroke-linejoin="round" stroke-width="2"
+                                                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                                </svg>
+                                                                <span class="text-xs font-medium">Expirado</span>
                                                             </span>
                                                         @endif
-                                                    </div>
-                                                @endforeach
+                                                    @endforeach
+                                                </div>
                                             </td>
 
-                                            <td class="px-4 py-3">
+                                            <td class="px-6 py-4 whitespace-nowrap">
                                                 @if (
                                                     $formulario->formLinks->contains(function ($link) {
                                                         return $link->isExpired();
                                                     }))
                                                     <button wire:click="resetLinks({{ $formulario->id }})"
                                                         wire:loading.attr="disabled"
-                                                        class="group inline-flex items-center justify-center w-8 h-8 rounded-full border-2 border-indigo-500 hover:bg-indigo-50 transition-all duration-300 hover:scale-110">
-                                                        {{-- <span wire:loading.remove wire:target="resetLinks">Restablecer Enlaces</span>
-                                                        <span wire:loading wire:target="resetLinks">Restableciendo...</span> --}}
-                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                            class="w-5 h-5 text-indigo-500 group-hover:rotate-180 transition-all duration-300"
-                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                                            stroke-width="2">
+                                                        class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-purple-50 text-purple-600 hover:bg-purple-100 transition-all duration-200">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
                                                                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                                         </svg>
                                                     </button>
                                                 @endif
+                                            </td>
+
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center justify-center space-x-2">
+                                                    <!-- Botón Aprobar -->
+                                                    <button wire:click="approveFormulario({{ $formulario->id }})"
+                                                        wire:loading.class="opacity-50 cursor-not-allowed"
+                                                        wire:loading.attr="disabled"
+                                                        class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-green-50 text-green-600 hover:bg-green-100 transition-all duration-200">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    </button>
+
+                                                    <!-- Comentar button -->
+                                                    <a href="mailto:{{ $formulario->correo_electronico ?? '' }}?subject=Observación del contrato&body=Buen día,"
+                                                        class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all duration-200">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                                                        </svg>
+                                                    </a>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
                         </div>
+                    @else
+                        <div class="flex flex-col items-center justify-center py-12 px-4 bg-white rounded-lg shadow">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-300 mb-4"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <h3 class="text-lg font-medium text-gray-700">No hay formularios disponibles</h3>
+                            <p class="text-sm text-gray-500 mt-2">Los formularios enviados aparecerán aquí</p>
+                        </div>
                     @endif
-
 
 
                     <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
@@ -393,7 +441,7 @@
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200 max-w-full">
 
                                         <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
-                                            <h2 class="text-lg font-semibold text-slate-900">Tipo de solicitud</h2>
+                                            <h2 class="text-lg font-semibold text-slate-900">Tipo de Solicitud</h2>
                                             </h2>
                                         </div>
 
@@ -435,7 +483,8 @@
                                                 </div>
 
                                                 <div class="space-y-1">
-                                                    <p class="text-sm font-medium text-black">Nombre del representante legal</p>
+                                                    <p class="text-sm font-medium text-black">Nombre del representante
+                                                        legal</p>
                                                     <p class="text-sm text-slate-900">
                                                         {{ $selectedFormulario->infonegocio->nom_rep ?? 'No especificado' }}
                                                     </p>
@@ -443,7 +492,8 @@
                                                 </div>
 
                                                 <div class="space-y-1">
-                                                    <p class="text-sm font-medium text-black">Correo electrónico del representante legal
+                                                    <p class="text-sm font-medium text-black">Correo electrónico del
+                                                        representante legal
                                                     </p>
                                                     <p class="text-sm text-slate-900">
                                                         {{ $selectedFormulario->infonegocio->correo ?? 'No especificado' }}
@@ -505,7 +555,7 @@
                                                 </div>
 
                                                 <div class="space-y-1">
-                                                    <p class="text-sm font-medium text-black">Precio de venta</p>
+                                                    <p class="text-sm font-medium text-black">Precio de venta que debe quedar en la oferta mercantil</p>
                                                     <p class="text-sm text-slate-900">
                                                         $ {{ $selectedFormulario->precio_venta ?? 'No especificado' }}
                                                     </p>
@@ -528,7 +578,7 @@
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200 max-w-full">
 
                                         <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
-                                            <h2 class="text-lg font-semibold text-slate-900">Tipo de contrato</h2>
+                                            <h2 class="text-lg font-semibold text-slate-900">Tipo de Solicitud</h2>
                                             </h2>
                                         </div>
 
@@ -578,13 +628,13 @@
                                                         {{ $selectedFormulario->nombre ?? 'No especificado' }}</p>
                                                     <div class="h-px bg-slate-200 mt-2"></div>
                                                 </div>
-
+                                                {{--
                                                 <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">Teléfono</p>
                                                     <p class="text-sm text-slate-900">
                                                         {{ $selectedFormulario->telefono ?? 'No especificado' }}</p>
                                                     <div class="h-px bg-slate-200 mt-2"></div>
-                                                </div>
+                                                </div> --}}
 
                                                 <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">Correo electrónico
@@ -610,12 +660,12 @@
                                                         <div class="h-px bg-slate-200 mt-2"></div>
                                                     </div>
 
-                                                    <div class="space-y-1">
+                                                    {{-- <div class="space-y-1">
                                                         <p class="text-sm font-medium text-black">Teléfono</p>
                                                         <p class="text-sm text-slate-900">
                                                             {{ $selectedFormulario->numero ?? 'No especificado' }}</p>
                                                         <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
+                                                    </div> --}}
 
                                                     <div class="space-y-1">
                                                         <p class="text-sm font-medium text-black">Correo
@@ -633,31 +683,33 @@
                                                 <p class="text-sm font-medium text-black">Información Ejecutivo</p>
                                                 <br>
                                                 <div class="grid md:grid-cols-3 gap-x-8 gap-y-6">
-                                                    <div class="space-y-1">
+                                                    {{-- <div class="space-y-1">
                                                         <p class="text-sm font-medium text-black">Cod</p>
                                                         <p class="text-sm text-slate-900">
                                                             {{ $selectedFormulario->cod_ejc ?? 'No especificado' }}
                                                         </p>
                                                         <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
+                                                    </div> --}}
 
                                                     <div class="space-y-1">
                                                         <p class="text-sm font-medium text-black">Nombre</p>
                                                         <p class="text-sm text-slate-900">
-                                                            {{ $selectedFormulario->nombre_ejc ?? 'No especificado' }}</p>
+                                                            {{ $selectedFormulario->nombre_ejc ?? 'No especificado' }}
+                                                        </p>
                                                         <div class="h-px bg-slate-200 mt-2"></div>
                                                     </div>
 
-                                                    <div class="space-y-1">
+                                                    {{-- <div class="space-y-1">
                                                         <p class="text-sm font-medium text-black">Teléfono</p>
                                                         <p class="text-sm text-slate-900">
                                                             {{ $selectedFormulario->telefono_ejc ?? 'No especificado' }}
                                                         </p>
                                                         <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
+                                                    </div> --}}
 
                                                     <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">Correo electronico</p>
+                                                        <p class="text-sm font-medium text-black">Correo electronico
+                                                        </p>
                                                         <p class="text-sm text-slate-900">
                                                             {{ $selectedFormulario->email_ejc ?? 'No especificado' }}
                                                         </p>
@@ -667,7 +719,8 @@
                                             </div>
 
                                             <div class="mt-8 pt-6 border-t border-slate-200">
-                                                <p class="text-sm font-medium text-black">Información adiccional (si se requiere)</p>
+                                                <p class="text-sm font-medium text-black">Información adiccional (si se
+                                                    requiere)</p>
                                                 <br>
                                                 <div class="grid md:grid-cols-3 gap-x-8 gap-y-6">
                                                     <div class="space-y-1">
@@ -717,7 +770,8 @@
                                                     </div>
 
                                                     <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">¿Cuántas entregas se van a realizar al cliente y en que fecha?</p>
+                                                        <p class="text-sm font-medium text-black">¿Cuántas entregas se
+                                                            van a realizar al cliente y en que fecha?</p>
                                                         <p class="text-sm text-slate-900">
                                                             {{ $informacion->entrega_realizar ?? 'No especificado' }}
                                                         </p>
@@ -776,7 +830,7 @@
                                         </div>
                                     </div>
 
-                                     <!-- Información del Servicio -->
+                                    <!-- Información del Servicio -->
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200">
                                         <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
                                             <h2 class="text-lg font-semibold text-slate-900">Información del Servicio
@@ -826,7 +880,7 @@
                                         </div>
                                     </div>
 
-                                     <!-- Garantia -->
+                                    <!-- Garantia -->
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200">
                                         <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
                                             <h2 class="text-lg font-semibold text-slate-900">Garantias</h2>
@@ -860,7 +914,7 @@
                                         </div>
                                     </div>
 
-                                     <!-- Pólizas -->
+                                    <!-- Pólizas -->
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200">
                                         <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
                                             <h2 class="text-lg font-semibold text-slate-900">Pólizas</h2>
@@ -919,7 +973,8 @@
 
                                                     <!-- entrega a cliente -->
                                                     <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">¿Quien realiza la entrega a cliente?</p>
+                                                        <p class="text-sm font-medium text-black">¿Quien realiza la
+                                                            entrega a cliente?</p>
                                                         <p class="text-sm text-slate-900">
                                                             {{ $infoEntrega->entrega_cliente ?? 'No especificado' }}
                                                         </p>
@@ -935,7 +990,7 @@
                                                         <div class="h-px bg-slate-200 mt-2"></div>
                                                     </div>
 
-                                                     <!-- Icoterm -->
+                                                    <!-- Icoterm -->
                                                     <div class="space-y-1">
                                                         <p class="text-sm font-medium text-black">Especificar pais</p>
                                                         <p class="text-sm text-slate-900">
@@ -1079,22 +1134,25 @@
                                                     </div>
 
                                                     <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">¿Qué porcentaje?
-                                                        </p>
+                                                        <p class="text-sm font-medium text-black">¿Qué porcentaje?</p>
                                                         <p class="text-sm text-slate-900">
-                                                            {{-- {{ $financiera->porcentaje ?? 'No especificado' }} --}}
-                                                            {{ number_format($financiera->porcentaje ?? 0, 0) ?? 'No especificado' }}
-                                                            %
-
+                                                            @if (isset($financiera->porcentaje))
+                                                                {{ number_format($financiera->porcentaje, 0) }}%
+                                                            @else
+                                                                N.A
+                                                            @endif
                                                         </p>
                                                         <div class="h-px bg-slate-200 mt-2"></div>
                                                     </div>
-
                                                     <div class="space-y-1">
                                                         <p class="text-sm font-medium text-black">Fecha de pago del
                                                             anticipo</p>
                                                         <p class="text-sm text-slate-900">
-                                                            {{ \Carbon\Carbon::parse($financiera->fecha_pago)->format('Y-m-d') ?? 'No especificado' }}
+                                                            @if (isset($financiera->fecha_pago))
+                                                                {{ \Carbon\Carbon::parse($financiera->fecha_pago)->format('Y-m-d') }}
+                                                            @else
+                                                                N.A
+                                                            @endif
                                                         </p>
                                                         <div class="h-px bg-slate-200 mt-2"></div>
                                                     </div>
@@ -1118,7 +1176,8 @@
                                     <div class="bg-white rounded-xl shadow-lg border border-slate-200 mt-6">
                                         <div
                                             class="border-b border-slate-200 px-6 py-4 bg-gradient-to-r from-indigo-50 to-white">
-                                            <h2 class="text-lg font-semibold text-gray-800">Archivos Adjuntos o Anexos</h2>
+                                            <h2 class="text-lg font-semibold text-gray-800">Archivos Adjuntos o Anexos
+                                            </h2>
                                         </div>
 
                                         <div class="p-6">
@@ -1218,10 +1277,7 @@
 
                         </div>
                 @endif
-
-
-
-            </div>
+        </div>
     </x-app-layout>
 </div>
 

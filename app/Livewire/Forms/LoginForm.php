@@ -24,15 +24,11 @@ class LoginForm extends Form
     #[Validate('boolean')]
     public bool $remember = false;
 
-protected $messages =[
-'email.required' => 'El espacio del correo tiene que ser requerido.',
-'email.email' => 'El email tiene que ser valido.',
-'password.required' => 'El espacio de Contraseña debe ser requerido.',
-
-
-
-
-];
+    protected $messages =[
+        'email.required' => 'El espacio del correo tiene que ser requerido.',
+        'email.email' => 'El email tiene que ser valido.',
+        'password.required' => 'El espacio de Contraseña debe ser requerido.',
+    ];
 
     public function authenticate(): string
     {

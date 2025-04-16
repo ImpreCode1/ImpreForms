@@ -2,10 +2,13 @@
 
 namespace App\Livewire;
 
+use App\Models\Colaborador;
 use App\Models\Documento;
+use App\Models\Executive;
 use App\Models\Financiera;
 use App\Models\Infonegocio;
 use App\Models\Informacion;
+use App\Models\Linea;
 use App\Models\Marca;
 use App\Models\Pago;
 use App\Models\Producto;
@@ -22,7 +25,6 @@ class EnviarFormulario extends Component
 
     // identificadores de archivos por id
 
-
     public $marcasId;
     public $documento;
     public $documentos;
@@ -35,18 +37,18 @@ class EnviarFormulario extends Component
     public $correo;
     public $numero;
     public $crm;
-    public $fecha;
-    public $oc;
+    // public $fecha;
+    // public $oc;
     public $precio;
-    public $cotizacion;
+    // public $cotizacion;
     public $soluciones = '';
     public $linea;
     public $codlinea;
     public $nomgerente;
-    public $telgerente;
+    // public $telgerente;
     public $corgerente;
     public $director;
-    public $tel2gerente;
+    // public $tel2gerente;
     public $cor2gerente;
     public $entregacliente;
     public $lugarentrega;
@@ -62,9 +64,6 @@ class EnviarFormulario extends Component
     // public $details;
     public $aplicagarantia = '';
     public $terminogarantia;
-
-
-
 
     // public $formapago;
     // public $moneda;
@@ -85,7 +84,7 @@ class EnviarFormulario extends Component
     public $tipodocumento;
     public $rutadocumento;
     public $fechasubida;
-            public $existingFiles;
+    public $existingFiles;
     public $attachments = [];
 
     public $marca_id;
@@ -93,10 +92,9 @@ class EnviarFormulario extends Component
     public $documentosGuardados = [];
     public $archivosNuevos = [];
 
-
-    public $cod_ejc;
+    // public $cod_ejc;
     public $nombre_ejc;
-    public $telefono_ejc;
+    // public $telefono_ejc;
     public $email_ejc;
     public $tipo_solicitud = '';
 
@@ -108,49 +106,50 @@ class EnviarFormulario extends Component
     public $dragging = false;
     public $entrega_realizar;
     public $mmd = false;
+    public $Ejecutivos;
+    public $Lineas;
+    public $selectedEjecutivo = null;
+    public $EjecutivoEmail = '';
+    public $EjecutivoName = '';
+    public $selectedCodigo = null;
 
     protected $listeners = ['openModal'];
     protected $rules = [
-
         'attachments' => 'required|max:10240',
-        'cod_ejc' => 'required|numeric|',
+        // 'cod_ejc' => 'required|numeric|',
 
         //* Infonegocio
         'tipo_solicitud' => 'required',
-        'negocio' => 'required|numeric|unique:infonegocio,codigo_cliente|min:5',
+        'negocio' => 'required|numeric|min:5',
         'nombre' => 'required|string|min:5',
         'correo' => 'required|email',
         'numero' => 'required|numeric',
-        'crm' => 'required|numeric',
+        'crm' => 'required|numeric|unique:infonegocio,n_oportunidad_crm',
 
         //* Marca
-        'fecha' => 'required',
-        'oc' => 'required|string|min:5',
-        'precio' => [
-            'required',
-            'regex:/^\d{1,3}((\.\d{3})*)?$/',
-            'min:4',
-        ],
+        // 'fecha' => 'required',
+        // 'oc' => 'required|string|min:5',
+        'precio' => ['required', 'regex:/^\d{1,3}((\.\d{3})*)?$/', 'min:4'],
 
-        'cotizacion' => 'required|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
+        // 'cotizacion' => 'required|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
         'soluciones' => 'required|string|min:5',
         'linea' => 'required|string|min:5',
-        'codlinea' => 'required|string|min:5',
+        'codlinea' => 'required|string',
         'nomgerente' => 'required|string|min:5',
-        'telgerente' => 'required|numeric',
+        // 'telgerente' => 'required|numeric',
         'nom_rep' => 'required|string',
-        'email_ejc' => 'required|email',
-
+        // 'email_ejc' => 'required|email',
+        // 'EjecutivoEmail' => 'required|email',
         'corgerente' => 'required|email',
         'director' => 'required|string|min:5',
-        'tel2gerente' => 'required|numeric',
+        // 'tel2gerente' => 'required|numeric',
         'cor2gerente' => 'required|email',
-        'telefono_ejc' => 'required|numeric',
+        // 'telefono_ejc' => 'required|numeric',
         //* Campos opcionales en Marca
         'clientcode' => 'nullable|string|min:5',
         'clientname' => 'nullable|numeric',
         'mail' => 'nullable|email',
-        'nombre_ejc' =>  'required|string|min:5',
+        // 'nombre_ejc' =>  'required|string|min:5',
         //* Información
         'entregacliente' => 'required|string|min:5',
         'entrega_realizar' => 'required|string|min:5',
@@ -181,7 +180,7 @@ class EnviarFormulario extends Component
         //* Infonegocio
         'negocio.required' => 'El código del cliente es obligatorio.',
         'negocio.numeric' => 'El código del cliente debe ser un número sin espacios.',
-        'negocio.unique' => 'El código del cliente ya está registrado.',
+        // 'negocio.unique' => 'El código del cliente ya está registrado.',
         'negocio.min' => 'El código del cliente debe tener almenos :min caracteres.',
 
         'nombre.required' => 'El nombre es obligatorio.',
@@ -192,27 +191,26 @@ class EnviarFormulario extends Component
         'numero.numeric' => 'El número de teléfono debe contener solo números sin espacios.',
         'crm.required' => 'El número CRM es obligatorio.',
         'crm.numeric' => 'El número CRM debe ser numérico sin espacios.',
+        'crm.unique' => 'El número CRM ya está registrado. Por favor, ingrese un número único.',
 
         //* Marca
-        'fecha.required' => 'La fecha es obligatoria.',
-        'fecha.date' => 'La fecha debe tener un formato válido.',
-        'oc.required' => 'La orden de compra es obligatoria.',
-        'oc.min' => 'La orden de compra debe tener al menos :min caracteres.',
-        'cod_ejc.required' => 'El campo de codigo es requerido',
-        'cod_ejc.numeric' => 'Este campo debe ser numerico sin espacios ',
-
+        // 'fecha.required' => 'La fecha es obligatoria.',
+        // 'fecha.date' => 'La fecha debe tener un formato válido.',
+        // 'oc.required' => 'La orden de compra es obligatoria.',
+        // 'oc.min' => 'La orden de compra debe tener al menos :min caracteres.',
+        // 'cod_ejc.required' => 'El campo de codigo es requerido',
+        // 'cod_ejc.numeric' => 'Este campo debe ser numerico sin espacios ',
 
         'tipo_solicitud.required' => 'Este campo es requerido',
-        'nombre_ejc.required' =>'Este campo es requerido',
-        'nombre_ejc.string' =>'Este campo es requerido',
-        'nombre_ejc.min' =>'Este campo debe tener minimo :min caracteres ',
+        // 'nombre_ejc.required' =>'Este campo es requerido',
+        // 'nombre_ejc.string' =>'Este campo es requerido',
+        // 'nombre_ejc.min' =>'Este campo debe tener minimo :min caracteres ',
 
-        'telefono_ejc.required' => 'Este campo es requerido',
-        'telefono_ejc.numeric' => 'Este campo es tipo numerico sin espacios',
+        // 'telefono_ejc.required' => 'Este campo es requerido',
+        // 'telefono_ejc.numeric' => 'Este campo es tipo numerico sin espacios',
 
-        'email_ejc.required' => 'Este campo es requerido',
-        'email_ejc.email' => 'El correo debe ser valido',
-
+        // 'email_ejc.required' => 'Este campo es requerido',
+        // 'email_ejc.email' => 'El correo debe ser valido',
 
         'precio' => [
             'required' => 'El campo "Precio" es obligatorio.',
@@ -220,25 +218,25 @@ class EnviarFormulario extends Component
             'min' => 'El campo "Precio" debe tener al menos :min caracteres.',
         ],
 
-        'cotizacion.file' => 'La cotización debe ser un archivo.',
-        'cotizacion.mimes' => 'La cotización debe ser un archivo PDF, Word o Excel.',
-        'cotizacion.max' => 'La cotización no debe pesar más de 10MB.',
+        // 'cotizacion.file' => 'La cotización debe ser un archivo.',
+        // 'cotizacion.mimes' => 'La cotización debe ser un archivo PDF, Word o Excel.',
+        // 'cotizacion.max' => 'La cotización no debe pesar más de 10MB.',
         'soluciones.required' => 'Las soluciones son obligatorias.',
         'soluciones.min' => 'Las soluciones deben tener al menos :min caracteres.',
         'linea.required' => 'La línea es obligatoria.',
         'linea.min' => 'La línea debe tener al menos :min caracteres.',
         'codlinea.required' => 'El código de línea es obligatorio.',
-        'codlinea.min' => 'El código de línea debe tener al menos :min caracteres.',
+        // 'codlinea.min' => 'El código de línea debe tener al menos :min caracteres.',
         'nomgerente.required' => 'El nombre del gerente es obligatorio.',
         'nomgerente.min' => 'El nombre del gerente debe tener al menos :min caracteres.',
-        'telgerente.required' => 'El teléfono del gerente es obligatorio.',
-        'telgerente.numeric' => 'El teléfono del gerente debe contener solo números sin espacios.',
+        // 'telgerente.required' => 'El teléfono del gerente es obligatorio.',
+        // 'telgerente.numeric' => 'El teléfono del gerente debe contener solo números sin espacios.',
         'corgerente.required' => 'El correo del gerente es obligatorio.',
         'corgerente.email' => 'El correo del gerente debe ser válido.',
         'director.required' => 'El nombre del director es obligatorio.',
         'director.min' => 'El nombre del director debe tener al menos :min caracteres.',
-        'tel2gerente.required' => 'El teléfono del segundo gerente es obligatorio.',
-        'tel2gerente.numeric' => 'El teléfono del segundo gerente debe contener solo números sin espacios.',
+        // 'tel2gerente.required' => 'El teléfono del segundo gerente es obligatorio.',
+        // 'tel2gerente.numeric' => 'El teléfono del segundo gerente debe contener solo números sin espacios.',
         'cor2gerente.required' => 'El correo del segundo gerente es obligatorio.',
         'cor2gerente.email' => 'El correo del segundo gerente debe ser válido.',
 
@@ -296,12 +294,9 @@ class EnviarFormulario extends Component
         'fecha_pago.required' => 'La fecha de pago es obligatoria.',
         'fecha_pago.date' => 'La fecha de pago debe ser una fecha válida.',
 
-
-
         //* documentos
         'attachments.required' => 'El campo archivo adjunto es requerido.',
         'attachments.max' => 'El archivo no puede exceder los 10 MB de tamaño.',
-
     ];
 
     //* mostrar garantia
@@ -325,13 +320,14 @@ class EnviarFormulario extends Component
     {
         $this->currentStep = $step;
     }
-    public function eliminarArchivo()
-    {
-        // Verifica si hay un archivo cargado y lo elimina
-        if ($this->cotizacion) {
-            $this->cotizacion = null;
-        }
-    }
+
+    // public function eliminarArchivo()
+    // {
+    //     // Verifica si hay un archivo cargado y lo elimina
+    //     if ($this->cotizacion) {
+    //         $this->cotizacion = null;
+    //     }
+    // }
 
     public function removeFile($fileId)
     {
@@ -339,15 +335,12 @@ class EnviarFormulario extends Component
             unset($this->files[$fileId]);
         }
 
-        $this->attachments = array_filter($this->attachments, function($file) use ($fileId) {
+        $this->attachments = array_filter($this->attachments, function ($file) use ($fileId) {
             return $file->getClientOriginalName() !== ($this->files[$fileId]['name'] ?? '');
         });
 
         $this->files = array_values($this->files);
     }
-
-
-
 
     public function setAdvancePayment($value)
     {
@@ -374,39 +367,35 @@ class EnviarFormulario extends Component
 
         $marca = Marca::create([
             'infonegocio_id' => $infonegocio->id,
-            'user_id'=> auth()->id(),
-            'fecha' => $this->fecha, //! tipo fecha obligatorio
-            'n_oc' => $this->oc, //! obligatorio varchar
+            'user_id' => auth()->id(),
+            // 'fecha' => $this->fecha,
+            // 'n_oc' => $this->oc,
             'precio_venta' => $this->precio, //! obligatorio varchar
-            'adjunto_cotizacion' => $this->cotizacion, //! puede soportar archivos de tipo pdf,doc,docx,xls,xlsx y es nulo
+            // 'adjunto_cotizacion' => $this->cotizacion,
             'tipo_contrato' => $this->soluciones, //! obligatorio
             'linea' => $this->linea, //! obligatorio
             'codigo_linea' => $this->codlinea, //! obligatorio
             'nombre' => $this->nomgerente, //! obligatorio
-            'telefono' => $this->telgerente, //! obligatorio
+            // 'telefono' => $this->telgerente,
             'correo_electronico' => $this->corgerente, //! obligatorio
-
 
             'otro' => $this->clientcode, //! nulo varchar
             'cel' => $this->clientname, //! nulo tipo numerico
             'email' => $this->mail, //! nulo tipo email
 
             'director' => $this->director, //! obligatorio vacrhar
-            'numero' => $this->tel2gerente, //! obligatorio numerico
+            // 'numero' => $this->tel2gerente,
             'correo_director' => $this->cor2gerente, //! obligatorio tipo correo
 
+            // 'cod_ejc' => $this->cod_ejc,
+            'nombre_ejc' => $this->EjecutivoName,
+            // 'telefono_ejc' => $this->telefono_ejc,
+            'email_ejc' => $this->EjecutivoEmail,
 
-            'cod_ejc' => $this->cod_ejc,
-            'nombre_ejc' => $this->nombre_ejc,
-            'telefono_ejc' => $this->telefono_ejc,
-            'email_ejc' => $this->email_ejc,
-
-            'tipo_solicitud' =>$this->tipo_solicitud,
-
+            'tipo_solicitud' => $this->tipo_solicitud,
         ]);
 
         $this->marcaId = $marca->id;
-
 
         $informacion = Informacion::create([
             'marcas_id' => $this->marcaId,
@@ -444,8 +433,7 @@ class EnviarFormulario extends Component
         $this->operacionesLink = (string) Str::uuid();
         $this->financieraLink = (string) Str::uuid();
 
-
-        $expirationTime =Carbon::now ()->addMinutes(5);
+        $expirationTime = Carbon::now()->addMinutes(5);
 
         DB::table('form_links')->insert([
             [
@@ -460,7 +448,7 @@ class EnviarFormulario extends Component
                 // 'otros' => $this->otros,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-                'expires_at' =>$expirationTime,
+                'expires_at' => $expirationTime,
             ],
             [
                 'link' => $this->financieraLink,
@@ -475,7 +463,7 @@ class EnviarFormulario extends Component
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'expires_at' => $expirationTime,
-            ]
+            ],
         ]);
 
         foreach ($this->files as $file) {
@@ -486,22 +474,18 @@ class EnviarFormulario extends Component
             ]);
         }
 
-        if ($this->cotizacion) {
-            $originalName = $this->cotizacion->getClientOriginalName();
-            $path = $this->cotizacion->storeAs('public/cotizacion', $originalName);
-
-            // Actualizamos el campo adjunto_cotizacion en el registro de Marca ya creado
-                $marca->update([
-                'adjunto_cotizacion' => $path,
-            ]);
-        }
+        // if ($this->cotizacion) {
+        //     $originalName = $this->cotizacion->getClientOriginalName();
+        //     $path = $this->cotizacion->storeAs('public/cotizacion', $originalName);
 
 
-
+        //     $marca->update([
+        //         'adjunto_cotizacion' => $path,
+        //     ]);
+        // }
 
         $this->attachments = array_values($this->files);
         $this->documentos = Documento::where('marcas_id', $this->marcaId)->get();
-
 
         $this->mmd = true;
 
@@ -514,8 +498,7 @@ class EnviarFormulario extends Component
         session()->flash('financieraUrl', $financieraUrl);
     }
 
-
-    public function updatedAplicagarantia ($value)
+    public function updatedAplicagarantia($value)
     {
         // Si la garantía es "sí", hacer que el término de garantía sea obligatorio
         if ($value === 'si') {
@@ -526,7 +509,7 @@ class EnviarFormulario extends Component
         }
     }
 
-    public function updatedPorcentaje ($value)
+    public function updatedPorcentaje($value)
     {
         // Si la garantía es "sí", hacer que el término de garantía sea obligatorio
         if ($value === 'si') {
@@ -541,35 +524,72 @@ class EnviarFormulario extends Component
         $this->dispatch('reloadPage');
     }
 
-    public function mount($marcaId = null)
+    public function mount()
     {
-
         $this->files = [];
 
-        $this->marcaId = $marcaId ?? 'valor_por_defecto';
-        $this->documentos = Documento::where('marcas_id', $this->marcaId)->get();
+        $colaborador = Colaborador::where('mail', auth()->user()->email)->first();
 
+        if ($colaborador) {
+            $this->nomgerente = $colaborador->nombre_colaborador;
+            $this->corgerente = $colaborador->mail;
+
+            $director = $colaborador->director;
+
+            if ($director) {
+                $this->director = $director->nombre_director;
+                $this->cor2gerente = $director->mail;
+            }
+        }
+
+        $this->Ejecutivos = Executive::all();
+        $this->Lineas = Linea::all();
     }
+
+    public function updateEjecutivoEmail()
+    {
+        $ejecutivo = Executive::find($this->selectedEjecutivo);
+        // dd($ejecutivo);
+        if ($ejecutivo) {
+            $this->EjecutivoEmail = $ejecutivo->mail;
+            $this->EjecutivoName = $ejecutivo->nombre_colaborador;
+        } else {
+            $this->EjecutivoEmail = '';
+            $this->EjecutivoName = '';
+        }
+    }
+
+    public function updatedSelectedCodigo()
+    {
+        $linea = Linea::find($this->selectedCodigo);
+        // dd($linea);
+
+        if ($linea) {
+            $this->codlinea = $linea->codigo_linea;
+            $this->linea = $linea->linea;
+        } else {
+            $this->codlinea = '';
+            $this->linea = '';
+        }
+    }
+
     public function removeExistingFile($documentId)
     {
         $documento = Documento::find($documentId);
         if ($documento) {
             Storage::disk('public')->delete($documento->ruta_documento);
             $documento->delete();
-            $this->existingFiles = array_filter($this->existingFiles, function($file) use ($documentId) {
+            $this->existingFiles = array_filter($this->existingFiles, function ($file) use ($documentId) {
                 return $file['id'] != $documentId;
             });
         }
     }
 
-
     public function updatedAttachments()
     {
-
         // $this->validate([
         //     'attachments.*' => 'file|max:10240|mimes:pdf,doc,docx,xls,xlsx,msj,msg',
         // ]);
-
 
         foreach ($this->attachments as $file) {
             $originalName = $file->getClientOriginalName();
@@ -580,8 +600,6 @@ class EnviarFormulario extends Component
             ];
         }
     }
-
-
 
     public function dragOver()
     {
@@ -608,10 +626,10 @@ class EnviarFormulario extends Component
     public function render()
     {
         return view('livewire.enviar-formulario', [
-
             'currentStep' => $this->currentStep,
             'operacionesLink' => $this->operacionesLink,
             'financieraLink' => $this->financieraLink,
+            // 'directors' => $this->directors,
         ]);
     }
 }

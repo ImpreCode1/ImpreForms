@@ -28,9 +28,16 @@ Route::view('profile', 'profile')
     ->name('profile');
 
 // redireccionamiento a la vista de formulario enviado  del formulario
-    Route::view('successful', 'successful')
+Route::view('successful', 'successful')
     ->middleware(['auth','verified'])
     ->name('crear-usuario');
+
+Route::view('cargar-reporte', 'cargar-reporte')
+    ->middleware(['auth','verified'])
+    ->name('cargar-reporte');
+
+// Route::get('/cargar-reporte', CargarReporte::class)->name('cargar.reporte');
+
 
 //sidebar users
 Route::get('/user-dashboard', function () {
@@ -41,6 +48,9 @@ Route::get('/manager-dashboard', function () {
     return view('livewire.layout.manager-sidebar');
 })->name('manager.dashboard');
 
+// Route::get('/cargar-reporte')
+
+// Route::post('/cargar-reporte', [CargarReporte::class, 'upload'])->name('executives.import');
 
 // rutas sin recragra
 Route::get('/manager-dashboard', ManagerSidebar::class)->name('manager.dashboard');

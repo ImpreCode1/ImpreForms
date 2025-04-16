@@ -16,12 +16,11 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 class Formulariofinanciera extends Component
 {
-
     public $cliente;
     public $nombre;
     public $crm;
-// subida de archivos
-    public $archivoscotizacion =[];
+    // subida de archivos
+    public $archivoscotizacion = [];
 
     public $currentStep = 1;
     public $hasAdvancePayment = null;
@@ -39,7 +38,7 @@ class Formulariofinanciera extends Component
     public $link;
 
     public $marcaId;
-//mostrar el mensaje personalizado en caso de que el formulario no tenga todos los campos llenos
+    //mostrar el mensaje personalizado en caso de que el formulario no tenga todos los campos llenos
     public $errorMessage;
 
     public $success = false;
@@ -70,7 +69,7 @@ class Formulariofinanciera extends Component
             'plazo' => 'required|string|min:2|max:50',
             'moneda' => 'required|string|min:2',
             'pago' => 'required|string|min:2',
-            'garantia' =>'required|string|min:2',
+            'garantia' => 'required|string|min:2',
             'hasAdvancePayment' => 'required|string',
             'otros' => 'nullable|string|min:2',
         ];
@@ -121,7 +120,6 @@ class Formulariofinanciera extends Component
         //     abort(404, 'El enlace ha expirado o no es válido.');
         // }
 
-
         if (!$record) {
             abort(404, 'El enlace no es válido.');
         }
@@ -135,39 +133,29 @@ class Formulariofinanciera extends Component
         $this->crm = $record->crm;
         $this->marcaId = $record->marca_id;
 
-
         if (is_null($this->marcaId)) {
             abort(500, 'Marca ID is null');
         }
 
         $financiera = Financiera::where('marcas_id', $this->marcaId)->first();
         if ($financiera) {
-
-            $this->plazo = $financiera ->plazo;
+            $this->plazo = $financiera->plazo;
             $this->pago = $financiera->forma_pago;
             $this->moneda = $financiera->moneda;
             $this->otros = $financiera->otros;
-            $this->garantia =$financiera->garantiascredit;
-            $this->anticipo = $financiera ->porcentaje;
-
-
+            $this->garantia = $financiera->garantiascredit;
+            $this->anticipo = $financiera->porcentaje;
         }
-        if (Session::has('form_submited')){
+        if (Session::has('form_submited')) {
             return redirect()->to('/successful');
         }
     }
 
-
-
-
     public function submit()
     {
+        $this->validate();
 
-     $this->validate();
-
-    $financiera = Financiera::where('marcas_id', $this->marcaId)->first();
-
-
+        $financiera = Financiera::where('marcas_id', $this->marcaId)->first();
 
         if ($financiera) {
             // dd($financiera);
@@ -180,21 +168,14 @@ class Formulariofinanciera extends Component
                 'porcentaje' => $this->anticipo,
                 'fecha_pago' => $this->fecha,
                 'otros' => $this->otros,
-
-
             ]);
 
             session()->flash('mensaje', 'Formulario actualizado correctamente.');
         } else {
-
-
-        session()->flash('mensaje', 'No se encontró el registro de financiera para actualizar.');
+            session()->flash('mensaje', 'No se encontró el registro de financiera para actualizar.');
         }
 
-
-
         Session::put('form_submitted', true);
-
 
         // $this->reset(['plazo', 'pago', 'moneda', 'garantia', 'hasAdvancePayment', 'anticipo', 'fecha', 'otros']);
 
@@ -204,12 +185,7 @@ class Formulariofinanciera extends Component
     public function render()
     {
         return view('livewire.formulariofinanciera');
-
-
     }
-
-
-
 
     public function getStepIconClasses($stepNumber)
     {

@@ -107,7 +107,7 @@ new #[Layout('layouts.guest')] class extends Component
 
         <!-- Forgot Password -->
         <div class="flex justify-between items-center">
-          {{-- <label class="flex items-center space-x-2">
+          <label class="flex items-center space-x-2">
             <input type="checkbox" class="form-checkbox text-indigo-600 rounded">
             <span class="text-gray-600">Recuérdame</span>
           </label>
@@ -117,7 +117,7 @@ new #[Layout('layouts.guest')] class extends Component
             class="text-sm text-indigo-600 hover:text-indigo-800 transition duration-300"
           >
             ¿Olvidaste tu contraseña?
-          </a> --}}
+          </a>
         </div>
 
         <!-- Login Button -->

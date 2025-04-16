@@ -16,9 +16,10 @@ class Historial extends Component
     #[On('formularioUpdated')]
     public function mount()
     {
-        $this->formularios = Marca::with('infonegocio','informacion','documento')
+        $this->formularios = Marca::with('infonegocio','informacion','documento', 'financiera')
             ->where('user_id', auth()->id())
             ->get();
+
     }
 
     public function edit($id)
@@ -39,8 +40,10 @@ class Historial extends Component
     }
 
 
+
     public function render()
     {
+
         return view('livewire.historial', [
             'formularios' => $this->formularios,
             'mostrarMas' => $this->mostrarMas,

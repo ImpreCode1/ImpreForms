@@ -14,6 +14,8 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Dom\Text;
+use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
@@ -27,7 +29,9 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithMapping;
-class FormulariosRecibidos extends Component implements FromCollection, WithMapping, WithStyles, WithColumnWidths, WithColumnFormatting,  WithHeadings
+use Symfony\Component\Mime\Part\TextPart;
+
+class FormulariosRecibidos extends Component implements FromCollection, WithMapping, WithStyles, WithColumnWidths, WithColumnFormatting, WithHeadings
 {
     use WithPagination;
     public $formulario;
@@ -44,12 +48,68 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public $noc;
     public $selectedFormulario = null;
     protected $paginationTheme = 'tailwind';
-
+    public $completedContracts = [];
+    public $incompleteContracts = [];
+    public $maxFormularios;
 
     public $open = false;
 
     protected $listeners = ['openModal' => 'loadFormulario'];
 
+    public function approveFormulario($id)
+    {
+        $formulario = Marca::with(['formLinks'])->findOrFail($id);
+        $operacionesLink = $formulario->formLinks->where('type', 'operaciones')->first()->link;
+        $financieraLink = $formulario->formLinks->where('type', 'financiera')->first()->link;
+        $emails = ['kevin.gomez@impresistem.com', 'kevin.gomez@impresistem.com'];
+
+        // URLs completas usando url() helper para obtener el dominio correcto automáticamente
+        $links = [url("/formulario-operaciones/{$operacionesLink}"), url("/formulario-financiera/{$financieraLink}")];
+
+        $titles = ['Formulario de Operaciones', 'Formulario Financiero'];
+        $descriptions = ['Complete la información requerida', 'Complete la información necesaria'];
+
+        foreach ($emails as $index => $email) {
+            $link = $links[$index];
+            $title = $titles[$index];
+            $description = $descriptions[$index];
+
+            Mail::send([], [], function ($message) use ($email, $link, $title, $description) {
+                $message
+                    ->to($email)
+                    ->subject('Enlace para diligenciamiento de formulario – Plazo de 3 días')
+                    ->setBody(
+                        new TextPart(
+                            "
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta charset='utf-8'>
+                            <meta name='viewport' content='width=device-width, initial-scale=1'>
+                        </head>
+                        <body>
+                            <h2>¡Información Aprobada!</h2>
+                            <p>Buen día,</p>
+                            <p>Su formulario ha sido aprobado. Por favor, complete el formulario correspondiente a continuación:</p>
+                            <a href='{$link}' style='display:inline-block;padding:10px 20px;background-color:#2989d8;color:white;text-decoration:none;border-radius:8px;'>
+                                {$title}
+                            </a>
+                            <p style='margin-top:10px;'>{$description}</p>
+                            <p>⚠️ El plazo máximo para enviar el formulario completado es de 2 días.</p>
+                            <p>Saludos cordiales.</p>
+                        </body>
+                        </html>
+                        ",
+                            'utf-8',
+                            'html',
+                        ),
+                    );
+            });
+        }
+
+        session()->flash('message', 'Formulario aprobado y correos enviados correctamente.');
+        $this->closeModal();
+    }
     public function getFileIcon($fileName)
     {
         $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
@@ -69,7 +129,6 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
 
         return $icons[$extension] ?? 'file';
     }
-
 
     public function toggleMostrarMas()
     {
@@ -98,10 +157,29 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public function mount()
     {
         $this->totalFormularios = Marca::count();
-        $this->averageSalePrice = Marca::avg('precio_venta');
         $this->advancePercentage = Financiera::avg('porcentaje');
 
-        // $this->formulario = FormLink::all();
+        // Formularios completados (todas las relaciones están presentes)
+        $this->completedContracts = Marca::whereHas('infonegocio')
+            ->whereHas('informacion')
+            ->whereHas('financiera', function ($query) {
+                $query->whereNotNull('plazo');
+            })
+            ->whereHas('infoEntrega')
+            ->get();
+
+        // Formularios incompletos (ninguna de las relaciones está presente)
+        $this->incompleteContracts = Marca::where(function ($query) {
+            $query
+                ->doesntHave('infonegocio')
+                ->orDoesntHave('informacion')
+                ->orWhereDoesntHave('financiera', function ($query) {
+                    $query->whereNotNull('plazo');
+                })
+                ->orDoesntHave('infoEntrega');
+        })->get();
+
+        $this->maxFormularios = 100;
     }
 
     #[On('openModal')]
@@ -151,99 +229,95 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     }
     public function collection()
     {
-        $marcas = Marca::with('infonegocio', 'financiera','informacion')->get();
-
-
+        $marcas = Marca::with('infonegocio', 'financiera', 'informacion')->get();
 
         return $marcas;
     }
 
     public function map($marca): array
-{
-    $infonegocio = $marca->infonegocio;
+    {
+        $infonegocio = $marca->infonegocio;
 
-    $financiera = $marca->financiera->first();
-    $operaciones = $marca->informacion->first();
+        $financiera = $marca->financiera->first();
+        $operaciones = $marca->infoEntrega->first();
 
-    // Obtener las fechas de actualización o NULL si no existen
-    $fechaFinanciera = $financiera ? $financiera->updated_at : null;
-    $fechaOperaciones = $operaciones ? $operaciones->updated_at : null;
+        $financieraIniciada = $financiera && $financiera->plazo && $financiera->forma_pago && $financiera->moneda;
+        $operacionesIniciada = $operaciones && $operaciones->origen && $operaciones->destino && $operaciones->transporte;
 
-    // Comparar las fechas y tomar la más reciente
-    $fechaMasReciente = null;
+        $fechaFinanciera = $financieraIniciada ? $financiera->updated_at : null;
+        $fechaOperaciones = $operacionesIniciada ? $operaciones->updated_at : null;
 
-    if ($fechaFinanciera && $fechaOperaciones) {
-        $fechaMasReciente = $fechaFinanciera > $fechaOperaciones ? $fechaFinanciera : $fechaOperaciones;
-    } elseif ($fechaFinanciera) {
-        $fechaMasReciente = $fechaFinanciera;
-    } elseif ($fechaOperaciones) {
-        $fechaMasReciente = $fechaOperaciones;
+        $fechaPrimerEnvioFinanciera = $financieraIniciada ? $financiera->created_at : null;
+        $fechaPrimerEnvioOperaciones = $operacionesIniciada ? $operaciones->created_at : null;
+
+        $fechaMasReciente = null;
+
+        if ($fechaFinanciera && $fechaOperaciones) {
+            $fechaMasReciente = $fechaFinanciera > $fechaOperaciones ? $fechaFinanciera : $fechaOperaciones;
+        } elseif ($fechaFinanciera) {
+            $fechaMasReciente = $fechaFinanciera;
+        } elseif ($fechaOperaciones) {
+            $fechaMasReciente = $fechaOperaciones;
+        }
+
+        return [
+            $marca->created_at ? $marca->created_at->format('Y-m-d') : 'No Completado', // Fecha de solicitud
+            $marca->tipo_solicitud ? $marca->tipo_solicitud : 'No Completado', // Tipo de Solicitud
+            $infonegocio ? preg_replace('/\D/', '', $infonegocio->n_oportunidad_crm) : 'No Completado', // Número de oportunidad en el CRM
+            $infonegocio ? preg_replace('/\D/', '', $infonegocio->codigo_cliente) : 'No Completado', // Código Cliente
+            $infonegocio ? $infonegocio->nombre : 'No Completado', // Nombre del cliente
+            $infonegocio ? $infonegocio->codigo_linea : 'No Completado', // Código de línea
+            $infonegocio ? $infonegocio->nombre_linea : 'No Completado', // Nombre de la línea
+            $marca->precio_venta ? $marca->precio_venta : 'No Completado', // Precio venta
+            $marca->user->name ? $marca->user->name : 'No Completado', // Solicitante
+            $marca->user->cargo ? $marca->user->cargo : 'No Completado', // Cargo solicitante
+            $fechaPrimerEnvioFinanciera ? $fechaPrimerEnvioFinanciera->format('Y-m-d') : 'No Iniciado', // Fecha inicio financiera
+            $fechaPrimerEnvioOperaciones ? $fechaPrimerEnvioOperaciones->format('Y-m-d') : 'No Iniciado', // Fecha Inicio Operaciones
+            $fechaMasReciente ? $fechaMasReciente->format('Y-m-d') : 'No fue terminado', // Última Actualización
+        ];
     }
-
-    return [
-        $marca->user->name ? $marca->user->name : 'No Completado',
-        $marca->precio_venta ? $marca->precio_venta : 'No Completado',
-        $marca->tipo_solicitud ? $marca->tipo_solicitud : 'No Completado',
-        $infonegocio ? preg_replace('/\D/', '', $infonegocio->codigo_cliente) : 'No Completado',  // Elimina caracteres no numéricos
-        $infonegocio ? $infonegocio->nombre : 'No Completado',
-        $infonegocio ? preg_replace('/\D/', '', $infonegocio->n_oportunidad_crm) : 'No Completado',  // Elimina caracteres no numéricos
-        $marca->created_at ? $marca->created_at->format('Y-m-d') : 'No Completado',
-        $financiera ? $financiera->created_at->format('Y-m-d') : 'No Completado',
-        $operaciones ? $operaciones->created_at->format('Y-m-d') : 'No Completado',
-        $fechaMasReciente ? $fechaMasReciente->format('Y-m-d') : 'No fue terminado'
-    ];
-    
-
-}
-
-
-    //! generar pdf
 
     public function headings(): array
     {
+        return ['Fecha de solicitud', 'Tipo de Solicitud', 'Número de oportunidad en el CRM', 'Código Cliente', 'Nombre del cliente', 'Código de línea', 'Nombre de la línea', 'Precio venta', 'Solicitante', 'Cargo solicitante', 'Fecha inicio financiera', 'Fecha Inicio Operaciones', 'Última Actualización'];
+    }
+    //! generar pdf
+
+    // public function headings(): array
+    // {
+    //     return ['Solicitante', 'Precio venta', 'Tipo de Solicitud', 'Código Cliente', 'Nombre', 'Número de Oportunidad CRM', 'Fecha Creación', 'Inicio Financiera', 'Inicio Operaciones', 'Última Actualización'];
+    // }
+
+    public function styles(Worksheet $sheet)
+    {
+        //Calcula y toma los datos con informacion para poder pintarlos
+
+        $usedRange = $sheet->calculateWorksheetDimension();
+
+        //* Se toman y se les aplica color solamente a las casillas y columnas especificadas para pintarlas
+        $highestRow = $sheet->getHighestRow();
+
         return [
-            'Solicitante',
-            'Precio venta',
-            'Tipo de Solicitud',
-            'Código Cliente',
-            'Nombre',
-            'Número de Oportunidad CRM',
-            'Fecha Creación',
-            'Inicio Financiera',
-            'Inicio Operaciones',
-            'Última Actualización'
+            1 => [
+                'fill' => [
+                    'fillType' => 'solid',
+                    'startColor' => ['rgb' => 'FDE68A'],
+                ],
+            ],
+            'H2:H' . $highestRow => [
+                'fill' => [
+                    'fillType' => 'solid',
+                    'startColor' => ['rgb' => 'BBF7D0'],
+                ],
+            ],
+            'I2:I' . $highestRow => [
+                'fill' => [
+                    'fillType' => 'solid',
+                    'startColor' => ['rgb' => '93C5FD'],
+                ],
+            ],
         ];
     }
-    public function styles(Worksheet $sheet)
-{
-    //Calcula y toma los datos con informacion para poder pintarlos
-
-    $usedRange = $sheet->calculateWorksheetDimension();
-
-    //* Se toman y se les aplica color solamente a las casillas y columnas especificadas para pintarlas
-    $highestRow = $sheet->getHighestRow();
-
-    return [
-       1 => [
-            'fill' => [
-                'fillType' => 'solid',
-                'startColor' => ['rgb' => 'FDE68A']
-            ],
-        ],
-        'H2:H' . $highestRow => [
-            'fill' => [
-                'fillType' => 'solid',
-                'startColor' => ['rgb' => 'BBF7D0']
-            ],
-        ],
-        'I2:I' . $highestRow => [
-            'fill' => [
-                'fillType' => 'solid',
-                'startColor' => ['rgb' => '93C5FD']
-            ],
-        ],
-    ];
-}
 
     public function columnWidths(): array
     {
@@ -262,12 +336,11 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public function columnFormats(): array
     {
         return [
-            // 'D' => NumberFormat::FORMAT_DATE_YYYYMMDD,
-            // 'E' => NumberFormat::FORMAT_DATE_YYYYMMDD,
-            // 'F' => NumberFormat::FORMAT_DATE_YYYYMMDD,
-        ];
+                // 'D' => NumberFormat::FORMAT_DATE_YYYYMMDD,
+                // 'E' => NumberFormat::FORMAT_DATE_YYYYMMDD,
+                // 'F' => NumberFormat::FORMAT_DATE_YYYYMMDD,
+            ];
     }
-
 
     public function downloadFormulario($id)
     {

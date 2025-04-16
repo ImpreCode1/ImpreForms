@@ -19,6 +19,8 @@ trait FormatearFechas
 class EditarFormulario extends Component
 {
     use WithFileUploads, FormatearFechas;
+    // $telgerente
+    // $telgerente2
     public $formulario;
     public $attachments = [];
     public $temporaryFiles = [];
@@ -26,20 +28,20 @@ class EditarFormulario extends Component
     public $archivosNuevos = [];
     public $archivosMostrados = [];
     public $negocio, $nombres, $correo, $numero, $crms;
-    public $fecha, $oc, $precio, $soluciones, $linea, $codlinea;
-    public $nomgerente, $telgerente, $corgerente, $director, $tel2gerente, $cor2gerente;
+    public $oc, $precio, $soluciones, $linea, $codlinea;
+    public $nomgerente,  $corgerente, $director, $cor2gerente;
     public $entregacliente, $lugarentrega, $espais, $tiempoentrega, $terminoentrega, $tipoicoterm;
     public $prestar, $suministrar, $inicio, $finalizacion;
     public $clientcode, $clientname, $mail;
     public $cod;
     public $aplicagarantia, $terminogarantia, $aplicapoliza, $porcentaje;
     public $incluye_iva, $otros;
-    public $cotizacion;
+    // public $cotizacion;
     protected $listener = ['removeUpload', 'removeExistingFile', 'editFormulario'];
     public $marcaId;
-    public $cod_ejc;
+    // public $cod_ejc;
     public $nombre_ejc;
-    public $telefono_ejc;
+    // public $telefono_ejc;
     public $email_ejc;
     public $documentos;
     public $documento;
@@ -50,9 +52,9 @@ class EditarFormulario extends Component
 
     protected $rules = [
         // validaciones
-        'cod_ejc' => 'required|numeric|',
+        // 'cod_ejc' => 'required|numeric|',
         'email_ejc' => 'required|email',
-        'telefono_ejc' => 'required|numeric',
+        // 'telefono_ejc' => 'required|numeric',
         'nombre_ejc' =>  'required|string|min:5',
         'terminogarantia' => 'nullable|string|min:5',
         'porcentaje' => 'nullable|numeric|min:0|max:100',
@@ -62,23 +64,24 @@ class EditarFormulario extends Component
         'nom_rep' => 'required|string',
         'correo' => 'required|email|',
         'numero' => 'required|numeric',
-        'crms' => 'required|string|',
-        'fecha' => 'required|date',
-        'oc' => 'required|string|',
+        'crms' => 'required|string',
+
+        // 'fecha' => 'required|date',
+        // 'oc' => 'required|string|',
         'precio' => [
                     'required',
                     'regex:/^\d{1,3}(?:[\.,]\d{3})*(?:[\.,]\d+)?$/',
                     'min:5',
         ],
-        'cotizacion' => 'nullable|max:10240',
+        // 'cotizacion' => 'nullable|max:10240',
         'soluciones' => 'required|string|',
         'linea' => 'required|string|',
         'codlinea' => 'required|string|',
         'nomgerente' => 'required|string|',
-        'telgerente' => 'required|numeric',
+        // 'telgerente' => 'required|numeric',
         'corgerente' => 'required|email|',
         'director' => 'required|string|',
-        'tel2gerente' => 'required|numeric',
+        // 'tel2gerente' => 'required|numeric',
         'cor2gerente' => 'required|email|',
 
         'entregacliente' => 'required|string|',
@@ -104,16 +107,16 @@ class EditarFormulario extends Component
 
     protected $messages = [
         // mensajes de las nuevas validaciones
-        'cod_ejc.required' => 'El campo de codigo es requerido',
-        'cod_ejc.numeric' => 'Este campo debe ser numerico ',
+        // 'cod_ejc.required' => 'El campo de codigo es requerido',
+        // 'cod_ejc.numeric' => 'Este campo debe ser numerico ',
 
 
         'nombre_ejc.required' =>'Este campo es requerido',
         'nombre_ejc.string' =>'Este campo es requerido',
         'nombre_ejc.min' =>'Este campo debe tener minimo :min caracteres ',
 
-        'telefono_ejc.required' => 'Este campo es requerido',
-        'telefono_ejc.numeric' => 'Este campo es tipo numerico',
+        // 'telefono_ejc.required' => 'Este campo es requerido',
+        // 'telefono_ejc.numeric' => 'Este campo es tipo numerico',
 
         'email_ejc.required' => 'Este campo es requerido',
         'email_ejc.email' => 'El correo debe ser valido',
@@ -134,8 +137,10 @@ class EditarFormulario extends Component
         'numero.numeric' => 'El campo "Número" debe ser un número sin espacios.',
         'crms.required' => 'El campo "CRM" es obligatorio.',
         'crms.string' => 'El campo "CRM" debe ser una cadena de texto.',
-        'fecha.required' => 'El campo "Fecha" es obligatorio.',
-        'fecha.date' => 'El campo "Fecha" debe ser una fecha válida.',
+        // 'crms.unique' => 'El número "CRM" ya está registrado. Por favor, ingrese un número único.',
+
+        // 'fecha.required' => 'El campo "Fecha" es obligatorio.',
+        // 'fecha.date' => 'El campo "Fecha" debe ser una fecha válida.',
         'oc.required' => 'El campo "OC" es obligatorio.',
         'oc.string' => 'El campo "OC" debe ser una cadena de texto.',
         'precio' => [
@@ -154,14 +159,14 @@ class EditarFormulario extends Component
         'codlinea.string' => 'El campo "Código de línea" debe ser una cadena de texto.',
         'nomgerente.required' => 'El campo "Nombre del Gerente" es obligatorio.',
         'nomgerente.string' => 'El campo "Nombre del Gerente" debe ser una cadena de texto.',
-        'telgerente.required' => 'El campo "Teléfono del Gerente" es obligatorio.',
-        'telgerente.numeric' => 'El campo "Teléfono del Gerente" debe ser un número sin espacios.',
+        // 'telgerente.required' => 'El campo "Teléfono del Gerente" es obligatorio.',
+        // 'telgerente.numeric' => 'El campo "Teléfono del Gerente" debe ser un número sin espacios.',
         'corgerente.required' => 'El campo "Correo del Gerente" es obligatorio.',
         'corgerente.email' => 'El campo "Correo del Gerente" debe ser un correo electrónico válido.',
         'director.required' => 'El campo "Director" es obligatorio.',
         'director.string' => 'El campo "Director" debe ser una cadena de texto.',
-        'tel2gerente.required' => 'El campo "Teléfono 2 del Gerente" es obligatorio.',
-        'tel2gerente.numeric' => 'El campo "Teléfono 2 del Gerente" debe ser un número sin espacios.',
+        // 'tel2gerente.required' => 'El campo "Teléfono 2 del Gerente" es obligatorio.',
+        // 'tel2gerente.numeric' => 'El campo "Teléfono 2 del Gerente" debe ser un número sin espacios.',
         'cor2gerente.required' => 'El campo "Correo 2 del Gerente" es obligatorio.',
         'cor2gerente.email' => 'El campo "Correo 2 del Gerente" debe ser un correo electrónico válido.',
         'entregacliente.required' => 'El campo "Entrega Cliente" es obligatorio.',
@@ -209,8 +214,8 @@ class EditarFormulario extends Component
         'fecha_pago.required' => 'El campo "Fecha de Pago" es obligatorio.',
         'fecha_pago.date' => 'El campo "Fecha de Pago" debe ser una fecha válida.',
         'otros.string' => 'El campo "Otros" debe ser una cadena de texto.',
-        'cotizacion.required' => 'La cotización es requerida.',
-        'cotizacion.max' => 'El tamaño máximo permitido para la cotización es de 10 MB.',
+        // 'cotizacion.required' => 'La cotización es requerida.',
+        // 'cotizacion.max' => 'El tamaño máximo permitido para la cotización es de 10 MB.',
     ];
 
     public function updated($propertyName)
@@ -265,27 +270,27 @@ class EditarFormulario extends Component
 
         $this->tipo_solicitud = $formulario->tipo_solicitud;
 
-        $this->cod_ejc = $formulario->cod_ejc;
+        // $this->cod_ejc = $formulario->cod_ejc;
         $this->nombre_ejc = $formulario->nombre_ejc;
-        $this->telefono_ejc = $formulario->telefono_ejc;
+        // $this->telefono_ejc = $formulario->telefono_ejc;
         $this->email_ejc = $formulario->email_ejc;
 
-        $this->fecha = $this->formatearFecha($formulario->fecha);
+        // $this->fecha = $this->formatearFecha($formulario->fecha);
         $this->oc = $formulario->n_oc;
         $this->precio = $formulario->precio_venta;
         $this->soluciones = $formulario->tipo_contrato;
         $this->linea = $formulario->linea;
         $this->codlinea = $formulario->codigo_linea;
         $this->nomgerente = $formulario->nombre;
-        $this->telgerente = $formulario->telefono;
+        // $this->telgerente = $formulario->telefono;
         $this->corgerente = $formulario->correo_electronico;
         $this->clientcode = $formulario->otro;
         $this->clientname = $formulario->cel;
         $this->mail = $formulario->email;
-        $this->cotizacion = $formulario->adjunto_cotizacion;
+        // $this->cotizacion = $formulario->adjunto_cotizacion;
 
         $this->director = $formulario->director;
-        $this->tel2gerente = $formulario->numero;
+        // $this->tel2gerente = $formulario->numero;
         $this->cor2gerente = $formulario->correo_director;
         $this->marcaId = $formulario->id;
         if ($formulario->informacion->isNotEmpty()) {
@@ -408,61 +413,61 @@ class EditarFormulario extends Component
         }
     }
 
-    public function eliminarArchivo()
-    {
-        if ($this->cotizacion) {
-            Storage::disk('public')->delete($this->cotizacion);
-            $this->formulario->update(['adjunto_cotizacion' => null]);
-            $this->cotizacion = null;
-        }
-    }
+    // public function eliminarArchivo()
+    // {
+    //     if ($this->cotizacion) {
+    //         Storage::disk('public')->delete($this->cotizacion);
+    //         $this->formulario->update(['adjunto_cotizacion' => null]);
+    //         $this->cotizacion = null;
+    //     }
+    // }
 
     public function submit()
     {
-        $rules = $this->rules;
-        if (!$this->formulario->adjunto_cotizacion && !$this->cotizacion) {
-            $rules['cotizacion'] = 'required|mimes:pdf,doc,docx,xls,xlsx|max:10240';
-        }
-        $this->validate($rules);
+        // $rules = $this->rules;
+        // if (!$this->formulario->adjunto_cotizacion && !$this->cotizacion) {
+        //     $rules['cotizacion'] = 'required|mimes:pdf,doc,docx,xls,xlsx|max:10240';
+        // }
+        // $this->validate($rules);
 
-        $rutaAnterior = $this->formulario->adjunto_cotizacion;
+        // $rutaAnterior = $this->formulario->adjunto_cotizacion;
 
-        if ($this->cotizacion instanceof \Illuminate\Http\UploadedFile) {
-            $originalName = $this->cotizacion->getClientOriginalName();
-            $path = "public/cotizacion/{$originalName}";
+        // if ($this->cotizacion instanceof \Illuminate\Http\UploadedFile) {
+        //     $originalName = $this->cotizacion->getClientOriginalName();
+        //     $path = "public/cotizacion/{$originalName}";
 
-            if ($rutaAnterior && Storage::exists($rutaAnterior)) {
-                Storage::delete($rutaAnterior);
-            }
+        //     if ($rutaAnterior && Storage::exists($rutaAnterior)) {
+        //         Storage::delete($rutaAnterior);
+        //     }
 
-            $this->cotizacion->storeAs('public/cotizacion', $originalName);
-            $this->formulario->update([
-                'adjunto_cotizacion' => $path,
-            ]);
-        }
+        //     $this->cotizacion->storeAs('public/cotizacion', $originalName);
+        //     $this->formulario->update([
+        //         'adjunto_cotizacion' => $path,
+        //     ]);
+        // }
 
         $this->formulario->update([
-            'n_oc' => $this->oc,
-            'fecha' => $this->fecha,
+            // 'n_oc' => $this->oc,
+            // 'fecha' => $this->fecha,
             'precio_venta' => $this->precio,
             'tipo_contrato' => $this->soluciones,
             'linea' => $this->linea,
             'codigo_linea' => $this->codlinea,
             'nombre' => $this->nomgerente,
-            'telefono' => $this->telgerente,
+            // 'telefono' => $this->telgerente,
             'correo_electronico' => $this->corgerente,
             'otro' => $this->clientcode,
             'cel' => $this->clientname,
             'email' => $this->mail,
             'director' => $this->director,
-            'numero' => $this->tel2gerente,
+            // 'numero' => $this->tel2gerente,
 
 
             'correo_director' => $this->cor2gerente,
             'tipo_solicitud' => $this->tipo_solicitud,
-            'cod_ejc' => $this->cod_ejc,
+            // 'cod_ejc' => $this->cod_ejc,
             'nombre_ejc' => $this->nombre_ejc,
-            'telefono_ejc' => $this->telefono_ejc,
+            // 'telefono_ejc' => $this->telefono_ejc,
             'email_ejc' => $this->email_ejc,
         ]);
 

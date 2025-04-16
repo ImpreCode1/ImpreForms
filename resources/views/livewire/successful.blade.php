@@ -20,7 +20,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    <span>El proceso puede tomar hasta 48-72 horas hábiles</span>
+                    <span>El proceso puede tomar hasta 24-48 horas hábiles</span>
                 </div>
             </div>
 
@@ -43,14 +43,14 @@
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        Análisis por equipo operativo
+                        Revisión por el PMO
                     </li>
-                    <li class="flex items-center text-blue-700">
+                    {{-- <li class="flex items-center text-blue-700">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         Aprobación financiera
-                    </li>
+                    </li> --}}
                 </ul>
             </div>
 

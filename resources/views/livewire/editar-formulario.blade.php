@@ -24,9 +24,10 @@
                                 {{ $errors->has('tipo_solicitud') ? 'border-red-300' : 'border-blue-100' }}
                                 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300">
                             <option value="" disabled>Seleccione tipo de solicitud</option>
-                            <option value="Contrato">Contrato</option>
-                            <option value="Otrosi">Otrosí</option>
-                            <option value="Alcance">Alcance</option>
+                            <option value="Oferta mercantil">Oferta mercantil</option>
+                            {{-- <option value="Contrato">Contrato</option> --}}
+                            {{-- <option value="Otrosi">Otrosí</option>
+                            <option value="Alcance">Alcance</option> --}}
                         </select>
                     </div>
                     @error('tipo_solicitud')
@@ -104,41 +105,6 @@
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
                                 @enderror
                             </div>
-                        </div>
-                    </div>
-
-
-                    <!-- Orden Compra Cliente -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-red-600" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12h6m-6 4h6M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z" />
-                            </svg>
-                            Orden Compra Cliente
-                        </h2>
-
-                        <div class="grid grid-cols-1 gap-4">
-                            <div>
-                                <label for="fecha" class="block text-sm font-medium text-gray-700">Fecha</label>
-                                <input id="fecha" type="date" wire:model.live="fecha"
-                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('fecha') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                @error('fecha')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <div>
-                                <label for="oc" class="block text-sm font-medium text-gray-700">N°
-                                    OC</label>
-                                <input id="oc" type="text" wire:model.live="oc"
-                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('oc') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                @error('oc')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-
                             <div>
                                 <label for="incluye_iva" class="block text-sm font-medium text-gray-700">Incluye
                                     IVA</label>
@@ -165,8 +131,44 @@
                                 @enderror
                             </div>
 
+                        </div>
+                    </div>
 
-                            <div class="mx-auto max-w-2xl rounded-lg bg-white p-6 shadow-md">
+
+                    <!-- Orden Compra Cliente -->
+                    {{-- <div class="bg-gray-50 p-6 rounded-lg"> --}}
+                        {{-- <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-red-600" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z" />
+                            </svg>
+                            Orden Compra Cliente
+                        </h2> --}}
+
+                        <div class="grid grid-cols-1 gap-4">
+                            {{-- <div>
+                                <label for="fecha" class="block text-sm font-medium text-gray-700">Fecha</label>
+                                <input id="fecha" type="date" wire:model.live="fecha"
+                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('fecha') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                @error('fecha')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="oc" class="block text-sm font-medium text-gray-700">N°
+                                    OC</label>
+                                <input id="oc" type="text" wire:model.live="oc"
+                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('oc') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                @error('oc')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div> --}}
+
+
+
+                            {{-- <div class="mx-auto max-w-2xl rounded-lg bg-white p-6 shadow-md">
                                 <h2 class="mb-4 text-xl font-bold">Cotización</h2>
                                 <label for="cotizacion" class="block text-sm font-medium text-gray-700">Adjuntar
                                     Cotización</label>
@@ -190,9 +192,9 @@
 
 
 
-                            </div>
+                            </div> --}}
                         </div>
-                    </div>
+                    {{-- </div> --}}
 
                 </div>
 
@@ -204,7 +206,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
-                        Tipo de Contrato
+                        Tipo de Solicitud
                     </h2>
 
                     <div class="grid grid-cols-1 gap-4">
@@ -271,14 +273,14 @@
                             @enderror
                         </div>
 
-                        <div>
+                        {{-- <div>
                             <label for="telgerente" class="block text-sm font-medium text-gray-700">Teléfono</label>
                             <input id="telgerente" type="text" wire:model.live="telgerente"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('telgerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                             @error('telgerente')
                                 <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                             @enderror
-                        </div>
+                        </div> --}}
 
                         <div>
                             <label for="corgerente" class="block text-sm font-medium text-gray-700">Correo
@@ -304,14 +306,14 @@
                             @enderror
                         </div>
 
-                        <div>
+                        {{-- <div>
                             <label for="tel2gerente" class="block text-sm font-medium text-gray-700">Teléfono</label>
                             <input id="tel2gerente" type="text" wire:model.live="tel2gerente"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tel2gerente') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                             @error('tel2gerente')
                                 <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                             @enderror
-                        </div>
+                        </div> --}}
 
                         <div>
                             <label for="cor2gerente" class="block text-sm font-medium text-gray-700">Correo
@@ -329,14 +331,14 @@
                         </h5>
                         {{-- informacion ejecutivo --}}
 
-                        <div>
+                        {{-- <div>
                             <label class="block text-sm font-medium text-gray-700">Cod</label>
                             <input type="text" wire:model.live="cod_ejc"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('cod_ejc') ? 'border-red-400' : 'border-blue-100' }}  shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                             @error('cod_ejc')
                                 <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                             @enderror
-                        </div>
+                        </div> --}}
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Nombre</label>
@@ -347,14 +349,14 @@
                             @enderror
                         </div>
 
-                        <div>
+                        {{-- <div>
                             <label class="block text-sm font-medium text-gray-700">Teléfono</label>
                             <input type="text" wire:model.live="telefono_ejc"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('telefono_ejc') ? 'border-red-400' : 'border-blue-100' }}  shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                             @error('telefono_ejc')
                                 <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                             @enderror
-                        </div>
+                        </div> --}}
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">E-mail</label>
@@ -457,7 +459,7 @@
                             <div>
                                 <label for="tiempoentrega" class="block text-sm font-medium text-gray-700">Tiempo de
                                     entrega</label>
-                                <input id="tiempoentrega" type="time" wire:model.live="tiempoentrega"
+                                <input id="tiempoentrega" type="text" wire:model.live="tiempoentrega"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tiempoentrega') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('tiempoentrega')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -712,18 +714,37 @@
                         class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                     <div class="space-y-4">
                         <div class="flex flex-col items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-4"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            <p class="text-gray-600">
-                                Por favor, <span class="text-blue-600 hover:underline">seleccione los archivos que
-                                    desea agregar</span>.
+                            <div class="bg-blue-50 p-4 rounded-full mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-500"
+                                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+
+                            <p class="text-gray-700 font-medium mb-2">
+                                <span class="text-blue-600 hover:underline font-semibold">Seleccione los archivos</span>
+                                para adjuntar la siguiente documentación:
                             </p>
-                            <p class="text-sm text-gray-500 mt-2">
-                                Puedes subir múltiples archivos y se mostrarán automáticamente.
-                            </p>
+
+                            <div class="bg-gray-50 rounded-lg p-4 w-full max-w-md">
+                                <ul class="text-sm text-gray-600 list-disc pl-5 text-left space-y-2">
+                                    <li>Formato NEC</li>
+                                    <li>Correo electrónico de aprobaciones financieras</li>
+                                    <li>Correo electrónico de aprobación del factor (si aplica)</li>
+                                    <li>Cámara de comercio con expedición no mayor a 60 días</li>
+                                </ul>
+                            </div>
+
+                            <div class="flex items-center mt-4 bg-blue-50 rounded-lg p-2 text-sm text-gray-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                                <p>Formatos permitidos: <strong>PDF, DOC, DOCX, XLSX, MSG</strong>. Tamaño máximo: <strong>10MB</strong>.</p>
+                            </div>
+
+                            <p class="text-blue-600 mt-4 font-medium text-sm">Haga clic para seleccionar uno o varios documentos</p>
+
                         </div>
                     </div>
                 </div>
@@ -768,6 +789,6 @@
                 </button>
             </div>
         </form>
-       
+
     </div>
 </div>
