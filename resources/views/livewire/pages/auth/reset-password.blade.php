@@ -30,7 +30,7 @@ new #[Layout('layouts.guest')] class extends Component {
     /**
      * Reset the password for the given user.
      */
-    public function resetPassword(): void
+    public function resetPassword()
     {
         $this->validate([
             'token' => ['required'],
@@ -63,7 +63,7 @@ new #[Layout('layouts.guest')] class extends Component {
 
         Session::flash('status', __($status));
 
-        $this->redirectRoute('login', navigate: true);
+        return redirect()->route('login');;
     }
 }; ?>
 

@@ -17,7 +17,7 @@ use App\Livewire\FragmentoComponente;
 
 Route::get('/successful', Successful::class)->name('succesful');
 // Route::view('/', 'welcome');
-Route::redirect('/', '/login');
+Route::redirect('/', '/login')->name('login');
 //Route::view('login', 'livewire.pages.auth.login')->name('login');
 
 Route::view('dashboard', 'dashboard')

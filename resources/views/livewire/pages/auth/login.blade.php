@@ -39,6 +39,9 @@ new #[Layout('layouts.guest')] class extends Component
     <!-- Left Side: Decorative Section -->
     <div class="bg-gradient-to-br from-[#6a11cb] to-[#2575fc] flex items-center justify-center p-12 relative">
       <div class="text-white text-center z-10">
+        <!-- Logo -->
+        <img src="{{ asset('images/logo-impreforms.png') }}" alt="Logo ImpreForms"
+         class="mx-auto mb-4 w-20 h-auto">
         <h2 class="text-4xl font-bold mb-6 tracking-tight">ImpreForms</h2>
         <p class="text-lg opacity-80 leading-relaxed">
           Transforma la gestión de formularios con nuestra plataforma intuitiva y eficiente. Simplifica procesos, ahorra tiempo y mejora la productividad.
