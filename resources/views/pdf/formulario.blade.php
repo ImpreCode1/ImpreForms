@@ -5,70 +5,65 @@
     <meta charset="UTF-8">
     <title>Formulario de Información</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            font-size: 14px;
-            background-color: #f9f9f9;
-        }
+    @page {
+        margin: 15mm 12mm;
+    }
 
-        .header {
-            text-align: center;
-            border-bottom: 3px solid #005a8c;
-            padding-bottom: 10px;
-            margin-bottom: 25px;
-        }
+    body {
+        font-family: 'Arial Narrow', sans-serif;
+        font-stretch: condensed;
+        color: #1d1d1d;
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.4;
+    }
 
-        .header h1 {
-            color: #005a8c;
-            margin: 0;
-            font-size: 18px;
-            font-weight: bold;
-        }
+    .header {
+        margin: 20px 0 10px;
+        border-left: 4px solid #0a4977;
+        padding-left: 10px;
+    }
 
-        .info-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
+    .header h1,
+    .header h3 {
+        font-size: 15px;
+        color: #0a4977;
+        margin: 0;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 
-        .info-section {
-            background: #fff;
-            padding: 12px;
-            border-radius: 6px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-            flex: 1 1 calc(50% - 15px);
-            min-width: 250px;
-        }
+    .info-section {
+        margin-bottom: 10px;
+    }
 
-        .info-label {
-            color: #005a8c;
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
-            text-transform: uppercase;
-            font-size: 11px;
-        }
+    .info-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 2px;
+    }
 
-        .info-value {
-            border-bottom: 1px solid #e0e0e0;
-            padding-bottom: 5px;
-            font-size: 13px;
-            font-weight: bold;
-            color: #333;
-        }
+    .info-value {
+        font-size: 12px;
+        font-weight: normal;
+        border-bottom: 1px dashed #ccc;
+        padding-bottom: 2px;
+        padding-left: 1px;
+    }
 
-        .footer {
-            text-align: center;
-            font-size: 10px;
-            color: #666;
-            margin-top: 25px;
-            padding-top: 10px;
-            border-top: 2px solid #ccc;
-        }
-    </style>
+    .footer {
+        margin-top: 25px;
+        font-size: 9px;
+        color: #777;
+        text-align: center;
+        border-top: 1px solid #ccc;
+        padding-top: 8px;
+    }
+</style>
+
 </head>
 
 <body>

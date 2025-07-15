@@ -1,70 +1,84 @@
-<<<<<<< HEAD
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
 </p>
 
-## About Laravel
+<h1 align="center">ImpreForms</h1>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+  Sistema de gestión y flujo de formularios/documentación para procesos internos empresariales.
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 📌 Acerca del proyecto
 
-## Learning Laravel
+**FormSync** es una aplicación web desarrollada en **Laravel 12** con **Livewire**, **Volt** y **Tailwind CSS**, diseñada para gestionar el proceso de creación, edición, revisión y almacenamiento de **contratos, aprobaciones y formularios empresariales**.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Su propósito es facilitar el flujo de documentación interna, centralizar los adjuntos importantes y mejorar el control de versiones/formularios mediante enlaces únicos y temporales.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## ⚙️ Características principales
 
-## Laravel Sponsors
+- 📝 Creación y envío de formularios dinámicos por pasos
+- 📁 Subida y gestión de documentos adjuntos (PDF, DOCX, etc.)
+- 🔒 Autenticación segura con Laravel Breeze y middleware `auth`
+- 🔗 Generación de enlaces únicos para áreas específicas (operaciones y financiera)
+- 📂 Almacenamiento de archivos en `storage/app/public/documents`
+- 📜 Historial de formularios enviados con opción de edición en modal
+- 🧑‍💼 Integración con usuarios/colaboradores internos
+- 📬 Notificaciones y sesiones flash amigables
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🚀 Tecnologías utilizadas
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- **Laravel 12**
+- **Livewire + Volt**
+- **Tailwind CSS**
+- **Vite** (bundler y recarga en caliente)
+- **MySQL** como sistema de base de datos
+- **Almacenamiento de archivos vía `storage:link`**
+- **uuid** para enlaces únicos por sesión
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 📂 Estructura de almacenamiento de archivos
 
-## Code of Conduct
+Los documentos adjuntos se guardan en:
+storage/app/public/documents/
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Y se acceden públicamente desde:
+/storage/documents/{archivo}
+> ⚠️ Asegúrate de ejecutar `php artisan storage:link` para generar el enlace simbólico correcto.
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 📌 Requisitos para ejecutar el proyecto
 
-## License
+- PHP 8.2+
+- Composer
+- MySQL
+- Node.js + npm
+- Extensiones PHP comunes (`mbstring`, `openssl`, `pdo`, etc.)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-=======
-# FormSync
->>>>>>> 0c5571219d8330f226cbae0c7ceb6a3e5d6e7b59
+---
+
+## 🛠 Instalación rápida
+
+```bash
+git clone
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan storage:link
+npm install && npm run dev
+php artisan serve
+
+🛡️ Licencia
+Este proyecto está licenciado bajo la licencia MIT.
+
+✉️ Contacto
+Proyecto interno desarrollado por el área de desarrollo de la empresa.
+Para soporte o dudas técnicas, contacta al equipo de tecnología correspondiente.

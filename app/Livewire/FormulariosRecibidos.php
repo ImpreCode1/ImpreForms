@@ -349,7 +349,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
 
             $pdf = FacadePdf::loadView('pdf.formulario', compact('formulario'));
 
-            return $pdf->download('formulario_' . $formulario->id . '.pdf');
+            return $pdf->download('Contrato_' . $formulario->id . '.pdf');
         } catch (\Exception $e) {
             // Log the error or return a specific error response
             return response()->json(['error' => $e->getMessage()], 500);
