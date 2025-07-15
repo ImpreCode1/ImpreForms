@@ -35,7 +35,7 @@
                     @enderror
 
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
                     <!-- Información del Negocio -->
                     <div class="bg-gray-50 p-6 rounded-lg">
                         <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
@@ -781,12 +781,20 @@
                 </button> --}}
                 <button type="submit"
                     class="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm transition-colors duration-200">
-                    <svg wire:loading wire:target="submit" class="animate-spin w-5 h-5 mr-2" fill="none"
-                        viewBox="0 0 24 24">
-                        <!-- ... -->
-                    </svg>
+                    
+                    {{-- Spinner siempre reserva espacio, pero solo se muestra cuando está cargando --}}
+                    <span class="w-5 h-5 inline-block">
+                        <svg wire:loading wire:target="submit" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z">
+                            </path>
+                        </svg>
+                    </span>
+                    
                     Guardar Cambios
                 </button>
+
             </div>
         </form>
 

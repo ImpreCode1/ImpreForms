@@ -235,89 +235,15 @@
 
                                         <td class="px-6 py-4">
                                             {{-- @dd($formulario) --}}
-                                            <div x-data="{ showModal: false, formularioId: {{ $formulario->id }} }" class="relative">
-                                                <button @click="showModal = true"
-                                                    class="group inline-flex items-center justify-center rounded-full border border-transparent bg-emerald-50/50 p-1.5 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 ring-0 transition-all duration-200 hover:shadow-lg hover:shadow-emerald-100">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                        class="h-4 w-4 transform transition-transform group-hover:scale-110">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M16.862 4.487l3.621 3.621a2.25 2.25 0 010 3.182l-8.465 8.465a2.25 2.25 0 01-1.306.615l-4.404.845a2.25 2.25 0 01-2.697-2.698l.845-4.404a2.25 2.25 0 01.615-1.306l8.465-8.465a2.25 2.25 0 013.182 0z" />
-                                                    </svg>
-                                                </button>
-
-
-                                                <!-- Modal con diseño moderno -->
-                                                <div x-show="showModal" x-cloak @keydown.escape.window="showModal = false"
-                                                    x-transition:enter="transition ease-out duration-300"
-                                                    x-transition:enter-start="opacity-0"
-                                                    x-transition:enter-end="opacity-100"
-                                                    x-transition:leave="transition ease-in duration-200"
-                                                    x-transition:leave-start="opacity-100"
-                                                    x-transition:leave-end="opacity-0" class="fixed inset-0 z-50">
-
-                                                    <!-- Backdrop con blur moderno -->
-                                                    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
-                                                        aria-hidden="true" @click="showModal = false">
-                                                    </div>
-
-                                                    <!-- Contenedor del Modal -->
-                                                    <div class="fixed inset-0 z-50 overflow-y-auto">
-                                                        <div class="flex min-h-screen items-center justify-center p-4 ">
-                                                            <!-- Panel del Modal -->
-                                                            <div x-transition:enter="transition ease-out duration-300 transform"
-                                                                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                                                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-                                                                x-transition:leave="transition ease-in duration-200 transform"
-                                                                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-                                                                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                                                class="relative transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all max-w-4xl w-full">
-
-                                                                <!-- Header elegante -->
-                                                                <div class="relative px-6 pt-7 pb-4">
-                                                                    <h3 class="text-2xl font-semibold text-gray-900">
-                                                                        Editar Formulario
-                                                                    </h3>
-                                                                    <div class="absolute right-6 top-6">
-                                                                        <button
-                                                                            @click="showModal = false; Livewire.emit('resetForm')"
-                                                                            class="rounded-full p-2 inline-flex text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-all duration-200">
-                                                                            <span class="sr-only">Cerrar</span>
-                                                                            <svg class="h-6 w-6" fill="none"
-                                                                                viewBox="0 0 24 24" stroke-width="2"
-                                                                                stroke="currentColor">
-                                                                                <path stroke-linecap="round"
-                                                                                    stroke-linejoin="round"
-                                                                                    d="M6 18L18 6M6 6l12 12" />
-                                                                            </svg>
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- Línea divisoria con gradiente -->
-                                                                <div
-                                                                    class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent">
-                                                                </div>
-
-                                                                <!-- Contenido del Modal -->
-                                                                <div
-                                                                    class="px-6 py-8 max-h-[calc(100vh-200px)] overflow-y-auto">
-                                                                    <div class="space-y-6">
-                                                                        <livewire:editar-formulario :formulario="$formulario"
-                                                                            wire:key="edit-{{ $formulario->id }}" />
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- Footer moderno -->
-                                                                <div
-                                                                    class="bg-gray-50 px-6 py-4 flex items-center justify-end gap-3">
-
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <a href="{{ route('editar-formulario', $formulario->id) }}"
+                                            class="group inline-flex items-center justify-center rounded-full border border-transparent bg-emerald-50/50 p-1.5 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 ring-0 transition-all duration-200 hover:shadow-lg hover:shadow-emerald-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                    class="h-4 w-4 transform transition-transform group-hover:scale-110">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M16.862 4.487l3.621 3.621a2.25 2.25 0 010 3.182l-8.465 8.465a2.25 2.25 0 01-1.306.615l-4.404.845a2.25 2.25 0 01-2.697-2.698l.845-4.404a2.25 2.25 0 01.615-1.306l8.465-8.465a2.25 2.25 0 013.182 0z" />
+                                            </svg>
+                                            </a>    
 
                                         </td>
 

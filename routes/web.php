@@ -9,6 +9,7 @@ use App\Livewire\FormularioInteractivo;
 use App\Livewire\FormulariosRecibidos;
 use App\Livewire\Historial;
 use App\Livewire\Layout\ManagerSidebar;
+use App\Livewire\EditarFormulario;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Successful;
@@ -17,7 +18,7 @@ use App\Livewire\FragmentoComponente;
 Route::get('/successful', Successful::class)->name('succesful');
 // Route::view('/', 'welcome');
 Route::redirect('/', '/login');
-Route::view('login', 'livewire.pages.auth.login')->name('login');
+//Route::view('login', 'livewire.pages.auth.login')->name('login');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -44,17 +45,17 @@ Route::get('/user-dashboard', function () {
     return view('livewire.layout.user-sidebar');
 })->name('user.dashboard');
 
-Route::get('/manager-dashboard', function () {
-    return view('livewire.layout.manager-sidebar');
-})->name('manager.dashboard');
+// Route::get('/manager-dashboard', function () {
+//     return view('livewire.layout.manager-sidebar');
+// })->name('manager.dashboard');
 
 // Route::get('/cargar-reporte')
 
 // Route::post('/cargar-reporte', [CargarReporte::class, 'upload'])->name('executives.import');
 
 // rutas sin recragra
-Route::get('/manager-dashboard', ManagerSidebar::class)->name('manager.dashboard');
-Route::view('/menu', 'menu')
+//Route::get('/manager-dashboard', ManagerSidebar::class)->name('manager.dashboard');
+Route::view('/crear-formulario', 'menu')
 ->middleware(['auth'])
 ->name('menu');
 
@@ -66,21 +67,21 @@ Route::view('/crear-usuario', 'crear-usuario')
     ->middleware(['auth', 'admin'])
     ->name('crear-usuario');
 
-Route::view('/formularios-recibidos', 'formularios-recibidos')
-    ->middleware(['auth', 'admin'])
-    ->name('formularios-recibidos');
+// Route::view('/formularios-recibidos', 'formularios-recibidos')
+//     ->middleware(['auth', 'admin'])
+//     ->name('formularios-recibidos');
 
 
 
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/crear-usuario', function () {
-            return view('crear-usuario');
-        })->name('crear-usuario');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/crear-usuario', function () {
+        return view('crear-usuario');
+    })->name('crear-usuario');
 
-        Route::get('/formularios.recibidos', function () {
-            return view('formularios-recibidos');
-        })->name('formularios-recibidos');
-    });
+Route::get('/formularios-recibidos', function () {
+        return view('formularios-recibidos');
+    })->name('formularios-recibidos');
+}); 
 // * : ruta para el cierre de sesion.
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -139,6 +140,10 @@ Route::post('/set-current-route', function (Illuminate\Http\Request $request) {
 })->name('set.current.route');
 
 Route::get('/formularios/{id}/download', [FormulariosRecibidos::class, 'downloadFormulario'])->name('formularios.download');
+
+Route::get('/formulario/editar/{id}', function ($id) {
+    return view('editar-formulario', ['formularioId' => $id]);
+})->name('editar-formulario');
 
 require __DIR__ . '/auth.php';
 

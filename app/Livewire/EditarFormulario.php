@@ -2,6 +2,7 @@
 namespace App\Livewire;
 
 use App\Models\Documento;
+use App\Models\Marca;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
@@ -256,92 +257,89 @@ class EditarFormulario extends Component
         }
     }
 
-    public function mount($formulario)
-    {
-        $this->formulario = $formulario;
-        $this->marcaId = $formulario->marca_id;
+public function mount($formulario)
+{
+    // Buscar el formulario completo por ID con todas las relaciones necesarias
+    $this->formulario = Marca::with([
+        'infonegocio',
+        'informacion.producto',
+        'pago',
+        'financiera',
+        'infoEntrega',
+        'documento',
+        'formLinks'
+    ])->findOrFail($formulario);
 
-        $this->negocio = $formulario->infonegocio->codigo_cliente;
-        $this->nombres = $formulario->infonegocio->nombre;
-        $this->correo = $formulario->infonegocio->correo;
-        $this->numero = $formulario->infonegocio->numero_celular;
-        $this->crms = $formulario->infonegocio->n_oportunidad_crm;
-        $this->nom_rep = $formulario->infonegocio->nom_rep;
+    // A partir de aquí, se mantiene tu lógica actual
+    $this->marcaId = $this->formulario->marca_id;
 
-        $this->tipo_solicitud = $formulario->tipo_solicitud;
+    $this->negocio = $this->formulario->infonegocio->codigo_cliente;
+    $this->nombres = $this->formulario->infonegocio->nombre;
+    $this->correo = $this->formulario->infonegocio->correo;
+    $this->numero = $this->formulario->infonegocio->numero_celular;
+    $this->crms = $this->formulario->infonegocio->n_oportunidad_crm;
+    $this->nom_rep = $this->formulario->infonegocio->nom_rep;
 
-        // $this->cod_ejc = $formulario->cod_ejc;
-        $this->nombre_ejc = $formulario->nombre_ejc;
-        // $this->telefono_ejc = $formulario->telefono_ejc;
-        $this->email_ejc = $formulario->email_ejc;
+    $this->tipo_solicitud = $this->formulario->tipo_solicitud;
+    $this->nombre_ejc = $this->formulario->nombre_ejc;
+    $this->email_ejc = $this->formulario->email_ejc;
 
-        // $this->fecha = $this->formatearFecha($formulario->fecha);
-        $this->oc = $formulario->n_oc;
-        $this->precio = $formulario->precio_venta;
-        $this->soluciones = $formulario->tipo_contrato;
-        $this->linea = $formulario->linea;
-        $this->codlinea = $formulario->codigo_linea;
-        $this->nomgerente = $formulario->nombre;
-        // $this->telgerente = $formulario->telefono;
-        $this->corgerente = $formulario->correo_electronico;
-        $this->clientcode = $formulario->otro;
-        $this->clientname = $formulario->cel;
-        $this->mail = $formulario->email;
-        // $this->cotizacion = $formulario->adjunto_cotizacion;
+    $this->oc = $this->formulario->n_oc;
+    $this->precio = $this->formulario->precio_venta;
+    $this->soluciones = $this->formulario->tipo_contrato;
+    $this->linea = $this->formulario->linea;
+    $this->codlinea = $this->formulario->codigo_linea;
+    $this->nomgerente = $this->formulario->nombre;
+    $this->corgerente = $this->formulario->correo_electronico;
+    $this->clientcode = $this->formulario->otro;
+    $this->clientname = $this->formulario->cel;
+    $this->mail = $this->formulario->email;
+    $this->director = $this->formulario->director;
+    $this->cor2gerente = $this->formulario->correo_director;
+    $this->marcaId = $this->formulario->id;
 
-        $this->director = $formulario->director;
-        // $this->tel2gerente = $formulario->numero;
-        $this->cor2gerente = $formulario->correo_director;
-        $this->marcaId = $formulario->id;
-        if ($formulario->informacion->isNotEmpty()) {
-            $info = $formulario->informacion->first();
-            $this->entregacliente = $info->realiza_entrega_cliente;
-            $this->entrega_realizar = $info->entrega_realizar;
-            $this->lugarentrega = $info->lugar_entrega;
-            $this->espais = $info->pais;
-            $this->tiempoentrega = $info->tiempo_entrega;
-            $this->terminoentrega = $this->formatearFecha($info->fecha_inicio_termino);
-            $this->tipoicoterm = $info->tipo_incoterms;
+    if ($this->formulario->informacion->isNotEmpty()) {
+        $info = $this->formulario->informacion->first();
+        $this->entregacliente = $info->realiza_entrega_cliente;
+        $this->entrega_realizar = $info->entrega_realizar;
+        $this->lugarentrega = $info->lugar_entrega;
+        $this->espais = $info->pais;
+        $this->tiempoentrega = $info->tiempo_entrega;
+        $this->terminoentrega = $this->formatearFecha($info->fecha_inicio_termino);
+        $this->tipoicoterm = $info->tipo_incoterms;
 
-            $this->prestar = $info->servicio_a_prestar;
-            $this->suministrar = $info->frecuencia_suministro;
+        $this->prestar = $info->servicio_a_prestar;
+        $this->suministrar = $info->frecuencia_suministro;
 
-            $this->inicio = $this->formatearFecha($info->fecha_inicio);
-            $this->finalizacion = $this->formatearFecha($info->fecha_finalizacion);
+        $this->inicio = $this->formatearFecha($info->fecha_inicio);
+        $this->finalizacion = $this->formatearFecha($info->fecha_finalizacion);
 
-            if ($info->producto->isNotEmpty()) {
-                $producto = $info->producto->first();
-
-                $this->aplicagarantia = $producto->aplica_garantia;
-                $this->terminogarantia = $producto->termino_garantia;
-                $this->aplicapoliza = $producto->aplica_poliza;
-                $this->porcentaje = $producto->porcentaje_poliza;
-            }
+        if ($info->producto->isNotEmpty()) {
+            $producto = $info->producto->first();
+            $this->aplicagarantia = $producto->aplica_garantia;
+            $this->terminogarantia = $producto->termino_garantia;
+            $this->aplicapoliza = $producto->aplica_poliza;
+            $this->porcentaje = $producto->porcentaje_poliza;
         }
-
-        if ($formulario->pago && $formulario->pago->isNotEmpty()) {
-            $pago = $formulario->pago->first();
-
-            $this->incluye_iva = $pago->incluye_iva;
-
-        }
-
-
-
-        $this->existingFiles = $formulario->documento
-            ->map(function ($documento) {
-                return [
-                    'id' => $documento->id,
-                    'name' => $documento->nombre_original,
-                    'path' => $documento->ruta_documento,
-                    'tipo' => $documento->tipo_documento,
-                ];
-            })
-            ->toArray();
-
-
-
     }
+
+    if ($this->formulario->pago && $this->formulario->pago->isNotEmpty()) {
+        $pago = $this->formulario->pago->first();
+        $this->incluye_iva = $pago->incluye_iva;
+    }
+
+    $this->existingFiles = $this->formulario->documento
+        ->map(function ($documento) {
+            return [
+                'id' => $documento->id,
+                'name' => $documento->nombre_original,
+                'path' => $documento->ruta_documento,
+                'tipo' => $documento->tipo_documento,
+            ];
+        })
+        ->toArray();
+}
+
 
     public function loadExistingFiles()
     {

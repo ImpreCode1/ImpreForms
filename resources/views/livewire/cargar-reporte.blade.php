@@ -56,7 +56,7 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                                     </svg>
                                                     <p class="mb-2 text-sm text-gray-500">
-                                                        <span class="font-semibold">Haz clic para cargar</span> o arrastra y suelta
+                                                        <span class="font-semibold">Haz clic para cargar</span>
                                                     </p>
                                                     <p class="text-xs text-gray-500">XLSX, XLS, CSV (MAX. 10MB)</p>
                                                 </div>
@@ -138,7 +138,7 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                                     </svg>
                                                     <p class="mb-2 text-sm text-gray-500">
-                                                        <span class="font-semibold">Haz clic para cargar</span> o arrastra y suelta
+                                                        <span class="font-semibold">Haz clic para cargar</span>
                                                     </p>
                                                     <p class="text-xs text-gray-500">XLSX, XLS, CSV (MAX. 10MB)</p>
                                                 </div>
@@ -220,7 +220,7 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                                     </svg>
                                                     <p class="mb-2 text-sm text-gray-500">
-                                                        <span class="font-semibold">Haz clic para cargar</span> o arrastra y suelta
+                                                        <span class="font-semibold">Haz clic para cargar</span>
                                                     </p>
                                                     <p class="text-xs text-gray-500">XLSX, XLS, CSV (MAX. 10MB)</p>
                                                 </div>
@@ -302,7 +302,7 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                                     </svg>
                                                     <p class="mb-2 text-sm text-gray-500">
-                                                        <span class="font-semibold">Haz clic para cargar</span> o arrastra y suelta
+                                                        <span class="font-semibold">Haz clic para cargar</span>
                                                     </p>
                                                     <p class="text-xs text-gray-500">XLSX, XLS, CSV (MAX. 10MB)</p>
                                                 </div>
@@ -364,18 +364,39 @@
                                     <div class="flex items-center justify-center w-full">
                                         <label class="flex flex-col items-center justify-center w-full h-48 border-2 border-purple-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-purple-50 transition duration-300">
                                             @if($file)
-                                                <span class="text-sm text-gray-500">{{ $file->getClientOriginalName() }}</span>
+                                                <div class="flex flex-col items-center justify-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-purple-500" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    <p class="text-sm text-gray-500 mt-2">
+                                                        {{ $file->getClientOriginalName() }}
+                                                        <button
+                                                            wire:click.prevent="$set('file', null)"
+                                                            class="ml-2 text-red-500 hover:text-red-700 transition"
+                                                        >
+                                                            Eliminar
+                                                        </button>
+                                                    </p>
+                                                </div>
                                             @else
-                                                <span class="text-sm text-gray-500">Arrastra y suelta un archivo aquí o haz clic para seleccionar</span>
+                                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-purple-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                                    </svg>
+                                                    <p class="mb-2 text-sm text-gray-500">
+                                                        <span class="font-semibold">Haz clic para cargar</span>
+                                                    </p>
+                                                    <p class="text-xs text-gray-500">XLSX, XLS, CSV (MAX. 10MB)</p>
+                                                </div>
                                             @endif
-                                            <input type="file" wire:model="file" class="hidden" />
+                                            <input type="file" wire:model="file" accept=".xlsx,.xls,.csv" class="hidden" />
                                         </label>
                                     </div>
 
                                     @error('file')
                                         <div class="text-red-500 text-sm mt-2 flex items-center">
                                             <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                                             </svg>
                                             {{ $message }}
                                         </div>
@@ -385,7 +406,7 @@
                                         type="submit"
                                         @if(!$file) disabled @endif
                                         class="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition duration-300 flex items-center justify-center
-                                               disabled:bg-gray-300 disabled:cursor-not-allowed"
+                                            disabled:bg-gray-300 disabled:cursor-not-allowed"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />

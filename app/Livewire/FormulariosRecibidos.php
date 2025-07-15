@@ -61,7 +61,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
         $formulario = Marca::with(['formLinks'])->findOrFail($id);
         $operacionesLink = $formulario->formLinks->where('type', 'operaciones')->first()->link;
         $financieraLink = $formulario->formLinks->where('type', 'financiera')->first()->link;
-        $emails = ['kevin.gomez@impresistem.com', 'kevin.gomez@impresistem.com'];
+        $emails = ['sebastian.ortiz@impresistem.com', 'sebastian.ortiz@impresistem.com'];
 
         // URLs completas usando url() helper para obtener el dominio correcto automáticamente
         $links = [url("/formulario-operaciones/{$operacionesLink}"), url("/formulario-financiera/{$financieraLink}")];

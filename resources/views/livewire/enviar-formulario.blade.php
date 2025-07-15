@@ -611,6 +611,14 @@
                             <!-- Área de Archivos -->
                             {{-- inicio subida de documentos --}}
                             <div>
+                                <label for="porcentaje" class="block text-sm font-medium text-gray-700">
+                                    
+                                </label>
+                                <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mr-3 text-green-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
+                                    </svg> Adjuntar Documentación (Opcional)
+                                </h2>
                                 <!-- Zona de arrastrar y soltar -->
                                 <div class="border-dashed border-2 border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors duration-300"
                                 wire:drop.prevent="handleDrop($event.dataTransfer.files)"

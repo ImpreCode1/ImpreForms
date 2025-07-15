@@ -1,7 +1,7 @@
 <div>
     <x-app-layout>
         <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
                 <!-- Header con estadísticas -->
                 <div class="mb-8">
                     <div class="container mx-auto px-4 py-8">
@@ -19,7 +19,7 @@
                                             stroke-dashoffset="25" d="M18 2 a16 16 0 1 1 0 32 a16 16 0 1 1 0 -32" />
                                     </svg>
                                     <div
-                                        class="absolute inset-0 flex items-center justify-center text-white text-3xl font-bold">
+                                        class="absolute inset-0 flex items-center justify-center text-blue-500 text-3xl font-bold">
                                         {{-- {{ $totalFormularios }} --}}
                                         =
                                     </div>
@@ -42,7 +42,7 @@
                                             stroke-dashoffset="20" d="M18 2 a16 16 0 1 1 0 32 a16 16 0 1 1 0 -32" />
                                     </svg>
                                     <div
-                                        class="absolute inset-0 flex items-center justify-center text-white text-2xl font-bold">
+                                        class="absolute inset-0 flex items-center justify-center text-purple-500 text-2xl font-bold">
                                         #
                                     </div>
                                 </div>
@@ -66,7 +66,7 @@
                                             stroke-dashoffset="30" d="M18 2 a16 16 0 1 1 0 32 a16 16 0 1 1 0 -32" />
                                     </svg>
                                     <div
-                                        class="absolute inset-0 flex items-center justify-center text-white text-3xl font-bold">
+                                        class="absolute inset-0 flex items-center justify-center text-yellow-500 text-3xl font-bold">
                                         %
                                     </div>
                                 </div>
@@ -178,187 +178,108 @@
 
                     <!-- Tabla -->
                     @if ($formularios->isNotEmpty())
-                        <div class="overflow-x-auto rounded-lg shadow-lg" wire:poll.visible.60s>
-                            <table class="w-full border-collapse bg-white">
-                                <thead>
+                        <div class="overflow-x-auto max-w-full" wire:poll.visible.60s>
+                            <table class="min-w-full border-collapse bg-white text-sm">
+                                <thead class="sticky top-0 bg-white shadow z-10">
                                     <tr class="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
-                                        <th
-                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
-                                            Solicitante</th>
-                                        <th
-                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
-                                            Código cliente</th>
-                                        <th
-                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
-                                            Nombre cliente</th>
-                                        <th
-                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
-                                            N° oportunidad</th>
-                                        <th
-                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
-                                            Información</th>
-                                        <th
-                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
-                                            Descargar</th>
-                                        <th
-                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
-                                            Fecha de envío</th>
-                                        <th
-                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
-                                            Links</th>
-                                        <th
-                                            class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">
-                                            Restablecer</th>
-                                        <th
-                                            class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700">
-                                            Acciones</th>
+                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">Solicitante</th>
+                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">Código cliente</th>
+                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">Nombre cliente</th>
+                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">N° oportunidad</th>
+                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">Información</th>
+                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">Descargar</th>
+                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">Fecha de envío</th>
+                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">Links</th>
+                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">Restablecer</th>
+                                        <th class="px-2 py-3 text-center font-bold text-gray-700 uppercase tracking-wider">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
                                     @foreach ($formularios as $formulario)
                                         <tr class="hover:bg-gray-50 transition-all duration-200">
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700">
-                                                {{ $formulario->user->name ?? 'No especificado' }}
-                                            </td>
-
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                                {{ $formulario->infonegocio->codigo_cliente }}
-                                            </td>
-
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                                <div class="max-w-xs truncate">
-                                                    {{ $formulario->infonegocio->nombre }}
+                                            <td class="px-2 py-3 text-gray-700 break-words">{{ $formulario->user->name ?? 'No especificado' }}</td>
+                                            <td class="px-2 py-3 text-gray-600 break-words">{{ $formulario->infonegocio->codigo_cliente }}</td>
+                                            <td class="px-2 py-3 text-gray-600 break-words">{{ $formulario->infonegocio->nombre }}</td>
+                                            <td class="px-2 py-3 text-gray-600 break-words">{{ $formulario->infonegocio->n_oportunidad_crm }}</td>
+                                            <td class="px-2 py-3 text-center align-middle">
+                                                <div class="flex justify-center">
+                                                    <button wire:click="loadFormulario({{ $formulario->id }})"
+                                                        class="inline-flex items-center px-2 py-1 rounded bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                        </svg>
+                                                        Ver
+                                                    </button>
                                                 </div>
                                             </td>
-
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                                {{ $formulario->infonegocio->n_oportunidad_crm }}
-                                            </td>
-
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <button x-data
-                                                    x-on:click="$dispatch('show-modal'); $wire.loadFormulario({{ $formulario->id }})"
-                                                    class="inline-flex items-center px-3 py-2 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all duration-200">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2"
-                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                    </svg>
-                                                    <span class="text-sm font-medium">Ver detalles</span>
-                                                </button>
-                                            </td>
-
-                                            <td class="px-6 py-4 whitespace-nowrap">
+                                            <td class="px-2 py-3">
                                                 <a href="{{ route('formularios.download', $formulario->id) }}"
-                                                    class="inline-flex items-center px-3 py-2 rounded-md bg-amber-50 text-amber-600 hover:bg-amber-100 transition-all duration-200">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2"
-                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                                    class="inline-flex items-center px-2 py-1 rounded bg-amber-50 text-amber-600 hover:bg-amber-100 text-xs">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                                     </svg>
-                                                    <span class="text-sm font-medium">Descargar</span>
+                                                    Descargar
                                                 </a>
                                             </td>
-
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span
-                                                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                                    {{ $formulario->created_at->format('d/m/Y') }}
-                                                </span>
-                                            </td>
-
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex flex-col gap-2">
+                                            <td class="px-2 py-3 text-xs text-gray-700">{{ $formulario->created_at->format('d/m/Y') }}</td>
+                                            <td class="px-2 py-3 text-xs">
+                                                <div class="flex flex-col gap-1">
                                                     @foreach ($formulario->formLinks as $link)
                                                         @if (!$link->isExpired())
-                                                            @if ($link->type === 'operaciones')
-                                                                <a href="{{ route('formulario-operaciones', ['link' => $link->link]) }}"
-                                                                    target="_blank"
-                                                                    class="inline-flex items-center px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-all duration-200">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                                        class="h-3.5 w-3.5 mr-1" fill="none"
-                                                                        viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path stroke-linecap="round"
-                                                                            stroke-linejoin="round" stroke-width="2"
-                                                                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                                                    </svg>
-                                                                    <span
-                                                                        class="text-xs font-medium">Operaciones</span>
-                                                                </a>
-                                                            @elseif ($link->type === 'financiera')
-                                                                <a href="{{ route('formulario-financiera', ['link' => $link->link]) }}"
-                                                                    target="_blank"
-                                                                    class="inline-flex items-center px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-all duration-200">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                                        class="h-3.5 w-3.5 mr-1" fill="none"
-                                                                        viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path stroke-linecap="round"
-                                                                            stroke-linejoin="round" stroke-width="2"
-                                                                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                                                    </svg>
-                                                                    <span class="text-xs font-medium">Financiera</span>
-                                                                </a>
-                                                            @endif
-                                                        @else
-                                                            <span
-                                                                class="inline-flex items-center px-2.5 py-1 rounded-md bg-red-50 text-red-700">
+                                                            @php
+                                                                $isOperaciones = $link->type === 'operaciones';
+                                                                $bgColor = $isOperaciones ? 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100';
+                                                                $label = $isOperaciones ? 'Operaciones' : 'Financiera';
+                                                                $route = $isOperaciones ? route('formulario-operaciones', ['link' => $link->link]) : route('formulario-financiera', ['link' => $link->link]);
+                                                            @endphp
+                                                            <a href="{{ $route }}" target="_blank"
+                                                                class="inline-flex items-center px-2 py-1 rounded {{ $bgColor }} text-xs transition-all duration-200">
                                                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                                                    class="h-3.5 w-3.5 mr-1" fill="none"
-                                                                    viewBox="0 0 24 24" stroke="currentColor">
-                                                                    <path stroke-linecap="round"
-                                                                        stroke-linejoin="round" stroke-width="2"
-                                                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                                    class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24"
+                                                                    stroke="currentColor">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                                                 </svg>
-                                                                <span class="text-xs font-medium">Expirado</span>
-                                                            </span>
+                                                                {{ $label }}
+                                                            </a>
+                                                        @else
+                                                            <span class="inline-flex items-center px-2 py-1 rounded bg-red-50 text-red-700 text-xs">Expirado</span>
                                                         @endif
                                                     @endforeach
+
                                                 </div>
                                             </td>
-
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                @if (
-                                                    $formulario->formLinks->contains(function ($link) {
-                                                        return $link->isExpired();
-                                                    }))
-                                                    <button wire:click="resetLinks({{ $formulario->id }})"
-                                                        wire:loading.attr="disabled"
-                                                        class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-purple-50 text-purple-600 hover:bg-purple-100 transition-all duration-200">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2"
-                                                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                                        </svg>
-                                                    </button>
-                                                @endif
+                                            <td class="px-2 py-3 text-center align-middle">
+                                                <div class="flex justify-center">
+                                                    @if ($formulario->formLinks->contains(fn($link) => $link->isExpired()))
+                                                        <button wire:click="resetLinks({{ $formulario->id }})"
+                                                            class="w-7 h-7 rounded-full bg-purple-50 text-purple-600 hover:bg-purple-100 flex items-center justify-center">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                                            </svg>
+                                                        </button>
+                                                    @endif
+                                                </div>
                                             </td>
-
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex items-center justify-center space-x-2">
-                                                    <!-- Botón Aprobar -->
+                                            <td class="px-2 py-3 text-center">
+                                                <div class="flex justify-center space-x-1">
                                                     <button wire:click="approveFormulario({{ $formulario->id }})"
-                                                        wire:loading.class="opacity-50 cursor-not-allowed"
-                                                        wire:loading.attr="disabled"
-                                                        class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-green-50 text-green-600 hover:bg-green-100 transition-all duration-200">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
-                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2" d="M5 13l4 4L19 7" />
+                                                        class="w-7 h-7 rounded-full bg-green-50 text-green-600 hover:bg-green-100 flex items-center justify-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                                         </svg>
                                                     </button>
 
-                                                    <!-- Comentar button -->
                                                     <a href="mailto:{{ $formulario->correo_electronico ?? '' }}?subject=Observación del contrato&body=Buen día,"
-                                                        class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all duration-200">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
-                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2"
+                                                        class="w-7 h-7 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                                 d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                                                         </svg>
                                                     </a>
