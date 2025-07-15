@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('infonegocios', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('info_entrega', function (Blueprint $table) {
+            $table->foreign(['marcas_id'], 'info_entrega_ibfk_1')->references(['id'])->on('marcas')->onUpdate('no action')->onDelete('no action');
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('infonegocios');
+        Schema::table('info_entrega', function (Blueprint $table) {
+            $table->dropForeign('info_entrega_ibfk_1');
+        });
     }
 };

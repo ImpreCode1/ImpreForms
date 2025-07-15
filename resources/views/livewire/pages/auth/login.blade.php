@@ -69,7 +69,7 @@ new #[Layout('layouts.guest')] class extends Component
                 wire:model="form.email"
                 type="email"
                 placeholder="Correo electrónico"
-                class="w-full px-4 py-3.5 pl-10 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-indigo-200 @error('form.email') border-red-500 @enderror"
+                class="w-full px-4 py-3.5 pl-10 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-indigo-200 @error('form.email') @enderror"
             />
 
             <div class="absolute mb-5 inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -96,7 +96,7 @@ new #[Layout('layouts.guest')] class extends Component
 
             class="w-full px-4 py-3.5 pl-10 rounded-xl border-2 border-gray-200
                    focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200
-                   transition duration-300 ease-in-out @error('form.password') border-red-500 @enderror"
+                   transition duration-300 ease-in-out @error('form.password') @enderror"
           />
           <div class="absolute mb-5 inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -269,12 +269,20 @@
                                             </td>
                                             <td class="px-2 py-3 text-center">
                                                 <div class="flex justify-center space-x-1">
-                                                    <button wire:click="approveFormulario({{ $formulario->id }})"
-                                                        class="w-7 h-7 rounded-full bg-green-50 text-green-600 hover:bg-green-100 flex items-center justify-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                                        </svg>
-                                                    </button>
+                                                    @php
+                                                        $activeLinks = $formulario->formLinks->filter(fn($link) => !$link->isExpired());
+                                                        $hasOperaciones = $activeLinks->contains(fn($l) => $l->type === 'operaciones');
+                                                        $hasFinanciera = $activeLinks->contains(fn($l) => $l->type === 'financiera');
+                                                    @endphp
+
+                                                    @if ($hasOperaciones && $hasFinanciera)
+                                                        <button wire:click="approveFormulario({{ $formulario->id }})"
+                                                            class="w-7 h-7 rounded-full bg-green-50 text-green-600 hover:bg-green-100 flex items-center justify-center">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                            </svg>
+                                                        </button>
+                                                    @endif
 
                                                     <a href="mailto:{{ $formulario->correo_electronico ?? '' }}?subject=Observación del contrato&body=Buen día,"
                                                         class="w-7 h-7 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center">

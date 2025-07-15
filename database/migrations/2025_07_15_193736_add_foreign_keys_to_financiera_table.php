@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('informacions', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('financiera', function (Blueprint $table) {
+            $table->foreign(['marcas_id'], 'financiera_ibfk_1')->references(['id'])->on('marcas')->onUpdate('no action')->onDelete('no action');
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('informacions');
+        Schema::table('financiera', function (Blueprint $table) {
+            $table->dropForeign('financiera_ibfk_1');
+        });
     }
 };
