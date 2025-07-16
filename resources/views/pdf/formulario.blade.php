@@ -242,10 +242,10 @@
     </div>
 
     <div class="header">
-        <h3 style="color: #005a8c">Información adiccional (si se requiere)</h3>
+        <h3 style="color: #005a8c">Información adicional (si se requiere)</h3>
     </div>
 
-    {{-- información adiccional (si se requiere) --}}
+    {{-- información adicional (si se requiere) --}}
     <div class="info-section">
         <span class="info-label">Nombre</span>
         <div class="info-value">{{ $formulario->otro ?? 'No especificado' }}</div>

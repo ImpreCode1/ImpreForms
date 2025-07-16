@@ -467,10 +467,12 @@ class EnviarFormulario extends Component
         ]);
 
         foreach ($this->files as $file) {
+            $storedPath = $file['file']->store('documents', 'public');
+
             Documento::create([
                 'marcas_id' => $this->marcaId,
                 'nombre_original' => $file['name'],
-                'ruta_documento' => $file['path'],
+                'ruta_documento' => $storedPath,
             ]);
         }
 
@@ -590,13 +592,12 @@ class EnviarFormulario extends Component
         // $this->validate([
         //     'attachments.*' => 'file|max:10240|mimes:pdf,doc,docx,xls,xlsx,msj,msg',
         // ]);
-
-        foreach ($this->attachments as $file) {
-            $originalName = $file->getClientOriginalName();
-            $this->files[] = [
+        $this->files[] = []; // Resetear archivos antes de agregar nuevos
+        foreach ($this->attachments as $id => $file) {
+            $this->files[$id] = [
+                'file' => $file,
                 'name' => $file->getClientOriginalName(),
                 'size' => round($file->getSize() / 1024, 2),
-                'path' => $file->storeAS('documents', $originalName, 'public'),
             ];
         }
     }

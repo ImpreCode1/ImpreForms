@@ -1,6 +1,6 @@
 <div>
     <div class="font-sans text-gray-900 antialiased">
-        <form wire:submit.prevent="submit" class="space-y-8">
+        <form wire:submit.prevent="submit" enctype="multipart/form-data" class="space-y-8">
             <div class="form-step">
                 <div class="bg-gray-50 p-6 rounded-lg mt-6">
                     <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
@@ -637,9 +637,9 @@
 
                 <!-- Existing Files Section -->
                 @if (count($existingFiles) > 0)
-                    <div class="mt-4 space-y-2">
+                    <div class="mt-6">
                         <h3 class="text-sm font-medium text-gray-700">Archivos existentes:</h3>
-                        <div class="space-y-2">
+                        <div class="space-y-2 max-w-2xl mx-auto">
                             @foreach ($existingFiles as $file)
                                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                     <div class="flex items-center space-x-3">
@@ -653,7 +653,7 @@
                                         </a>
 
                                     </div>
-                                    <button type="button" wire:click="removeExistingFile({{ $file['id'] }})"
+                                    <button type="button" wire:click="marcarArchivosParaEliminar({{ $file['id'] }})"
                                         class="text-red-500 hover:text-red-700">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
@@ -690,35 +690,23 @@
 
             </div>
 
-            <div x-data="{
-                dragging: false,
-                handleDrop(e) {
-                    e.preventDefault();
-                    this.dragging = false;
-                    @this.uploadMultiple('archivosNuevos', e.dataTransfer.files);
-                },
-                handleDragOver(e) {
-                    e.preventDefault();
-                    this.dragging = true;
-                },
-                handleDragLeave() {
-                    this.dragging = false;
-                }
-            }" class="w-full">
-
+            <div class="w-full">
                 <!-- Zona de subida de archivos -->
-                <div @dragover.prevent="handleDragOver" @dragleave.prevent="handleDragLeave"
-                    @drop.prevent="handleDrop" :class="{ 'border-blue-500 bg-blue-50': dragging }"
-                    class="relative border-2 border-dashed border-gray-300 rounded-lg p-8 text-center transition-all duration-200 ease-in-out hover:border-blue-400">
-                    <input type="file" wire:model="archivosNuevos" multiple
-                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                    <div class="space-y-4">
+                <div class="relative border-2 border-dashed border-gray-300 rounded-lg p-8 text-center transition-all duration-200 ease-in-out hover:border-blue-400">
+                    <input 
+                        type="file" 
+                        wire:model="archivosNuevos" 
+                        multiple
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    >
+
+                    <div class="pointer-events-none space-y-4">
                         <div class="flex flex-col items-center">
                             <div class="bg-blue-50 p-4 rounded-full mb-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-500"
-                                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
                             </div>
 
@@ -744,26 +732,25 @@
                             </div>
 
                             <p class="text-blue-600 mt-4 font-medium text-sm">Haga clic para seleccionar uno o varios documentos</p>
-
                         </div>
                     </div>
                 </div>
 
-                <!-- Archivos seleccionados (Aún no guardados en la base de datos) -->
-                @if (count($archivosMostrados) > 0)
+                <!-- Archivos seleccionados -->
+                @if (count($archivosNuevos) > 0)
                     <div class="mt-6">
                         <h3 class="text-sm font-semibold text-gray-700 mb-3">
-                            Archivos seleccionados ({{ count($archivosMostrados) }})
+                            Archivos seleccionados ({{ count($archivosNuevos) }})
                         </h3>
                         <div class="space-y-3">
-                            @foreach ($archivosMostrados as $index => $archivo)
+                            @foreach ($archivosNuevos as $index => $archivo)
                                 <div
                                     class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
                                     <div class="flex items-center">
                                         <span class="text-gray-700">{{ $archivo->getClientOriginalName() }}</span>
                                     </div>
                                     <button wire:click="quitarArchivo({{ $index }})" type="button"
-                                        class="text-red-500">
+                                        class="text-red-500 hover:text-red-700">
                                         Eliminar
                                     </button>
                                 </div>
@@ -771,7 +758,6 @@
                         </div>
                     </div>
                 @endif
-
             </div>
 
             <div class="bg-gray-50 px-6 py-4 flex items-center justify-end gap-3">

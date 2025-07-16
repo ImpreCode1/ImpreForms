@@ -50,6 +50,7 @@ class EditarFormulario extends Component
     public $nom_rep;
     public $entrega_realizar;
     public $files = [];
+    public $archivosParaEliminar = [];
 
     protected $rules = [
         // validaciones
@@ -356,6 +357,21 @@ public function mount($formulario)
             ->toArray();
     }
 
+
+    public function marcarArchivosParaEliminar($Id)
+    {
+        if(!in_array($Id, $this->archivosParaEliminar)) {
+            $this->archivosParaEliminar[] = $Id;
+        }
+
+        $this->existingFiles = array_filter(
+            $this->existingFiles,
+            function ($file) use ($Id) {
+                return $file['id'] != $Id;
+            }
+        );
+    }
+
     public function removeExistingFile($documentId)
     {
         $documento = Documento::find($documentId);
@@ -399,7 +415,9 @@ public function mount($formulario)
     public function updatedArchivosNuevos()
     {
         foreach ($this->archivosNuevos as $file) {
-            $this->archivosMostrados[] = $file;
+            if (!in_array($file, $this->archivosMostrados)) {
+            $this->archivosMostrados[] = $file;    
+            }
         }
     }
 
@@ -512,6 +530,18 @@ public function mount($formulario)
                 // 'fecha_pago' => $this->fecha_pago,
                 'incluye_iva' => $this->incluye_iva,
             ]);
+        }
+
+        if (!empty($this->archivosParaEliminar)) {
+            foreach ($this->archivosParaEliminar as $id) {
+                $documento = Documento::find($id);
+                if ($documento) {
+                    Storage::disk('public')->delete($documento->ruta_documento);
+                    $documento->delete();
+                }
+            }
+
+            $this->archivosParaEliminar = [];
         }
 
         $this->saveNewFiles();

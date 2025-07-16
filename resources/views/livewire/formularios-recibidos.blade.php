@@ -196,7 +196,7 @@
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
                                     @foreach ($formularios as $formulario)
-                                        <tr class="hover:bg-gray-50 transition-all duration-200">
+                                        <tr wire:key="formulario-{{ $formulario->id }}" class="hover:bg-gray-50 transition-all duration-200">
                                             <td class="px-2 py-3 text-gray-700 break-words">{{ $formulario->user->name ?? 'No especificado' }}</td>
                                             <td class="px-2 py-3 text-gray-600 break-words">{{ $formulario->infonegocio->codigo_cliente }}</td>
                                             <td class="px-2 py-3 text-gray-600 break-words">{{ $formulario->infonegocio->nombre }}</td>
@@ -648,7 +648,7 @@
                                             </div>
 
                                             <div class="mt-8 pt-6 border-t border-slate-200">
-                                                <p class="text-sm font-medium text-black">Información adiccional (si se
+                                                <p class="text-sm font-medium text-black">Información adicional (si se
                                                     requiere)</p>
                                                 <br>
                                                 <div class="grid md:grid-cols-3 gap-x-8 gap-y-6">
