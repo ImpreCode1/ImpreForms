@@ -29,9 +29,9 @@ Route::view('profile', 'profile')
     ->name('profile');
 
 // redireccionamiento a la vista de formulario enviado  del formulario
-Route::view('successful', 'successful')
-    ->middleware(['auth','verified'])
-    ->name('crear-usuario');
+// Route::view('successful', 'successful')
+//     ->middleware(['auth','verified'])
+//     ->name('crear-usuario');
 
 Route::view('cargar-reporte', 'cargar-reporte')
     ->middleware(['auth','verified'])
@@ -63,9 +63,9 @@ Route::view('/historial', 'historial')
 ->middleware(['auth'])
 ->name('historial');
 
-Route::view('/crear-usuario', 'crear-usuario')
-    ->middleware(['auth', 'admin'])
-    ->name('crear-usuario');
+// Route::view('/crear-usuario', 'crear-usuario')
+//     ->middleware(['auth', 'admin'])
+//     ->name('crear-usuario');
 
 // Route::view('/formularios-recibidos', 'formularios-recibidos')
 //     ->middleware(['auth', 'admin'])
@@ -144,6 +144,12 @@ Route::get('/formularios/{id}/download', [FormulariosRecibidos::class, 'download
 Route::get('/formulario/editar/{id}', function ($id) {
     return view('editar-formulario', ['formularioId' => $id]);
 })->name('editar-formulario');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/correos-operaciones-financiera', function () {
+        return view('correos-operaciones-financiera');
+    })->name('correos');
+});
 
 require __DIR__ . '/auth.php';
 

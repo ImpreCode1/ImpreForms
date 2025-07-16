@@ -7,6 +7,7 @@ use App\Models\FormLink;
 use App\Models\Informacion;
 // use App\Models\Infonegocio;
 use App\Models\Marca;
+use App\Models\Setting;
 // use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
 use Livewire\Attributes\On;
@@ -15,6 +16,7 @@ use Livewire\WithPagination;
 
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Dom\Text;
+use Hamcrest\Core\Set;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -61,7 +63,10 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
         $formulario = Marca::with(['formLinks'])->findOrFail($id);
         $operacionesLink = $formulario->formLinks->where('type', 'operaciones')->first()->link;
         $financieraLink = $formulario->formLinks->where('type', 'financiera')->first()->link;
-        $emails = ['sebastian.ortiz@impresistem.com', 'sebastian.ortiz@impresistem.com'];
+        $emails = [
+            Setting::get('director_operaciones_email', ''),
+            Setting::get('director_financiera_email', ''),
+        ];
 
         // URLs completas usando url() helper para obtener el dominio correcto automáticamente
         $links = [url("/formulario-operaciones/{$operacionesLink}"), url("/formulario-financiera/{$financieraLink}")];
