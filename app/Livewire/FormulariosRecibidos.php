@@ -53,6 +53,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public $completedContracts = [];
     public $incompleteContracts = [];
     public $maxFormularios;
+    
 
     public $open = false;
 
