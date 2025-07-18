@@ -216,6 +216,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
 
             foreach ($formLinks as $link) {
                 $link->expires_at = $newExpiryTime;
+                $link->completed_at = null;
                 $link->save();
             }
 
