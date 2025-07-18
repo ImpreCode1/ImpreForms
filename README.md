@@ -1,6 +1,6 @@
-<<<<<<< HEAD
+
 # FormSync
-=======
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
 </p>
@@ -85,4 +85,3 @@ Este proyecto está licenciado bajo la licencia MIT.
 ✉️ Contacto
 Proyecto interno desarrollado por el área de desarrollo de la empresa.
 Para soporte o dudas técnicas, contacta al equipo de tecnología correspondiente.
->>>>>>> feature-contratos
