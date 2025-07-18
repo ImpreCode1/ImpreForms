@@ -211,7 +211,8 @@
                                 Puerto
                             </label>
                             <div class="relative">
-                                <i class="ri-anchor-line absolute left-3 top-1/2 transform -translate-y-1/2 @error('puerto') text-red-500 @enderror"></i>
+                                <i
+                                    class="ri-anchor-line absolute left-3 top-1/2 transform -translate-y-1/2 @error('puerto') text-red-500 @enderror"></i>
                                 <input id="puerto" wire:model.live="puerto" autocomplete="off"
                                     class="pl-12 w-full input-gradient border-2  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
                                     @error('puerto') border-red-300 @else border-gray-300 @enderror"
@@ -341,7 +342,8 @@
                                 Otros
                             </label>
                             <div class="relative">
-                                <i class="ri-more-2-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-700"></i>
+                                <i
+                                    class="ri-more-2-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-700"></i>
 
                                 <input id="otros" wire:model.live="otros" autocomplete="off"
                                     class="pl-12 w-full input-gradient  rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300
@@ -484,7 +486,7 @@
         // Aquí puedes enviar el formulario si es necesario
         // event.target.submit();
         console.log('Formulario enviado con valores limpiados:', Object.fromEntries(new FormData(event
-        .target)));
+            .target)));
     });
     window.addEventListener('reloadAndRedirect', () => {
         // Recargar la página

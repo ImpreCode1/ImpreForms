@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Redirect;
 use Livewire\Component;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Illuminate\Support\Facades\Session;
+use App\Models\FormLink;
+
 class Formulariofinanciera extends Component
 {
     public $cliente;
@@ -36,6 +38,7 @@ class Formulariofinanciera extends Component
     public $otros;
     public $no;
     public $link;
+    public $formLink;
 
     public $marcaId;
     //mostrar el mensaje personalizado en caso de que el formulario no tenga todos los campos llenos
@@ -115,23 +118,18 @@ class Formulariofinanciera extends Component
     {
         $this->link = $link;
 
-        $record = DB::table('form_links')->where('link', $link)->where('type', 'financiera')->first();
-        // if (!$record || Carbon::parse($record->created_at)->addMinutes(40)->isPast()) {
-        //     abort(404, 'El enlace ha expirado o no es válido.');
-        // }
+        $this->formLink = FormLink::where('link', $link)
+            ->where('type', 'financiera')
+            ->firstOrFail();
 
-        if (!$record) {
-            abort(404, 'El enlace no es válido.');
-        }
-
-        if (!$record->expires_at || Carbon::parse($record->expires_at)->isPast()) {
+        if (!$this->formLink->expires_at || $this->formLink->isExpired()) {
             abort(404, 'El enlace ha expirado.');
         }
 
-        $this->cliente = $record->cliente;
-        $this->nombre = $record->nombre;
-        $this->crm = $record->crm;
-        $this->marcaId = $record->marca_id;
+        $this->cliente = $this->formLink->cliente;
+        $this->nombre = $this->formLink->nombre;
+        $this->crm = $this->formLink->crm;
+        $this->marcaId = $this->formLink->marca_id;
 
         if (is_null($this->marcaId)) {
             abort(500, 'Marca ID is null');
@@ -145,9 +143,6 @@ class Formulariofinanciera extends Component
             $this->otros = $financiera->otros;
             $this->garantia = $financiera->garantiascredit;
             $this->anticipo = $financiera->porcentaje;
-        }
-        if (Session::has('form_submited')) {
-            return redirect()->to('/successful');
         }
     }
 
@@ -175,10 +170,10 @@ class Formulariofinanciera extends Component
             session()->flash('mensaje', 'No se encontró el registro de financiera para actualizar.');
         }
 
-        Session::put('form_submitted', true);
-
+        $this->formLink->completed_at = now();
+        $this->formLink->save();
+        Session::flash('form_submitted', true); // Solo dura hasta el próximo request;
         // $this->reset(['plazo', 'pago', 'moneda', 'garantia', 'hasAdvancePayment', 'anticipo', 'fecha', 'otros']);
-
         $this->success = true;
         return redirect()->to('/successful');
     }

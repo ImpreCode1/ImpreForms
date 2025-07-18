@@ -232,12 +232,25 @@
                                                         @if (!$link->isExpired())
                                                             @php
                                                                 $isOperaciones = $link->type === 'operaciones';
-                                                                $bgColor = $isOperaciones ? 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100';
+                                                                $isCompleted = $link->isCompleted();
                                                                 $label = $isOperaciones ? 'Operaciones' : 'Financiera';
-                                                                $route = $isOperaciones ? route('formulario-operaciones', ['link' => $link->link]) : route('formulario-financiera', ['link' => $link->link]);
+
+                                                                // Ruta activa siempre
+                                                                $route = $isOperaciones
+                                                                    ? route('formulario-operaciones', ['link' => $link->link])
+                                                                    : route('formulario-financiera', ['link' => $link->link]);
+
+                                                                // Colores: si no está completado, mostrar en gris
+                                                                $bgColor = $isCompleted
+                                                                    ? ($isOperaciones
+                                                                        ? 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
+                                                                        : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100')
+                                                                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200';
                                                             @endphp
+
                                                             <a href="{{ $route }}" target="_blank"
-                                                                class="inline-flex items-center px-2 py-1 rounded {{ $bgColor }} text-xs transition-all duration-200">
+                                                                class="inline-flex items-center px-2 py-1 rounded {{ $bgColor }} text-xs transition-all duration-200"
+                                                                title="{{ $isCompleted ? 'Formulario diligenciado' : 'Pendiente por diligenciar' }}">
                                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                                     class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24"
                                                                     stroke="currentColor">

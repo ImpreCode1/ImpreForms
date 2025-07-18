@@ -6,6 +6,7 @@ use App\Models\Infoentrega;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use App\Models\FormLink;
 
 class FormularioInteractivo extends Component
 {
@@ -27,6 +28,7 @@ class FormularioInteractivo extends Component
     public $link;
     public $marcaId;
     public $otros;
+    public $formLink;
 
     protected $rules = [
         'clientes' => 'required|string|min:3',
@@ -82,23 +84,18 @@ class FormularioInteractivo extends Component
     {
         $this->link = $link;
 
-        $record = DB::table('form_links')->where('link', $link)->where('type', 'operaciones')->first();
-        // if (!$record || Carbon::parse($record->created_at)->addMinutes(40)->isPast()) {
-        //     abort(404, 'El enlace ha expirado o no es válido.');
-        // }
+        $this->formLink = FormLink::where('link', $link)
+            ->where('type', 'operaciones')
+            ->firstOrFail();
 
-        if (!$record) {
-            abort(404, 'El enlace no es válido.');
-        }
-
-        if (!$record->expires_at || Carbon::parse($record->expires_at)->isPast()) {
+        if (!$this->formLink->expires_at || $this->formLink->isExpired()) {
             abort(404, 'El enlace ha expirado.');
         }
 
-        $this->cliente = $record->cliente;
-        $this->nombre = $record->nombre;
-        $this->crm = $record->crm;
-        $this->marcaId = $record->marca_id;
+        $this->cliente = $this->formLink->cliente;
+        $this->nombre = $this->formLink->nombre;
+        $this->crm = $this->formLink->crm;
+        $this->marcaId = $this->formLink->marca_id;
 
         if (is_null($this->marcaId)) {
             abort(500, 'Marca ID is null');
@@ -106,7 +103,6 @@ class FormularioInteractivo extends Component
 
         $infoEntrega = Infoentrega::where('marcas_id', $this->marcaId)->first();
         if ($infoEntrega) {
-            $this->marcaId = $infoEntrega->marcas_id;
             $this->clientes = $infoEntrega->entrega_cliente;
             $this->lugar = $infoEntrega->lugar_entrega;
             $this->pais = $infoEntrega->pais;
@@ -119,6 +115,7 @@ class FormularioInteractivo extends Component
             $this->otros = $infoEntrega->otros;
         }
     }
+
 
     public $currentStep = 1;
 
@@ -188,6 +185,8 @@ class FormularioInteractivo extends Component
         // $this->reset(['cliente', 'nombre', 'crm', 'icoterm', 'lugar', 'puerto', 'pais', 'transporte', 'origen', 'destino', 'entregalocal', 'clientes', 'link']);
 
         // Redirigir a la página de éxito
+        $this->formLink->completed_at = now();
+        $this->formLink->save();
         return redirect()->to('/successful');
 
         // Despachar el evento de recarga y redirección (si es necesario)

@@ -26,6 +26,7 @@ class FormLink extends Model
 
     protected $dates = [
         'expires_at',
+        'completed_at',
     ];
 
 
@@ -43,5 +44,10 @@ class FormLink extends Model
     {
         $this->expires_at = Carbon::now()->addMinutes(40);
         $this->save();
+    }
+
+    public function isCompleted()
+    {
+        return !is_null($this->completed_at);
     }
 }
