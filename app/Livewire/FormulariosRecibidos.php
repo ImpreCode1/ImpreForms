@@ -93,7 +93,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
                             <meta charset='utf-8'>
                             <meta name='viewport' content='width=device-width, initial-scale=1'>
                         </head>
-                        <body>
+                        <body style='font-family: Arial, sans-serif;'>
                             <h2>¡Información Aprobada!</h2>
                             <p>Buen día,</p>
                             <p>Su formulario ha sido aprobado. Por favor, complete el formulario correspondiente a continuación:</p>
