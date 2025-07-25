@@ -262,9 +262,6 @@ class EnviarFormulario extends Component
 
     public function submit()
     {
-        if ($this->getErrorBag()->any()) {
-            dd($this->getErrorBag()->toArray());
-        }
         $this->validate();
 
         $infonegocio = Infonegocio::create([
