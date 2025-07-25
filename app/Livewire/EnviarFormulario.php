@@ -120,7 +120,7 @@ class EnviarFormulario extends Component
 
         //* Infonegocio
         'tipo_solicitud' => 'required',
-        'negocio' => 'required|numeric|min:5',
+        'negocio' => 'required|numeric|min:1',
         'nombre' => 'required|string|min:5',
         'correo' => 'required|email',
         'numero' => 'required|numeric',
@@ -160,7 +160,7 @@ class EnviarFormulario extends Component
         'aplicagarantia' => 'required|in:si,no',
         'terminogarantia' => 'required_if:aplicagarantia,si|string|min:1',
         'aplicapoliza' => 'required|in:si,no',
-        'porcentaje' => 'required_if:aplicapoliza,si|numeric|min:0|max:100',
+        'porcentaje' => 'nullable|numeric|min:0|max:100',
 
         //* Pago
         'incluye_iva' => 'required|in:1,0',
