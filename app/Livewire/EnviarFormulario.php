@@ -116,8 +116,7 @@ class EnviarFormulario extends Component
 
     protected $listeners = ['openModal'];
     protected $rules = [
-        'attachments' => 'required|max:10240',
-        // 'cod_ejc' => 'required|numeric|',
+        'files' => 'required|array|min:1', // antes 'attachments'
 
         //* Infonegocio
         'tipo_solicitud' => 'required',
@@ -128,29 +127,22 @@ class EnviarFormulario extends Component
         'crm' => 'required|numeric|unique:infonegocio,n_oportunidad_crm',
 
         //* Marca
-        // 'fecha' => 'required',
-        // 'oc' => 'required|string|min:5',
-        'precio' => ['required', 'regex:/^\d{1,3}((\.\d{3})*)?$/', 'min:4'],
-
-        // 'cotizacion' => 'required|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
+        'precio' => 'required|numeric|min:1',
         'soluciones' => 'required|string|min:5',
         'linea' => 'required|string|min:5',
         'codlinea' => 'required|string',
         'nomgerente' => 'required|string|min:5',
-        // 'telgerente' => 'required|numeric',
         'nom_rep' => 'required|string',
-        // 'email_ejc' => 'required|email',
-        // 'EjecutivoEmail' => 'required|email',
         'corgerente' => 'required|email',
         'director' => 'required|string|min:5',
-        // 'tel2gerente' => 'required|numeric',
         'cor2gerente' => 'required|email',
-        // 'telefono_ejc' => 'required|numeric',
-        //* Campos opcionales en Marca
-        'clientcode' => 'nullable|string|min:5',
+
+        // Opcionales en Marca
+        'clientcode' => 'nullable|string',
         'clientname' => 'nullable|numeric',
         'mail' => 'nullable|email',
-        // 'nombre_ejc' =>  'required|string|min:5',
+        'EjecutivoEmail' => 'nullable|email',
+
         //* Información
         'entregacliente' => 'required|string|min:5',
         'entrega_realizar' => 'required|string|min:5',
@@ -165,139 +157,54 @@ class EnviarFormulario extends Component
         'finalizacion' => 'required|date',
 
         //* Producto
-        'aplicagarantia' => 'required|string',
-        'aplicapoliza' => 'required|string',
+        'aplicagarantia' => 'required|in:si,no',
+        'terminogarantia' => 'required_if:aplicagarantia,si|string|min:1',
+        'aplicapoliza' => 'required|in:si,no',
+        'porcentaje' => 'required_if:aplicapoliza,si|numeric|min:0|max:100',
 
-        //* Condiciones de Pago
-        'incluye_iva' => 'required|boolean',
+        //* Pago
+        'incluye_iva' => 'required|in:1,0',
     ];
 
     protected $messages = [
-        //* Mensajes generales de validación
-        'nom_rep.string' => 'El nombre no debe contener caracteres extraños',
+        // Generales
+        'required' => 'Este campo es obligatorio.',
+        'string' => 'Este campo debe ser texto.',
+        'numeric' => 'Este campo debe contener solo números.',
+        'email' => 'Debe ingresar un correo válido.',
+        'date' => 'Debe ingresar una fecha válida.',
+        'min' => 'Este campo debe tener al menos :min caracteres.',
+        'max' => 'Este campo no puede ser mayor que :max.',
+        'in' => 'El valor seleccionado no es válido.',
+        'required_if' => 'Este campo es obligatorio cuando se selecciona ":other".',
+        'array' => 'Debe subir al menos un archivo.',
 
-        'nom_rep.required' => 'El campo es requerido',
-
-        //* Infonegocio
+        // Campos específicos
         'negocio.required' => 'El código del cliente es obligatorio.',
-        'negocio.numeric' => 'El código del cliente debe ser un número sin espacios.',
-        // 'negocio.unique' => 'El código del cliente ya está registrado.',
-        'negocio.min' => 'El código del cliente debe tener almenos :min caracteres.',
+        'negocio.numeric' => 'El código del cliente debe ser numérico.',
+        'negocio.min' => 'El código del cliente debe tener al menos :min dígitos.',
 
-        'nombre.required' => 'El nombre es obligatorio.',
-        'nombre.min' => 'El nombre debe tener al menos :min caracteres.',
-        'correo.required' => 'El correo electrónico es obligatorio.',
-        'correo.email' => 'El correo electrónico debe ser válido.',
-        'numero.required' => 'El número de teléfono es obligatorio.',
-        'numero.numeric' => 'El número de teléfono debe contener solo números sin espacios.',
+        'nombre.required' => 'El nombre del cliente es obligatorio.',
+        'correo.required' => 'El correo del cliente es obligatorio.',
+        'numero.required' => 'El número del cliente es obligatorio.',
         'crm.required' => 'El número CRM es obligatorio.',
-        'crm.numeric' => 'El número CRM debe ser numérico sin espacios.',
-        'crm.unique' => 'El número CRM ya está registrado. Por favor, ingrese un número único.',
+        'crm.unique' => 'El número CRM ya está registrado.',
 
-        //* Marca
-        // 'fecha.required' => 'La fecha es obligatoria.',
-        // 'fecha.date' => 'La fecha debe tener un formato válido.',
-        // 'oc.required' => 'La orden de compra es obligatoria.',
-        // 'oc.min' => 'La orden de compra debe tener al menos :min caracteres.',
-        // 'cod_ejc.required' => 'El campo de codigo es requerido',
-        // 'cod_ejc.numeric' => 'Este campo debe ser numerico sin espacios ',
+        'precio.required' => 'El precio es obligatorio.',
+        'precio.numeric' => 'El precio debe ser numérico.',
+        'precio.min' => 'El precio debe ser mayor a 0.',
 
-        'tipo_solicitud.required' => 'Este campo es requerido',
-        // 'nombre_ejc.required' =>'Este campo es requerido',
-        // 'nombre_ejc.string' =>'Este campo es requerido',
-        // 'nombre_ejc.min' =>'Este campo debe tener minimo :min caracteres ',
+        'incluye_iva.required' => 'Debe especificar si incluye IVA.',
+        'incluye_iva.in' => 'El campo debe ser Sí (1) o No (0).',
 
-        // 'telefono_ejc.required' => 'Este campo es requerido',
-        // 'telefono_ejc.numeric' => 'Este campo es tipo numerico sin espacios',
-
-        // 'email_ejc.required' => 'Este campo es requerido',
-        // 'email_ejc.email' => 'El correo debe ser valido',
-
-        'precio' => [
-            'required' => 'El campo "Precio" es obligatorio.',
-            'regex' => 'El campo "Precio" debe ser un número válido con formato adecuado. Ejemplo: 1.000.000',
-            'min' => 'El campo "Precio" debe tener al menos :min caracteres.',
-        ],
-
-        // 'cotizacion.file' => 'La cotización debe ser un archivo.',
-        // 'cotizacion.mimes' => 'La cotización debe ser un archivo PDF, Word o Excel.',
-        // 'cotizacion.max' => 'La cotización no debe pesar más de 10MB.',
-        'soluciones.required' => 'Las soluciones son obligatorias.',
-        'soluciones.min' => 'Las soluciones deben tener al menos :min caracteres.',
-        'linea.required' => 'La línea es obligatoria.',
-        'linea.min' => 'La línea debe tener al menos :min caracteres.',
-        'codlinea.required' => 'El código de línea es obligatorio.',
-        // 'codlinea.min' => 'El código de línea debe tener al menos :min caracteres.',
-        'nomgerente.required' => 'El nombre del gerente es obligatorio.',
-        'nomgerente.min' => 'El nombre del gerente debe tener al menos :min caracteres.',
-        // 'telgerente.required' => 'El teléfono del gerente es obligatorio.',
-        // 'telgerente.numeric' => 'El teléfono del gerente debe contener solo números sin espacios.',
-        'corgerente.required' => 'El correo del gerente es obligatorio.',
-        'corgerente.email' => 'El correo del gerente debe ser válido.',
-        'director.required' => 'El nombre del director es obligatorio.',
-        'director.min' => 'El nombre del director debe tener al menos :min caracteres.',
-        // 'tel2gerente.required' => 'El teléfono del segundo gerente es obligatorio.',
-        // 'tel2gerente.numeric' => 'El teléfono del segundo gerente debe contener solo números sin espacios.',
-        'cor2gerente.required' => 'El correo del segundo gerente es obligatorio.',
-        'cor2gerente.email' => 'El correo del segundo gerente debe ser válido.',
-
-        //* Campos opcionales en Marca
-        'clientcode.min' => 'El código de cliente debe tener al menos :min caracteres.',
-        'clientname.numeric' => 'El numero del cliente debe ser numérico sin espacios.',
-        'mail.email' => 'El correo debe ser una dirección válida.',
-
-        //* Información
-        'entregacliente.required' => 'Debe especificar si realiza la entrega al cliente.',
-        'entregacliente.min' => 'La especificación de entrega debe tener al menos :min caracteres.',
-        'entrega_realizar.required' => 'Debe especificar la entrega realizada.',
-        'entrega_realizar.min' => 'La realizacion de entrega debe tener al menos :min caracteres.',
-        'lugarentrega.required' => 'El lugar de entrega es obligatorio.',
-        'lugarentrega.min' => 'El lugar de entrega debe tener al menos :min caracteres.',
-        'espais.required' => 'El país es obligatorio.',
-        'espais.min' => 'El país debe tener al menos :min caracteres.',
-        'tiempoentrega.required' => 'El tiempo de entrega es obligatorio.',
-        'tiempoentrega.min' => 'El tiempo de entrega debe tener al menos :min caracteres.',
-        'terminoentrega.required' => 'El término de entrega es obligatorio.',
-        'terminoentrega.date' => 'El término de entrega debe ser una fecha válida.',
-        'tipoicoterm.required' => 'El tipo de Incoterm es obligatorio.',
-        'tipoicoterm.min' => 'El tipo de Incoterm debe tener al menos :min caracteres.',
-        'prestar.required' => 'Debe especificar si se prestará el servicio.',
-        'prestar.min' => 'La especificación de préstamo debe tener al menos :min caracteres.',
-        'suministrar.required' => 'Debe especificar si se suministrará el producto.',
-        'suministrar.min' => 'La especificación de suministro debe tener al menos :min caracteres.',
-        'inicio.required' => 'La fecha de inicio es obligatoria.',
-        'inicio.date' => 'La fecha de inicio debe ser válida.',
-        'finalizacion.required' => 'La fecha de finalización es obligatoria.',
-        'finalizacion.date' => 'La fecha de finalización debe ser válida.',
-
-        //* Producto
-        'details.required' => 'Los detalles del producto son obligatorios.',
-        'details.min' => 'Los detalles del producto deben tener al menos :min caracteres.',
-        'aplicagarantia.required' => 'Debe especificar si aplica garantía.',
-        'aplicagarantia.min' => 'La especificación de garantía debe tener al menos :min caracteres.',
-        // 'terminogarantia.required' => 'El término de garantía es obligatorio.',
-        // 'terminogarantia.min' => 'El término de garantía debe tener al menos :min caracteres.',
-        'aplicapoliza.required' => 'Debe especificar si aplica póliza.',
-        'aplicapoliza.min' => 'La especificación de póliza debe tener al menos :min caracteres.',
-
-        'porcentaje.required' => 'El porcentaje es obligatorio.',
-        'porcentaje.numeric' => 'El porcentaje debe ser un número.',
+        'terminogarantia.required_if' => 'Debe especificar el término de la garantía.',
+        'porcentaje.required_if' => 'Debe especificar el porcentaje de póliza.',
+        'porcentaje.numeric' => 'El porcentaje debe ser numérico.',
         'porcentaje.min' => 'El porcentaje no puede ser menor que 0.',
         'porcentaje.max' => 'El porcentaje no puede ser mayor que 100.',
 
-        //* Condiciones de Pago
-        'formapago.required' => 'La forma de pago es obligatoria.',
-        'formapago.string' => 'La forma de pago debe ser texto.',
-        'moneda.required' => 'La moneda es obligatoria.',
-        'moneda.string' => 'La moneda debe ser texto.',
-        'incluye_iva.required' => 'Debe especificar si incluye IVA.',
-        'incluye_iva.boolean' => 'El campo incluye IVA debe ser verdadero o falso.',
-        'fecha_pago.required' => 'La fecha de pago es obligatoria.',
-        'fecha_pago.date' => 'La fecha de pago debe ser una fecha válida.',
-
-        //* documentos
-        'attachments.required' => 'El campo archivo adjunto es requerido.',
-        'attachments.max' => 'El archivo no puede exceder los 10 MB de tamaño.',
+        'files.required' => 'Debe adjuntar al menos un documento.',
+        'files.array' => 'Los documentos deben estar en formato válido.',
     ];
 
     //* mostrar garantia
@@ -355,6 +262,9 @@ class EnviarFormulario extends Component
 
     public function submit()
     {
+        if ($this->getErrorBag()->any()) {
+            dd($this->getErrorBag()->toArray());
+        }
         $this->validate();
 
         $infonegocio = Infonegocio::create([
