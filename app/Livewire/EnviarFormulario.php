@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Codigo;
 use App\Models\Colaborador;
 use App\Models\Documento;
 use App\Models\Executive;
@@ -599,6 +600,17 @@ class EnviarFormulario extends Component
                 'name' => $file->getClientOriginalName(),
                 'size' => round($file->getSize() / 1024, 2),
             ];
+        }
+    }
+
+    public function updatedNegocio()
+    {
+        $cliente = Codigo::where('codigo_cliente', $this->negocio)->first();
+
+        if ($cliente) {
+            $this->nombre = $cliente->nombre_cliente;
+        } else {
+            $this->nombre = null;
         }
     }
 
