@@ -341,7 +341,7 @@ class EnviarFormulario extends Component
         $this->operacionesLink = (string) Str::uuid();
         $this->financieraLink = (string) Str::uuid();
 
-        $expirationTime = Carbon::now()->addMinutes(5);
+        $expirationTime = Carbon::now()->addMinutes(0);
 
         DB::table('form_links')->insert([
             [
