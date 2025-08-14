@@ -16,15 +16,15 @@ class Historial extends Component
     #[On('formularioUpdated')]
     public function mount()
     {
-        $this->formularios = Marca::with('infonegocio','informacion','documento', 'financiera')
+        $this->formularios = Marca::with('infonegocio', 'informacion', 'documento', 'financiera')
             ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc') // 🔹 Ordenar por más recientes
             ->get();
-
     }
 
     public function edit($id)
     {
-        $this->editingFormulario = Marca::with(['infonegocio', 'informacion.producto', 'pago','financiera'])->find($id);
+        $this->editingFormulario = Marca::with(['infonegocio', 'informacion.producto', 'pago', 'financiera'])->find($id);
         $this->showEditModal = true;
     }
 

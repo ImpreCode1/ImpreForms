@@ -11,7 +11,40 @@ class Marca extends Model
 
     protected $table = 'marcas';
 
-    protected $fillable = ['infonegocio_id', 'user_id', 'fecha', 'n_oc', 'precio_venta', 'adjunto_cotizacion', 'tipo_contrato', 'tipo_solicitud', 'linea', 'codigo_linea', 'nombre', 'telefono', 'correo_electronico', 'otro', 'cel', 'email', 'director', 'numero', 'correo_director', 'cod_ejc', 'nombre_ejc', 'telefono_ejc', 'email_ejc'];
+    protected $fillable = [
+        'infonegocio_id',
+        'user_id',
+        'fecha',
+        'n_oc',
+        'precio_venta',
+        'adjunto_cotizacion',
+        'tipo_contrato',
+        'tipo_solicitud',
+        'linea',
+        'codigo_linea',
+        'nombre',
+        'telefono',
+        'correo_electronico',
+        'otro',
+        'cel',
+        'email',
+        'director',
+        'numero',
+        'correo_director',
+        'cod_ejc',
+        'nombre_ejc',
+        'telefono_ejc',
+        'email_ejc',
+        'forma_pago',
+        'fecha_cada_pago',
+        'moneda',
+        'incluir_iva',
+        'hay_anticipo',
+        'porcentaje_anticipo',
+        'fecha_pago_anticipo',
+        'otros_pago',
+        'moneda_precio_venta',
+    ];
 
     public function infonegocio()
     {

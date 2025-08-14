@@ -8,7 +8,8 @@
                         <h2 class="text-3xl font-bold text-center text-gray-900 mb-6">Solicitudes Recibidas</h2>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                             <!-- Total Formularios -->
-                            <div class="bg-gradient-to-br from-blue-100 to-blue-300 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 p-5 text-center">
+                            <div
+                                class="bg-gradient-to-br from-blue-100 to-blue-300 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 p-5 text-center">
                                 <div class="relative mx-auto w-24 h-24 mb-4">
                                     <svg class="absolute inset-0 w-full h-full" viewBox="0 0 36 36"
                                         xmlns="http://www.w3.org/2000/svg">
@@ -31,7 +32,8 @@
                                 </div>
                             </div>
 
-                            <div class="bg-gradient-to-br from-purple-100 to-purple-300 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 p-5 text-center">
+                            <div
+                                class="bg-gradient-to-br from-purple-100 to-purple-300 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 p-5 text-center">
                                 <div class="relative mx-auto w-24 h-24 mb-4">
                                     <svg class="absolute inset-0 w-full h-full" viewBox="0 0 36 36"
                                         xmlns="http://www.w3.org/2000/svg">
@@ -55,7 +57,8 @@
                             </div>
 
                             <!-- Porcentaje de Anticipo -->
-                            <div class="bg-gradient-to-br from-yellow-100 to-yellow-300 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 p-5 text-center">
+                            <div
+                                class="bg-gradient-to-br from-yellow-100 to-yellow-300 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 p-5 text-center">
                                 <div class="relative mx-auto w-24 h-24 mb-4">
                                     <svg class="absolute inset-0 w-full h-full" viewBox="0 0 36 36"
                                         xmlns="http://www.w3.org/2000/svg">
@@ -72,7 +75,7 @@
                                 </div>
                                 <div class="text-gray-800">
                                     <p class="text-sm font-medium">Total solicitudes en proceso</p>
-                                    <p class="text-xl font-bold">{{$incompleteContracts->count()}}</p>
+                                    <p class="text-xl font-bold">{{ $incompleteContracts->count() }}</p>
                                 </div>
                             </div>
 
@@ -182,34 +185,61 @@
                             <table class="min-w-full border-collapse bg-white text-sm">
                                 <thead class="sticky top-0 bg-white shadow z-10">
                                     <tr class="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
-                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">Solicitante</th>
-                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">Código cliente</th>
-                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">Nombre cliente</th>
-                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">N° oportunidad</th>
-                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">Información</th>
-                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">Descargar</th>
-                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">Fecha de envío</th>
-                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">Links</th>
-                                        <th class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">Restablecer</th>
-                                        <th class="px-2 py-3 text-center font-bold text-gray-700 uppercase tracking-wider">Acciones</th>
+                                        <th
+                                            class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">
+                                            Solicitante</th>
+                                        <th
+                                            class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">
+                                            Código cliente</th>
+                                        <th
+                                            class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">
+                                            Nombre cliente</th>
+                                        <th
+                                            class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">
+                                            N° oportunidad</th>
+                                        <th
+                                            class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">
+                                            Información</th>
+                                        <th
+                                            class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">
+                                            Descargar</th>
+                                        <th
+                                            class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">
+                                            Fecha de envío</th>
+                                        <th
+                                            class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">
+                                            Links</th>
+                                        <th
+                                            class="px-2 py-3 text-left font-bold text-gray-700 uppercase tracking-wider">
+                                            Restablecer</th>
+                                        <th
+                                            class="px-2 py-3 text-center font-bold text-gray-700 uppercase tracking-wider">
+                                            Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
                                     @foreach ($formularios as $formulario)
-                                        <tr wire:key="formulario-{{ $formulario->id }}" class="hover:bg-gray-50 transition-all duration-200">
-                                            <td class="px-2 py-3 text-gray-700 break-words">{{ $formulario->user->name ?? 'No especificado' }}</td>
-                                            <td class="px-2 py-3 text-gray-600 break-words">{{ $formulario->infonegocio->codigo_cliente }}</td>
-                                            <td class="px-2 py-3 text-gray-600 break-words">{{ $formulario->infonegocio->nombre }}</td>
-                                            <td class="px-2 py-3 text-gray-600 break-words">{{ $formulario->infonegocio->n_oportunidad_crm }}</td>
+                                        <tr wire:key="formulario-{{ $formulario->id }}"
+                                            class="hover:bg-gray-50 transition-all duration-200">
+                                            <td class="px-2 py-3 text-gray-700 break-words">
+                                                {{ $formulario->user->name ?? 'No especificado' }}</td>
+                                            <td class="px-2 py-3 text-gray-600 break-words">
+                                                {{ $formulario->infonegocio->codigo_cliente }}</td>
+                                            <td class="px-2 py-3 text-gray-600 break-words">
+                                                {{ $formulario->infonegocio->nombre }}</td>
+                                            <td class="px-2 py-3 text-gray-600 break-words">
+                                                {{ $formulario->infonegocio->n_oportunidad_crm }}</td>
                                             <td class="px-2 py-3 text-center align-middle">
                                                 <div class="flex justify-center">
                                                     <button wire:click="loadFormulario({{ $formulario->id }})"
                                                         class="inline-flex items-center px-2 py-1 rounded bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
-                                                            viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
                                                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
                                                                 d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                         </svg>
                                                         Ver
@@ -219,13 +249,17 @@
                                             <td class="px-2 py-3">
                                                 <a href="{{ route('formularios.download', $formulario->id) }}"
                                                     class="inline-flex items-center px-2 py-1 rounded bg-amber-50 text-amber-600 hover:bg-amber-100 text-xs">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                                     </svg>
                                                     Descargar
                                                 </a>
                                             </td>
-                                            <td class="px-2 py-3 text-xs text-gray-700">{{ $formulario->created_at->format('d/m/Y') }}</td>
+                                            <td class="px-2 py-3 text-xs text-gray-700">
+                                                {{ $formulario->created_at->format('d/m/Y') }}</td>
                                             <td class="px-2 py-3 text-xs">
                                                 <div class="flex flex-col gap-1">
                                                     @foreach ($formulario->formLinks as $link)
@@ -237,8 +271,12 @@
 
                                                                 // Ruta activa siempre
                                                                 $route = $isOperaciones
-                                                                    ? route('formulario-operaciones', ['link' => $link->link])
-                                                                    : route('formulario-financiera', ['link' => $link->link]);
+                                                                    ? route('formulario-operaciones', [
+                                                                        'link' => $link->link,
+                                                                    ])
+                                                                    : route('formulario-financiera', [
+                                                                        'link' => $link->link,
+                                                                    ]);
 
                                                                 // Colores: si no está completado, mostrar en gris
                                                                 $bgColor = $isCompleted
@@ -252,15 +290,17 @@
                                                                 class="inline-flex items-center px-2 py-1 rounded {{ $bgColor }} text-xs transition-all duration-200"
                                                                 title="{{ $isCompleted ? 'Formulario diligenciado' : 'Pendiente por diligenciar' }}">
                                                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                                                    class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24"
-                                                                    stroke="currentColor">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                    class="h-3.5 w-3.5 mr-1" fill="none"
+                                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path stroke-linecap="round"
+                                                                        stroke-linejoin="round" stroke-width="2"
                                                                         d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                                                 </svg>
                                                                 {{ $label }}
                                                             </a>
                                                         @else
-                                                            <span class="inline-flex items-center px-2 py-1 rounded bg-red-50 text-red-700 text-xs">Expirado</span>
+                                                            <span
+                                                                class="inline-flex items-center px-2 py-1 rounded bg-red-50 text-red-700 text-xs">Expirado</span>
                                                         @endif
                                                     @endforeach
 
@@ -271,9 +311,11 @@
                                                     @if ($formulario->formLinks->contains(fn($link) => $link->isExpired()))
                                                         <button wire:click="resetLinks({{ $formulario->id }})"
                                                             class="w-7 h-7 rounded-full bg-purple-50 text-purple-600 hover:bg-purple-100 flex items-center justify-center">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                                fill="none" viewBox="0 0 24 24"
                                                                 stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
                                                                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                                             </svg>
                                                         </button>
@@ -283,24 +325,35 @@
                                             <td class="px-2 py-3 text-center">
                                                 <div class="flex justify-center space-x-1">
                                                     @php
-                                                        $activeLinks = $formulario->formLinks->filter(fn($link) => !$link->isExpired());
-                                                        $hasOperaciones = $activeLinks->contains(fn($l) => $l->type === 'operaciones');
-                                                        $hasFinanciera = $activeLinks->contains(fn($l) => $l->type === 'financiera');
+                                                        $activeLinks = $formulario->formLinks->filter(
+                                                            fn($link) => !$link->isExpired(),
+                                                        );
+                                                        $hasOperaciones = $activeLinks->contains(
+                                                            fn($l) => $l->type === 'operaciones',
+                                                        );
+                                                        $hasFinanciera = $activeLinks->contains(
+                                                            fn($l) => $l->type === 'financiera',
+                                                        );
                                                     @endphp
 
                                                     @if ($hasOperaciones && $hasFinanciera)
                                                         <button wire:click="approveFormulario({{ $formulario->id }})"
                                                             class="w-7 h-7 rounded-full bg-green-50 text-green-600 hover:bg-green-100 flex items-center justify-center">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                                fill="none" viewBox="0 0 24 24"
+                                                                stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2" d="M5 13l4 4L19 7" />
                                                             </svg>
                                                         </button>
                                                     @endif
 
                                                     <a href="mailto:{{ $formulario->correo_electronico ?? '' }}?subject=Observación del contrato&body=Buen día,"
                                                         class="w-7 h-7 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
                                                                 d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                                                         </svg>
                                                     </a>
@@ -497,9 +550,19 @@
                                                 </div>
 
                                                 <div class="space-y-1">
-                                                    <p class="text-sm font-medium text-black">Precio de venta que debe quedar en la oferta mercantil</p>
+                                                    <p class="text-sm font-medium text-black">Precio de venta que debe
+                                                        quedar en la oferta mercantil</p>
                                                     <p class="text-sm text-slate-900">
-                                                        $ {{ $selectedFormulario->precio_venta ?? 'No especificado' }}
+                                                        {{ $selectedFormulario->precio_venta ?? 'No especificado' }}
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">Moneda</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        $
+                                                        {{ $selectedFormulario->moneda_precio_venta ?? 'No especificado' }}
                                                     </p>
                                                     <div class="h-px bg-slate-200 mt-2"></div>
                                                 </div>
@@ -821,6 +884,88 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Pago -->
+                                    <div class="bg-white rounded-lg shadow-md border border-slate-200">
+                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
+                                            <h2 class="text-lg font-semibold text-slate-900">Información del Pago
+                                            </h2>
+                                        </div>
+
+                                        <div class="p-6">
+                                            <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">Forma de pago</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        $ {{ $selectedFormulario->forma_pago ?? 'No especificado' }}
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">Forma de pago</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        $
+                                                        {{ $selectedFormulario->fecha_cada_pago ?? 'No especificado' }}
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">Moneda</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        $ {{ $selectedFormulario->moneda ?? 'No especificado' }}
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">¿Incluye IVA?</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        {{ $selectedFormulario->incluir_iva == 1 ? 'Sí' : 'No' }}
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">¿Hay anticipo?</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        {{ $selectedFormulario->hay_anticipo == 1 ? 'Sí' : 'No' }}
+                                                    </p>
+
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">Porcentaje del anticipo
+                                                    </p>
+                                                    <p class="text-sm text-slate-900">
+                                                        {{ $selectedFormulario->porcentaje_anticipo ?? 'No especificado' }}
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">Fecha del anticipo</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        {{ $selectedFormulario->fecha_pago_anticipo ?? 'No especificado' }}
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">Otros</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        {{ $selectedFormulario->otros_pago ?? 'No especificado' }}
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
 
                                     <!-- Garantia -->
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200">
@@ -1170,56 +1315,12 @@
                                             @endif
                                         </div>
                                     </div>
-
-                                    <div class="bg-white rounded-xl shadow-lg border border-slate-200 mt-6">
-                                        <div
-                                            class="border-b border-slate-200 px-6 py-4 bg-gradient-to-r from-indigo-50 to-white">
-                                            <h2 class="text-lg font-semibold text-gray-800">Cotizaciones</h2>
-                                        </div>
-
-                                        <div class="p-6">
-                                            @if ($selectedFormulario->adjunto_cotizacion)
-                                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                                                    <div
-                                                        class="max-w-sm bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-slate-200">
-                                                        <div class="flex items-center p-3 space-x-3">
-                                                            <!-- Icono con estilo que combina -->
-                                                            <div
-                                                                class="p-2.5 rounded-lg bg-blue-50 border border-blue-100">
-                                                                <i class="fas fa-file-alt text-2xl text-blue-600"></i>
-                                                            </div>
-
-                                                            <!-- Nombre del documento -->
-                                                            <h3 class="flex-1 text-sm font-medium text-slate-700 truncate"
-                                                                title="{{ $selectedFormulario->adjunto_cotizacion }}">
-                                                                {{-- {{ $selectedFormulario->adjunto_cotizacion }} --}}
-                                                                cotización contrato
-                                                            </h3>
-
-                                                            <!-- Botón de ver -->
-                                                            <a href="{{ asset('storage/' . $selectedFormulario->adjunto_cotizacion) }}"
-                                                                target="_blank"
-                                                                class="inline-flex items-center px-3.5 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 rounded-md hover:bg-blue-100 border border-blue-200 transition-colors duration-200">
-                                                                <i class="ri-eye-line mr-1.5"></i>
-                                                                Ver
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @else
-                                                <div class="text-center text-gray-500 p-4 bg-gray-100 rounded-lg">
-                                                    <p>No se han adjuntado cotizaciones para este formulario.</p>
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </div>
-
                                 </div>
                             </div>
 
                         </div>
                 @endif
-        </div>
+            </div>
     </x-app-layout>
 </div>
 

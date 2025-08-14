@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Livewire;
 
 use App\Models\Documento;
@@ -51,6 +52,16 @@ class EditarFormulario extends Component
     public $entrega_realizar;
     public $files = [];
     public $archivosParaEliminar = [];
+    public $moneda_precio_venta;
+    public $forma_pago;
+    public $fecha_cada_pago;
+    public $moneda;
+    public $incluir_iva;
+    public $hay_anticipo;
+    public $porcentaje_anticipo;
+    public $fecha_pago_anticipo;
+    public $otros_pago;
+
 
     protected $rules = [
         // validaciones
@@ -71,9 +82,9 @@ class EditarFormulario extends Component
         // 'fecha' => 'required|date',
         // 'oc' => 'required|string|',
         'precio' => [
-                    'required',
-                    'regex:/^\d{1,3}(?:[\.,]\d{3})*(?:[\.,]\d+)?$/',
-                    'min:5',
+            'required',
+            'regex:/^\d{1,3}(?:[\.,]\d{3})*(?:[\.,]\d+)?$/',
+            'min:5',
         ],
         // 'cotizacion' => 'nullable|max:10240',
         'soluciones' => 'required|string|',
@@ -105,6 +116,16 @@ class EditarFormulario extends Component
         'aplicapoliza' => 'required|string|',
         'porcentaje' => 'nullable|numeric',
         'incluye_iva' => 'required',
+        'forma_pago' => 'required|string|max:255',
+        'moneda' => 'required|string|',
+        //'fecha_pago' => 'required|date',
+        'otros' => 'nullable|string',
+        'moneda_precio_venta' => 'nullable|string|',
+        'fecha_cada_pago' => 'nullable|string',
+        'hay_anticipo' => 'nullable|boolean',
+        'porcentaje_anticipo' => 'nullable|numeric|min:0|max:100',
+        'fecha_pago_anticipo' => 'nullable|date',
+        'otros_pago' => 'nullable|string',
     ];
 
     protected $messages = [
@@ -113,20 +134,15 @@ class EditarFormulario extends Component
         // 'cod_ejc.numeric' => 'Este campo debe ser numerico ',
 
 
-        'nombre_ejc.required' =>'Este campo es requerido',
-        'nombre_ejc.string' =>'Este campo es requerido',
-        'nombre_ejc.min' =>'Este campo debe tener minimo :min caracteres ',
+        'nombre_ejc.required' => 'Este campo es requerido',
+        'nombre_ejc.string' => 'Este campo es requerido',
+        'nombre_ejc.min' => 'Este campo debe tener minimo :min caracteres ',
 
         // 'telefono_ejc.required' => 'Este campo es requerido',
         // 'telefono_ejc.numeric' => 'Este campo es tipo numerico',
 
         'email_ejc.required' => 'Este campo es requerido',
         'email_ejc.email' => 'El correo debe ser valido',
-
-
-
-
-
         'negocio.required' => 'El campo "Negocio" es obligatorio.',
         'negocio.numeric' => 'El campo "Negocio" debe ser un número sin espacios.',
         'nombres.required' => 'El campo "Nombres" es obligatorio.',
@@ -173,8 +189,8 @@ class EditarFormulario extends Component
         'cor2gerente.email' => 'El campo "Correo 2 del Gerente" debe ser un correo electrónico válido.',
         'entregacliente.required' => 'El campo "Entrega Cliente" es obligatorio.',
         'entregacliente.string' => 'El campo "Entrega Cliente" debe ser una cadena de texto.',
-        'entrega_realizar.required' =>'El campo "Entrega a Realizar" es obligatorio.',
-        'entrega_realizar.string' => 'El campo "Entrega a Realizar" debe ser una cadena de texto.' ,
+        'entrega_realizar.required' => 'El campo "Entrega a Realizar" es obligatorio.',
+        'entrega_realizar.string' => 'El campo "Entrega a Realizar" debe ser una cadena de texto.',
         'lugarentrega.required' => 'El campo "Lugar de Entrega" es obligatorio.',
         'lugarentrega.string' => 'El campo "Lugar de Entrega" debe ser una cadena de texto.',
         'espais.required' => 'El campo "Espacio" es obligatorio.',
@@ -208,14 +224,25 @@ class EditarFormulario extends Component
         'aplicapoliza.string' => 'El campo "Aplicar Póliza" debe ser una cadena de texto.',
         'porcentaje.required' => 'El campo "Porcentaje" es obligatorio.',
         'porcentaje.numeric' => 'El campo "Porcentaje" debe ser un número sin espacios.',
-        'formapago.required' => 'El campo "Forma de Pago" es obligatorio.',
-        'formapago.string' => 'El campo "Forma de Pago" debe ser una cadena de texto.',
+        'forma_pago.required' => 'El campo "Forma de Pago" es obligatorio.',
+        'forma_pago.string' => 'El campo "Forma de Pago" debe ser una cadena de texto.',
         'moneda.required' => 'El campo "Moneda" es obligatorio.',
         'moneda.string' => 'El campo "Moneda" debe ser una cadena de texto.',
         'incluye_iva.required' => 'Este espacio es requerido.',
         'fecha_pago.required' => 'El campo "Fecha de Pago" es obligatorio.',
         'fecha_pago.date' => 'El campo "Fecha de Pago" debe ser una fecha válida.',
         'otros.string' => 'El campo "Otros" debe ser una cadena de texto.',
+        'moneda_precio_venta.string' => 'El campo "Moneda Precio Venta" debe ser una cadena de texto.',
+        'fecha_cada_pago.string' => 'El campo "Fecha Cada Pago" debe ser una cadena de texto.',
+        'hay_anticipo.boolean' => 'El campo "Hay Anticipo" debe ser verdadero o falso.',
+        'porcentaje_anticipo.numeric' => 'El campo "Porcentaje Anticipo" debe ser un número entre 0 y 100.',
+        'porcentaje_anticipo.min' => 'El campo "Porcentaje Anticipo" debe ser al menos :min.',
+        'porcentaje_anticipo.max' => 'El campo "Porcentaje Anticipo" no puede ser mayor a :max.',
+        'fecha_pago_anticipo.date' => 'El campo "Fecha Pago Anticipo" debe ser una fecha válida.',
+        'otros_pago.string' => 'El campo "Otros Pago" debe ser una cadena de texto.',
+        // 'cotizacion.required' => 'El campo "Cotización" es obligatorio.',
+        // 'cotizacion.mimes' => 'El archivo de cotización debe ser un PDF, DOC, DOCX, XLS o XLSX.',
+
         // 'cotizacion.required' => 'La cotización es requerida.',
         // 'cotizacion.max' => 'El tamaño máximo permitido para la cotización es de 10 MB.',
     ];
@@ -258,89 +285,97 @@ class EditarFormulario extends Component
         }
     }
 
-public function mount($formulario)
-{
-    // Buscar el formulario completo por ID con todas las relaciones necesarias
-    $this->formulario = Marca::with([
-        'infonegocio',
-        'informacion.producto',
-        'pago',
-        'financiera',
-        'infoEntrega',
-        'documento',
-        'formLinks'
-    ])->findOrFail($formulario);
+    public function mount($formulario)
+    {
+        // Buscar el formulario completo por ID con todas las relaciones necesarias
+        $this->formulario = Marca::with([
+            'infonegocio',
+            'informacion.producto',
+            'pago',
+            'financiera',
+            'infoEntrega',
+            'documento',
+            'formLinks'
+        ])->findOrFail($formulario);
 
-    // A partir de aquí, se mantiene tu lógica actual
-    $this->marcaId = $this->formulario->marca_id;
+        // A partir de aquí, se mantiene tu lógica actual
+        $this->marcaId = $this->formulario->marca_id;
 
-    $this->negocio = $this->formulario->infonegocio->codigo_cliente;
-    $this->nombres = $this->formulario->infonegocio->nombre;
-    $this->correo = $this->formulario->infonegocio->correo;
-    $this->numero = $this->formulario->infonegocio->numero_celular;
-    $this->crms = $this->formulario->infonegocio->n_oportunidad_crm;
-    $this->nom_rep = $this->formulario->infonegocio->nom_rep;
+        $this->negocio = $this->formulario->infonegocio->codigo_cliente;
+        $this->nombres = $this->formulario->infonegocio->nombre;
+        $this->correo = $this->formulario->infonegocio->correo;
+        $this->numero = $this->formulario->infonegocio->numero_celular;
+        $this->crms = $this->formulario->infonegocio->n_oportunidad_crm;
+        $this->nom_rep = $this->formulario->infonegocio->nom_rep;
 
-    $this->tipo_solicitud = $this->formulario->tipo_solicitud;
-    $this->nombre_ejc = $this->formulario->nombre_ejc;
-    $this->email_ejc = $this->formulario->email_ejc;
+        $this->tipo_solicitud = $this->formulario->tipo_solicitud;
+        $this->nombre_ejc = $this->formulario->nombre_ejc;
+        $this->email_ejc = $this->formulario->email_ejc;
 
-    $this->oc = $this->formulario->n_oc;
-    $this->precio = $this->formulario->precio_venta;
-    $this->soluciones = $this->formulario->tipo_contrato;
-    $this->linea = $this->formulario->linea;
-    $this->codlinea = $this->formulario->codigo_linea;
-    $this->nomgerente = $this->formulario->nombre;
-    $this->corgerente = $this->formulario->correo_electronico;
-    $this->clientcode = $this->formulario->otro;
-    $this->clientname = $this->formulario->cel;
-    $this->mail = $this->formulario->email;
-    $this->director = $this->formulario->director;
-    $this->cor2gerente = $this->formulario->correo_director;
-    $this->marcaId = $this->formulario->id;
+        $this->oc = $this->formulario->n_oc;
+        $this->precio = $this->formulario->precio_venta;
+        $this->soluciones = $this->formulario->tipo_contrato;
+        $this->linea = $this->formulario->linea;
+        $this->codlinea = $this->formulario->codigo_linea;
+        $this->nomgerente = $this->formulario->nombre;
+        $this->corgerente = $this->formulario->correo_electronico;
+        $this->clientcode = $this->formulario->otro;
+        $this->clientname = $this->formulario->cel;
+        $this->mail = $this->formulario->email;
+        $this->director = $this->formulario->director;
+        $this->cor2gerente = $this->formulario->correo_director;
+        $this->marcaId = $this->formulario->id;
+        $this->moneda_precio_venta = $this->formulario->moneda_precio_venta;
+        $this->forma_pago = $this->formulario->forma_pago;
+        $this->fecha_cada_pago = $this->formulario->fecha_cada_pago;
+        $this->moneda = $this->formulario->moneda;
+        $this->incluir_iva = $this->formulario->incluir_iva;
+        $this->hay_anticipo = $this->formulario->hay_anticipo;
+        $this->porcentaje_anticipo = $this->formulario->porcentaje_anticipo;
+        $this->fecha_pago_anticipo = $this->formulario->fecha_pago_anticipo;
+        $this->otros_pago = $this->formulario->otros_pago;
 
-    if ($this->formulario->informacion->isNotEmpty()) {
-        $info = $this->formulario->informacion->first();
-        $this->entregacliente = $info->realiza_entrega_cliente;
-        $this->entrega_realizar = $info->entrega_realizar;
-        $this->lugarentrega = $info->lugar_entrega;
-        $this->espais = $info->pais;
-        $this->tiempoentrega = $info->tiempo_entrega;
-        $this->terminoentrega = $this->formatearFecha($info->fecha_inicio_termino);
-        $this->tipoicoterm = $info->tipo_incoterms;
+        if ($this->formulario->informacion->isNotEmpty()) {
+            $info = $this->formulario->informacion->first();
+            $this->entregacliente = $info->realiza_entrega_cliente;
+            $this->entrega_realizar = $info->entrega_realizar;
+            $this->lugarentrega = $info->lugar_entrega;
+            $this->espais = $info->pais;
+            $this->tiempoentrega = $info->tiempo_entrega;
+            $this->terminoentrega = $this->formatearFecha($info->fecha_inicio_termino);
+            $this->tipoicoterm = $info->tipo_incoterms;
 
-        $this->prestar = $info->servicio_a_prestar;
-        $this->suministrar = $info->frecuencia_suministro;
+            $this->prestar = $info->servicio_a_prestar;
+            $this->suministrar = $info->frecuencia_suministro;
 
-        $this->inicio = $this->formatearFecha($info->fecha_inicio);
-        $this->finalizacion = $this->formatearFecha($info->fecha_finalizacion);
+            $this->inicio = $this->formatearFecha($info->fecha_inicio);
+            $this->finalizacion = $this->formatearFecha($info->fecha_finalizacion);
 
-        if ($info->producto->isNotEmpty()) {
-            $producto = $info->producto->first();
-            $this->aplicagarantia = $producto->aplica_garantia;
-            $this->terminogarantia = $producto->termino_garantia;
-            $this->aplicapoliza = $producto->aplica_poliza;
-            $this->porcentaje = $producto->porcentaje_poliza;
+            if ($info->producto->isNotEmpty()) {
+                $producto = $info->producto->first();
+                $this->aplicagarantia = $producto->aplica_garantia;
+                $this->terminogarantia = $producto->termino_garantia;
+                $this->aplicapoliza = $producto->aplica_poliza;
+                $this->porcentaje = $producto->porcentaje_poliza;
+            }
         }
+
+        if ($this->formulario->pago && $this->formulario->pago->isNotEmpty()) {
+            $pago = $this->formulario->pago->first();
+            $this->incluye_iva = $pago->incluye_iva;
+        }
+
+        $this->existingFiles = $this->formulario->documento
+            ->map(function ($documento) {
+                return [
+                    'id' => $documento->id,
+                    'name' => $documento->nombre_original,
+                    'path' => $documento->ruta_documento,
+                    'tipo' => $documento->tipo_documento,
+                ];
+            })
+            ->toArray();
     }
-
-    if ($this->formulario->pago && $this->formulario->pago->isNotEmpty()) {
-        $pago = $this->formulario->pago->first();
-        $this->incluye_iva = $pago->incluye_iva;
-    }
-
-    $this->existingFiles = $this->formulario->documento
-        ->map(function ($documento) {
-            return [
-                'id' => $documento->id,
-                'name' => $documento->nombre_original,
-                'path' => $documento->ruta_documento,
-                'tipo' => $documento->tipo_documento,
-            ];
-        })
-        ->toArray();
-}
-
 
     public function loadExistingFiles()
     {
@@ -360,7 +395,7 @@ public function mount($formulario)
 
     public function marcarArchivosParaEliminar($Id)
     {
-        if(!in_array($Id, $this->archivosParaEliminar)) {
+        if (!in_array($Id, $this->archivosParaEliminar)) {
             $this->archivosParaEliminar[] = $Id;
         }
 
@@ -416,7 +451,7 @@ public function mount($formulario)
     {
         foreach ($this->archivosNuevos as $file) {
             if (!in_array($file, $this->archivosMostrados)) {
-            $this->archivosMostrados[] = $file;    
+                $this->archivosMostrados[] = $file;
             }
         }
     }
@@ -485,6 +520,15 @@ public function mount($formulario)
             'nombre_ejc' => $this->nombre_ejc,
             // 'telefono_ejc' => $this->telefono_ejc,
             'email_ejc' => $this->email_ejc,
+            'moneda_precio_venta' => $this->moneda_precio_venta,
+            'forma_pago' => $this->forma_pago,
+            'fecha_cada_pago' => $this->fecha_cada_pago,
+            'moneda' => $this->moneda,
+            'incluir_iva' => $this->incluir_iva,
+            'hay_anticipo' => $this->hay_anticipo,
+            'porcentaje_anticipo' => $this->porcentaje_anticipo,
+            'fecha_pago_anticipo' => $this->fecha_pago_anticipo,
+            'otros_pago' => $this->otros_pago,
         ]);
 
         // Actualizar información del negocio
