@@ -477,7 +477,7 @@ class EnviarFormulario extends Component
                         <h2>Formulario de Oferta Mercantil Enviado</h2>
                         <p>Buen día,</p>
                         <p>Se ha enviado un nuevo formulario de oferta mercantil.</p>
-                        <p><strong>N° Gerente de producto:</strong> {$gerente}</p>
+                        <p><strong>Gerente de producto:</strong> {$gerente}</p>
                         <p><strong>Cliente:</strong> {$cliente}</p>
                         <p><strong>Código:</strong> {$codigo}</p>
                         <p><strong>N° Oportunidad:</strong> {$oportunidad}</p>
