@@ -237,37 +237,35 @@
                                     </h2>
 
                                     <div class="grid md:grid-cols-2 gap-4">
-                                        <div>
-                                            <label for="linea" class="block text-sm font-medium text-gray-700">
-                                                Línea
-                                            </label>
-                                            <select id="linea" wire:model.live="selectedCodigo"
-                                                class="mt-1 block w-full rounded-md border-gray-300
-                                                {{ $errors->has('selectedCodigo') ? 'border-red-400' : 'border-blue-100' }}
-                                                shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
-                                                <option value="">Seleccione Línea</option>
-                                                @foreach ($Lineas as $linea)
-                                                    <option value="{{ $linea->id }}">{{ $linea->linea }}</option>
-                                                @endforeach
-                                            </select>
-                                            @error('selectedCodigo')
-                                                <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
-                                            @enderror
-                                        </div>
 
                                         <div>
                                             <label for="codlinea" class="block text-sm font-medium text-gray-700">
                                                 Código de la línea
                                             </label>
-                                            <input id="codlinea" type="text" value="{{ $codlinea }}"
-                                                readonly
-                                                class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50
+                                            <input type="text" id="codlinea" wire:model.live="codlinea"
+                                                class="mt-1 block w-full rounded-md border-gray-300
                                                 {{ $errors->has('codlinea') ? 'border-red-400' : 'border-blue-100' }}
                                                 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                             @error('codlinea')
-                                                <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                                                <span class="text-red-500 text-sm">{{ $message }}</span>
                                             @enderror
                                         </div>
+
+                                        <div>
+                                            <label for="linea" class="block text-sm font-medium text-gray-700">
+                                                Línea
+                                            </label>
+                                            <input id="linea" type="text" value="{{ $linea }}"
+                                                readonly
+                                                class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50
+                                                {{ $errors->has('linea') ? 'border-red-400' : 'border-blue-100' }}
+                                                shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            @error('linea')
+                                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+
+
 
                                         <div>
                                             <label for="nomgerente" class="block text-sm font-medium text-gray-700">
@@ -525,7 +523,7 @@
                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M14.25 12a3.25 3.25 0 11-4.5 0 3.25 3.25 0 014.5 0zm4.56 7.44a7.5 7.5 0 00-13.62 0M18 8a2 2 0 11-4 0 2 2 0 014 0z" />
-                                    </svg> Información del Servicio
+                                    </svg> Información del Servicio (Opcional)
                                 </h2>
                                 <div class="grid grid-cols-1 gap-4">
                                     <div>
@@ -577,7 +575,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M17 9V7a5 5 0 00-10 0v2a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2z" />
                                 </svg>
-                                Información de Pago
+                                Información de Pago (Opcional)
                             </h2>
                             <div class="grid grid-cols-1 gap-4">
 
@@ -592,10 +590,10 @@
                                     @enderror
                                 </div>
 
-                                <!-- Fecha de cada pago -->
+                                <!-- Plazos -->
                                 <div>
-                                    <label for="fecha_cada_pago" class="block text-sm font-medium text-gray-700">Fecha
-                                        de cada pago</label>
+                                    <label for="fecha_cada_pago"
+                                        class="block text-sm font-medium text-gray-700">Plazos</label>
                                     <input id="fecha_cada_pago" type="text" wire:model.live="fecha_cada_pago"
                                         class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('fecha_cada_pago') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                     @error('fecha_cada_pago')
@@ -996,6 +994,18 @@
         </div>
     </x-app-layout>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    Livewire.on('validation-error', (data) => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Errores en el formulario',
+            html: data.message
+        })
+    })
+</script>
+
 
 <script type="text/javascript">
     function copyToClipboard(text) {

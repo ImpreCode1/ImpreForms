@@ -14,12 +14,15 @@ use App\Models\Director;
 use App\Models\Marca;
 use App\Models\Pago;
 use App\Models\Producto;
+use App\models\Setting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
+use Symfony\Component\Mime\Part\TextPart;
 
 class EnviarFormulario extends Component
 {
@@ -45,8 +48,8 @@ class EnviarFormulario extends Component
     public $precio;
     // public $cotizacion;
     public $soluciones = '';
-    public $linea;
-    public $codlinea;
+    public $linea = null;
+    public $codlinea = '';
     public $nomgerente;
     // public $telgerente;
     public $corgerente;
@@ -129,6 +132,7 @@ class EnviarFormulario extends Component
     public $fecha_pago_anticipo;
     public $otros_pago;
     public $moneda_precio_venta = '';
+    public $correo_administrador;
     protected $listeners = ['openModal'];
     protected $rules = [
         'files' => 'required|array|min:1',
@@ -150,9 +154,9 @@ class EnviarFormulario extends Component
         'nom_rep' => 'required|string',
         'corgerente' => 'required|email',
         'DirectorName' => 'required|string|min:5',
-        'forma_pago' => 'required|string',
-        'fecha_cada_pago' => 'required|string',
-        'moneda' => 'required|string',
+        'forma_pago' => 'nullable|string',
+        'fecha_cada_pago' => 'nullable|string',
+        'moneda' => 'nullable|string',
         'moneda_precio_venta' => 'required|string',
         'incluir_iva' => 'boolean',
         'hay_anticipo' => 'boolean',
@@ -175,18 +179,17 @@ class EnviarFormulario extends Component
         'tiempoentrega' => 'required|string|min:3',
         'terminoentrega' => 'required|date',
         'tipoicoterm' => 'required|string|min:2',
-        'prestar' => 'required|string|min:4',
-        'suministrar' => 'required|string|min:5',
-        'inicio' => 'required|date',
-        'finalizacion' => 'required|date',
+        'prestar' => 'nullable|string|min:4',
+        'suministrar' => 'nullable|string|min:5',
+        'inicio' => 'nullable|date',
+        'finalizacion' => 'nullable|date',
 
         //* Producto
         'aplicagarantia' => 'required|in:si,no',
         'terminogarantia' => 'nullable|required_if:aplicagarantia,si|string|min:1',
         'aplicapoliza' => 'required|in:si,no',
         'porcentaje' => 'nullable|numeric|min:0|max:100',
-        'incluye_iva' => 'boolean',
-        'incluye_iva' => 'required|in:0,1',
+        'incluye_iva' => 'boolean|required|in:0,1',
     ];
 
     protected $messages = [
@@ -234,18 +237,15 @@ class EnviarFormulario extends Component
         'porcentaje.min' => 'El porcentaje no puede ser menor que 0.',
         'porcentaje.max' => 'El porcentaje no puede ser mayor que 100.',
 
-        'forma_pago.required' => 'Debe seleccionar la forma de pago.',
-        'fecha_cada_pago.required' => 'Debe indicar la fecha de cada pago.',
-
         // Mensajes checkboxes
         'incluir_iva.boolean' => 'El campo "Incluye IVA" debe ser verdadero o falso.',
-        'hay_anticipo.boolean' => 'El campo "Hay anticipo" debe ser verdadero o falso.',
+        //'hay_anticipo.boolean' => 'El campo "Hay anticipo" debe ser verdadero o falso.',
 
         // Campos de anticipo
-        'porcentaje_anticipo.numeric' => 'El porcentaje de anticipo debe ser un número.',
-        'porcentaje_anticipo.min' => 'El porcentaje de anticipo no puede ser menor a 0.',
+        //'porcentaje_anticipo.numeric' => 'El porcentaje de anticipo debe ser un número y no puede ser menor a 0.',
+        //'porcentaje_anticipo.min' => 'El porcentaje de anticipo no puede ser menor a 0.',
         'fecha_pago_anticipo.date' => 'La fecha del anticipo debe ser una fecha válida.',
-        'incluir_iva.boolean' => 'El campo "Incluir IVA" debe ser verdadero o falso.',
+        //'incluir_iva.boolean' => 'El campo "Incluir IVA" debe ser verdadero o falso.',
 
         // Otros
         'otros_pago.string' => 'El campo "Otros" debe contener texto.',
@@ -307,15 +307,25 @@ class EnviarFormulario extends Component
         }
     }
 
+
+
     public function submit()
     {
         try {
             $this->validate();
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Mensaje general de error
-            session()->flash('error', 'Por favor, corrija los errores en el formulario.');
-            // Permitir que Livewire pinte los errores en la vista
-            throw $e;
+            $mensajes = [];
+            foreach ($e->errors() as $campo => $errores) {
+                // $campo es el nombre del atributo validado
+                // $errores es un array con los mensajes de error
+                $mensajes[] = ucfirst($campo) . ': ' . implode(', ', $errores);
+            }
+
+            $mensaje = "Por favor corrija los siguientes campos:<br>" . implode('<br>', $mensajes);
+
+            $this->dispatch('validation-error', message: $mensaje);
+
+            throw $e; // Para que Livewire siga mostrando @error en los inputs
         }
         //DB::beginTransaction();
 
@@ -349,11 +359,11 @@ class EnviarFormulario extends Component
             'moneda_precio_venta' => $this->moneda_precio_venta,
             'forma_pago' => $this->forma_pago,
             'fecha_cada_pago' => $this->fecha_cada_pago,
-            'moneda' => $this->moneda,
+            'moneda' => $this->moneda ?: null,
             'incluir_iva' => $this->incluir_iva ?? 0,
             'hay_anticipo' => $this->hay_anticipo ?? 0,
             'porcentaje_anticipo' => $this->porcentaje_anticipo,
-            'fecha_pago_anticipo' => $this->fecha_pago_anticipo,
+            'fecha_pago_anticipo' => $this->fecha_pago_anticipo ?: null,
             'otro' => $this->clientcode,
         ]);
 
@@ -442,6 +452,47 @@ class EnviarFormulario extends Component
         $operacionesUrl = url("formulario-operaciones/{$this->operacionesLink}");
         $financieraUrl = url("formulario-financiera/{$this->financieraLink}");
 
+        $email = Setting::get('director_administrador_email', '');
+
+        $cliente = $this->nombre;
+        $codigo = $this->negocio;
+        $oportunidad = $this->crm;
+        $gerente = $this->nomgerente;
+
+        // 3. Preparar y enviar el correo
+        Mail::send([], [], function ($message) use ($email, $cliente, $codigo, $oportunidad, $gerente) {
+            $message
+                ->to($email)
+                ->subject('📩 Nuevo Formulario de Oferta Mercantil Enviado')
+                ->setBody(
+                    new TextPart(
+                        "
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset='utf-8'>
+                        <meta name='viewport' content='width=device-width, initial-scale=1'>
+                    </head>
+                    <body style='font-family: Arial, sans-serif;'>
+                        <h2>Formulario de Oferta Mercantil Enviado</h2>
+                        <p>Buen día,</p>
+                        <p>Se ha enviado un nuevo formulario de oferta mercantil.</p>
+                        <p><strong>N° Gerente de producto:</strong> {$gerente}</p>
+                        <p><strong>Cliente:</strong> {$cliente}</p>
+                        <p><strong>Código:</strong> {$codigo}</p>
+                        <p><strong>N° Oportunidad:</strong> {$oportunidad}</p>
+                        <p>Puede revisarlo en el sistema para su validación.</p>
+                        <br>
+                        <p>Saludos cordiales.</p>
+                    </body>
+                    </html>
+                    ",
+                        'utf-8',
+                        'html',
+                    )
+                );
+        });
+
         $expirationTimeFormatted = $expirationTime->format('H:i');
         session()->flash('message', "Formulario enviado correctamente. Enlaces generados (expiran a las {$expirationTimeFormatted}):");
         session()->flash('operacionesUrl', $operacionesUrl);
@@ -483,13 +534,6 @@ class EnviarFormulario extends Component
         if ($colaborador) {
             $this->nomgerente = $colaborador->nombre_colaborador;
             $this->corgerente = $colaborador->mail;
-
-            $director = $colaborador->director;
-
-            if ($director) {
-                $this->selectedDirector = $director->id;
-                $this->DirectorEmail = $director->mail;
-            }
         }
 
         $this->Ejecutivos = Executive::all();
@@ -503,9 +547,6 @@ class EnviarFormulario extends Component
         if ($director) {
             $this->DirectorEmail = $director->mail;
             $this->DirectorName = $director->nombre_director;
-        } else {
-            $this->DirectorEmail = '';
-            $this->DirectorName = '';
         }
     }
 
@@ -521,18 +562,24 @@ class EnviarFormulario extends Component
             $this->EjecutivoName = '';
         }
     }
-
-    public function updatedSelectedCodigo()
+    public function updatedCodlinea()
     {
-        $linea = Linea::find($this->selectedCodigo);
-        // dd($linea);
+        $codigo = trim((string) $this->codlinea);
+
+        if ($codigo === '') {
+            $this->linea = null;
+            $this->selectedCodigo = null;
+            return;
+        }
+
+        $linea = Linea::where('codigo_linea', $codigo)->first();
 
         if ($linea) {
-            $this->codlinea = $linea->codigo_linea;
-            $this->linea = $linea->linea;
+            $this->linea = $linea->linea;   // nombre de la línea
+            $this->selectedCodigo = $linea->id; // opcional
         } else {
-            $this->codlinea = '';
-            $this->linea = '';
+            $this->linea = null;
+            $this->selectedCodigo = null;
         }
     }
 

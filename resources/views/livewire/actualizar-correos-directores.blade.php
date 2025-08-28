@@ -18,6 +18,17 @@
 
             <div class="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-white/20 hover:shadow-indigo-100 transition-all duration-300">
                 <form wire:submit.prevent="guardarCorreos">
+                    <div class="group">
+                        <div class="mt-4">
+                            <div class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                                <x-input-label for="correo_administrador" :value="__('Correo del Administrador')" />
+                            </div>
+                        </div>
+                        <x-text-input wire:model="correo_administrador" id="correo_administrador"
+                                    type="email" placeholder="administrador@impresistem.com"
+                                    class="block w-full mt-1 text-gray-900 border-indigo-500 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
+                        <x-input-error :messages="$errors->get('correo_administrador')" class="mt-2 text-red-500 text-sm" />
+                    </div>
                     {{-- Correo Operaciones --}}
                     <div class="group">
                         <div class="mt-4">
