@@ -13,6 +13,10 @@ class LineasImport implements ToModel, WithHeadingRow
 
     public function model(array $row)
     {
+        if (empty($row['codigo_linea'])) {
+            return null; // ignora la fila si no tiene valor
+        }
+
         return new Linea([
             'codigo_linea' => $row['codigo_linea'] ?? null,
             'linea' => $row['linea'] ?? null,
