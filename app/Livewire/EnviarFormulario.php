@@ -14,7 +14,7 @@ use App\Models\Director;
 use App\Models\Marca;
 use App\Models\Pago;
 use App\Models\Producto;
-use App\models\Setting;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
