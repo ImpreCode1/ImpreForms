@@ -53,7 +53,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public $completedContracts = [];
     public $incompleteContracts = [];
     public $maxFormularios;
-    
+
 
     public $open = false;
 
@@ -61,51 +61,65 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
 
     public function approveFormulario($id)
     {
-        $formulario = Marca::with(['formLinks'])->findOrFail($id);
+        $formulario = Marca::with(['formLinks', 'infonegocio', 'user'])->findOrFail($id);
+
         $operacionesLink = $formulario->formLinks->where('type', 'operaciones')->first()->link;
         $financieraLink = $formulario->formLinks->where('type', 'financiera')->first()->link;
+
         $emails = [
             Setting::get('director_operaciones_email', ''),
             Setting::get('director_financiera_email', ''),
         ];
 
-        // URLs completas usando url() helper para obtener el dominio correcto automáticamente
         $links = [url("/formulario-operaciones/{$operacionesLink}"), url("/formulario-financiera/{$financieraLink}")];
-
         $titles = ['Formulario de Operaciones', 'Formulario Financiero'];
         $descriptions = ['Complete la información requerida', 'Complete la información necesaria'];
+
+        // 🔹 Datos adicionales para el correo
+        $oportunidad = $formulario->infonegocio->n_oportunidad_crm ?? 'No registrado';
+        $gerente = $formulario->user->name ?? 'No asignado';
+        $cliente = $formulario->infonegocio->nombre ?? 'No registrado';
+        $codigoCliente = $formulario->infonegocio->codigo_cliente ?? 'No registrado';
 
         foreach ($emails as $index => $email) {
             $link = $links[$index];
             $title = $titles[$index];
             $description = $descriptions[$index];
 
-            Mail::send([], [], function ($message) use ($email, $link, $title, $description) {
+            Mail::send([], [], function ($message) use ($email, $link, $title, $description, $oportunidad, $gerente, $cliente, $codigoCliente) {
                 $message
                     ->to($email)
-                    ->subject('Enlace para diligenciamiento de formulario – Plazo de 3 días')
+                    ->subject("CRM: {$oportunidad} – Enlace para diligenciamiento de formulario (Plazo 3 días)")
                     ->setBody(
                         new TextPart(
                             "
-                        <!DOCTYPE html>
-                        <html>
-                        <head>
-                            <meta charset='utf-8'>
-                            <meta name='viewport' content='width=device-width, initial-scale=1'>
-                        </head>
-                        <body style='font-family: Arial, sans-serif;'>
-                            <h2>¡Información Aprobada!</h2>
-                            <p>Buen día,</p>
-                            <p>Su formulario ha sido aprobado. Por favor, complete el formulario correspondiente a continuación:</p>
-                            <a href='{$link}' style='display:inline-block;padding:10px 20px;background-color:#2989d8;color:white;text-decoration:none;border-radius:8px;'>
-                                {$title}
-                            </a>
-                            <p style='margin-top:10px;'>{$description}</p>
-                            <p>⚠️ El plazo máximo para enviar el formulario completado es de 2 días.</p>
-                            <p>Saludos cordiales.</p>
-                        </body>
-                        </html>
-                        ",
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset='utf-8'>
+                    <meta name='viewport' content='width=device-width, initial-scale=1'>
+                </head>
+                <body style='font-family: Arial, sans-serif;'>
+                    <h2>¡Información Aprobada!</h2>
+                    <p>Buen día,</p>
+                    <p>El formulario ha sido aprobado. A continuación, algunos datos de referencia:</p>
+                    <ul>
+                        <li><b>Número de Oportunidad:</b> {$oportunidad}</li>
+                        <li><b>Gerente de Producto:</b> {$gerente}</li>
+                        <li><b>Cliente:</b> {$cliente}</li>
+                        <li><b>Código de Cliente:</b> {$codigoCliente}</li>
+                    </ul>
+
+                    <p>Por favor, complete el formulario correspondiente a continuación:</p>
+                    <a href='{$link}' style='display:inline-block;padding:10px 20px;background-color:#2989d8;color:white;text-decoration:none;border-radius:8px;'>
+                        {$title}
+                    </a>
+                    <p style='margin-top:10px;'>{$description}</p>
+                    <p>⚠️ El plazo máximo para enviar el formulario completado es de 72 horas.</p>
+                    <p>Saludos cordiales.</p>
+                </body>
+                </html>
+                ",
                             'utf-8',
                             'html',
                         ),
@@ -116,6 +130,8 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
         session()->flash('message', 'Formulario aprobado y correos enviados correctamente.');
         $this->closeModal();
     }
+
+
     public function getFileIcon($fileName)
     {
         $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
@@ -343,10 +359,10 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public function columnFormats(): array
     {
         return [
-                // 'D' => NumberFormat::FORMAT_DATE_YYYYMMDD,
-                // 'E' => NumberFormat::FORMAT_DATE_YYYYMMDD,
-                // 'F' => NumberFormat::FORMAT_DATE_YYYYMMDD,
-            ];
+            // 'D' => NumberFormat::FORMAT_DATE_YYYYMMDD,
+            // 'E' => NumberFormat::FORMAT_DATE_YYYYMMDD,
+            // 'F' => NumberFormat::FORMAT_DATE_YYYYMMDD,
+        ];
     }
 
     public function downloadFormulario($id)
