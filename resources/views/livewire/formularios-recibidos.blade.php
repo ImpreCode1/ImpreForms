@@ -1269,11 +1269,12 @@
 
                                         <div class="p-6">
                                             @if ($selectedFormulario->documento->count() > 0)
-                                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                                <div class="space-y-4">
                                                     @foreach ($selectedFormulario->documento as $documento)
                                                         <div
-                                                            class="max-w-sm bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-slate-200">
-                                                            <div class="flex items-center p-3 space-x-3">
+                                                            class="w-full bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-slate-200">
+                                                            <div
+                                                                class="flex items-center justify-between p-3 space-x-3">
                                                                 <!-- Icono con estilo que combina -->
                                                                 <div
                                                                     class="p-2.5 rounded-lg bg-blue-50 border border-blue-100">
@@ -1298,16 +1299,6 @@
                                                         </div>
                                                     @endforeach
                                                 </div>
-
-                                                {{-- Commented out section remains the same as original --}}
-                                                {{-- @if ($selectedFormulario->documento->count() > 3)
-                                                    <div class="mt-4 text-center">
-                                                        <button wire:click="toggleMostrarMas" class="text-blue-600 hover:text-blue-800 transition-colors">
-                                                            {{ $mostrarMas ? 'Mostrar menos' : 'Mostrar todos los archivos' }}
-                                                            ({{ $selectedFormulario->documento->count() }})
-                                                        </button>
-                                                    </div>
-                                                @endif --}}
                                             @else
                                                 <div class="text-center text-gray-500 p-4 bg-gray-100 rounded-lg">
                                                     <p>No se han adjuntado archivos para este formulario.</p>
@@ -1316,9 +1307,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                        </div>
                 @endif
             </div>
     </x-app-layout>

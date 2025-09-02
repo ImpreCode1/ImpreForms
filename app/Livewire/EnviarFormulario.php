@@ -136,6 +136,7 @@ class EnviarFormulario extends Component
     protected $listeners = ['openModal'];
     protected $rules = [
         'files' => 'required|array|min:1',
+        'files.*.file' => 'required|file|max:5120|mimes:pdf,doc,docx,xls,xlsx,png,jpg,jpeg',
 
         //* Infonegocio
         'tipo_solicitud' => 'required',
@@ -252,6 +253,7 @@ class EnviarFormulario extends Component
 
         'files.required' => 'Debe adjuntar al menos un documento.',
         'files.array' => 'Los documentos deben estar en formato válido.',
+        'files.*.name' => 'Los nombres de los archivos no deben superar los 50 caracteres.',
     ];
 
     //* mostrar garantia
@@ -307,17 +309,14 @@ class EnviarFormulario extends Component
         }
     }
 
-
-
     public function submit()
     {
         try {
+            // ✅ Validaciones
             $this->validate();
         } catch (\Illuminate\Validation\ValidationException $e) {
             $mensajes = [];
             foreach ($e->errors() as $campo => $errores) {
-                // $campo es el nombre del atributo validado
-                // $errores es un array con los mensajes de error
                 $mensajes[] = ucfirst($campo) . ': ' . implode(', ', $errores);
             }
 
@@ -325,154 +324,166 @@ class EnviarFormulario extends Component
 
             $this->dispatch('validation-error', message: $mensaje);
 
-            throw $e; // Para que Livewire siga mostrando @error en los inputs
+            throw $e; // Livewire seguirá mostrando los errores en @error
         }
-        //DB::beginTransaction();
 
+        DB::beginTransaction();
 
-        $infonegocio = Infonegocio::create([
-            'codigo_cliente' => $this->negocio,
-            'nombre' => $this->nombre,
-            'correo' => $this->correo,
-            'numero_celular' => $this->numero,
-            'n_oportunidad_crm' => $this->crm,
-            'nom_rep' => $this->nom_rep,
-        ]);
-
-        $marca = Marca::create([
-            'infonegocio_id' => $infonegocio->id,
-            'user_id' => auth()->id(),
-            'precio_venta' => $this->precio,
-            'tipo_contrato' => $this->soluciones,
-            'linea' => $this->linea,
-            'codigo_linea' => $this->codlinea,
-            'nombre' => $this->nomgerente,
-            'correo_electronico' => $this->corgerente,
-            'otros_pago' => $this->otros_pago,
-            'cel' => $this->clientname,
-            'email' => $this->mail,
-            'director' => $this->DirectorName,
-            'correo_director' => $this->DirectorEmail,
-            'nombre_ejc' => $this->EjecutivoName,
-            'email_ejc' => $this->EjecutivoEmail,
-            'tipo_solicitud' => $this->tipo_solicitud,
-            'moneda_precio_venta' => $this->moneda_precio_venta,
-            'forma_pago' => $this->forma_pago,
-            'fecha_cada_pago' => $this->fecha_cada_pago,
-            'moneda' => $this->moneda ?: null,
-            'incluir_iva' => $this->incluir_iva ?? 0,
-            'hay_anticipo' => $this->hay_anticipo ?? 0,
-            'porcentaje_anticipo' => $this->porcentaje_anticipo,
-            'fecha_pago_anticipo' => $this->fecha_pago_anticipo ?: null,
-            'otro' => $this->clientcode,
-        ]);
-
-        $this->marcaId = $marca->id;
-
-        $informacion = Informacion::create([
-            'marcas_id' => $this->marcaId,
-            'realiza_entrega_cliente' => $this->entregacliente,
-            'entrega_realizar' => $this->entrega_realizar,
-            'lugar_entrega' => $this->lugarentrega,
-            'pais' => $this->espais,
-            'tiempo_entrega' => $this->tiempoentrega,
-            'fecha_inicio_termino' => $this->terminoentrega,
-            'tipo_incoterms' => $this->tipoicoterm,
-            'servicio_a_prestar' => $this->prestar,
-            'frecuencia_suministro' => $this->suministrar,
-            'fecha_inicio' => $this->inicio,
-            'fecha_finalizacion' => $this->finalizacion,
-        ]);
-
-        Producto::create([
-            'informacion_id' => $informacion->id,
-            'aplica_garantia' => $this->aplicagarantia,
-            'termino_garantia' => $this->terminogarantia,
-            'aplica_poliza' => $this->aplicapoliza,
-            'porcentaje_poliza' => $this->porcentaje,
-        ]);
-
-        Pago::create([
-            'marcas_id' => $this->marcaId,
-            'incluye_iva' => $this->incluye_iva ?? 0,
-        ]);
-
-        Financiera::create([
-            'marcas_id' => $this->marcaId,
-            'otros' => $this->otros,
-        ]);
-
-        $this->operacionesLink = (string) Str::uuid();
-        $this->financieraLink = (string) Str::uuid();
-
-        $expirationTime = Carbon::now();
-
-        DB::table('form_links')->insert([
-            [
-                'link' => $this->operacionesLink,
-                'type' => 'operaciones',
-                'marca_id' => $marca->id,
-                'cliente' => $this->negocio,
+        try {
+            // ✅ Crear Infonegocio
+            $infonegocio = Infonegocio::create([
+                'codigo_cliente' => $this->negocio,
                 'nombre' => $this->nombre,
-                'crm' => $this->crm,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-                'expires_at' => $expirationTime,
-            ],
-            [
-                'link' => $this->financieraLink,
-                'type' => 'financiera',
-                'marca_id' => $marca->id,
-                'cliente' => $this->negocio,
-                'nombre' => $this->nombre,
-                'crm' => $this->crm,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-                'expires_at' => $expirationTime,
-            ],
-        ]);
-
-        foreach ($this->files as $file) {
-            $storedPath = $file['file']->store('documents', 'public');
-
-            Documento::create([
-                'marcas_id' => $this->marcaId,
-                'nombre_original' => $file['name'],
-                'ruta_documento' => $storedPath,
+                'correo' => $this->correo,
+                'numero_celular' => $this->numero,
+                'n_oportunidad_crm' => $this->crm,
+                'nom_rep' => $this->nom_rep,
             ]);
-        }
 
-        //DB::commit();
+            // ✅ Crear Marca
+            $marca = Marca::create([
+                'infonegocio_id' => $infonegocio->id,
+                'user_id' => auth()->id(),
+                'precio_venta' => $this->precio,
+                'tipo_contrato' => $this->soluciones,
+                'linea' => $this->linea,
+                'codigo_linea' => $this->codlinea,
+                'nombre' => $this->nomgerente,
+                'correo_electronico' => $this->corgerente,
+                'otros_pago' => $this->otros_pago,
+                'cel' => $this->clientname,
+                'email' => $this->mail,
+                'director' => $this->DirectorName,
+                'correo_director' => $this->DirectorEmail,
+                'nombre_ejc' => $this->EjecutivoName,
+                'email_ejc' => $this->EjecutivoEmail,
+                'tipo_solicitud' => $this->tipo_solicitud,
+                'moneda_precio_venta' => $this->moneda_precio_venta,
+                'forma_pago' => $this->forma_pago,
+                'fecha_cada_pago' => $this->fecha_cada_pago,
+                'moneda' => $this->moneda ?: null,
+                'incluir_iva' => $this->incluir_iva ?? 0,
+                'hay_anticipo' => $this->hay_anticipo ?? 0,
+                'porcentaje_anticipo' => $this->porcentaje_anticipo,
+                'fecha_pago_anticipo' => $this->fecha_pago_anticipo ?: null,
+                'otro' => $this->clientcode,
+            ]);
 
-        $this->attachments = array_values($this->files);
-        $this->documentos = Documento::where('marcas_id', $this->marcaId)->get();
+            $this->marcaId = $marca->id;
 
-        $this->mmd = true;
+            // ✅ Crear Información
+            $informacion = Informacion::create([
+                'marcas_id' => $this->marcaId,
+                'realiza_entrega_cliente' => $this->entregacliente,
+                'entrega_realizar' => $this->entrega_realizar,
+                'lugar_entrega' => $this->lugarentrega,
+                'pais' => $this->espais,
+                'tiempo_entrega' => $this->tiempoentrega,
+                'fecha_inicio_termino' => $this->terminoentrega,
+                'tipo_incoterms' => $this->tipoicoterm,
+                'servicio_a_prestar' => $this->prestar,
+                'frecuencia_suministro' => $this->suministrar,
+                'fecha_inicio' => $this->inicio,
+                'fecha_finalizacion' => $this->finalizacion,
+            ]);
 
-        $operacionesUrl = url("formulario-operaciones/{$this->operacionesLink}");
-        $financieraUrl = url("formulario-financiera/{$this->financieraLink}");
+            // ✅ Crear Producto
+            Producto::create([
+                'informacion_id' => $informacion->id,
+                'aplica_garantia' => $this->aplicagarantia,
+                'termino_garantia' => $this->terminogarantia,
+                'aplica_poliza' => $this->aplicapoliza,
+                'porcentaje_poliza' => $this->porcentaje,
+            ]);
 
-        $email = Setting::get('director_administrador_email', '');
+            // ✅ Crear Pago
+            Pago::create([
+                'marcas_id' => $this->marcaId,
+                'incluye_iva' => $this->incluye_iva ?? 0,
+            ]);
 
-        $cliente = $this->nombre;
-        $codigo = $this->negocio;
-        $oportunidad = $this->crm;
-        $gerente = $this->nomgerente;
+            // ✅ Crear Financiera
+            Financiera::create([
+                'marcas_id' => $this->marcaId,
+                'otros' => $this->otros,
+            ]);
 
-        // 3. Preparar y enviar el correo
-        Mail::send([], [], function ($message) use ($email, $cliente, $codigo, $oportunidad, $gerente) {
-            $message
-                ->to($email)
-                ->subject('📩 Nuevo Formulario de Oferta Mercantil Enviado')
-                ->setBody(
-                    new TextPart(
+            // ✅ Crear links únicos
+            $this->operacionesLink = (string) Str::uuid();
+            $this->financieraLink = (string) Str::uuid();
+
+            $expirationTime = Carbon::now();
+
+            DB::table('form_links')->insert([
+                [
+                    'link' => $this->operacionesLink,
+                    'type' => 'operaciones',
+                    'marca_id' => $marca->id,
+                    'cliente' => $this->negocio,
+                    'nombre' => $this->nombre,
+                    'crm' => $this->crm,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                    'expires_at' => $expirationTime,
+                ],
+                [
+                    'link' => $this->financieraLink,
+                    'type' => 'financiera',
+                    'marca_id' => $marca->id,
+                    'cliente' => $this->negocio,
+                    'nombre' => $this->nombre,
+                    'crm' => $this->crm,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                    'expires_at' => $expirationTime,
+                ],
+            ]);
+
+            // ✅ Subir archivos
+            if (!empty($this->files)) {
+                foreach ($this->files as $file) {
+                    if (!isset($file['file']) || !isset($file['name'])) {
+                        continue;
+                    }
+
+                    $safeName = Str::limit($file['name'], 50, '');
+                    $storedPath = $file['file']->store('documents', 'public');
+
+                    Documento::create([
+                        'marcas_id' => $this->marcaId,
+                        'nombre_original' => $safeName,
+                        'ruta_documento' => $storedPath,
+                    ]);
+                }
+            }
+
+            // ✅ Confirmar transacción
+            DB::commit();
+
+            // ✅ Actualizar variables de Livewire
+            $this->attachments = array_values($this->files);
+            $this->documentos = Documento::where('marcas_id', $this->marcaId)->get();
+            $this->mmd = true;
+
+            $operacionesUrl = url("formulario-operaciones/{$this->operacionesLink}");
+            $financieraUrl = url("formulario-financiera/{$this->financieraLink}");
+
+            // ✅ Enviar correo
+            $email = Setting::get('director_administrador_email', '');
+            $cliente = $this->nombre;
+            $codigo = $this->negocio;
+            $oportunidad = $this->crm;
+            $gerente = $this->nomgerente;
+
+            Mail::send([], [], function ($message) use ($email, $cliente, $codigo, $oportunidad, $gerente) {
+                $message
+                    ->to($email)
+                    ->subject('📩 Nuevo Formulario de Oferta Mercantil Enviado')
+                    ->setBody(
                         "
                     <!DOCTYPE html>
                     <html>
-                    <head>
-                        <meta charset='utf-8'>
-                        <meta name='viewport' content='width=device-width, initial-scale=1'>
-                    </head>
+                    <head><meta charset='utf-8'></head>
                     <body style='font-family: Arial, sans-serif;'>
                         <h2>Formulario de Oferta Mercantil Enviado</h2>
                         <p>Buen día,</p>
@@ -482,21 +493,24 @@ class EnviarFormulario extends Component
                         <p><strong>Código:</strong> {$codigo}</p>
                         <p><strong>N° Oportunidad:</strong> {$oportunidad}</p>
                         <p>Puede revisarlo en el sistema para su validación.</p>
-                        <br>
-                        <p>Saludos cordiales.</p>
+                        <br><p>Saludos cordiales.</p>
                     </body>
                     </html>
                     ",
-                        'utf-8',
-                        'html',
-                    )
-                );
-        });
+                        'text/html'
+                    );
+            });
 
-        $expirationTimeFormatted = $expirationTime->format('H:i');
-        session()->flash('message', "Formulario enviado correctamente. Enlaces generados (expiran a las {$expirationTimeFormatted}):");
-        session()->flash('operacionesUrl', $operacionesUrl);
-        session()->flash('financieraUrl', $financieraUrl);
+            $expirationTimeFormatted = $expirationTime->format('H:i');
+            session()->flash('message', "Formulario enviado correctamente. Enlaces generados (expiran a las {$expirationTimeFormatted}):");
+            session()->flash('operacionesUrl', $operacionesUrl);
+            session()->flash('financieraUrl', $financieraUrl);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            report($e);
+            session()->flash('error', 'Ocurrió un error al guardar el formulario. Inténtalo de nuevo.');
+        }
     }
 
     public function updatedAplicagarantia($value)
@@ -594,19 +608,39 @@ class EnviarFormulario extends Component
             });
         }
     }
-
     public function updatedAttachments()
     {
-        // $this->validate([
-        //     'attachments.*' => 'file|max:10240|mimes:pdf,doc,docx,xls,xlsx,msj,msg',
-        // ]);
-        $this->files[] = []; // Resetear archivos antes de agregar nuevos
+        $this->validate([
+            'attachments.*' => [
+                'file',
+                'mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png,gif,zip,msg',
+                'max:5120', // máximo 5 MB
+                function ($attribute, $value, $fail) {
+                    $filename = $value->getClientOriginalName();
+                    if (strlen(pathinfo($filename, PATHINFO_FILENAME)) > 45) {
+                        $fail('El nombre del archivo no puede tener más de 45 caracteres.');
+                    }
+                },
+            ],
+        ]);
+        foreach ($this->attachments as $file) {
+            if ($file->isValid()) {
+                $this->validate([
+                    'attachments.*' => 'file|max:10240|mimes:pdf,doc,docx,xls,xlsx,msj,msg',
+                ]);
+            }
+        }
+
+        $this->files = [];
+
         foreach ($this->attachments as $id => $file) {
-            $this->files[$id] = [
-                'file' => $file,
-                'name' => $file->getClientOriginalName(),
-                'size' => round($file->getSize() / 1024, 2),
-            ];
+            if ($file->isValid()) {
+                $this->files[$id] = [
+                    'file' => $file,
+                    'name' => $file->getClientOriginalName(),
+                    'size' => round($file->getSize() / 1024, 2),
+                ];
+            }
         }
     }
 

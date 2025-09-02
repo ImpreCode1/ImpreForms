@@ -795,8 +795,8 @@
                                 wire:drop.prevent="handleDrop($event.dataTransfer.files)"
                                 wire:dragover.prevent="dragOver" wire:dragleave.prevent="dragLeave">
 
-                                <input type="file" wire:model.defer="attachments" multiple class="hidden"
-                                    id="file-upload" accept=".pdf,.doc,.docx,.xlsx,.msg" />
+                                <input type="file" wire:model="attachments" multiple class="hidden"
+                                    id="file-upload" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.msg,.zip" />
 
                                 <label for="file-upload" class="cursor-pointer">
                                     <div class="flex flex-col items-center">
@@ -834,17 +834,50 @@
                                                     d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9a1 1 0 00-1-1z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            <p>Formatos permitidos: <strong>PDF, DOC, DOCX, XLSX, MSG</strong>. Tamaño
-                                                máximo: <strong>10MB</strong>.</p>
+                                            <p>
+                                                Formatos permitidos:
+                                                <strong>PDF, DOC, DOCX, XLS, XLSX, JPG, JPEG, PNG, MSG,
+                                                    ZIP</strong>.
+                                                Tamaño máximo: <strong>10MB</strong>.
+                                            </p>
                                         </div>
+
 
                                         <p class="text-blue-600 mt-4 font-medium text-sm">Haga clic para seleccionar
                                             uno o varios documentos</p>
                                     </div>
                                 </label>
 
+                                <!-- Loader mientras se cargan archivos -->
+                                <div wire:loading wire:target="attachments"
+                                    class="flex justify-center items-center text-blue-600 bg-blue-50 border border-blue-200 rounded-lg px-6 py-3 mt-2 shadow-sm">
+                                    <svg class="animate-spin h-6 w-6 text-blue-600 mr-2"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10"
+                                            stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z">
+                                        </path>
+                                    </svg>
+                                </div>
+
+                                <ul>
+                                    @foreach ($files as $file)
+                                        <li>{{ $file['name'] }} ({{ $file['size'] }} KB)</li>
+                                    @endforeach
+                                </ul>
+
+
                                 @error('attachments')
                                     <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                                @enderror
+                                @error('attachments.*')
+                                    <p class="text-red-500 text-sm mt-2">
+                                        {{ $message ??
+                                            'El formato del archivo que intentas subir no está permitido.
+                                                Usa: PDF, Word, Excel, Imágenes, ZIP o MSG.' }}
+
+                                    </p>
                                 @enderror
                             </div>
 
