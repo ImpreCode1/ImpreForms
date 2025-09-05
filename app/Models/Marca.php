@@ -83,8 +83,9 @@ class Marca extends Model
 
     public function formLinks()
     {
-        return $this->hasMany(FormLink::class);
+        return $this->hasMany(FormLink::class, 'marca_id', 'id');
     }
+
 
     public function getEstadoAttribute()
     {

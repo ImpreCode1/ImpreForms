@@ -56,12 +56,17 @@ class EliminarRegistrosVencidos extends Command
                 }
 
                 // 🔹 Eliminar links asociados en form_links
-                foreach ($marca->formLinks as $link) {
-                    $link->delete();
-                }
+                $marca->formLinks()->delete();
 
-                // Finalmente, eliminar la marca
+                $infonegocio = $marca->infonegocio;
+
+                // Borrar la marca con todo lo relacionado
                 $marca->delete();
+
+                // Ahora sí, borrar el infonegocio
+                if ($infonegocio) {
+                    $infonegocio->delete();
+                }
             });
         }
 

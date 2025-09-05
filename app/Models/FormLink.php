@@ -10,9 +10,10 @@ class FormLink extends Model
 {
     use HasFactory;
 
+    protected $table = 'form_links'; // 👈 muy importante
+
     protected $fillable = [
         'marca_id',
-        // 'name',
         'link',
         'type',
         'cliente',
@@ -29,10 +30,9 @@ class FormLink extends Model
         'completed_at',
     ];
 
-
     public function marca()
     {
-        return $this->belongsTo(Marca::class);
+        return $this->belongsTo(Marca::class, 'marca_id', 'id');
     }
 
     public function isExpired()

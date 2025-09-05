@@ -469,7 +469,7 @@ class EnviarFormulario extends Component
             $financieraUrl = url("formulario-financiera/{$this->financieraLink}");
 
             // ✅ Enviar correo
-            $email = Setting::get('director_administrador_email', '');
+            $email = Setting::get('director_administrador_email');
             $cliente = $this->nombre;
             $codigo = $this->negocio;
             $oportunidad = $this->crm;
@@ -478,26 +478,29 @@ class EnviarFormulario extends Component
             Mail::send([], [], function ($message) use ($email, $cliente, $codigo, $oportunidad, $gerente) {
                 $message
                     ->to($email)
-                    ->subject('📩 Nuevo Formulario de Oferta Mercantil Enviado')
+                    ->subject("CRM: {$oportunidad}: Nuevo Formulario de Oferta Mercantil Enviado")
                     ->setBody(
-                        "
-                    <!DOCTYPE html>
-                    <html>
-                    <head><meta charset='utf-8'></head>
-                    <body style='font-family: Arial, sans-serif;'>
-                        <h2>Formulario de Oferta Mercantil Enviado</h2>
-                        <p>Buen día,</p>
-                        <p>Se ha enviado un nuevo formulario de oferta mercantil.</p>
-                        <p><strong>Gerente de producto:</strong> {$gerente}</p>
-                        <p><strong>Cliente:</strong> {$cliente}</p>
-                        <p><strong>Código:</strong> {$codigo}</p>
-                        <p><strong>N° Oportunidad:</strong> {$oportunidad}</p>
-                        <p>Puede revisarlo en el sistema para su validación.</p>
-                        <br><p>Saludos cordiales.</p>
-                    </body>
-                    </html>
-                    ",
-                        'text/html'
+                        new TextPart(
+                            "
+                <!DOCTYPE html>
+                <html>
+                <head><meta charset='utf-8'></head>
+                <body style='font-family: Arial, sans-serif;'>
+                    <h2>Formulario de Oferta Mercantil Enviado</h2>
+                    <p>Buen día,</p>
+                    <p>Se ha enviado un nuevo formulario de oferta mercantil.</p>
+                    <p><strong>Gerente de producto:</strong> {$gerente}</p>
+                    <p><strong>Cliente:</strong> {$cliente}</p>
+                    <p><strong>Código:</strong> {$codigo}</p>
+                    <p><strong>N° Oportunidad:</strong> {$oportunidad}</p>
+                    <p>Puede revisarlo en el sistema para su validación.</p>
+                    <br><p>Saludos cordiales.</p>
+                </body>
+                </html>
+                ",
+                            'utf-8',
+                            'html',
+                        )
                     );
             });
 

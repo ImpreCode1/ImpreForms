@@ -1162,23 +1162,39 @@
                                     <h4 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
                                         Información condiciones financieras
                                     </h4>
+                                    @php
+                                        $financierasValidas = $this->selectedFormulario->financiera->filter(function (
+                                            $fin,
+                                        ) {
+                                            return $fin->forma_pago ||
+                                                $fin->plazo ||
+                                                $fin->moneda ||
+                                                $fin->garantiascredit ||
+                                                $fin->existencia_anticipo ||
+                                                $fin->porcentaje ||
+                                                $fin->fecha_pago ||
+                                                $fin->otros;
+                                        });
+                                    @endphp
                                     {{-- condiciones de pago  --}}
+
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200">
                                         <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
                                             <h2 class="text-lg font-semibold text-slate-900">Condiciones Pago</h2>
                                         </div>
                                         <div class="p-6">
                                             <div class="grid md:grid-cols-3 gap-x-8 gap-y-6">
-                                                @foreach ($this->selectedFormulario->financiera as $financiera)
-                                                    <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">Forma De Pago</p>
-                                                        <p class="text-sm text-slate-900">
-                                                            {{ $financiera->forma_pago ?? 'No especificado' }}
-                                                        </p>
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
+                                                @if ($financierasValidas->isNotEmpty())
+                                                    @foreach ($this->selectedFormulario->financiera as $financiera)
+                                                        <div class="space-y-1">
+                                                            <p class="text-sm font-medium text-black">Forma De Pago</p>
+                                                            <p class="text-sm text-slate-900">
+                                                                {{ $financiera->forma_pago ?? 'No especificado' }}
+                                                            </p>
+                                                            <div class="h-px bg-slate-200 mt-2"></div>
+                                                        </div>
 
-                                                    {{-- <div class="space-y-1">
+                                                        {{-- <div class="space-y-1">
                                                         <p class="text-sm font-medium text-slate-600">Fecha de cada pago</p>
                                                         <p class="text-sm text-slate-900">
                                                             {{ $this->selectedFormulario->pago->fecha_pago ?? 'No especificado' }}
@@ -1186,84 +1202,84 @@
                                                         <div class="h-px bg-slate-200 mt-2"></div>
                                                     </div> --}}
 
-                                                    <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">Plazo</p>
-                                                        <p class="text-sm text-slate-900">
-                                                            {{ $financiera->plazo ?? 'No especificado' }}
-                                                        </p>
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
+                                                        <div class="space-y-1">
+                                                            <p class="text-sm font-medium text-black">Plazo</p>
+                                                            <p class="text-sm text-slate-900">
+                                                                {{ $financiera->plazo ?? 'No especificado' }}
+                                                            </p>
+                                                            <div class="h-px bg-slate-200 mt-2"></div>
+                                                        </div>
 
-                                                    <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">Moneda</p>
-                                                        <p class="text-sm text-slate-900">
-                                                            {{ $financiera->moneda ?? 'No especificado' }}
-                                                        </p>
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
+                                                        <div class="space-y-1">
+                                                            <p class="text-sm font-medium text-black">Moneda</p>
+                                                            <p class="text-sm text-slate-900">
+                                                                {{ $financiera->moneda ?? 'No especificado' }}
+                                                            </p>
+                                                            <div class="h-px bg-slate-200 mt-2"></div>
+                                                        </div>
 
-                                                    <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">Garantías de
-                                                            Crédito</p>
-                                                        <p class="text-sm text-slate-900">
-                                                            {{ $financiera->garantiascredit ?? 'No especificado' }}
-                                                        </p>
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
+                                                        <div class="space-y-1">
+                                                            <p class="text-sm font-medium text-black">Garantías de
+                                                                Crédito</p>
+                                                            <p class="text-sm text-slate-900">
+                                                                {{ $financiera->garantiascredit ?? 'No especificado' }}
+                                                            </p>
+                                                            <div class="h-px bg-slate-200 mt-2"></div>
+                                                        </div>
 
-                                                    <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">¿Hay existencia
-                                                            de anticipo?</p>
-                                                        <p class="text-sm text-slate-900">
-                                                            {{ $financiera->existencia_anticipo ? 'Sí' : 'No' }}
-                                                        </p>
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
+                                                        <div class="space-y-1">
+                                                            <p class="text-sm font-medium text-black">¿Hay existencia
+                                                                de anticipo?</p>
+                                                            <p class="text-sm text-slate-900">
+                                                                {{ $financiera->existencia_anticipo ? 'Sí' : 'No' }}
+                                                            </p>
+                                                            <div class="h-px bg-slate-200 mt-2"></div>
+                                                        </div>
 
-                                                    <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">¿Qué porcentaje?</p>
-                                                        <p class="text-sm text-slate-900">
-                                                            @if (isset($financiera->porcentaje))
-                                                                {{ number_format($financiera->porcentaje, 0) }}%
-                                                            @else
-                                                                N.A
-                                                            @endif
-                                                        </p>
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
-                                                    <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">Fecha de pago del
-                                                            anticipo</p>
-                                                        <p class="text-sm text-slate-900">
-                                                            @if (isset($financiera->fecha_pago))
-                                                                {{ \Carbon\Carbon::parse($financiera->fecha_pago)->format('Y-m-d') }}
-                                                            @else
-                                                                N.A
-                                                            @endif
-                                                        </p>
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
+                                                        <div class="space-y-1">
+                                                            <p class="text-sm font-medium text-black">¿Qué porcentaje?
+                                                            </p>
+                                                            <p class="text-sm text-slate-900">
+                                                                @if (isset($financiera->porcentaje))
+                                                                    {{ number_format($financiera->porcentaje, 0) }}%
+                                                                @else
+                                                                    N.A
+                                                                @endif
+                                                            </p>
+                                                            <div class="h-px bg-slate-200 mt-2"></div>
+                                                        </div>
+                                                        <div class="space-y-1">
+                                                            <p class="text-sm font-medium text-black">Fecha de pago del
+                                                                anticipo</p>
+                                                            <p class="text-sm text-slate-900">
+                                                                @if (isset($financiera->fecha_pago))
+                                                                    {{ \Carbon\Carbon::parse($financiera->fecha_pago)->format('Y-m-d') }}
+                                                                @else
+                                                                    N.A
+                                                                @endif
+                                                            </p>
+                                                            <div class="h-px bg-slate-200 mt-2"></div>
+                                                        </div>
 
-                                                    <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">Otros</p>
-                                                        <p class="text-sm text-slate-900">
-                                                            {{ $financiera->otros ?? 'No especificado' }}
-                                                        </p>
-                                                        <div class="h-px bg-slate-200 mt-2"></div>
-                                                    </div>
-                                                @endforeach
+                                                        <div class="space-y-1">
+                                                            <p class="text-sm font-medium text-black">Otros</p>
+                                                            <p class="text-sm text-slate-900">
+                                                                {{ $financiera->otros ?? 'No especificado' }}
+                                                            </p>
+                                                            <div class="h-px bg-slate-200 mt-2"></div>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
-
-
-
 
                                     <!-- Archivos Adjuntos -->
                                     <div class="bg-white rounded-xl shadow-lg border border-slate-200 mt-6">
                                         <div
                                             class="border-b border-slate-200 px-6 py-4 bg-gradient-to-r from-indigo-50 to-white">
-                                            <h2 class="text-lg font-semibold text-gray-800">Archivos Adjuntos o Anexos
+                                            <h2 class="text-lg font-semibold text-gray-800">Archivos Adjuntos o
+                                                Anexos
                                             </h2>
                                         </div>
 
