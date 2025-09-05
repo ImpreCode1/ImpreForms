@@ -147,6 +147,11 @@
         <div class="info-value">$ {{ $formulario->precio_venta ?? 'No especificado' }}</div>
     </div>
 
+    <div class="info-section">
+        <span class="info-label">Moneda</span>
+        <div class="info-value">{{ $formulario->moneda_precio_venta ?? 'No especificado' }}</div>
+    </div>
+
     <br>
     <br>
 

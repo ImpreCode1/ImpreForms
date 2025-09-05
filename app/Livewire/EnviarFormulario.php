@@ -478,7 +478,7 @@ class EnviarFormulario extends Component
             Mail::send([], [], function ($message) use ($email, $cliente, $codigo, $oportunidad, $gerente) {
                 $message
                     ->to($email)
-                    ->subject("CRM: {$oportunidad}: Nuevo Formulario de Oferta Mercantil Enviado")
+                    ->subject("CRM: {$oportunidad} - Nuevo Formulario de Oferta Mercantil Enviado")
                     ->setBody(
                         new TextPart(
                             "
