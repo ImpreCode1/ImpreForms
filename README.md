@@ -15,7 +15,7 @@
 
 ## 📌 Acerca del proyecto
 
-**FormSync** es una aplicación web desarrollada en **Laravel 12** con **Livewire**, **Volt** y **Tailwind CSS**, diseñada para gestionar el proceso de creación, edición, revisión y almacenamiento de **contratos, aprobaciones y formularios empresariales**.
+**ImpreForms** es una aplicación web desarrollada en **Laravel 12** con **Livewire**, **Volt** y **Tailwind CSS**, diseñada para gestionar el proceso de creación, edición, revisión y almacenamiento de **contratos, aprobaciones y formularios empresariales**.
 
 Su propósito es facilitar el flujo de documentación interna, centralizar los adjuntos importantes y mejorar el control de versiones/formularios mediante enlaces únicos y temporales.
 
