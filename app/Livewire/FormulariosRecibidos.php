@@ -89,7 +89,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
             Mail::send([], [], function ($message) use ($email, $link, $title, $description, $oportunidad, $gerente, $cliente, $codigoCliente) {
                 $message
                     ->to($email)
-                    ->subject("CRM: {$oportunidad} – Enlace para diligenciamiento de formulario (Plazo 3 días)")
+                    ->subject("CRM: {$oportunidad} – Enlace para diligenciamiento de formulario")
                     ->setBody(
                         new TextPart(
                             "
@@ -115,7 +115,6 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
                         {$title}
                     </a>
                     <p style='margin-top:10px;'>{$description}</p>
-                    <p>⚠️ El plazo máximo para enviar el formulario completado es de 72 horas.</p>
                     <p>Saludos cordiales.</p>
                 </body>
                 </html>
