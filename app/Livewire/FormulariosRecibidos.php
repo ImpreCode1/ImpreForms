@@ -87,12 +87,27 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
             $description = $descriptions[$index];
 
             Mail::send([], [], function ($message) use ($email, $link, $title, $description, $oportunidad, $gerente, $cliente, $codigoCliente) {
-                $message
-                    ->to($email)
-                    ->subject("CRM: {$oportunidad} – Enlace para diligenciamiento de formulario")
-                    ->setBody(
-                        new TextPart(
-                            "
+
+                // 1️⃣ Embebe las imágenes y guarda los CIDs devueltos
+                $cidBanner      = $message->embed(public_path('images/sign/banner.jpg'));
+                $cidSiguenos    = $message->embed(public_path('images/sign/siguenos.png'));
+                $cidFacebook    = $message->embed(public_path('images/sign/facebook.png'));
+                $cidInstagram   = $message->embed(public_path('images/sign/instagram.png'));
+                $cidLinkedin    = $message->embed(public_path('images/sign/linkedin.png'));
+                $cidX           = $message->embed(public_path('images/sign/x.png'));
+
+                // 2️⃣ Renderiza la vista de la firma pasando los CIDs
+                $firma = view('sign.firma', [
+                    'cidBanner'    => $cidBanner,
+                    'cidSiguenos'  => $cidSiguenos,
+                    'cidFacebook'  => $cidFacebook,
+                    'cidInstagram' => $cidInstagram,
+                    'cidLinkedin'  => $cidLinkedin,
+                    'cidX'         => $cidX,
+                ])->render();
+
+                // 3️⃣ Cuerpo principal del correo
+                $body = "
                 <!DOCTYPE html>
                 <html>
                 <head>
@@ -104,25 +119,27 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
                     <p>Buen día,</p>
                     <p>El formulario ha sido aprobado. A continuación, algunos datos de referencia:</p>
                     <ul>
-                        <li><b>Número de Oportunidad:</b> {$oportunidad}</li>
-                        <li><b>Gerente de Producto:</b> {$gerente}</li>
-                        <li><b>Cliente:</b> {$cliente}</li>
-                        <li><b>Código de Cliente:</b> {$codigoCliente}</li>
+                        <li><strong>Número de Oportunidad:</strong> {$oportunidad}</li>
+                        <li><strong>Gerente de Producto:</strong> {$gerente}</li>
+                        <li><strong>Cliente:</strong> {$cliente}</li>
+                        <li><strong>Código de Cliente:</strong> {$codigoCliente}</li>
                     </ul>
 
                     <p>Por favor, complete el formulario correspondiente a continuación:</p>
                     <a href='{$link}' style='display:inline-block;padding:10px 20px;background-color:#2989d8;color:white;text-decoration:none;border-radius:8px;'>
                         {$title}
                     </a>
+
                     <p style='margin-top:10px;'>{$description}</p>
-                    <p>Saludos cordiales.</p>
+                    <p>Saludos cordiales,</p>
+                    {$firma}
                 </body>
-                </html>
-                ",
-                            'utf-8',
-                            'html',
-                        ),
-                    );
+                </html>";
+
+                // 4️⃣ Envía el correo con el HTML final
+                $message->to($email)
+                    ->subject("CRM: {$oportunidad} – Enlace para diligenciamiento de formulario")
+                    ->html($body);
             });
         }
 
@@ -228,7 +245,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
                 return;
             }
 
-            $newExpiryTime = Carbon::now()->addMinutes(40);
+            $newExpiryTime = Carbon::now()->addDays(3);
 
             foreach ($formLinks as $link) {
                 $link->expires_at = $newExpiryTime;
