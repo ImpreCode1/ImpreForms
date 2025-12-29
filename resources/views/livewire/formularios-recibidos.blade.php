@@ -1305,7 +1305,7 @@
                                                                 </h3>
 
                                                                 <!-- Botón de ver -->
-                                                                <a href="{{ asset('storage/' . $documento->ruta_documento) }}"
+                                                                <a href="{{ route('documentos.ver', $documento) }}"
                                                                     target="_blank"
                                                                     class="inline-flex items-center px-3.5 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 rounded-md hover:bg-blue-100 border border-blue-200 transition-colors duration-200">
                                                                     <i class="ri-eye-line mr-1.5"></i>

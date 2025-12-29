@@ -4,30 +4,29 @@ namespace App\Livewire;
 
 use App\Models\Codigo;
 use App\Models\Colaborador;
+use App\Models\Director;
 use App\Models\Documento;
 use App\Models\Executive;
 use App\Models\Financiera;
 use App\Models\Infonegocio;
 use App\Models\Informacion;
 use App\Models\Linea;
-use App\Models\Director;
 use App\Models\Marca;
 use App\Models\Pago;
 use App\Models\Producto;
 use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Mail;
-use Symfony\Component\Mime\Part\TextPart;
 
 class EnviarFormulario extends Component
 {
-    public $currentStep = 1;
     use WithFileUploads;
+    public $currentStep = 1;
 
     // identificadores de archivos por id
 
@@ -35,9 +34,9 @@ class EnviarFormulario extends Component
     public $documento;
     public $documentos;
     // fin de manejo de documentos
-    public $hasAdvancePayment = null;
-    public $advancePaymentPercentage = null;
-    public $advancePaymentDate = null;
+    public $hasAdvancePayment;
+    public $advancePaymentPercentage;
+    public $advancePaymentDate;
     public $negocio;
     public $nombre;
     public $correo;
@@ -48,7 +47,7 @@ class EnviarFormulario extends Component
     public $precio;
     // public $cotizacion;
     public $soluciones = '';
-    public $linea = null;
+    public $linea;
     public $codlinea = '';
     public $nomgerente;
     // public $telgerente;
@@ -98,7 +97,7 @@ class EnviarFormulario extends Component
     public $archivosNuevos = [];
 
     public $Directores = [];
-    public $selectedDirector = null;
+    public $selectedDirector;
     public $DirectorEmail = '';
 
     // public $cod_ejc;
@@ -118,11 +117,11 @@ class EnviarFormulario extends Component
     public $mmd = false;
     public $Ejecutivos;
     public $Lineas;
-    public $selectedEjecutivo = null;
+    public $selectedEjecutivo;
     public $EjecutivoEmail = '';
     public $EjecutivoName = '';
     public $DirectorName = '';
-    public $selectedCodigo = null;
+    public $selectedCodigo;
     public $forma_pago;
     public $fecha_cada_pago;
     public $moneda = '';
@@ -136,9 +135,9 @@ class EnviarFormulario extends Component
     protected $listeners = ['openModal'];
     protected $rules = [
         'files' => 'required|array|min:1',
-        'files.*.file' => 'required|file|max:5120|mimes:pdf,doc,docx,xls,xlsx,png,jpg,jpeg',
+        'files.*.file' => 'required|file|max:5120|mimes:pdf,doc,docx,xls,xlsx,png,jpg,jpeg,msg,eml',
 
-        //* Infonegocio
+        // * Infonegocio
         'tipo_solicitud' => 'required',
         'negocio' => 'required|numeric|min:1',
         'nombre' => 'required|string|min:5',
@@ -146,7 +145,7 @@ class EnviarFormulario extends Component
         'numero' => 'required|numeric',
         'crm' => 'required|numeric|unique:infonegocio,n_oportunidad_crm',
 
-        //* Marca
+        // * Marca
         'precio' => 'required|numeric|min:1',
         'soluciones' => 'required|string|min:5',
         'linea' => 'required|string|min:5',
@@ -172,7 +171,7 @@ class EnviarFormulario extends Component
         'EjecutivoEmail' => 'nullable|email',
         'DirectorEmail' => 'nullable|email',
 
-        //* Información
+        // * Información
         'entregacliente' => 'required|string|min:5',
         'entrega_realizar' => 'required|string|min:5',
         'lugarentrega' => 'required|string|min:5',
@@ -185,7 +184,7 @@ class EnviarFormulario extends Component
         'inicio' => 'nullable|date',
         'finalizacion' => 'nullable|date',
 
-        //* Producto
+        // * Producto
         'aplicagarantia' => 'required|in:si,no',
         'terminogarantia' => 'nullable|required_if:aplicagarantia,si|string|min:1',
         'aplicapoliza' => 'required|in:si,no',
@@ -240,13 +239,13 @@ class EnviarFormulario extends Component
 
         // Mensajes checkboxes
         'incluir_iva.boolean' => 'El campo "Incluye IVA" debe ser verdadero o falso.',
-        //'hay_anticipo.boolean' => 'El campo "Hay anticipo" debe ser verdadero o falso.',
+        // 'hay_anticipo.boolean' => 'El campo "Hay anticipo" debe ser verdadero o falso.',
 
         // Campos de anticipo
-        //'porcentaje_anticipo.numeric' => 'El porcentaje de anticipo debe ser un número y no puede ser menor a 0.',
-        //'porcentaje_anticipo.min' => 'El porcentaje de anticipo no puede ser menor a 0.',
+        // 'porcentaje_anticipo.numeric' => 'El porcentaje de anticipo debe ser un número y no puede ser menor a 0.',
+        // 'porcentaje_anticipo.min' => 'El porcentaje de anticipo no puede ser menor a 0.',
         'fecha_pago_anticipo.date' => 'La fecha del anticipo debe ser una fecha válida.',
-        //'incluir_iva.boolean' => 'El campo "Incluir IVA" debe ser verdadero o falso.',
+        // 'incluir_iva.boolean' => 'El campo "Incluir IVA" debe ser verdadero o falso.',
 
         // Otros
         'otros_pago.string' => 'El campo "Otros" debe contener texto.',
@@ -256,7 +255,7 @@ class EnviarFormulario extends Component
         'files.*.name' => 'Los nombres de los archivos no deben superar los 50 caracteres.',
     ];
 
-    //* mostrar garantia
+    // * mostrar garantia
     public function updated($propertyName)
     {
         $this->validateOnly($propertyName);
@@ -317,10 +316,10 @@ class EnviarFormulario extends Component
         } catch (\Illuminate\Validation\ValidationException $e) {
             $mensajes = [];
             foreach ($e->errors() as $campo => $errores) {
-                $mensajes[] = ucfirst($campo) . ': ' . implode(', ', $errores);
+                $mensajes[] = ucfirst($campo).': '.implode(', ', $errores);
             }
 
-            $mensaje = "Por favor corrija los siguientes campos:<br>" . implode('<br>', $mensajes);
+            $mensaje = 'Por favor corrija los siguientes campos:<br>'.implode('<br>', $mensajes);
 
             $this->dispatch('validation-error', message: $mensaje);
 
@@ -481,21 +480,21 @@ class EnviarFormulario extends Component
                     ->subject("CRM: {$oportunidad} - Nuevo Formulario de Oferta Mercantil Enviado");
 
                 // 2) Embebe y captura los CIDs que devuelve embed()
-                $cidBanner      = $message->embed(public_path('images/sign/banner.jpg'));
-                $cidSiguenos    = $message->embed(public_path('images/sign/siguenos.png'));
-                $cidFacebook    = $message->embed(public_path('images/sign/facebook.png'));
-                $cidInstagram   = $message->embed(public_path('images/sign/instagram.png'));
-                $cidLinkedin    = $message->embed(public_path('images/sign/linkedin.png'));
-                $cidX           = $message->embed(public_path('images/sign/x.png'));
+                $cidBanner = $message->embed(public_path('images/sign/banner.jpg'));
+                $cidSiguenos = $message->embed(public_path('images/sign/siguenos.png'));
+                $cidFacebook = $message->embed(public_path('images/sign/facebook.png'));
+                $cidInstagram = $message->embed(public_path('images/sign/instagram.png'));
+                $cidLinkedin = $message->embed(public_path('images/sign/linkedin.png'));
+                $cidX = $message->embed(public_path('images/sign/x.png'));
 
                 // 3) Renderiza la vista pasándole los CIDs (la vista debe usar las variables)
                 $firma = view('sign.firma', [
-                    'cidBanner'    => $cidBanner,
-                    'cidSiguenos'  => $cidSiguenos,
-                    'cidFacebook'  => $cidFacebook,
+                    'cidBanner' => $cidBanner,
+                    'cidSiguenos' => $cidSiguenos,
+                    'cidFacebook' => $cidFacebook,
                     'cidInstagram' => $cidInstagram,
-                    'cidLinkedin'  => $cidLinkedin,
-                    'cidX'         => $cidX,
+                    'cidLinkedin' => $cidLinkedin,
+                    'cidX' => $cidX,
                 ])->render();
 
                 // 4) Crea el body principal (incluye la firma ya renderizada)
@@ -523,10 +522,9 @@ class EnviarFormulario extends Component
             });
 
             $expirationTimeFormatted = $expirationTime->format('H:i');
-            session()->flash('message', "Formulario enviado correctamente. Enlaces generados.");
+            session()->flash('message', 'Formulario enviado correctamente. Enlaces generados.');
             session()->flash('operacionesUrl', $operacionesUrl);
             session()->flash('financieraUrl', $financieraUrl);
-
         } catch (\Throwable $e) {
             DB::rollBack();
             report($e);
@@ -555,6 +553,7 @@ class EnviarFormulario extends Component
             // $this->terminogarantia = ''; // Resetear el campo si selecciona "No"
         }
     }
+
     public function cerrarmodal()
     {
         $this->dispatch('reloadPage');
@@ -597,6 +596,7 @@ class EnviarFormulario extends Component
             $this->EjecutivoName = '';
         }
     }
+
     public function updatedCodlinea()
     {
         $codigo = trim((string) $this->codlinea);
@@ -604,6 +604,7 @@ class EnviarFormulario extends Component
         if ($codigo === '') {
             $this->linea = null;
             $this->selectedCodigo = null;
+
             return;
         }
 
@@ -629,6 +630,7 @@ class EnviarFormulario extends Component
             });
         }
     }
+
     public function updatedAttachments()
     {
         $this->validate([

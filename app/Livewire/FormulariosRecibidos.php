@@ -2,36 +2,30 @@
 
 namespace App\Livewire;
 
+use App\Models\Documento;
 use App\Models\Financiera;
 use App\Models\FormLink;
-use App\Models\Informacion;
 // use App\Models\Infonegocio;
+use App\Models\Informacion;
 use App\Models\Marca;
 use App\Models\Setting;
 // use Barryvdh\DomPDF\PDF;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
-
-use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
-use Dom\Text;
-use Hamcrest\Core\Set;
-use Illuminate\Support\Facades\Mail;
-use Maatwebsite\Excel\Facades\Excel;
-use Maatwebsite\Excel\Concerns\WithStyles;
-use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\FromCollection;
-
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Symfony\Component\Mime\Part\TextPart;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class FormulariosRecibidos extends Component implements FromCollection, WithMapping, WithStyles, WithColumnWidths, WithColumnFormatting, WithHeadings
 {
@@ -48,12 +42,11 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public $averageSalePrice = 0;
     public $advancePercentage = 0;
     public $noc;
-    public $selectedFormulario = null;
+    public $selectedFormulario;
     protected $paginationTheme = 'tailwind';
     public $completedContracts = [];
     public $incompleteContracts = [];
     public $maxFormularios;
-
 
     public $open = false;
 
@@ -87,23 +80,22 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
             $description = $descriptions[$index];
 
             Mail::send([], [], function ($message) use ($email, $link, $title, $description, $oportunidad, $gerente, $cliente, $codigoCliente) {
-
                 // 1️⃣ Embebe las imágenes y guarda los CIDs devueltos
-                $cidBanner      = $message->embed(public_path('images/sign/banner.jpg'));
-                $cidSiguenos    = $message->embed(public_path('images/sign/siguenos.png'));
-                $cidFacebook    = $message->embed(public_path('images/sign/facebook.png'));
-                $cidInstagram   = $message->embed(public_path('images/sign/instagram.png'));
-                $cidLinkedin    = $message->embed(public_path('images/sign/linkedin.png'));
-                $cidX           = $message->embed(public_path('images/sign/x.png'));
+                $cidBanner = $message->embed(public_path('images/sign/banner.jpg'));
+                $cidSiguenos = $message->embed(public_path('images/sign/siguenos.png'));
+                $cidFacebook = $message->embed(public_path('images/sign/facebook.png'));
+                $cidInstagram = $message->embed(public_path('images/sign/instagram.png'));
+                $cidLinkedin = $message->embed(public_path('images/sign/linkedin.png'));
+                $cidX = $message->embed(public_path('images/sign/x.png'));
 
                 // 2️⃣ Renderiza la vista de la firma pasando los CIDs
                 $firma = view('sign.firma', [
-                    'cidBanner'    => $cidBanner,
-                    'cidSiguenos'  => $cidSiguenos,
-                    'cidFacebook'  => $cidFacebook,
+                    'cidBanner' => $cidBanner,
+                    'cidSiguenos' => $cidSiguenos,
+                    'cidFacebook' => $cidFacebook,
                     'cidInstagram' => $cidInstagram,
-                    'cidLinkedin'  => $cidLinkedin,
-                    'cidX'         => $cidX,
+                    'cidLinkedin' => $cidLinkedin,
+                    'cidX' => $cidX,
                 ])->render();
 
                 // 3️⃣ Cuerpo principal del correo
@@ -146,7 +138,6 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
         session()->flash('message', 'Formulario aprobado y correos enviados correctamente.');
         $this->closeModal();
     }
-
 
     public function getFileIcon($fileName)
     {
@@ -242,6 +233,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
 
             if ($formLinks->isEmpty()) {
                 session()->flash('error', 'No se encontraron enlaces para restablecer.');
+
                 return;
             }
 
@@ -256,7 +248,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
             $this->dispatch('links-reset');
             session()->flash('message', 'Enlaces restablecidos y extendidos por 3 dias.');
         } catch (\Exception $e) {
-            session()->flash('error', 'Error al restablecer los enlaces: ' . $e->getMessage());
+            session()->flash('error', 'Error al restablecer los enlaces: '.$e->getMessage());
         }
     }
 
@@ -266,6 +258,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     {
         return Excel::download(new self(), 'formularios.xlsx');
     }
+
     public function collection()
     {
         $marcas = Marca::with('infonegocio', 'financiera', 'informacion')->get();
@@ -320,7 +313,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     {
         return ['Fecha de solicitud', 'Tipo de Solicitud', 'Número de oportunidad en el CRM', 'Código Cliente', 'Nombre del cliente', 'Código de línea', 'Nombre de la línea', 'Precio venta', 'Solicitante', 'Cargo solicitante', 'Fecha inicio financiera', 'Fecha Inicio Operaciones', 'Última Actualización'];
     }
-    //! generar pdf
+    // ! generar pdf
 
     // public function headings(): array
     // {
@@ -329,11 +322,11 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
 
     public function styles(Worksheet $sheet)
     {
-        //Calcula y toma los datos con informacion para poder pintarlos
+        // Calcula y toma los datos con informacion para poder pintarlos
 
         $usedRange = $sheet->calculateWorksheetDimension();
 
-        //* Se toman y se les aplica color solamente a las casillas y columnas especificadas para pintarlas
+        // * Se toman y se les aplica color solamente a las casillas y columnas especificadas para pintarlas
         $highestRow = $sheet->getHighestRow();
 
         return [
@@ -343,13 +336,13 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
                     'startColor' => ['rgb' => 'FDE68A'],
                 ],
             ],
-            'H2:H' . $highestRow => [
+            'H2:H'.$highestRow => [
                 'fill' => [
                     'fillType' => 'solid',
                     'startColor' => ['rgb' => 'BBF7D0'],
                 ],
             ],
-            'I2:I' . $highestRow => [
+            'I2:I'.$highestRow => [
                 'fill' => [
                     'fillType' => 'solid',
                     'startColor' => ['rgb' => '93C5FD'],
@@ -388,20 +381,46 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
 
             $pdf = FacadePdf::loadView('pdf.formulario', compact('formulario'));
 
-            return $pdf->download('Contrato_' . $formulario->id . '.pdf');
+            return $pdf->download('Contrato_'.$formulario->id.'.pdf');
         } catch (\Exception $e) {
             // Log the error or return a specific error response
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
+    public function ver(Documento $documento)
+    {
+        $path = $documento->ruta_documento;
+
+        if (!Storage::disk('public')->exists($path)) {
+            abort(404);
+        }
+
+        $fullPath = Storage::disk('public')->path($path);
+        $mime = mime_content_type($fullPath);
+
+        // Si es PDF → abrir en el navegador
+        if ($mime === 'application/pdf') {
+            return response()->file($fullPath, [
+                'Content-Type' => $mime,
+                'Content-Disposition' => 'inline; filename="'.$documento->nombre_original.'"',
+            ]);
+        }
+
+        // Si NO es PDF → descargar con nombre original
+        return response()->download(
+            $fullPath,
+            $documento->nombre_original
+        );
+    }
+
     public function render()
     {
         $query = Marca::with('infonegocio', 'informacion')->when($this->search, function ($query) {
             $query->whereHas('infonegocio', function ($q) {
-                $q->where('codigo_cliente', 'like', '%' . $this->search . '%')
-                    ->orWhere('nombre', 'like', '%' . $this->search . '%')
-                    ->orWhere('n_oportunidad_crm', 'like', '%' . $this->search . '%');
+                $q->where('codigo_cliente', 'like', '%'.$this->search.'%')
+                    ->orWhere('nombre', 'like', '%'.$this->search.'%')
+                    ->orWhere('n_oportunidad_crm', 'like', '%'.$this->search.'%');
             });
         });
 

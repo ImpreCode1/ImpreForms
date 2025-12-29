@@ -1,24 +1,18 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Controller;
 use App\Livewire\Auth\Login;
 use App\Livewire\EnviarFormulario;
-use App\Livewire\Formulariofinanciera;
-use App\Livewire\FormularioInteractivo;
 use App\Livewire\FormulariosRecibidos;
-use App\Livewire\Historial;
 use App\Livewire\Layout\ManagerSidebar;
-use App\Livewire\EditarFormulario;
+use App\Livewire\Successful;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use App\Livewire\Successful;
-use App\Livewire\FragmentoComponente;
 
 Route::get('/successful', Successful::class)->name('succesful');
 // Route::view('/', 'welcome');
 Route::redirect('/', '/login')->name('login');
-//Route::view('login', 'livewire.pages.auth.login')->name('login');
+// Route::view('login', 'livewire.pages.auth.login')->name('login');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -33,13 +27,12 @@ Route::view('successful', 'successful')
     ->name('successful');
 
 Route::view('cargar-reporte', 'cargar-reporte')
-    ->middleware(['auth','verified'])
+    ->middleware(['auth', 'verified'])
     ->name('cargar-reporte');
 
 // Route::get('/cargar-reporte', CargarReporte::class)->name('cargar.reporte');
 
-
-//sidebar users
+// sidebar users
 Route::get('/user-dashboard', function () {
     return view('livewire.layout.user-sidebar');
 })->name('user.dashboard');
@@ -53,7 +46,7 @@ Route::get('/user-dashboard', function () {
 // Route::post('/cargar-reporte', [CargarReporte::class, 'upload'])->name('executives.import');
 
 // rutas sin recragra
-//Route::get('/manager-dashboard', ManagerSidebar::class)->name('manager.dashboard');
+// Route::get('/manager-dashboard', ManagerSidebar::class)->name('manager.dashboard');
 Route::view('/crear-formulario', 'menu')
 ->middleware(['auth'])
 ->name('menu');
@@ -70,21 +63,18 @@ Route::view('/historial', 'historial')
 //     ->middleware(['auth', 'admin'])
 //     ->name('formularios-recibidos');
 
-
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/crear-usuario', function () {
         return view('crear-usuario');
     })->name('crear-usuario');
 
-Route::get('/formularios-recibidos', function () {
+    Route::get('/formularios-recibidos', function () {
         return view('formularios-recibidos');
     })->name('formularios-recibidos');
-}); 
+});
 // * : ruta para el cierre de sesion.
 
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // * rutas para los formularios.
 
@@ -104,13 +94,14 @@ Route::get('/formulario-operaciones/{link}', function ($link) {
     if (!$record) {
         abort(404, 'El enlace no es válido.');
     }
+
     return view('formulario', [
         'mostrarFormularioInteractivo' => true,
         'mostrarFormularioFinanciera' => false,
         'link' => $link,
         'cliente' => $record->cliente,
         'nombre' => $record->nombre,
-        'crm' => $record->crm
+        'crm' => $record->crm,
     ]);
 })->name('formulario-operaciones');
 
@@ -120,6 +111,7 @@ Route::get('/formulario-financiera/{link}', function ($link) {
     if (!$record) {
         abort(404, 'El enlace no es válido.');
     }
+
     return view('formulario', [
         'mostrarFormularioInteractivo' => false,
         'mostrarFormularioFinanciera' => true,
@@ -135,6 +127,7 @@ Route::get('/formulario-financiera/{link}', function ($link) {
 
 Route::post('/set-current-route', function (Illuminate\Http\Request $request) {
     session(['current_route' => $request->route]);
+
     return redirect()->route($request->route);
 })->name('set.current.route');
 
@@ -150,10 +143,9 @@ Route::middleware(['auth'])->group(function () {
     })->name('correos');
 });
 
-require __DIR__ . '/auth.php';
+Route::get('/documentos/{documento}', [FormulariosRecibidos::class, 'ver'])->name('documentos.ver');
 
-
-
+require __DIR__.'/auth.php';
 
 // TODO: se utiliza para indicar que hay una tarea pendiente .
 // !: ¡advertencia!.
