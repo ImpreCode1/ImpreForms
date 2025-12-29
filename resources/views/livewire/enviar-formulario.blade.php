@@ -796,7 +796,7 @@
                                 wire:dragover.prevent="dragOver" wire:dragleave.prevent="dragLeave">
 
                                 <input type="file" wire:model="attachments" multiple class="hidden"
-                                    id="file-upload" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.msg,.zip" />
+                                    id="file-upload" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.msg,.zip,.eml" />
 
                                 <label for="file-upload" class="cursor-pointer">
                                     <div class="flex flex-col items-center">
@@ -837,7 +837,7 @@
                                             <p>
                                                 Formatos permitidos:
                                                 <strong>PDF, DOC, DOCX, XLS, XLSX, JPG, JPEG, PNG, MSG,
-                                                    ZIP</strong>.
+                                                    ZIP, EML</strong>.
                                                 Tamaño máximo: <strong>10MB</strong>.
                                             </p>
                                         </div>
@@ -875,7 +875,8 @@
                                     <p class="text-red-500 text-sm mt-2">
                                         {{ $message ??
                                             'El formato del archivo que intentas subir no está permitido.
-                                                Usa: PDF, Word, Excel, Imágenes, ZIP o MSG.' }}
+                                                Usa: PDF, DOC, DOCX, XLS, XLSX, JPG, JPEG, PNG, MSG,
+                                                    ZIP, EML' }}
 
                                     </p>
                                 @enderror

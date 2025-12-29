@@ -634,8 +634,8 @@ class EnviarFormulario extends Component
         $this->validate([
             'attachments.*' => [
                 'file',
-                'mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png,gif,zip,msg',
-                'max:5120', // máximo 5 MB
+                'mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png,gif,zip,msg,eml',
+                'max:10240', // máximo 5 MB
                 function ($attribute, $value, $fail) {
                     $filename = $value->getClientOriginalName();
                     if (strlen(pathinfo($filename, PATHINFO_FILENAME)) > 45) {
@@ -647,7 +647,7 @@ class EnviarFormulario extends Component
         foreach ($this->attachments as $file) {
             if ($file->isValid()) {
                 $this->validate([
-                    'attachments.*' => 'file|max:10240|mimes:pdf,doc,docx,xls,xlsx,msj,msg',
+                    'attachments.*' => 'file|max:10240|mimes:pdf,doc,docx,xls,xlsx,msj,msg,eml',
                 ]);
             }
         }
