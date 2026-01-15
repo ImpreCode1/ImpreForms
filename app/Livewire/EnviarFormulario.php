@@ -473,56 +473,67 @@ class EnviarFormulario extends Component
             $codigo = $this->negocio;
             $oportunidad = $this->crm;
             $gerente = $this->nomgerente;
+            $mailError = false;
 
-            Mail::send([], [], function ($message) use ($email, $cliente, $codigo, $oportunidad, $gerente) {
-                // 1) Prepara destinatario / asunto
-                $message->to($email)
-                    ->subject("CRM: {$oportunidad} - Nuevo Formulario de Oferta Mercantil Enviado");
+            try {
+                Mail::send([], [], function ($message) use ($email, $cliente, $codigo, $oportunidad, $gerente) {
+                    // 1) Prepara destinatario / asunto
+                    $message->to($email)
+                        ->subject("CRM: {$oportunidad} - Nuevo Formulario de Oferta Mercantil Enviado");
 
-                // 2) Embebe y captura los CIDs que devuelve embed()
-                $cidBanner = $message->embed(public_path('images/sign/banner.jpg'));
-                $cidSiguenos = $message->embed(public_path('images/sign/siguenos.png'));
-                $cidFacebook = $message->embed(public_path('images/sign/facebook.png'));
-                $cidInstagram = $message->embed(public_path('images/sign/instagram.png'));
-                $cidLinkedin = $message->embed(public_path('images/sign/linkedin.png'));
-                $cidX = $message->embed(public_path('images/sign/x.png'));
+                    // 2) Embebe y captura los CIDs que devuelve embed()
+                    $cidBanner = $message->embed(public_path('images/sign/banner.jpg'));
+                    $cidSiguenos = $message->embed(public_path('images/sign/siguenos.png'));
+                    $cidFacebook = $message->embed(public_path('images/sign/facebook.png'));
+                    $cidInstagram = $message->embed(public_path('images/sign/instagram.png'));
+                    $cidLinkedin = $message->embed(public_path('images/sign/linkedin.png'));
+                    $cidX = $message->embed(public_path('images/sign/x.png'));
 
-                // 3) Renderiza la vista pasándole los CIDs (la vista debe usar las variables)
-                $firma = view('sign.firma', [
-                    'cidBanner' => $cidBanner,
-                    'cidSiguenos' => $cidSiguenos,
-                    'cidFacebook' => $cidFacebook,
-                    'cidInstagram' => $cidInstagram,
-                    'cidLinkedin' => $cidLinkedin,
-                    'cidX' => $cidX,
-                ])->render();
+                    // 3) Renderiza la vista pasándole los CIDs (la vista debe usar las variables)
+                    $firma = view('sign.firma', [
+                        'cidBanner' => $cidBanner,
+                        'cidSiguenos' => $cidSiguenos,
+                        'cidFacebook' => $cidFacebook,
+                        'cidInstagram' => $cidInstagram,
+                        'cidLinkedin' => $cidLinkedin,
+                        'cidX' => $cidX,
+                    ])->render();
 
-                // 4) Crea el body principal (incluye la firma ya renderizada)
-                $body = "
-                <!DOCTYPE html>
-                <html>
-                <head><meta charset='utf-8'></head>
-                <body style='font-family: Arial, sans-serif;'>
-                    <h2>Formulario de Oferta Mercantil Enviado</h2>
-                    <p>Buen día,</p>
-                    <p>Se ha enviado un nuevo formulario de oferta mercantil.</p>
-                    <p><strong>Gerente de producto:</strong> {$gerente}</p>
-                    <p><strong>Cliente:</strong> {$cliente}</p>
-                    <p><strong>Código:</strong> {$codigo}</p>
-                    <p><strong>N° Oportunidad:</strong> {$oportunidad}</p>
-                    <p>Puede revisarlo en el sistema para su validación.</p>
-                    <br>
-                    <p>Saludos cordiales,</p>
-                    {$firma}
-                </body>
-                </html>";
+                    // 4) Crea el body principal (incluye la firma ya renderizada)
+                    $body = "
+                    <!DOCTYPE html>
+                    <html>
+                    <head><meta charset='utf-8'></head>
+                    <body style='font-family: Arial, sans-serif;'>
+                        <h2>Formulario de Oferta Mercantil Enviado</h2>
+                        <p>Buen día,</p>
+                        <p>Se ha enviado un nuevo formulario de oferta mercantil.</p>
+                        <p><strong>Gerente de producto:</strong> {$gerente}</p>
+                        <p><strong>Cliente:</strong> {$cliente}</p>
+                        <p><strong>Código:</strong> {$codigo}</p>
+                        <p><strong>N° Oportunidad:</strong> {$oportunidad}</p>
+                        <p>Puede revisarlo en el sistema para su validación.</p>
+                        <br>
+                        <p>Saludos cordiales,</p>
+                        {$firma}
+                    </body>
+                    </html>";
 
-                // 5) Asigna el HTML final al mensaje
-                $message->html($body);
-            });
+                    // 5) Asigna el HTML final al mensaje
+                    $message->html($body);
+                });
+            } catch (\Throwable $mailException) {
+                $mailError = true;
+                report($mailException);
+            }
 
             $expirationTimeFormatted = $expirationTime->format('H:i');
-            session()->flash('message', 'Formulario enviado correctamente. Enlaces generados.');
+            session()->flash(
+                'message',
+                $mailError
+                    ? 'Formulario guardado correctamente, pero el correo no pudo enviarse.'
+                    : 'Formulario enviado correctamente. Enlaces generados.'
+            );
             session()->flash('operacionesUrl', $operacionesUrl);
             session()->flash('financieraUrl', $financieraUrl);
         } catch (\Throwable $e) {

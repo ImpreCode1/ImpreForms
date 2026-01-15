@@ -876,8 +876,8 @@
                                     <p class="text-red-500 text-sm mt-2">
                                         {{ $message ??
                                             'El formato del archivo que intentas subir no está permitido.
-                                                                                        Usa: PDF, DOC, DOCX, XLS, XLSX, JPG, JPEG, PNG, MSG,
-                                                                                            ZIP, EML' }}
+                                                                                                                                Usa: PDF, DOC, DOCX, XLS, XLSX, JPG, JPEG, PNG, MSG,
+                                                                                                                                    ZIP, EML' }}
 
                                     </p>
                                 @enderror
@@ -955,19 +955,46 @@
                                             <span class="font-semibold">Atrás</span>
                                         </button>
                                         {{-- <button wire:click.prevent="submit" --}}
-                                        <button wire:click="submit" type="button"
-                                            class="group relative bg-blue-600 py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3 overflow-hidden">
+                                        <button wire:click="submit" wire:loading.attr="disabled" wire:target="submit"
+                                            type="button"
+                                            class="group relative bg-blue-600 py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3 overflow-hidden disabled:opacity-60">
+                                            <!-- Fondo animado -->
                                             <div
                                                 class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                                             </div>
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="relative h-5 w-5 text-white" fill="none"
-                                                viewBox="0 0 24 24" stroke="currentColor">
+
+                                            <!-- Ícono normal -->
+                                            <svg wire:loading.remove wire:target="submit"
+                                                xmlns="http://www.w3.org/2000/svg" class="relative h-5 w-5 text-white"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
-                                            <span class="relative font-semibold text-white">Enviar Formulario</span>
+
+                                            <!-- Spinner -->
+                                            <svg wire:loading wire:target="submit"
+                                                class="relative h-5 w-5 text-white animate-spin"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10"
+                                                    stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"></path>
+                                            </svg>
+
+                                            <!-- Texto normal -->
+                                            <span wire:loading.remove wire:target="submit"
+                                                class="relative font-semibold text-white">
+                                                Enviar Formulario
+                                            </span>
+
+                                            <!-- Texto cargando -->
+                                            <span wire:loading wire:target="submit"
+                                                class="relative font-semibold text-white">
+                                                Enviando...
+                                            </span>
                                         </button>
+
                                     </div>
                                 </div>
                                 <br>
