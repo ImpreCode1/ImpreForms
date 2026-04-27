@@ -28,7 +28,8 @@ class EditarFormulario extends Component
     public $temporaryFiles = [];
     public $existingFiles = [];
     public $archivosNuevos = [];
-    public $archivosMostrados = [];
+    public $tempFiles = [];
+    public $dragging = false;
     public $negocio, $nombres, $correo, $numero, $crms;
     public $oc, $precio, $soluciones, $linea, $codlinea;
     public $nomgerente,  $corgerente, $director, $cor2gerente;
@@ -255,33 +256,43 @@ class EditarFormulario extends Component
     public function handleDrop($files)
     {
         foreach ($files as $file) {
-            $this->handleFileUpload($file);
+            if ($file->isValid()) {
+                $this->tempFiles[] = $file;
+            }
         }
     }
 
-    public function updatedAttachments($files)
+    public function updatedArchivosNuevos()
     {
-        if (!is_array($files)) {
-            $files = [$files];
+        if (!is_array($this->archivosNuevos)) {
+            $this->archivosNuevos = [$this->archivosNuevos];
         }
 
-        foreach ($files as $file) {
-            $this->handleFileUpload($file);
+        foreach ($this->archivosNuevos as $file) {
+            if ($file->isValid()) {
+                $this->tempFiles[] = $file;
+            }
         }
+
+        // Reset the input so the same files can be selected again from any folder
+        $this->archivosNuevos = [];
     }
 
-    public function handleFileUpload($file)
+    public function dragOver()
     {
-        try {
-            $originalName = $file->getClientOriginalName();
-            $path = $file->store('documents', 'public');
+        $this->dragging = true;
+    }
 
-            $this->temporaryFiles[] = [
-                'name' => $originalName,
-                'path' => $path,
-            ];
-        } catch (\Exception $e) {
-            session()->flash('error', 'Error al subir el archivo: ' . $e->getMessage());
+    public function dragLeave()
+    {
+        $this->dragging = false;
+    }
+
+    public function quitarArchivo($index)
+    {
+        if (isset($this->tempFiles[$index])) {
+            unset($this->tempFiles[$index]);
+            $this->tempFiles = array_values($this->tempFiles);
         }
     }
 
@@ -425,7 +436,7 @@ class EditarFormulario extends Component
 
     public function saveNewFiles()
     {
-        foreach ($this->archivosNuevos as $file) {
+        foreach ($this->tempFiles as $file) {
             try {
                 $originalName = $file->getClientOriginalName();
                 $path = $file->store('documents', 'public');
@@ -441,7 +452,7 @@ class EditarFormulario extends Component
         }
 
         // Reinicia la lista de archivos nuevos
-        $this->archivosNuevos = [];
+        $this->tempFiles = [];
 
         // Recargar los archivos existentes
         $this->loadExistingFiles();
@@ -449,18 +460,44 @@ class EditarFormulario extends Component
 
     public function updatedArchivosNuevos()
     {
+        if (!is_array($this->archivosNuevos)) {
+            $this->archivosNuevos = [$this->archivosNuevos];
+        }
+
         foreach ($this->archivosNuevos as $file) {
-            if (!in_array($file, $this->archivosMostrados)) {
-                $this->archivosMostrados[] = $file;
+            if ($file->isValid()) {
+                $this->tempFiles[] = $file;
+            }
+        }
+
+        // Reset the input so the same files can be selected again
+        $this->archivosNuevos = [];
+    }
+
+    public function handleDrop($files)
+    {
+        foreach ($files as $file) {
+            if ($file->isValid()) {
+                $this->tempFiles[] = $file;
             }
         }
     }
 
+    public function dragOver()
+    {
+        $this->dragging = true;
+    }
+
+    public function dragLeave()
+    {
+        $this->dragging = false;
+    }
+
     public function quitarArchivo($index)
     {
-        if (isset($this->archivosMostrados[$index])) {
-            unset($this->archivosMostrados[$index]);
-            $this->archivosMostrados = array_values($this->archivosMostrados);
+        if (isset($this->tempFiles[$index])) {
+            unset($this->tempFiles[$index]);
+            $this->tempFiles = array_values($this->tempFiles);
         }
     }
 

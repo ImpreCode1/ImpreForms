@@ -809,10 +809,12 @@
 
             <div class="w-full">
                 <!-- Zona de subida de archivos -->
-                <div
+                <div wire:drop.prevent="handleDrop($event.dataTransfer.files)"
+                    wire:dragover.prevent="dragOver" wire:dragleave.prevent="dragLeave"
                     class="relative border-2 border-dashed border-gray-300 rounded-lg p-8 text-center transition-all duration-200 ease-in-out hover:border-blue-400">
                     <input type="file" wire:model="archivosNuevos" multiple
-                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.msg,.zip,.eml">
 
                     <div class="pointer-events-none space-y-4">
                         <div class="flex flex-col items-center">
@@ -855,20 +857,20 @@
                                 </p>
                             </div>
 
-                            <p class="text-blue-600 mt-4 font-medium text-sm">Haga clic para seleccionar uno o
+                            <p class="text-blue-600 mt-4 font-medium text-sm">Haga clic o arrastre archivos para seleccionar uno o
                                 varios documentos</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Archivos seleccionados -->
-                @if (count($archivosNuevos) > 0)
+                @if (count($tempFiles) > 0)
                     <div class="mt-6">
                         <h3 class="text-sm font-semibold text-gray-700 mb-3">
-                            Archivos seleccionados ({{ count($archivosNuevos) }})
+                            Archivos seleccionados ({{ count($tempFiles) }})
                         </h3>
                         <div class="space-y-3">
-                            @foreach ($archivosNuevos as $index => $archivo)
+                            @foreach ($tempFiles as $index => $archivo)
                                 <div
                                     class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
                                     <div class="flex items-center">

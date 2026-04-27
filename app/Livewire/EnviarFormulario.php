@@ -288,13 +288,8 @@ class EnviarFormulario extends Component
     {
         if (isset($this->files[$fileId])) {
             unset($this->files[$fileId]);
+            $this->files = array_filter($this->files);
         }
-
-        $this->attachments = array_filter($this->attachments, function ($file) use ($fileId) {
-            return $file->getClientOriginalName() !== ($this->files[$fileId]['name'] ?? '');
-        });
-
-        $this->files = array_values($this->files);
     }
 
     public function setAdvancePayment($value)
@@ -647,9 +642,10 @@ class EnviarFormulario extends Component
             'attachments.*' => [
                 'file',
                 'mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png,gif,zip,msg,eml',
-                'max:10240', // máximo 5 MB
+                'max:10240',
             ],
         ]);
+
         foreach ($this->attachments as $file) {
             if ($file->isValid()) {
                 $this->validate([
@@ -658,11 +654,26 @@ class EnviarFormulario extends Component
             }
         }
 
-        $this->files = [];
-
-        foreach ($this->attachments as $id => $file) {
+        foreach ($this->attachments as $file) {
             if ($file->isValid()) {
-                $this->files[$id] = [
+                $uniqueId = uniqid();
+                $this->files[$uniqueId] = [
+                    'file' => $file,
+                    'name' => $file->getClientOriginalName(),
+                    'size' => round($file->getSize() / 1024, 2),
+                ];
+            }
+        }
+
+        $this->attachments = [];
+    }
+
+    public function handleDrop($files)
+    {
+        foreach ($files as $file) {
+            if ($file->isValid()) {
+                $uniqueId = uniqid();
+                $this->files[$uniqueId] = [
                     'file' => $file,
                     'name' => $file->getClientOriginalName(),
                     'size' => round($file->getSize() / 1024, 2),
