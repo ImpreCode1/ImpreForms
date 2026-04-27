@@ -551,7 +551,7 @@
 
                                                 <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">Precio de venta que debe
-                                                        quedar en la oferta mercantil</p>
+                                                        quedar en el contrato</p>
                                                     <p class="text-sm text-slate-900">
                                                         {{ $selectedFormulario->precio_venta ?? 'No especificado' }}
                                                     </p>

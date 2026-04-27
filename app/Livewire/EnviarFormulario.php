@@ -252,7 +252,6 @@ class EnviarFormulario extends Component
 
         'files.required' => 'Debe adjuntar al menos un documento.',
         'files.array' => 'Los documentos deben estar en formato válido.',
-        'files.*.name' => 'Los nombres de los archivos no deben superar los 50 caracteres.',
     ];
 
     // * mostrar garantia
@@ -445,7 +444,7 @@ class EnviarFormulario extends Component
                         continue;
                     }
 
-                    $safeName = Str::limit($file['name'], 50, '');
+                    $safeName = Str::limit($file['name'], 255, '');
                     $storedPath = $file['file']->store('documents', 'public');
 
                     Documento::create([
@@ -479,7 +478,7 @@ class EnviarFormulario extends Component
                 Mail::send([], [], function ($message) use ($email, $cliente, $codigo, $oportunidad, $gerente) {
                     // 1) Prepara destinatario / asunto
                     $message->to($email)
-                        ->subject("CRM: {$oportunidad} - Nuevo Formulario de Oferta Mercantil Enviado");
+                        ->subject("CRM: {$oportunidad} - Nuevo Contrato Enviado");
 
                     // 2) Embebe y captura los CIDs que devuelve embed()
                     $cidBanner = $message->embed(public_path('images/sign/banner.jpg'));
@@ -505,9 +504,9 @@ class EnviarFormulario extends Component
                     <html>
                     <head><meta charset='utf-8'></head>
                     <body style='font-family: Arial, sans-serif;'>
-                        <h2>Formulario de Oferta Mercantil Enviado</h2>
+                        <h2>Contrato Enviado</h2>
                         <p>Buen día,</p>
-                        <p>Se ha enviado un nuevo formulario de oferta mercantil.</p>
+                        <p>Se ha enviado un nuevo formulario de contrato.</p>
                         <p><strong>Gerente de producto:</strong> {$gerente}</p>
                         <p><strong>Cliente:</strong> {$cliente}</p>
                         <p><strong>Código:</strong> {$codigo}</p>
@@ -649,12 +648,6 @@ class EnviarFormulario extends Component
                 'file',
                 'mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png,gif,zip,msg,eml',
                 'max:10240', // máximo 5 MB
-                function ($attribute, $value, $fail) {
-                    $filename = $value->getClientOriginalName();
-                    if (strlen(pathinfo($filename, PATHINFO_FILENAME)) > 45) {
-                        $fail('El nombre del archivo no puede tener más de 45 caracteres.');
-                    }
-                },
             ],
         ]);
         foreach ($this->attachments as $file) {

@@ -28,7 +28,7 @@
                                         {{ $errors->has('tipo_solicitud') ? 'border-red-300' : 'border-blue-100' }}
                                         rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300">
                                         <option value="" disabled>Seleccione tipo de solicitud</option>
-                                        <option value="Oferta mercantil">Oferta mercantil</option>
+                                        <option value="Contrato">Contrato</option>
                                     </select>
                                 </div>
                                 @error('tipo_solicitud')
@@ -147,7 +147,7 @@
 
                                     <div>
                                         <label for="precio" class="block text-sm font-medium text-gray-700">
-                                            Precio de venta que debe quedar en la oferta mercantil
+                                            Precio de venta que debe quedar en el contrato
                                         </label>
                                         <input id="precio" type="text" wire:model.live="precio"
                                             class="mt-1 block w-full rounded-md border-gray-300

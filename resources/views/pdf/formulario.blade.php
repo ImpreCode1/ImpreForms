@@ -143,7 +143,7 @@
     </div>
 
     <div class="info-section">
-        <span class="info-label">Precio de venta que debe quedar en la oferta mercantil</span>
+        <span class="info-label">Precio de venta que debe quedar en el contrato</span>
         <div class="info-value">$ {{ $formulario->precio_venta ?? 'No especificado' }}</div>
     </div>
 

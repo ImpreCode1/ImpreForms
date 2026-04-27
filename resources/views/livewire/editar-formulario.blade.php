@@ -24,7 +24,7 @@
                                 {{ $errors->has('tipo_solicitud') ? 'border-red-300' : 'border-blue-100' }}
                                 rounded-xl py-3 px-4 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300">
                             <option value="" disabled>Seleccione tipo de solicitud</option>
-                            <option value="Oferta mercantil">Oferta mercantil</option>
+                            <option value="Contrato">Contrato</option>
                             {{-- <option value="Contrato">Contrato</option> --}}
                             {{-- <option value="Otrosi">Otrosí</option>
                             <option value="Alcance">Alcance</option> --}}
