@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Forms;
 
+use App\Services\ActiveDirectoryService;
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
@@ -13,7 +15,6 @@ use Livewire\Form;
 
 class LoginForm extends Form
 {
-
 
     #[Validate('required|string|email')]
     public string $email = '';
@@ -34,22 +35,35 @@ class LoginForm extends Form
     {
         $this->ensureIsNotRateLimited();
 
-        if (!Auth::attempt($this->only(['email', 'password']), $this->remember)) {
-            RateLimiter::hit($this->throttleKey());
+        $adService = new ActiveDirectoryService();
+        $username = explode('@', $this->email)[0];
+        
+        $adUser = $adService->authenticate($username, $this->password);
 
+        if (!$adUser) {
+            RateLimiter::hit($this->throttleKey());
             throw ValidationException::withMessages([
                 'email' => 'Las credenciales proporcionadas son incorrectas.',
-
-
             ]);
         }
 
+        $localUser = User::where('email', $this->email)->first();
+
+        if (!$localUser) {
+            $localUser = User::create([
+                'name' => $adUser['nombre'],
+                'email' => $this->email,
+                'password' => bcrypt(Str::random(32)),
+                'rol' => 'User',
+            ]);
+        } else {
+            $localUser->update(['name' => $adUser['nombre']]);
+        }
+
+        Auth::login($localUser, $this->remember);
         RateLimiter::clear($this->throttleKey());
 
-        // Verificar el rol y retornar la ruta correspondiente
-        $user = Auth::user();
-
-        if ($user->rol === 'Admin') {
+        if ($localUser->rol === 'Admin') {
             return route('formularios-recibidos');
         } else {
             return route('menu');
