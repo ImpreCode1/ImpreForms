@@ -1,11 +1,9 @@
 <?php
 
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
@@ -13,13 +11,8 @@ new #[Layout('layouts.guest')] class extends Component
 {
     public string $name = '';
     public string $email = '';
-    public string $password = '';
-    public string $password_confirmation = '';
     public string $rol = '';
 
-    /**
-     * Handle an incoming registration request.
-     */
     public function register(): void
     {
         $validated = $this->validate(
@@ -38,24 +31,9 @@ new #[Layout('layouts.guest')] class extends Component
                     'max:255',
                     'unique:' . User::class,
                 ],
-                'password' => [
-                    'required',
-                    'string',
-                    'confirmed',
-                    'min:5',
-                    // 'regex:/[a-z]/',
-                    // 'regex:/[A-Z]/',
-                    // 'regex:/[0-9]/',
-                    // 'regex:/[@$!%*?&]/',
-                    // Rules\Password::defaults(),
-                ],
-                'password_confirmation' => [
-                    'required',
-                ],
                 'rol' => [
                     'required',
                     'string',
-
                 ],
             ],
             [
@@ -69,30 +47,17 @@ new #[Layout('layouts.guest')] class extends Component
                 'email.email' => 'El correo electrónico debe ser una dirección válida.',
                 'email.max' => 'El correo electrónico no puede tener más de 255 caracteres.',
                 'email.unique' => 'Este correo electrónico ya está registrado.',
-                'password.required' => 'El campo contraseña es obligatorio.',
-                'password.string' => 'La contraseña debe ser una cadena de texto.',
-                'password.confirmed' => 'La confirmación de la contraseña no coincide.',
-                'password.min' => 'La contraseña debe tener al menos :min caracteres.',
-                // 'password.regex' => 'La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y un carácter especial.',
-                'password_confirmation.required' => 'El campo confirmar contraseña es obligatorio.',
-
                 'rol.required' => 'El campo rol es obligatorio.',
                 'rol.string' => 'El campo rol debe ser una cadena de texto.',
-
             ],
         );
 
-        $validated['password'] = Hash::make($validated['password']);
+        $validated['password'] = bcrypt(Str::random(32));
 
         event(new Registered(($user = User::create($validated))));
 
-        // Auth::login($user);
-
-        // $this->redirect(RouteServiceProvider::HOME, navigate: true);
-
-        // return redirect()->route('crear-usuario');
         session()->flash('success', 'Usuario registrado exitosamente.');
-        $this->redirect(route('crear-usuario'));
+        $this->redirect(route('login'));
     }
 }; ?>
 
@@ -164,50 +129,6 @@ new #[Layout('layouts.guest')] class extends Component
                                 type="email" name="email" required autocomplete="username"
                                 placeholder="Ingrese Email" />
                             <x-input-error :messages="$errors->get('email')" class="mt-2 text-red-500 text-sm" />
-                        </div>
-
-                        <!-- Password -->
-                        <div class="group">
-                            <div class="mt-4">
-                                <div
-                                    class="flex items-center text-sm font-medium text-gray-700 mb-1 group-hover:text-indigo-600 transition-colors">
-                                    <svg class="w-4 h-4 mr-2 text-indigo-500" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2">
-                                        </rect>
-                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                                    </svg>
-                                    <x-input-label for="password" :value="__('Contraseña')"
-                                        class="block font-medium text-gray-700 text-sm ml-2" />
-                                </div>
-                            </div>
-                            <x-text-input wire:model="password" id="password"
-                                class="block w-full px-4 py-2 mt-1 text-gray-900 border-indigo-500 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                                type="password" name="password" required autocomplete="new-password"
-                                placeholder="Ingrese la Contraseña" />
-                            <x-input-error :messages="$errors->get('password')" class="mt-2 text-red-500 text-sm" />
-                        </div>
-
-                        <!-- Confirm Password -->
-                        <div class="group">
-                            <div class="mt-4">
-                                <div
-                                    class="flex items-center text-sm font-medium text-gray-700 mb-1 group-hover:text-indigo-600 transition-colors">
-                                    <svg class="w-4 h-4 mr-2 text-indigo-500" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2">
-                                        </rect>
-                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                                    </svg>
-                                    <x-input-label for="password_confirmation" :value="__('Confirme Contraseña')"
-                                        class="block font-medium text-gray-700 text-sm ml-2" />
-                                </div>
-                            </div>
-                            <x-text-input wire:model="password_confirmation" id="password_confirmation"
-                                class="block w-full px-4 py-2 mt-1 text-gray-900 border-indigo-500 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                                type="password" name="password_confirmation" required autocomplete="new-password"
-                                placeholder="Repetir Contraseña" />
-                            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2 text-red-500 text-sm" />
                         </div>
 
                         <!-- Role Selection -->
@@ -358,20 +279,13 @@ new #[Layout('layouts.guest')] class extends Component
     }
 
     function register() {
-        // Ocultar el modal
         document.getElementById('modalConfirm').classList.add('hidden');
-        // Emitir el evento de envío
         Livewire.emit('submitForm');
         setTimeout(() => {
             document.getElementById('name').value = '';
             document.getElementById('email').value = '';
-            document.getElementById('password').value = '';
         }, 100);
         location.reload();
-        @this.reload('register');
-
-
-
     }
 
     document.addEventListener('livewire:load', function() {
