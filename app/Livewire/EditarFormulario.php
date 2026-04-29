@@ -458,58 +458,6 @@ class EditarFormulario extends Component
         $this->loadExistingFiles();
     }
 
-    public function updatedArchivosNuevos()
-    {
-        if (!is_array($this->archivosNuevos)) {
-            $this->archivosNuevos = [$this->archivosNuevos];
-        }
-
-        foreach ($this->archivosNuevos as $file) {
-            if ($file->isValid()) {
-                $this->tempFiles[] = $file;
-            }
-        }
-
-        // Reset the input so the same files can be selected again
-        $this->archivosNuevos = [];
-    }
-
-    public function handleDrop($files)
-    {
-        foreach ($files as $file) {
-            if ($file->isValid()) {
-                $this->tempFiles[] = $file;
-            }
-        }
-    }
-
-    public function dragOver()
-    {
-        $this->dragging = true;
-    }
-
-    public function dragLeave()
-    {
-        $this->dragging = false;
-    }
-
-    public function quitarArchivo($index)
-    {
-        if (isset($this->tempFiles[$index])) {
-            unset($this->tempFiles[$index]);
-            $this->tempFiles = array_values($this->tempFiles);
-        }
-    }
-
-    // public function eliminarArchivo()
-    // {
-    //     if ($this->cotizacion) {
-    //         Storage::disk('public')->delete($this->cotizacion);
-    //         $this->formulario->update(['adjunto_cotizacion' => null]);
-    //         $this->cotizacion = null;
-    //     }
-    // }
-
     public function submit()
     {
         // $rules = $this->rules;

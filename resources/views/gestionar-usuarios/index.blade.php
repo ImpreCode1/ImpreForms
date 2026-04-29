@@ -30,12 +30,13 @@
                                     <td class="px-4 py-3 text-sm text-gray-900 max-w-xs truncate">{{ $user->name }}</td>
                                     <td class="px-4 py-3 text-sm text-gray-500 max-w-xs truncate">{{ $user->email }}</td>
                                     <td class="px-4 py-3 whitespace-nowrap">
-                                        <form method="POST" action="{{ route('usuarios.updateRol', $user->id) }}" class="flex items-center">
+                                        <form method="POST" action="{{ route('usuarios.updateRol', $user->id) }}">
                                             @csrf
                                             @method('PATCH')
-                                            <select name="rol" onchange="this.form.submit()" class="text-xs border rounded px-2 py-1 bg-white">
-                                                <option value="Admin" {{ $user->rol === 'Admin' ? 'selected' : '' }}>Admin</option>
-                                                <option value="User" {{ $user->rol === 'User' ? 'selected' : '' }}>User</option>
+                                            <select name="rol" onchange="this.form.submit()" 
+                                                class="text-xs border border-gray-300 rounded px-2 py-1.5 bg-white min-w-[100px] cursor-pointer hover:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                                <option value="Admin" {{ $user->rol === 'Admin' ? 'selected' : '' }}>Administrador</option>
+                                                <option value="User" {{ $user->rol === 'User' ? 'selected' : '' }}>Usuario</option>
                                             </select>
                                         </form>
                                     </td>
@@ -58,7 +59,7 @@
                     </div>
 
                     <div class="px-4 py-3 border-t border-gray-200 bg-gray-50">
-                        {{ $users->links() }}
+                        @include('components.pagination', ['paginator' => $users])
                     </div>
                 </div>
             </div>

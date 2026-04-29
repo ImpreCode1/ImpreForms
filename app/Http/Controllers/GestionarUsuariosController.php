@@ -33,8 +33,16 @@ class GestionarUsuariosController extends Controller
     public function destroy($userId)
     {
         $user = User::findOrFail($userId);
-        $user->delete();
         
-        return redirect()->back()->with('success', 'Usuario eliminado correctamente.');
+        try {
+            $user->delete();
+            return redirect()->back()->with('success', 'Usuario eliminado correctamente.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            $user->name = $user->name . ' (Inactivo)';
+            $user->email = 'eliminado_' . $user->id . '_' . $user->email;
+            $user->save();
+            
+            return redirect()->back()->with('success', 'Usuario marcado como inactivo (no se puede eliminar por tener registros asociados).');
+        }
     }
 }
