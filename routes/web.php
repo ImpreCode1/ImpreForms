@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\GestionarUsuariosController;
 use App\Livewire\Auth\Login;
 use App\Livewire\EnviarFormulario;
 use App\Livewire\FormulariosRecibidos;
+use App\Livewire\GestionarUsuarios;
 use App\Livewire\Layout\ManagerSidebar;
 use App\Livewire\Successful;
 use Illuminate\Support\Facades\DB;
@@ -64,9 +66,9 @@ Route::view('/historial', 'historial')
 //     ->name('formularios-recibidos');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/crear-usuario', function () {
-        return view('crear-usuario');
-    })->name('crear-usuario');
+    Route::get('/gestionar-usuarios', [GestionarUsuariosController::class, 'index'])->name('gestionar-usuarios');
+    Route::patch('/usuarios/{user}/rol', [GestionarUsuariosController::class, 'updateRol'])->name('usuarios.updateRol');
+    Route::delete('/usuarios/{user}', [GestionarUsuariosController::class, 'destroy'])->name('usuarios.destroy');
 
     Route::get('/formularios-recibidos', function () {
         return view('formularios-recibidos');
