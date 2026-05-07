@@ -13,7 +13,14 @@ class Linea extends Model
     protected $fillable = [
         'codigo_linea',
         'linea',
+        'codigo',
+        'activo',
     ];
+
+    public function scopeActivos($query)
+    {
+        return $query->where('activo', true);
+    }
 
 
 }

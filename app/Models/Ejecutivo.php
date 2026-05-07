@@ -4,16 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Director extends Model
+class Ejecutivo extends Model
 {
-    protected $table = 'directores';
+    protected $table = 'executives';
 
     protected $fillable = [
-        'nombre_director',
+        'cc',
+        'nombre_colaborador',
         'cargo',
         'area_vp',
         'subarea_division',
         'mail',
+        'codigo_area_funcional_ceco',
+        'estado',
         'nombre',
         'email',
         'activo',
