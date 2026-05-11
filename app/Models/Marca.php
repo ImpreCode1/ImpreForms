@@ -86,6 +86,11 @@ class Marca extends Model
         return $this->hasMany(FormLink::class, 'marca_id', 'id');
     }
 
+    public function seguimiento()
+    {
+        return $this->hasOne(Seguimiento::class, 'marca_id');
+    }
+
 
     public function getEstadoAttribute()
     {
