@@ -29,7 +29,7 @@ class EjecutivosCrud extends Component
 
     public function render()
     {
-        $ejecutivos = Ejecutivo::orderBy('id', 'desc')->paginate(10);
+        $ejecutivos = Ejecutivo::orderBy('id', 'desc')->whereNotNull('nombre_colaborador')->get();
         return view('livewire.admin.maestros.ejecutivos-crud', compact('ejecutivos'));
     }
 
@@ -51,8 +51,8 @@ class EjecutivosCrud extends Component
         $this->validate();
 
         Ejecutivo::create([
-            'nombre' => $this->nombre,
-            'email' => $this->email,
+            'nombre_colaborador' => $this->nombre,
+            'mail' => $this->email,
             'activo' => true,
         ]);
 
@@ -63,8 +63,8 @@ class EjecutivosCrud extends Component
     public function edit(Ejecutivo $ejecutivo)
     {
         $this->ejecutivoId = $ejecutivo->id;
-        $this->nombre = $ejecutivo->nombre;
-        $this->email = $ejecutivo->email;
+        $this->nombre = $ejecutivo->nombre_colaborador;
+        $this->email = $ejecutivo->mail;
         $this->editMode = true;
         $this->showModal = true;
     }
@@ -75,23 +75,24 @@ class EjecutivosCrud extends Component
 
         $ejecutivo = Ejecutivo::find($this->ejecutivoId);
         $ejecutivo->update([
-            'nombre' => $this->nombre,
-            'email' => $this->email,
+            'nombre_colaborador' => $this->nombre,
+            'mail' => $this->email,
         ]);
 
         session()->flash('success', 'Ejecutivo actualizado correctamente.');
         $this->closeModal();
     }
 
-    public function deactivate(Ejecutivo $ejecutivo)
+    public function delete(Ejecutivo $ejecutivo)
     {
-        $ejecutivo->update(['activo' => false]);
-        session()->flash('success', 'Ejecutivo desactivado.');
+        $ejecutivo->delete();
+        session()->flash('success', 'Ejecutivo eliminado correctamente.');
     }
 
-    public function activate(Ejecutivo $ejecutivo)
+    public function toggleActivo(Ejecutivo $ejecutivo)
     {
-        $ejecutivo->update(['activo' => true]);
-        session()->flash('success', 'Ejecutivo reactivado.');
+        $ejecutivo->update(['activo' => !$ejecutivo->activo]);
+        session()->flash('success', $ejecutivo->activo ? 'Ejecutivo activado.' : 'Ejecutivo desactivado.');
     }
 }
+

@@ -48,10 +48,7 @@
                         this.currentRoute = route;
                         localStorage.setItem('currentRoute', route);
                     }
-                }" x-init="// Restore from localStorage on page load
-                if (localStorage.getItem('currentRoute')) {
-                    currentRoute = localStorage.getItem('currentRoute');
-                }">
+                }" x-init="let s = localStorage.getItem('currentRoute'); if (s) currentRoute = s;">
                     @php
                         $menuItems = Auth::user()->isAdmin()
                             ? [
@@ -143,7 +140,6 @@
     </div>
 
     @livewireScripts
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </body>
 
 </html>

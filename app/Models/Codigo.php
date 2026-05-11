@@ -13,8 +13,6 @@ class Codigo extends Model
     protected $fillable = [
         'codigo_cliente',
         'nombre_cliente',
-        'codigo',
-        'descripcion',
         'activo',
     ];
 

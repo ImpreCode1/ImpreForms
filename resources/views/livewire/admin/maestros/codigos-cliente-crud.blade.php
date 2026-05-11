@@ -21,7 +21,6 @@
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Código</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Descripción</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
                 </tr>
             </thead>
@@ -29,21 +28,33 @@
                 @foreach ($codigos as $codigo)
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap">{{ $codigo->codigo_cliente }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">{{ $codigo->descripcion }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $codigo->nombre_cliente }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            @if($codigo->activo)
-                                <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Activo</span>
-                            @else
-                                <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">Inactivo</span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap flex gap-2">
-                            <button wire:click="edit({{ $codigo->id }})" class="text-indigo-600 hover:text-indigo-900 text-sm">Editar</button>
-                            @if($codigo->activo)
-                                <button wire:click="deactivate({{ $codigo->id }})" class="text-red-600 hover:text-red-900 text-sm">Desactivar</button>
-                            @else
-                                <button wire:click="activate({{ $codigo->id }})" class="text-green-600 hover:text-green-900 text-sm">Reactivar</button>
-                            @endif
+                            <div class="flex items-center gap-2">
+                                <button wire:click="edit({{ $codigo->id }})" class="p-1.5 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded transition" title="Editar">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                    </svg>
+                                </button>
+                                @if(isset($codigo->activo))
+                                <button wire:click="toggleActivo({{ $codigo->id }})" 
+                                    class="p-1.5 rounded transition {{ $codigo->activo ? 'text-green-600 hover:text-green-800 hover:bg-green-50' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100' }}" 
+                                    title="{{ $codigo->activo ? 'Desactivar' : 'Activar' }}">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        @if($codigo->activo)
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        @else
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        @endif
+                                    </svg>
+                                </button>
+                                @endif
+                                <button wire:click="delete({{ $codigo->id }})" class="p-1.5 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition" title="Eliminar">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 @endforeach
@@ -55,7 +66,7 @@
         {{ $codigos->links() }}
     </div>
 
-    <div x-data="{ show: @entangle('showModal') }" x-show="show" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+    <div x-data="{ show: $wire.entangle('showModal') }" x-show="show" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
         <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
             <div x-show="show" class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" @click="closeModal"></div>
             <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full">

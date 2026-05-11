@@ -29,7 +29,7 @@ class DirectoresCrud extends Component
 
     public function render()
     {
-        $directores = Director::orderBy('id', 'desc')->paginate(10);
+        $directores = Director::orderBy('id', 'desc')->whereNotNull('nombre_director')->get();
         return view('livewire.admin.maestros.directores-crud', compact('directores'));
     }
 
@@ -51,8 +51,8 @@ class DirectoresCrud extends Component
         $this->validate();
 
         Director::create([
-            'nombre' => $this->nombre,
-            'email' => $this->email,
+            'nombre_director' => $this->nombre,
+            'mail' => $this->email,
             'activo' => true,
         ]);
 
@@ -63,8 +63,8 @@ class DirectoresCrud extends Component
     public function edit(Director $director)
     {
         $this->directorId = $director->id;
-        $this->nombre = $director->nombre;
-        $this->email = $director->email;
+        $this->nombre = $director->nombre_director;
+        $this->email = $director->mail;
         $this->editMode = true;
         $this->showModal = true;
     }
@@ -75,23 +75,24 @@ class DirectoresCrud extends Component
 
         $director = Director::find($this->directorId);
         $director->update([
-            'nombre' => $this->nombre,
-            'email' => $this->email,
+            'nombre_director' => $this->nombre,
+            'mail' => $this->email,
         ]);
 
         session()->flash('success', 'Director actualizado correctamente.');
         $this->closeModal();
     }
 
-    public function deactivate(Director $director)
+    public function delete(Director $director)
     {
-        $director->update(['activo' => false]);
-        session()->flash('success', 'Director desactivado.');
+        $director->delete();
+        session()->flash('success', 'Director eliminado correctamente.');
     }
 
-    public function activate(Director $director)
+    public function toggleActivo(Director $director)
     {
-        $director->update(['activo' => true]);
-        session()->flash('success', 'Director reactivado.');
+        $director->update(['activo' => !$director->activo]);
+        session()->flash('success', $director->activo ? 'Director activado.' : 'Director desactivado.');
     }
 }
+

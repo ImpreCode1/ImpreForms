@@ -29,7 +29,7 @@ class CodigosClienteCrud extends Component
 
     public function render()
     {
-        $codigos = Codigo::orderBy('id', 'desc')->paginate(10);
+        $codigos = Codigo::orderBy('id', 'desc')->paginate(20);
         return view('livewire.admin.maestros.codigos-cliente-crud', compact('codigos'));
     }
 
@@ -52,9 +52,7 @@ class CodigosClienteCrud extends Component
 
         Codigo::create([
             'codigo_cliente' => $this->codigo,
-            'descripcion' => $this->descripcion,
-            'codigo' => $this->codigo,
-            'activo' => true,
+            'nombre_cliente' => $this->descripcion,
         ]);
 
         session()->flash('success', 'Código de cliente creado correctamente.');
@@ -65,7 +63,7 @@ class CodigosClienteCrud extends Component
     {
         $this->codigoId = $codigo->id;
         $this->codigo = $codigo->codigo_cliente;
-        $this->descripcion = $codigo->descripcion;
+        $this->descripcion = $codigo->nombre_cliente;
         $this->editMode = true;
         $this->showModal = true;
     }
@@ -77,23 +75,24 @@ class CodigosClienteCrud extends Component
         $codigo = Codigo::find($this->codigoId);
         $codigo->update([
             'codigo_cliente' => $this->codigo,
-            'codigo' => $this->codigo,
-            'descripcion' => $this->descripcion,
+            'nombre_cliente' => $this->descripcion,
         ]);
 
         session()->flash('success', 'Código de cliente actualizado correctamente.');
         $this->closeModal();
     }
 
-    public function deactivate(Codigo $codigo)
+    public function delete(Codigo $codigo)
     {
-        $codigo->update(['activo' => false]);
-        session()->flash('success', 'Código de cliente desactivado.');
+        $codigo->delete();
+        session()->flash('success', 'Código de cliente eliminado correctamente.');
     }
 
-    public function activate(Codigo $codigo)
+    public function toggleActivo(Codigo $codigo)
     {
-        $codigo->update(['activo' => true]);
-        session()->flash('success', 'Código de cliente reactivado.');
+        $nuevoEstado = !$codigo->activo;
+        $codigo->update(['activo' => $nuevoEstado]);
+        session()->flash('success', $nuevoEstado ? 'Código activado.' : 'Código desactivado.');
     }
 }
+

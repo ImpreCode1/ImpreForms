@@ -9,16 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('directores', function (Blueprint $table) {
-            $table->string('nombre')->nullable()->after('nombre_director');
-            $table->string('email')->nullable()->after('nombre');
-            $table->boolean('activo')->default(true)->after('email');
+            $table->boolean('activo')->default(true)->after('mail');
         });
     }
 
     public function down(): void
     {
         Schema::table('directores', function (Blueprint $table) {
-            $table->dropColumn(['nombre', 'email', 'activo']);
+            $table->dropColumn('activo');
         });
     }
 };

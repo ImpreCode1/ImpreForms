@@ -75,10 +75,10 @@ Route::middleware(['auth'])->group(function () {
     })->name('formularios-recibidos');
 
     Route::prefix('admin/maestros')->group(function () {
-        Route::get('/ejecutivos', \App\Livewire\Admin\Maestros\EjecutivosCrud::class)->name('admin.maestros.ejecutivos');
-        Route::get('/directores', \App\Livewire\Admin\Maestros\DirectoresCrud::class)->name('admin.maestros.directores');
-        Route::get('/lineas', \App\Livewire\Admin\Maestros\LineasCrud::class)->name('admin.maestros.lineas');
-        Route::get('/codigos-cliente', \App\Livewire\Admin\Maestros\CodigosClienteCrud::class)->name('admin.maestros.codigos-cliente');
+        Route::get('/ejecutivos', fn() => view('admin.maestros.ejecutivos'))->name('admin.maestros.ejecutivos');
+        Route::get('/directores', fn() => view('admin.maestros.directores'))->name('admin.maestros.directores');
+        Route::get('/lineas', fn() => view('admin.maestros.lineas'))->name('admin.maestros.lineas');
+        Route::get('/codigos-cliente', fn() => view('admin.maestros.codigos-cliente'))->name('admin.maestros.codigos-cliente');
     });
 });
 // * : ruta para el cierre de sesion.

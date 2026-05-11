@@ -29,7 +29,7 @@ class LineasCrud extends Component
 
     public function render()
     {
-        $lineas = Linea::orderBy('id', 'desc')->paginate(10);
+        $lineas = Linea::orderBy('id', 'desc')->whereNotNull('linea')->get();
         return view('livewire.admin.maestros.lineas-crud', compact('lineas'));
     }
 
@@ -52,7 +52,7 @@ class LineasCrud extends Component
 
         Linea::create([
             'linea' => $this->nombre,
-            'codigo' => $this->codigo,
+            'codigo_linea' => $this->codigo,
             'activo' => true,
         ]);
 
@@ -64,7 +64,7 @@ class LineasCrud extends Component
     {
         $this->lineaId = $linea->id;
         $this->nombre = $linea->linea;
-        $this->codigo = $linea->codigo;
+        $this->codigo = $linea->codigo_linea;
         $this->editMode = true;
         $this->showModal = true;
     }
@@ -76,22 +76,23 @@ class LineasCrud extends Component
         $linea = Linea::find($this->lineaId);
         $linea->update([
             'linea' => $this->nombre,
-            'codigo' => $this->codigo,
+            'codigo_linea' => $this->codigo,
         ]);
 
         session()->flash('success', 'Línea actualizada correctamente.');
         $this->closeModal();
     }
 
-    public function deactivate(Linea $linea)
+    public function delete(Linea $linea)
     {
-        $linea->update(['activo' => false]);
-        session()->flash('success', 'Línea desactivada.');
+        $linea->delete();
+        session()->flash('success', 'Línea eliminada correctamente.');
     }
 
-    public function activate(Linea $linea)
+    public function toggleActivo(Linea $linea)
     {
-        $linea->update(['activo' => true]);
-        session()->flash('success', 'Línea reactivada.');
+        $linea->update(['activo' => !$linea->activo]);
+        session()->flash('success', $linea->activo ? 'Línea activada.' : 'Línea desactivada.');
     }
 }
+

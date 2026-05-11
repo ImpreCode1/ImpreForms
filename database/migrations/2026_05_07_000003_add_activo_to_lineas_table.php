@@ -9,7 +9,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('lineas', function (Blueprint $table) {
-            $table->string('codigo')->nullable()->after('id');
             $table->boolean('activo')->default(true)->after('linea');
         });
     }
@@ -17,7 +16,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('lineas', function (Blueprint $table) {
-            $table->dropColumn(['codigo', 'activo']);
+            $table->dropColumn('activo');
         });
     }
 };
