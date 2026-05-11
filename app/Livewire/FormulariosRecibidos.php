@@ -237,7 +237,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
                 return;
             }
 
-            $newExpiryTime = Carbon::now()->addDays(3);
+            $newExpiryTime = Carbon::now()->addDays(1);
 
             foreach ($formLinks as $link) {
                 $link->expires_at = $newExpiryTime;
