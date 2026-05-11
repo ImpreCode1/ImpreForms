@@ -143,6 +143,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/correos-operaciones-financiera', function () {
         return view('correos-operaciones-financiera');
     })->name('correos');
+
+    Route::get('/seguimiento', fn() => view('seguimiento.index'))->name('seguimiento.index');
 });
 
 Route::get('/documentos/{documento}', [FormulariosRecibidos::class, 'ver'])->name('documentos.ver');

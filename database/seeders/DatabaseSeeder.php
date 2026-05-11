@@ -18,5 +18,11 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+
+        if (app()->isLocal()) {
+            $this->call([
+                SeguimientoSeeder::class,
+            ]);
+        }
     }
 }
