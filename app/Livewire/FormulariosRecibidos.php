@@ -261,7 +261,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
 
     public function collection()
     {
-        $marcas = Marca::with('infonegocio', 'financiera', 'informacion')->get();
+        $marcas = Marca::with('infonegocio', 'financiera', 'informacion', 'seguimiento', 'seguimiento.facturas')->get();
 
         return $marcas;
     }
@@ -292,26 +292,38 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
             $fechaMasReciente = $fechaOperaciones;
         }
 
+        $seguimiento = $marca->seguimiento;
+        $facturas = $seguimiento && $seguimiento->facturas->isNotEmpty()
+            ? $seguimiento->facturas->pluck('numero_factura')->filter()->implode(', ')
+            : '';
+
         return [
-            $marca->created_at ? $marca->created_at->format('Y-m-d') : 'No Completado', // Fecha de solicitud
-            $marca->tipo_solicitud ? $marca->tipo_solicitud : 'No Completado', // Tipo de Solicitud
-            $infonegocio ? preg_replace('/\D/', '', $infonegocio->n_oportunidad_crm) : 'No Completado', // Número de oportunidad en el CRM
-            $infonegocio ? preg_replace('/\D/', '', $infonegocio->codigo_cliente) : 'No Completado', // Código Cliente
-            $infonegocio ? $infonegocio->nombre : 'No Completado', // Nombre del cliente
-            $infonegocio ? $infonegocio->codigo_linea : 'No Completado', // Código de línea
-            $infonegocio ? $infonegocio->nombre_linea : 'No Completado', // Nombre de la línea
-            $marca->precio_venta ? $marca->precio_venta : 'No Completado', // Precio venta
-            $marca->user->name ? $marca->user->name : 'No Completado', // Solicitante
-            $marca->user->cargo ? $marca->user->cargo : 'No Completado', // Cargo solicitante
-            $fechaPrimerEnvioFinanciera ? $fechaPrimerEnvioFinanciera->format('Y-m-d') : 'No Iniciado', // Fecha inicio financiera
-            $fechaPrimerEnvioOperaciones ? $fechaPrimerEnvioOperaciones->format('Y-m-d') : 'No Iniciado', // Fecha Inicio Operaciones
-            $fechaMasReciente ? $fechaMasReciente->format('Y-m-d') : 'No fue terminado', // Última Actualización
+            $marca->created_at ? $marca->created_at->format('Y-m-d') : 'No Completado',
+            $marca->tipo_solicitud ? $marca->tipo_solicitud : 'No Completado',
+            $infonegocio ? preg_replace('/\D/', '', $infonegocio->n_oportunidad_crm) : 'No Completado',
+            $infonegocio ? preg_replace('/\D/', '', $infonegocio->codigo_cliente) : 'No Completado',
+            $infonegocio ? $infonegocio->nombre : 'No Completado',
+            $infonegocio ? $infonegocio->codigo_linea : 'No Completado',
+            $infonegocio ? $infonegocio->nombre_linea : 'No Completado',
+            $marca->precio_venta ? $marca->precio_venta : 'No Completado',
+            $marca->user->name ? $marca->user->name : 'No Completado',
+            $marca->user->cargo ? $marca->user->cargo : 'No Completado',
+            $fechaPrimerEnvioFinanciera ? $fechaPrimerEnvioFinanciera->format('Y-m-d') : 'No Iniciado',
+            $fechaPrimerEnvioOperaciones ? $fechaPrimerEnvioOperaciones->format('Y-m-d') : 'No Iniciado',
+            $fechaMasReciente ? $fechaMasReciente->format('Y-m-d') : 'No fue terminado',
+            $seguimiento?->estado ?? '',
+            $seguimiento?->facturacion ?? '',
+            $seguimiento?->actas_cierre ?? '',
+            $seguimiento?->anticipos ?? '',
+            $seguimiento?->tiempos_entrega ?? '',
+            $seguimiento?->observaciones ?? '',
+            $facturas,
         ];
     }
 
     public function headings(): array
     {
-        return ['Fecha de solicitud', 'Tipo de Solicitud', 'Número de oportunidad en el CRM', 'Código Cliente', 'Nombre del cliente', 'Código de línea', 'Nombre de la línea', 'Precio venta', 'Solicitante', 'Cargo solicitante', 'Fecha inicio financiera', 'Fecha Inicio Operaciones', 'Última Actualización'];
+        return ['Fecha de solicitud', 'Tipo de Solicitud', 'Número de oportunidad en el CRM', 'Código Cliente', 'Nombre del cliente', 'Código de línea', 'Nombre de la línea', 'Precio venta', 'Solicitante', 'Cargo solicitante', 'Fecha inicio financiera', 'Fecha Inicio Operaciones', 'Última Actualización', 'Estado del proyecto', 'Facturación', 'Acta de cierre', 'Anticipos', 'Tiempos de entrega', 'Observaciones', 'Facturas'];
     }
     // ! generar pdf
 
@@ -362,6 +374,18 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
             'F' => 25,
             'G' => 25,
             'H' => 25,
+            'I' => 25,
+            'J' => 25,
+            'K' => 25,
+            'L' => 25,
+            'M' => 25,
+            'N' => 20,
+            'O' => 20,
+            'P' => 20,
+            'Q' => 20,
+            'R' => 20,
+            'S' => 30,
+            'T' => 30,
         ];
     }
 
