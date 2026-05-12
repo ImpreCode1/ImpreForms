@@ -66,6 +66,12 @@ Route::view('/historial', 'historial')
 //     ->name('formularios-recibidos');
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/seguimiento', function () {
+        return view('seguimiento.index');
+    })->name('seguimiento');
+
+    Route::get('/exportar-excel', [FormulariosRecibidos::class, 'exportar'])->name('exportar');
+
     Route::get('/gestionar-usuarios', [GestionarUsuariosController::class, 'index'])->name('gestionar-usuarios');
     Route::patch('/usuarios/{user}/rol', [GestionarUsuariosController::class, 'updateRol'])->name('usuarios.updateRol');
     Route::delete('/usuarios/{user}', [GestionarUsuariosController::class, 'destroy'])->name('usuarios.destroy');
