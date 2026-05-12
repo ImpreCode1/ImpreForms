@@ -184,36 +184,6 @@
                             <p class="text-sm text-gray-500">No hay facturas registradas.</p>
                             @endif
                         </div>
-
-                        @if($isAdmin && count($auditorias) > 0)
-                        <div class="mt-6 border-t pt-4">
-                            <h4 class="text-lg font-medium text-gray-900 mb-4">Historial de Cambios</h4>
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Usuario</th>
-                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
-                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Campo</th>
-                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Valor Anterior</th>
-                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Valor Nuevo</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                        @foreach($auditorias as $aud)
-                                        <tr>
-                                            <td class="px-3 py-2 text-sm text-gray-900">{{ $aud['usuario'] }}</td>
-                                            <td class="px-3 py-2 text-sm text-gray-500">{{ $aud['fecha'] }}</td>
-                                            <td class="px-3 py-2 text-sm text-gray-500">{{ $aud['campo'] }}</td>
-                                            <td class="px-3 py-2 text-sm text-gray-500">{{ $aud['valor_anterior'] ?? '-' }}</td>
-                                            <td class="px-3 py-2 text-sm text-gray-900">{{ $aud['valor_nuevo'] ?? '-' }}</td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        @endif
                         @endif
                     </div>
                 </div>

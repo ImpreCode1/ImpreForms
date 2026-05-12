@@ -2,14 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Factura extends Model
 {
-    use HasFactory;
-
     protected $table = 'facturas';
 
     protected $fillable = [
@@ -18,7 +14,6 @@ class Factura extends Model
         'fecha',
         'valor',
         'descripcion',
-        'acta_cierre',
     ];
 
     protected $casts = [
@@ -26,7 +21,7 @@ class Factura extends Model
         'valor' => 'decimal:2',
     ];
 
-    public function seguimiento(): BelongsTo
+    public function seguimiento()
     {
         return $this->belongsTo(Seguimiento::class);
     }

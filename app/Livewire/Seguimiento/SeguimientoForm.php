@@ -2,155 +2,152 @@
 
 namespace App\Livewire\Seguimiento;
 
-use App\Models\AuditoriaObservacion;
 use App\Models\Factura;
 use App\Models\Seguimiento;
-use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Rule;
 use Livewire\Component;
 
 class SeguimientoForm extends Component
 {
-    public ?int $seguimientoId = null;
-    public bool $editMode = false;
+    public $seguimientoId = null;
+    public $editMode = false;
 
-    #[Rule('required|string|max:255')]
-    public string $cliente = '';
+    public $cliente = '';
+    public $linea_primaria = '';
+    public $estado = 'pendiente';
+    public $valor = 0;
+    public $fecha_apertura;
+    public $fecha_cierre;
+    public $fecha_facturacion;
+    public $estado_negocio = '';
+    public $incoterm = '';
+    public $anticipos = '';
+    public $tiempos_entrega = '';
+    public $forma_pago = '';
+    public $facturacion = '';
+    public $actas_cierre = '';
+    public $observaciones = '';
 
-    #[Rule('nullable|string|max:255')]
-    public string $linea_primaria = '';
+    public $facturas = [];
+    public $newNumeroFactura = '';
+    public $newFechaFactura = '';
+    public $newValorFactura = '';
+    public $newDescripcionFactura = '';
+    public $facturaEditIndex = null;
 
-    #[Rule('nullable|date')]
-    public ?string $fecha_apertura = null;
+    public $auditorias = [];
 
-    #[Rule('nullable|date')]
-    public ?string $fecha_cierre = null;
+    protected $listeners = ['refresh-form' => 'refreshForm'];
 
-    #[Rule('nullable|date')]
-    public ?string $fecha_facturacion = null;
-
-    #[Rule('nullable|numeric|min:0')]
-    public ?string $valor = null;
-
-    #[Rule('nullable|string|max:255')]
-    public string $estado_negocio = '';
-
-    #[Rule('required|in:anulado,declinado,en_proceso,facturado,facturado_y_pagado,pendiente,recurrencia')]
-    public string $estado = 'pendiente';
-
-    #[Rule('nullable|string|max:100')]
-    public string $incoterm = '';
-
-    #[Rule('nullable|string')]
-    public string $anticipos = '';
-
-    #[Rule('nullable|string')]
-    public string $tiempos_entrega = '';
-
-    #[Rule('nullable|string')]
-    public string $forma_pago = '';
-
-    #[Rule('nullable|string')]
-    public string $facturacion = '';
-
-    #[Rule('nullable|string')]
-    public string $actas_cierre = '';
-
-    #[Rule('nullable|string')]
-    public string $observaciones = '';
-
-    public array $facturas = [];
-    public array $auditorias = [];
-
-    public ?int $facturaEditIndex = null;
-    public string $newNumeroFactura = '';
-    public ?string $newFechaFactura = null;
-    public ?string $newValorFactura = null;
-    public string $newDescripcionFactura = '';
-
-    public function mount(?int $seguimientoId = null)
+    public function getIsAdminProperty()
     {
-        abort_unless(Auth::check(), 401);
+        return auth()->user() && auth()->user()->isAdmin();
+    }
 
+    public function mount($seguimientoId = null)
+    {
         $this->seguimientoId = $seguimientoId;
-
+        
         if ($this->seguimientoId) {
             $this->editMode = true;
             $this->loadSeguimiento();
+        } else {
+            $this->fecha_apertura = now()->format('Y-m-d');
         }
     }
 
-    protected function loadSeguimiento()
+    public function refreshForm($id = null)
     {
-        $seguimiento = Seguimiento::with('facturas')->find($this->seguimientoId);
-
-        if ($seguimiento) {
-            $this->cliente = $seguimiento->cliente ?? '';
-            $this->linea_primaria = $seguimiento->linea_primaria ?? '';
-            $this->fecha_apertura = $seguimiento->fecha_apertura?->format('Y-m-d');
-            $this->fecha_cierre = $seguimiento->fecha_cierre?->format('Y-m-d');
-            $this->fecha_facturacion = $seguimiento->fecha_facturacion?->format('Y-m-d');
-            $this->valor = $seguimiento->valor ? (string) $seguimiento->valor : null;
-            $this->estado_negocio = $seguimiento->estado_negocio ?? '';
-            $this->estado = $seguimiento->estado ?? 'pendiente';
-            $this->incoterm = $seguimiento->incoterm ?? '';
-            $this->anticipos = $seguimiento->anticipos ?? '';
-            $this->tiempos_entrega = $seguimiento->tiempos_entrega ?? '';
-            $this->forma_pago = $seguimiento->forma_pago ?? '';
-            $this->facturacion = $seguimiento->facturacion ?? '';
-            $this->actas_cierre = $seguimiento->actas_cierre ?? '';
-            $this->observaciones = $seguimiento->observaciones ?? '';
-
-            $this->facturas = $seguimiento->facturas->map(function ($f) {
-                return [
-                    'id' => $f->id,
-                    'numero_factura' => $f->numero_factura,
-                    'fecha' => $f->fecha?->format('Y-m-d'),
-                    'valor' => $f->valor ? (string) $f->valor : null,
-                    'descripcion' => $f->descripcion ?? '',
-                    'acta_cierre' => $f->acta_cierre ?? '',
-                ];
-            })->toArray();
-
-            $this->loadAuditorias();
+        $this->seguimientoId = $id;
+        
+        if ($this->seguimientoId) {
+            $this->editMode = true;
+            $this->loadSeguimiento();
+        } else {
+            $this->editMode = false;
+            $this->resetForm();
         }
     }
 
-    protected function loadAuditorias()
+    protected function resetForm()
     {
-        $this->auditorias = AuditoriaObservacion::with('user')
-            ->where('seguimiento_id', $this->seguimientoId)
-            ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(function ($a) {
-                return [
-                    'usuario' => $a->user?->name ?? 'Usuario',
-                    'fecha' => $a->created_at?->format('d/m/Y H:i'),
-                    'campo' => $a->campo,
-                    'valor_anterior' => $a->valor_anterior,
-                    'valor_nuevo' => $a->valor_nuevo,
-                ];
-            })->toArray();
+        $this->cliente = '';
+        $this->linea_primaria = '';
+        $this->estado = 'pendiente';
+        $this->valor = 0;
+        $this->fecha_apertura = now()->format('Y-m-d');
+        $this->fecha_cierre = null;
+        $this->fecha_facturacion = null;
+        $this->estado_negocio = '';
+        $this->incoterm = '';
+        $this->anticipos = '';
+        $this->tiempos_entrega = '';
+        $this->forma_pago = '';
+        $this->facturacion = '';
+        $this->actas_cierre = '';
+        $this->observaciones = '';
+        $this->facturas = [];
+        $this->auditorias = [];
+        $this->reset(['newNumeroFactura', 'newFechaFactura', 'newValorFactura', 'newDescripcionFactura', 'facturaEditIndex']);
+    }
+        } else {
+            $this->fecha_apertura = now()->format('Y-m-d');
+        }
     }
 
-    public function isAdmin(): bool
+    public function loadSeguimiento()
     {
-        return Auth::user()->isAdmin();
+        $seg = Seguimiento::with('facturas')->find($this->seguimientoId);
+        
+        if ($seg) {
+            $this->cliente = $seg->cliente;
+            $this->linea_primaria = $seg->linea_primaria;
+            $this->estado = $seg->estado;
+            $this->valor = $seg->valor;
+            $this->fecha_apertura = $seg->fecha_apertura?->format('Y-m-d');
+            $this->fecha_cierre = $seg->fecha_cierre?->format('Y-m-d');
+            $this->fecha_facturacion = $seg->fecha_facturacion?->format('Y-m-d');
+            $this->estado_negocio = $seg->estado_negocio;
+            $this->incoterm = $seg->incoterm;
+            $this->anticipos = $seg->anticipos;
+            $this->tiempos_entrega = $seg->tiempos_entrega;
+            $this->forma_pago = $seg->forma_pago;
+            $this->facturacion = $seg->facturacion;
+            $this->actas_cierre = $seg->actas_cierre;
+            $this->observaciones = $seg->observaciones;
+
+            $this->facturas = $seg->facturas->map(fn($f) => [
+                'numero_factura' => $f->numero_factura,
+                'fecha' => $f->fecha?->format('Y-m-d'),
+                'valor' => $f->valor,
+                'descripcion' => $f->descripcion,
+            ])->toArray();
+
+            $this->auditorias = $seg->auditorias->map(fn($a) => [
+                'usuario' => $a->usuario,
+                'fecha' => $a->fecha?->format('Y-m-d H:i'),
+                'campo' => $a->campo,
+                'valor_anterior' => $a->valor_anterior,
+                'valor_nuevo' => $a->valor_nuevo,
+            ])->toArray();
+        }
     }
 
     public function save()
     {
-        $this->validate();
+        $this->validate([
+            'cliente' => 'required|string|max:255',
+            'estado' => 'required|string',
+        ]);
 
         $data = [
             'cliente' => $this->cliente,
             'linea_primaria' => $this->linea_primaria,
+            'estado' => $this->estado,
+            'valor' => $this->valor,
             'fecha_apertura' => $this->fecha_apertura,
             'fecha_cierre' => $this->fecha_cierre,
             'fecha_facturacion' => $this->fecha_facturacion,
-            'valor' => $this->valor ? (float) $this->valor : null,
             'estado_negocio' => $this->estado_negocio,
-            'estado' => $this->estado,
             'incoterm' => $this->incoterm,
             'anticipos' => $this->anticipos,
             'tiempos_entrega' => $this->tiempos_entrega,
@@ -162,73 +159,53 @@ class SeguimientoForm extends Component
 
         if ($this->editMode) {
             $seguimiento = Seguimiento::find($this->seguimientoId);
-            $oldObservaciones = $seguimiento->observaciones;
             $seguimiento->update($data);
-
-            if ($this->observaciones !== $oldObservaciones) {
-                AuditoriaObservacion::create([
-                    'seguimiento_id' => $this->seguimientoId,
-                    'user_id' => Auth::id(),
-                    'campo' => 'observaciones',
-                    'valor_anterior' => $oldObservaciones,
-                    'valor_nuevo' => $this->observaciones,
-                    'created_at' => now(),
-                ]);
-            }
         } else {
             $seguimiento = Seguimiento::create($data);
             $this->seguimientoId = $seguimiento->id;
             $this->editMode = true;
         }
 
-        $this->loadSeguimiento();
+        $this->dispatch('close-modal');
     }
 
     public function addFactura()
     {
-        $this->validate([
-            'newNumeroFactura' => 'required|string|max:255',
-            'newFechaFactura' => 'nullable|date',
-            'newValorFactura' => 'nullable|numeric|min:0',
-            'newDescripcionFactura' => 'nullable|string',
-        ]);
+        if ($this->newNumeroFactura) {
+            $this->facturas[] = [
+                'numero_factura' => $this->newNumeroFactura,
+                'fecha' => $this->newFechaFactura,
+                'valor' => $this->newValorFactura,
+                'descripcion' => $this->newDescripcionFactura,
+            ];
 
-        Factura::create([
-            'seguimiento_id' => $this->seguimientoId,
-            'numero_factura' => $this->newNumeroFactura,
-            'fecha' => $this->newFechaFactura,
-            'valor' => $this->newValorFactura ? (float) $this->newValorFactura : null,
-            'descripcion' => $this->newDescripcionFactura,
-        ]);
+            $this->saveFacturasToDb();
 
-        $this->reset(['newNumeroFactura', 'newFechaFactura', 'newValorFactura', 'newDescripcionFactura']);
-        $this->loadSeguimiento();
+            $this->reset(['newNumeroFactura', 'newFechaFactura', 'newValorFactura', 'newDescripcionFactura']);
+        }
     }
 
-    public function editFactura(int $index)
+    public function editFactura($index)
     {
-        $factura = $this->facturas[$index];
         $this->facturaEditIndex = $index;
+        $factura = $this->facturas[$index];
         $this->newNumeroFactura = $factura['numero_factura'];
         $this->newFechaFactura = $factura['fecha'];
         $this->newValorFactura = $factura['valor'];
         $this->newDescripcionFactura = $factura['descripcion'];
     }
 
-    public function updateFactura(int $index)
+    public function updateFactura($index)
     {
-        $factura = $this->facturas[$index];
-        $facturaModel = Factura::find($factura['id']);
-
-        $facturaModel->update([
+        $this->facturas[$index] = [
             'numero_factura' => $this->newNumeroFactura,
             'fecha' => $this->newFechaFactura,
-            'valor' => $this->newValorFactura ? (float) $this->newValorFactura : null,
+            'valor' => $this->newValorFactura,
             'descripcion' => $this->newDescripcionFactura,
-        ]);
+        ];
 
+        $this->saveFacturasToDb();
         $this->cancelEditFactura();
-        $this->loadSeguimiento();
     }
 
     public function cancelEditFactura()
@@ -237,17 +214,39 @@ class SeguimientoForm extends Component
         $this->reset(['newNumeroFactura', 'newFechaFactura', 'newValorFactura', 'newDescripcionFactura']);
     }
 
-    public function deleteFactura(int $index)
+    public function deleteFactura($index)
     {
-        $factura = $this->facturas[$index];
-        Factura::find($factura['id'])->delete();
-        $this->loadSeguimiento();
+        if (isset($this->facturas[$index])) {
+            unset($this->facturas[$index]);
+            $this->facturas = array_values($this->facturas);
+            $this->saveFacturasToDb();
+        }
+    }
+
+    protected function saveFacturasToDb()
+    {
+        $seguimiento = Seguimiento::find($this->seguimientoId);
+        if (!$seguimiento) return;
+
+        $seguimiento->facturas()->delete();
+
+        foreach ($this->facturas as $factura) {
+            $seguimiento->facturas()->create([
+                'numero_factura' => $factura['numero_factura'],
+                'fecha' => $factura['fecha'],
+                'valor' => $factura['valor'],
+                'descripcion' => $factura['descripcion'],
+            ]);
+        }
+    }
+
+    public function closeModal()
+    {
+        $this->dispatch('close-modal');
     }
 
     public function render()
     {
-        return view('livewire.seguimiento.seguimiento-form', [
-            'isAdmin' => $this->isAdmin(),
-        ]);
+        return view('livewire.seguimiento.seguimiento-form');
     }
 }
