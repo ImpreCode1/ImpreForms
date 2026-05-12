@@ -90,7 +90,7 @@ class SeguimientoForm extends Component
             $this->fecha_apertura = $seguimiento->fecha_apertura?->format('Y-m-d');
             $this->fecha_cierre = $seguimiento->fecha_cierre?->format('Y-m-d');
             $this->fecha_facturacion = $seguimiento->fecha_facturacion?->format('Y-m-d');
-            $this->valor = $seguimiento->valor?->toString();
+            $this->valor = $seguimiento->valor ? (string) $seguimiento->valor : null;
             $this->estado_negocio = $seguimiento->estado_negocio ?? '';
             $this->estado = $seguimiento->estado ?? 'pendiente';
             $this->incoterm = $seguimiento->incoterm ?? '';
@@ -106,7 +106,7 @@ class SeguimientoForm extends Component
                     'id' => $f->id,
                     'numero_factura' => $f->numero_factura,
                     'fecha' => $f->fecha?->format('Y-m-d'),
-                    'valor' => $f->valor?->toString(),
+                    'valor' => $f->valor ? (string) $f->valor : null,
                     'descripcion' => $f->descripcion ?? '',
                     'acta_cierre' => $f->acta_cierre ?? '',
                 ];
