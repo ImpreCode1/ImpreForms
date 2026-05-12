@@ -2,11 +2,11 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
-class Linea extends Model
+class Ejecutivo extends Model
 {
-    protected $table = 'lineas';
+    protected $table = 'executives';
     protected $fillable = [
-        'codigo_linea', 'linea', 'activo'
+        'nombre_colaborador', 'mail', 'activo'
     ];
 
     public function scopeActivos($query)

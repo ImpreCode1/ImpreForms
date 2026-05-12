@@ -73,6 +73,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/formularios-recibidos', function () {
         return view('formularios-recibidos');
     })->name('formularios-recibidos');
+
+    Route::prefix('admin/maestros')->group(function () {
+        Route::get('/ejecutivos', fn() => view('admin.maestros.ejecutivos'))->name('admin.maestros.ejecutivos');
+        Route::get('/directores', fn() => view('admin.maestros.directores'))->name('admin.maestros.directores');
+        Route::get('/lineas', fn() => view('admin.maestros.lineas'))->name('admin.maestros.lineas');
+        Route::get('/codigos-cliente', fn() => view('admin.maestros.codigos-cliente'))->name('admin.maestros.codigos-cliente');
+    });
 });
 // * : ruta para el cierre de sesion.
 
@@ -143,6 +150,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/correos-operaciones-financiera', function () {
         return view('correos-operaciones-financiera');
     })->name('correos');
+
+    Route::get('/seguimiento', fn() => view('seguimiento.index'))->name('seguimiento.index');
 });
 
 Route::get('/documentos/{documento}', [FormulariosRecibidos::class, 'ver'])->name('documentos.ver');
