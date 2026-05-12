@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title><?php echo e(config('app.name', 'Laravel')); ?></title>
 
     <!-- Fonts and Styles -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewireStyles
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
+    <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::styles(); ?>
+
 </head>
 
 <body class="font-sans antialiased bg-gray-100 h-full">
@@ -30,26 +31,26 @@
             <div class="px-6 py-6 text-center md:px-4 md:py-4 sm:px-2 sm:py-2">
                 <div class="relative inline-block">
                     <div class="w-24 h-24 mx-auto rounded-full border-4 border-white shadow-lg overflow-hidden mb-4 md:w-20 md:h-20 sm:w-16 sm:h-16">
-                        <img src="https://ui-avatars.com/api/?name={{ Auth::user()->name }}&background=f3f4f6&color=374151"
-                            alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
+                        <img src="https://ui-avatars.com/api/?name=<?php echo e(Auth::user()->name); ?>&background=f3f4f6&color=374151"
+                            alt="<?php echo e(Auth::user()->name); ?>" class="w-full h-full object-cover">
                     </div>
                     <div class="absolute bottom-0 right-0 bg-green-500 w-6 h-6 rounded-full border-2 border-white md:w-5 md:h-5 sm:w-4 sm:h-4">
                     </div>
                 </div>
-                <h2 class="text-xl font-semibold text-gray-800 mt-2 md:text-lg sm:text-base">{{ Auth::user()->name }}</h2>
-                <p class="text-sm text-gray-500 md:text-xs sm:text-xs">{{ Auth::user()->email }}</p>
+                <h2 class="text-xl font-semibold text-gray-800 mt-2 md:text-lg sm:text-base"><?php echo e(Auth::user()->name); ?></h2>
+                <p class="text-sm text-gray-500 md:text-xs sm:text-xs"><?php echo e(Auth::user()->email); ?></p>
             </div>
 
             <!-- Navigation Menu - Usando Alpine.js para manejo de estado -->
             <nav class="px-4 space-y-1 mb-24">
                 <div x-data="{
-                    currentRoute: '{{ request()->route()->getName() }}',
+                    currentRoute: '<?php echo e(request()->route()->getName()); ?>',
                     setCurrentRoute(route) {
                         this.currentRoute = route;
                         localStorage.setItem('currentRoute', route);
                     }
                 }" x-init="let s = localStorage.getItem('currentRoute'); if (s) currentRoute = s;">
-                    @php
+                    <?php
                         $menuItems = Auth::user()->isAdmin()
                             ? [
                                 [
@@ -114,31 +115,31 @@
                                     'color' => 'text-purple-500',
                                 ],
                         ];
-                    @endphp
+                    ?>
 
-                    @foreach ($menuItems as $item)
-                        <a href="{{ route($item['route']) }}" @click="setCurrentRoute('{{ $item['route'] }}')"
+                    <?php $__currentLoopData = $menuItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <a href="<?php echo e(route($item['route'])); ?>" @click="setCurrentRoute('<?php echo e($item['route']); ?>')"
                             class="group flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 ease-in-out"
-                            :class="currentRoute === '{{ $item['route'] }}' ?
+                            :class="currentRoute === '<?php echo e($item['route']); ?>' ?
                                 'bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600' :
                                 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 {{ $item['color'] }}"
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 <?php echo e($item['color']); ?>"
                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="{{ $item['icon'] }}" />
+                                    d="<?php echo e($item['icon']); ?>" />
                             </svg>
-                            <span class="font-medium">{{ $item['name'] }}</span>
-                            <span x-show="currentRoute === '{{ $item['route'] }}'"
+                            <span class="font-medium"><?php echo e($item['name']); ?></span>
+                            <span x-show="currentRoute === '<?php echo e($item['route']); ?>'"
                                 class="ml-auto bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full text-xs">Actual</span>
                         </a>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
             </nav>
 
             <!-- Logout Section -->
             <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-200 bg-white">
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
+                <form method="POST" action="<?php echo e(route('logout')); ?>">
+                    <?php echo csrf_field(); ?>
                     <button type="submit"
                         class="w-full flex items-center justify-center px-4 py-3 rounded-lg bg-gradient-to-r from-red-500 to-red-700 text-white font-semibold hover:from-red-600 hover:to-pink-600 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none"
@@ -154,12 +155,15 @@
 
         <main class="ml-64 flex-1 bg-gradient-to-br from-red-50 via-indigo-50 to-purple-50">
             <div class="content-container page-transition">
-                {{ $slot }}
+                <?php echo e($slot); ?>
+
             </div>
         </main>
     </div>
 
-    @livewireScripts
+    <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::scripts(); ?>
+
 </body>
 
 </html>
+<?php /**PATH C:\laragon\www\ImpreForms\resources\views/layouts/app.blade.php ENDPATH**/ ?>
