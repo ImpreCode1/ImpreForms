@@ -53,6 +53,7 @@ class CodigosClienteCrud extends Component
         Codigo::create([
             'codigo_cliente' => $this->codigo,
             'nombre_cliente' => $this->descripcion,
+            'activo' => true,
         ]);
 
         session()->flash('success', 'Código de cliente creado correctamente.');

@@ -38,15 +38,11 @@ class SeguimientoForm extends Component
 
     protected $listeners = ['refresh-form' => 'refreshForm'];
 
-    public function getIsAdminProperty()
-    {
-        return auth()->user() && auth()->user()->isAdmin();
-    }
-
     public function mount($seguimientoId = null)
     {
         $this->seguimientoId = $seguimientoId;
-        
+        $this->isAdmin = auth()->user() && auth()->user()->isAdmin();
+
         if ($this->seguimientoId) {
             $this->editMode = true;
             $this->loadSeguimiento();
@@ -54,6 +50,8 @@ class SeguimientoForm extends Component
             $this->fecha_apertura = now()->format('Y-m-d');
         }
     }
+
+    public $isAdmin = false;
 
     public function refreshForm($id = null)
     {
@@ -88,10 +86,6 @@ class SeguimientoForm extends Component
         $this->facturas = [];
         $this->auditorias = [];
         $this->reset(['newNumeroFactura', 'newFechaFactura', 'newValorFactura', 'newDescripcionFactura', 'facturaEditIndex']);
-    }
-        } else {
-            $this->fecha_apertura = now()->format('Y-m-d');
-        }
     }
 
     public function loadSeguimiento()

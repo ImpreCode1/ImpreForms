@@ -46,6 +46,6 @@ class Seguimiento extends Model
 
     public function auditorias()
     {
-        return $this->hasMany(AuditoriaSeguimiento::class);
+        return $this->hasMany(AuditoriaObservacion::class);
     }
 }

@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         if (app()->isLocal()) {
             $this->call([
                 MaestrosSeeder::class,
-                SeguimientoSeeder::class,
+                SeguimientosSeeder::class,
             ]);
         }
     }

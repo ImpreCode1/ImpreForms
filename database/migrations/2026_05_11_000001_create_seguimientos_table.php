@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('seguimientos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('marca_id')->nullable();
+            $table->unsignedInteger('marca_id')->nullable();
             $table->foreign('marca_id')->references('id')->on('marcas')->nullOnDelete();
             $table->string('cliente');
             $table->string('linea_primaria')->nullable();

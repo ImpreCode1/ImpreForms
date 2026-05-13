@@ -2,9 +2,11 @@
 
 namespace App\Livewire\Seguimiento;
 
+use App\Exports\SeguimientosExport;
 use App\Models\Seguimiento;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SeguimientoIndex extends Component
 {
@@ -42,6 +44,11 @@ class SeguimientoIndex extends Component
     {
         $this->showModal = false;
         $this->seguimientoId = null;
+    }
+
+    public function exportar()
+    {
+        return Excel::download(new SeguimientosExport, 'seguimientos.xlsx');
     }
 
     public function render()

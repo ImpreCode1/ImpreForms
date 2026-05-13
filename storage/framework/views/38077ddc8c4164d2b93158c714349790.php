@@ -24,7 +24,7 @@
                                 class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                         </div>
                         <div class="shrink-0">
-                            @if($isAdmin)
+                            <!--[if BLOCK]><![endif]--><?php if($isAdmin): ?>
                             <button wire:click="openModal(null)" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -37,7 +37,7 @@
                                 </svg>
                                 Exportar Excel
                             </button>
-                            @endif
+                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
                     </div>
                 </div>
@@ -56,12 +56,12 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
-                            @forelse($seguimientos as $seg)
+                            <!--[if BLOCK]><![endif]--><?php $__empty_1 = true; $__currentLoopData = $seguimientos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $seg): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr class="hover:bg-gray-50">
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900">{{ $seg->cliente }}</td>
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->linea_primaria }}</td>
+                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900"><?php echo e($seg->cliente); ?></td>
+                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500"><?php echo e($seg->linea_primaria); ?></td>
                                 <td class="whitespace-nowrap px-4 py-4">
-                                    @php
+                                    <?php
                                     $colors = [
                                         'anulado' => 'bg-red-100 text-red-800',
                                         'declinado' => 'bg-gray-100 text-gray-800',
@@ -71,45 +71,59 @@
                                         'pendiente' => 'bg-yellow-100 text-yellow-800',
                                         'recurrencia' => 'bg-purple-100 text-purple-800',
                                     ];
-                                    @endphp
-                                    <span class="px-2 py-1 text-xs font-semibold rounded-full {{ $colors[$seg->estado] ?? 'bg-gray-100 text-gray-800' }}">
-                                        {{ ucfirst(str_replace('_', ' ', $seg->estado)) }}
+                                    ?>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full <?php echo e($colors[$seg->estado] ?? 'bg-gray-100 text-gray-800'); ?>">
+                                        <?php echo e(ucfirst(str_replace('_', ' ', $seg->estado))); ?>
+
                                     </span>
                                 </td>
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900">${{ number_format($seg->valor, 2) }}</td>
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->fecha_apertura?->format('d/m/Y') }}</td>
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->fecha_facturacion?->format('d/m/Y') }}</td>
+                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900">$<?php echo e(number_format($seg->valor, 2)); ?></td>
+                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500"><?php echo e($seg->fecha_apertura?->format('d/m/Y')); ?></td>
+                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500"><?php echo e($seg->fecha_facturacion?->format('d/m/Y')); ?></td>
                                 <td class="whitespace-nowrap px-4 py-4 text-right text-sm font-medium">
-                                    <button wire:click="openModal({{ $seg->id }})" class="text-indigo-600 hover:text-indigo-900">
+                                    <button wire:click="openModal(<?php echo e($seg->id); ?>)" class="text-indigo-600 hover:text-indigo-900">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                         </svg>
                                     </button>
                                 </td>
                             </tr>
-                            @empty
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
                                 <td colspan="7" class="px-4 py-8 text-center text-gray-500">
                                     No hay seguimientos registrados
                                 </td>
                             </tr>
-                            @endforelse
+                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                         </tbody>
                     </table>
                 </div>
 
                 <div class="px-6 py-4 border-t border-gray-200">
-                    {{ $seguimientos->links() }}
+                    <?php echo e($seguimientos->links()); ?>
+
                 </div>
             </div>
         </div>
     </div>
 
-    @if($showModal)
-    <livewire:seguimiento.seguimiento-form 
-        :seguimiento-id="$seguimientoId" 
-        :key="$seguimientoId ?? 'new-' . now()->timestamp"
-        @close-modal.window="$wire.set('showModal', false); $wire.set('seguimientoId', null)"
-    />
-    @endif
+    <!--[if BLOCK]><![endif]--><?php if($showModal): ?>
+    <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('seguimiento.seguimiento-form', ['seguimientoId' => $seguimientoId,'@closeModal.window' => '$wire.set(\'showModal\', false); $wire.set(\'seguimientoId\', null)']);
+
+$__html = app('livewire')->mount($__name, $__params, $seguimientoId ?? 'new-' . now()->timestamp, $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
+    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 </div>
+<?php /**PATH C:\laragon\www\ImpreForms\resources\views/livewire/seguimiento/seguimiento-index.blade.php ENDPATH**/ ?>
