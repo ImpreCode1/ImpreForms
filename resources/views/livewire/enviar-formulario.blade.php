@@ -1,5 +1,4 @@
 <div>
-    <x-app-layout>
         <div class="font-sans text-gray-900 antialiased">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
                 <form wire:submit.prevent="submit" id="operacionesForm" class="space-y-8">
@@ -1106,10 +1105,8 @@
                 </form>
             </div>
         </div>
-    </x-app-layout>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     Livewire.on('validation-error', (data) => {
         Swal.fire({
@@ -1170,3 +1167,4 @@
         location.reload();
     });
 </script>
+</div>

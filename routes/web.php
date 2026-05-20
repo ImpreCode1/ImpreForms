@@ -101,7 +101,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 //     return view('formulario', ['mostrarFormularioInteractivo' => false, 'mostrarFormularioFinanciera' => true]);
 // });
 
-Route::get('/enviar-formulario', EnviarFormulario::class);
+Route::get('/enviar-formulario', EnviarFormulario::class)->middleware(['auth']);
 
 // Ruta para el formulario interactivo
 Route::get('/formulario-operaciones/{link}', function ($link) {
