@@ -6,7 +6,6 @@ use App\Models\Colaborador;
 use Maatwebsite\Excel\Concerns\ToArray;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Illuminate\Support\Facades\Log;
-use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 

@@ -13,4 +13,14 @@ class Ejecutivo extends Model
     {
         return $query->where('activo', true);
     }
+
+    public function getNombreColaboradorFormattedAttribute()
+    {
+        $nombre = $this->attributes['nombre_colaborador'] ?? '';
+        if (strpos($nombre, ' ') !== false) {
+            $partes = explode(' ', trim($nombre), 2);
+            return $partes[1] . ' ' . $partes[0];
+        }
+        return $nombre;
+    }
 }

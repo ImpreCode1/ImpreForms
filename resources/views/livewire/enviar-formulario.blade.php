@@ -201,17 +201,12 @@
                                                 {{ $errors->has('soluciones') ? 'border-red-400' : 'border-blue-100' }}
                                                 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                                 <option value="" disabled>Seleccionar Solución</option>
-                                                <option
-                                                    value="Líneas Huawei EBG, Datacenter y Solar, líneas de paneles solares">
-                                                    Líneas Huawei EBG, Datacenter y Solar, líneas de paneles solares
-                                                </option>
-                                                <option value="Oportunidades cerradas con condiciones particulares">
-                                                    Oportunidades cerradas con condiciones particulares
-                                                </option>
-                                                <option
-                                                    value="Productos que no sean de línea para un negocio específico">
-                                                    Productos que no sean de línea para un negocio específico
-                                                </option>
+                                                <option value="Negocios que involucren productos y servicios">Negocios que involucren productos y servicios</option>
+                                                <option value="Líneas Huawei EBG, Datacenter y Solar, líneas de paneles solares (Longi y Trina)">Líneas Huawei EBG, Datacenter y Solar, líneas de paneles solares (Longi y Trina)</option>
+                                                <option value="Oportunidades Cerradas con condiciones particulares diferentes al negocio tradicional transaccional">Oportunidades Cerradas con condiciones particulares diferentes al negocio tradicional transaccional</option>
+                                                <option value="Productos Sobre pedido">Productos Sobre pedido</option>
+                                                <option value="Oportunidades cerradas de cualquier valor con incumplimiento o condiciones financieras especiales">Oportunidades cerradas de cualquier valor con incumplimiento o condiciones financieras especiales</option>
+                                                <option value="Por demanda">Por demanda</option>
                                             </select>
                                             @error('soluciones')
                                                 <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -255,12 +250,35 @@
                                             <label for="linea" class="block text-sm font-medium text-gray-700">
                                                 Línea
                                             </label>
-                                            <input id="linea" type="text" value="{{ $linea }}"
-                                                readonly
-                                                class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50
+                                            <select id="linea" wire:model.live="linea"
+                                                class="mt-1 block w-full rounded-md border-gray-300
                                                 {{ $errors->has('linea') ? 'border-red-400' : 'border-blue-100' }}
-                                                shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                                shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                                <option value="">Seleccionar línea</option>
+                                                <option value="EBG">EBG</option>
+                                                <option value="Solar">Solar</option>
+                                                <option value="Daas">Daas</option>
+                                                <option value="HPE">HPE</option>
+                                            </select>
                                             @error('linea')
+                                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+
+                                        <div>
+                                            <label for="linea_especifica" class="block text-sm font-medium text-gray-700">
+                                                Línea específica
+                                            </label>
+                                            <select id="linea_especifica" wire:model.live="linea_especifica"
+                                                class="mt-1 block w-full rounded-md border-gray-300
+                                                {{ $errors->has('linea_especifica') ? 'border-red-400' : 'border-blue-100' }}
+                                                shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                                <option value="">Seleccionar</option>
+                                                <option value="G Solar">G Solar</option>
+                                                <option value="Daas">Daas</option>
+                                                <option value="HP">HP</option>
+                                            </select>
+                                            @error('linea_especifica')
                                                 <span class="text-red-500 text-sm">{{ $message }}</span>
                                             @enderror
                                         </div>
@@ -311,7 +329,7 @@
                                                 <option value="">Seleccione un Director</option>
                                                 @foreach ($Directores as $Director)
                                                     <option value="{{ $Director->id }}">
-                                                        {{ $Director->nombre_director }}
+                                                        {{ $Director->nombre_director_formatted }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -352,7 +370,7 @@
                                                 <option value="">Seleccione un Ejecutivo</option>
                                                 @foreach ($Ejecutivos as $Ejecutivo)
                                                     <option value="{{ $Ejecutivo->id }}">
-                                                        {{ $Ejecutivo->nombre_colaborador }}</option>
+                                                        {{ $Ejecutivo->nombre_colaborador_formatted }}</option>
                                                 @endforeach
                                             </select>
                                             @error('selectedEjecutivo')
@@ -412,6 +430,16 @@
                                                 <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
                                             @enderror
                                         </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Orden de compra</label>
+                                            <input type="text" wire:model.live="orden_compra"
+                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
+                                                placeholder="Opcional" />
+                                            @error('orden_compra')
+                                                <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
+                                            @enderror
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -457,13 +485,22 @@
                                         @enderror
                                     </div>
                                     <div>
-                                        <label for="entrega_realizar"
-                                            class="block text-sm font-medium text-gray-700">¿Cuántas entregas se van a
-                                            realizar al cliente y en que fecha?</label>
-                                        <input id="entrega_realizar" type="text"
-                                            wire:model.live="entrega_realizar"
-                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('entrega_realizar') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('entrega_realizar')
+                                        <label for="cantidad_entregas"
+                                            class="block text-sm font-medium text-gray-700">Cantidad de entregas</label>
+                                        <input id="cantidad_entregas" type="number" min="1"
+                                            wire:model.live="cantidad_entregas"
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('cantidad_entregas') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        @error('cantidad_entregas')
+                                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div>
+                                        <label for="fecha_entrega"
+                                            class="block text-sm font-medium text-gray-700">Fecha de entrega</label>
+                                        <input id="fecha_entrega" type="date"
+                                            wire:model.live="fecha_entrega"
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('fecha_entrega') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        @error('fecha_entrega')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -486,14 +523,29 @@
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    <div>
-                                        <label for="tiempoentrega"
-                                            class="block text-sm font-medium text-gray-700">Tiempo de entrega</label>
-                                        <input id="tiempoentrega" type="text" wire:model.live="tiempoentrega"
-                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tiempoentrega') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                        @error('tiempoentrega')
-                                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                                        @enderror
+                                    <div class="flex gap-4">
+                                        <div class="flex-1">
+                                            <label for="tiempo_entrega_cantidad"
+                                                class="block text-sm font-medium text-gray-700">Tiempo de entrega</label>
+                                            <input id="tiempo_entrega_cantidad" type="number" wire:model.live="tiempo_entrega_cantidad" min="1"
+                                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tiempo_entrega_cantidad') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            @error('tiempo_entrega_cantidad')
+                                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div class="w-32">
+                                            <select wire:model.live="tiempo_entrega_unidad"
+                                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tiempo_entrega_unidad') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                                <option value="">Seleccionar</option>
+                                                <option value="Días">Días</option>
+                                                <option value="Semanas">Semanas</option>
+                                                <option value="Meses">Meses</option>
+                                                <option value="Años">Años</option>
+                                            </select>
+                                            @error('tiempo_entrega_unidad')
+                                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                            @enderror
+                                        </div>
                                     </div>
                                     <div>
                                         <label for="terminoentrega"

@@ -1,6 +1,6 @@
 <div class="fixed inset-0 z-50 overflow-y-auto">
     <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" wire:click="$dispatch('close-modal')"></div>
+        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" wire:click="$parent.closeModal()"></div>
 
         <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -13,14 +13,17 @@
                         <form wire:submit.prevent="save" class="mt-4 space-y-4">
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Cliente *</label>
-                                    <input type="text" wire:model="cliente" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500">
-                                    @error('cliente') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                                    <label class="block text-sm font-medium text-gray-700">Cliente</label>
+                                    <div class="mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-800 font-medium">
+                                        {{ $cliente ?: '—' }}
+                                    </div>
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">Línea Primaria</label>
-                                    <input type="text" wire:model="linea_primaria" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <label class="block text-sm font-medium text-gray-700">Línea Primera</label>
+                                    <div class="mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-800">
+                                        {{ $linea_primaria ?: '—' }}
+                                    </div>
                                 </div>
 
                                 <div>
@@ -39,7 +42,9 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Fecha Apertura</label>
-                                    <input type="date" wire:model="fecha_apertura" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <div class="mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-800">
+                                        {{ $fecha_apertura ? \Carbon\Carbon::parse($fecha_apertura)->format('d/m/Y') : '—' }}
+                                    </div>
                                 </div>
 
                                 <div>
@@ -54,7 +59,9 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Valor</label>
-                                    <input type="number" step="0.01" wire:model="valor" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <div class="mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-800">
+                                        {{ $valor ? '$' . number_format((float)$valor, 0, ',', '.') : '—' }}
+                                    </div>
                                 </div>
 
                                 <div>
@@ -190,7 +197,7 @@
             </div>
 
             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button wire:click="$dispatch('close-modal')" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                <button type="button" wire:click="$parent.closeModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
                     Cerrar
                 </button>
             </div>

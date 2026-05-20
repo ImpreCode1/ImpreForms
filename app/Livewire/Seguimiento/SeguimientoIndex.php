@@ -4,6 +4,7 @@ namespace App\Livewire\Seguimiento;
 
 use App\Exports\SeguimientosExport;
 use App\Models\Seguimiento;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
@@ -19,12 +20,14 @@ class SeguimientoIndex extends Component
 
     protected $paginationTheme = 'tailwind';
 
-    public function getIsAdminProperty()
+    #[Computed]
+    public function isAdmin(): bool
     {
         return auth()->user() && auth()->user()->isAdmin();
     }
 
-    public function getSeguimientosProperty()
+    #[Computed]
+    public function seguimientos()
     {
         return Seguimiento::query()
             ->when($this->filtroEstado, fn($q) => $q->where('estado', $this->filtroEstado))
@@ -35,6 +38,9 @@ class SeguimientoIndex extends Component
 
     public function openModal($id = null)
     {
+        if ($id === null) {
+            return;
+        }
         $this->seguimientoId = $id;
         $this->showModal = true;
         $this->dispatch('refresh-form', $id);
@@ -46,9 +52,13 @@ class SeguimientoIndex extends Component
         $this->seguimientoId = null;
     }
 
-    public function exportar()
+    public function exportar(): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        return Excel::download(new SeguimientosExport, 'seguimientos.xlsx');
+        $filename = 'BASE_PROYECTOS_' . now()->format('Ymd_Hi') . '.xlsx';
+        return Excel::download(
+            new SeguimientosExport($this->filtroEstado, $this->filtroCliente),
+            $filename
+        );
     }
 
     public function render()

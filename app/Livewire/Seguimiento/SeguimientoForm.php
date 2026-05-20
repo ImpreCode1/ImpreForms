@@ -90,14 +90,20 @@ class SeguimientoForm extends Component
 
     public function loadSeguimiento()
     {
-        $seg = Seguimiento::with('facturas')->find($this->seguimientoId);
-        
+        $seg = Seguimiento::with(['facturas', 'marca.infonegocio'])->find($this->seguimientoId);
+
         if ($seg) {
-            $this->cliente = $seg->cliente;
-            $this->linea_primaria = $seg->linea_primaria;
+            // Campos de solo lectura: siempre desde la Marca origen
+            $marca = $seg->marca;
+            $this->cliente        = $marca?->infonegocio?->nombre ?? $seg->cliente;
+            $this->linea_primaria = $marca?->linea ?? $seg->linea_primaria;
+            $this->valor          = $marca?->precio_venta !== null
+                ? $marca->precio_venta
+                : ($seg->valor !== null ? (string) $seg->valor : null);
+            $this->fecha_apertura = $marca?->created_at?->format('Y-m-d')
+                ?? $seg->fecha_apertura?->format('Y-m-d');
+
             $this->estado = $seg->estado;
-            $this->valor = $seg->valor;
-            $this->fecha_apertura = $seg->fecha_apertura?->format('Y-m-d');
             $this->fecha_cierre = $seg->fecha_cierre?->format('Y-m-d');
             $this->fecha_facturacion = $seg->fecha_facturacion?->format('Y-m-d');
             $this->estado_negocio = $seg->estado_negocio;
@@ -112,13 +118,13 @@ class SeguimientoForm extends Component
             $this->facturas = $seg->facturas->map(fn($f) => [
                 'numero_factura' => $f->numero_factura,
                 'fecha' => $f->fecha?->format('Y-m-d'),
-                'valor' => $f->valor,
+                'valor' => $f->valor !== null ? (string) $f->valor : null,
                 'descripcion' => $f->descripcion,
             ])->toArray();
 
             $this->auditorias = $seg->auditorias->map(fn($a) => [
-                'usuario' => $a->usuario,
-                'fecha' => $a->fecha?->format('Y-m-d H:i'),
+                'usuario' => $a->user?->name ?? 'N/A',
+                'fecha' => $a->created_at?->format('Y-m-d H:i'),
                 'campo' => $a->campo,
                 'valor_anterior' => $a->valor_anterior,
                 'valor_nuevo' => $a->valor_nuevo,

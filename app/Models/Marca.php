@@ -44,6 +44,7 @@ class Marca extends Model
         'fecha_pago_anticipo',
         'otros_pago',
         'moneda_precio_venta',
+        'orden_compra',
     ];
 
     public function infonegocio()
@@ -117,5 +118,25 @@ class Marca extends Model
         }
 
         return 'En Proceso';
+    }
+
+    public function getNombreFormattedAttribute()
+    {
+        $nombre = $this->attributes['nombre'] ?? '';
+        if (strpos($nombre, ' ') !== false) {
+            $partes = explode(' ', trim($nombre), 2);
+            return $partes[1] . ' ' . $partes[0];
+        }
+        return $nombre;
+    }
+
+    public function getNombreEjcFormattedAttribute()
+    {
+        $nombre = $this->attributes['nombre_ejc'] ?? '';
+        if (strpos($nombre, ' ') !== false) {
+            $partes = explode(' ', trim($nombre), 2);
+            return $partes[1] . ' ' . $partes[0];
+        }
+        return $nombre;
     }
 }

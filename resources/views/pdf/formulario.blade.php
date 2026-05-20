@@ -298,7 +298,18 @@
 
     <div class="info-section">
         <span class="info-label">Tiempo de entrega</span>
-        <div class="info-value">{{ $formulario->informacion->first()->tiempo_entrega ?? 'No especificado' }}</div>
+        <div class="info-value">
+            @php
+                $info = $formulario->informacion->first();
+            @endphp
+            @if($info && $info->tiempo_entrega_cantidad && $info->tiempo_entrega_unidad)
+                {{ $info->tiempo_entrega_cantidad }} {{ $info->tiempo_entrega_unidad }}
+            @elseif($info && $info->tiempo_entrega)
+                {{ $info->tiempo_entrega }}
+            @else
+                No especificado
+            @endif
+        </div>
     </div>
 
     <div class="info-section">

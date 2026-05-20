@@ -32,6 +32,13 @@ use Livewire\Volt\Component;
           <p class="text-gray-500">Accede a tu cuenta personal</p>
         </div>
 
+        <!--[if BLOCK]><![endif]--><?php if(session('logout_success')): ?>
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg text-sm text-center mb-4">
+                <?php echo e(session('logout_success')); ?>
+
+            </div>
+        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+
             <!-- Error Message -->
         <!--[if BLOCK]><![endif]--><?php if($errors->has('email')): ?>
             <div class="text-sm text-red-500 text-center mb-4"><?php echo e($errors->first('email')); ?></div>

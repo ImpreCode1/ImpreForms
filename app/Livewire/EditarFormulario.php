@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Livewire\WithEvents;
 
 trait FormatearFechas
 {
@@ -18,9 +17,22 @@ trait FormatearFechas
     }
 }
 
+trait InvertirNombre
+{
+    public function invertirNombre($nombre)
+    {
+        $nombre = trim($nombre);
+        if (strpos($nombre, ' ') !== false) {
+            $partes = explode(' ', $nombre, 2);
+            return $partes[1] . ' ' . $partes[0];
+        }
+        return $nombre;
+    }
+}
+
 class EditarFormulario extends Component
 {
-    use WithFileUploads, FormatearFechas;
+    use WithFileUploads, FormatearFechas, InvertirNombre;
     // $telgerente
     // $telgerente2
     public $formulario;
@@ -31,14 +43,14 @@ class EditarFormulario extends Component
     public $tempFiles = [];
     public $dragging = false;
     public $negocio, $nombres, $correo, $numero, $crms;
-    public $oc, $precio, $soluciones, $linea, $codlinea;
+    public $oc, $precio, $soluciones, $linea, $linea_especifica, $codlinea;
     public $nomgerente,  $corgerente, $director, $cor2gerente;
-    public $entregacliente, $lugarentrega, $espais, $tiempoentrega, $terminoentrega, $tipoicoterm;
+    public $entregacliente, $lugarentrega, $espais, $tiempoentrega, $tiempo_entrega_cantidad, $tiempo_entrega_unidad, $terminoentrega, $tipoicoterm;
     public $prestar, $suministrar, $inicio, $finalizacion;
     public $clientcode, $clientname, $mail;
     public $cod;
     public $aplicagarantia, $terminogarantia, $aplicapoliza, $porcentaje;
-    public $incluye_iva, $otros;
+    public $incluye_iva, $otros, $orden_compra;
     // public $cotizacion;
     protected $listener = ['removeUpload', 'removeExistingFile', 'editFormulario'];
     public $marcaId;
@@ -50,7 +62,8 @@ class EditarFormulario extends Component
     public $documento;
     public $tipo_solicitud;
     public $nom_rep;
-    public $entrega_realizar;
+    public $cantidad_entregas;
+    public $fecha_entrega;
     public $files = [];
     public $archivosParaEliminar = [];
     public $moneda_precio_venta;
@@ -73,7 +86,7 @@ class EditarFormulario extends Component
         'terminogarantia' => 'nullable|string|min:5',
         'porcentaje' => 'nullable|numeric|min:0|max:100',
 
-        'negocio' => 'required|numeric|',
+        'negocio' => 'required|string|regex:/^[\d,\.]+$/',
         'nombres' => 'required|string|',
         'nom_rep' => 'required|string',
         'correo' => 'required|email|',
@@ -89,7 +102,8 @@ class EditarFormulario extends Component
         ],
         // 'cotizacion' => 'nullable|max:10240',
         'soluciones' => 'required|string|',
-        'linea' => 'required|string|',
+        'linea' => 'nullable|string|in:EBG,Solar,Daas,HPE',
+        'linea_especifica' => 'nullable|string|in:G Solar,Daas,HP',
         'codlinea' => 'required|string|',
         'nomgerente' => 'required|string|',
         // 'telgerente' => 'required|numeric',
@@ -99,16 +113,19 @@ class EditarFormulario extends Component
         'cor2gerente' => 'required|email|',
 
         'entregacliente' => 'required|string|',
-        'entrega_realizar' => 'required|string|',
+        'cantidad_entregas' => 'nullable|integer|min:1',
+        'fecha_entrega' => 'nullable|date',
         'lugarentrega' => 'required|string|',
         'espais' => 'required|string|',
-        'tiempoentrega' => 'required|string|',
+        'tiempoentrega' => 'nullable|string',
+        'tiempo_entrega_cantidad' => 'nullable|integer|min:1',
+        'tiempo_entrega_unidad' => 'nullable|string|in:Días,Semanas,Meses,Años',
         'terminoentrega' => 'required|string|',
         'tipoicoterm' => 'required|string|max:255',
-        'prestar' => 'required|string|',
-        'suministrar' => 'required|string|',
-        'inicio' => 'required|date',
-        'finalizacion' => 'required|date',
+        'prestar' => 'nullable|string|min:1',
+        'suministrar' => 'nullable|string|min:1',
+        'inicio' => 'nullable|date',
+        'finalizacion' => 'nullable|date|after_or_equal:inicio',
 
         'clientname' => 'nullable|numeric',
         'mail' => 'nullable|email',
@@ -121,6 +138,7 @@ class EditarFormulario extends Component
         'moneda' => 'required|string|',
         //'fecha_pago' => 'required|date',
         'otros' => 'nullable|string',
+        'orden_compra' => 'nullable|string|min:1',
         'moneda_precio_venta' => 'nullable|string|',
         'fecha_cada_pago' => 'nullable|string',
         'hay_anticipo' => 'nullable|boolean',
@@ -246,6 +264,8 @@ class EditarFormulario extends Component
 
         // 'cotizacion.required' => 'La cotización es requerida.',
         // 'cotizacion.max' => 'El tamaño máximo permitido para la cotización es de 10 MB.',
+
+        'finalizacion.after_or_equal' => 'La fecha de finalización no puede ser menor a la fecha de inicio.',
     ];
 
     public function updated($propertyName)
@@ -313,14 +333,14 @@ class EditarFormulario extends Component
         $this->marcaId = $this->formulario->marca_id;
 
         $this->negocio = $this->formulario->infonegocio->codigo_cliente;
-        $this->nombres = $this->formulario->infonegocio->nombre;
+        $this->nombres = $this->formulario->infonegocio->nombre_formatted;
         $this->correo = $this->formulario->infonegocio->correo;
         $this->numero = $this->formulario->infonegocio->numero_celular;
         $this->crms = $this->formulario->infonegocio->n_oportunidad_crm;
         $this->nom_rep = $this->formulario->infonegocio->nom_rep;
 
         $this->tipo_solicitud = $this->formulario->tipo_solicitud;
-        $this->nombre_ejc = $this->formulario->nombre_ejc;
+        $this->nombre_ejc = $this->formulario->nombre_ejc_formatted;
         $this->email_ejc = $this->formulario->email_ejc;
 
         $this->oc = $this->formulario->n_oc;
@@ -345,14 +365,18 @@ class EditarFormulario extends Component
         $this->porcentaje_anticipo = $this->formulario->porcentaje_anticipo;
         $this->fecha_pago_anticipo = $this->formulario->fecha_pago_anticipo;
         $this->otros_pago = $this->formulario->otros_pago;
+        $this->orden_compra = $this->formulario->orden_compra;
 
         if ($this->formulario->informacion->isNotEmpty()) {
             $info = $this->formulario->informacion->first();
             $this->entregacliente = $info->realiza_entrega_cliente;
-            $this->entrega_realizar = $info->entrega_realizar;
+            $this->cantidad_entregas = $info->cantidad_entregas;
+            $this->fecha_entrega = $info->fecha_entrega ? $info->fecha_entrega->format('Y-m-d') : null;
             $this->lugarentrega = $info->lugar_entrega;
             $this->espais = $info->pais;
             $this->tiempoentrega = $info->tiempo_entrega;
+            $this->tiempo_entrega_cantidad = $info->tiempo_entrega_cantidad;
+            $this->tiempo_entrega_unidad = $info->tiempo_entrega_unidad;
             $this->terminoentrega = $this->formatearFecha($info->fecha_inicio_termino);
             $this->tipoicoterm = $info->tipo_incoterms;
 
@@ -361,6 +385,7 @@ class EditarFormulario extends Component
 
             $this->inicio = $this->formatearFecha($info->fecha_inicio);
             $this->finalizacion = $this->formatearFecha($info->fecha_finalizacion);
+            $this->linea_especifica = $info->linea_especifica;
 
             if ($info->producto->isNotEmpty()) {
                 $producto = $info->producto->first();
@@ -502,7 +527,7 @@ class EditarFormulario extends Component
             'correo_director' => $this->cor2gerente,
             'tipo_solicitud' => $this->tipo_solicitud,
             // 'cod_ejc' => $this->cod_ejc,
-            'nombre_ejc' => $this->nombre_ejc,
+            'nombre_ejc' => $this->invertirNombre($this->nombre_ejc),
             // 'telefono_ejc' => $this->telefono_ejc,
             'email_ejc' => $this->email_ejc,
             'moneda_precio_venta' => $this->moneda_precio_venta,
@@ -514,12 +539,13 @@ class EditarFormulario extends Component
             'porcentaje_anticipo' => $this->porcentaje_anticipo,
             'fecha_pago_anticipo' => $this->fecha_pago_anticipo,
             'otros_pago' => $this->otros_pago,
+            'orden_compra' => $this->orden_compra,
         ]);
 
         // Actualizar información del negocio
         $this->formulario->infonegocio()->update([
             'codigo_cliente' => $this->negocio,
-            'nombre' => $this->nombres,
+            'nombre' => $this->invertirNombre($this->nombres),
             'correo' => $this->correo,
             'numero_celular' => $this->numero,
             'n_oportunidad_crm' => $this->crms,
@@ -530,16 +556,20 @@ class EditarFormulario extends Component
         if ($info = $this->formulario->informacion->first()) {
             $info->update([
                 'realiza_entrega_cliente' => $this->entregacliente,
-                'entrega_realizar' => $this->entrega_realizar,
+                'cantidad_entregas' => $this->cantidad_entregas,
+                'fecha_entrega' => $this->fecha_entrega,
                 'lugar_entrega' => $this->lugarentrega,
                 'pais' => $this->espais,
                 'tiempo_entrega' => $this->tiempoentrega,
+                'tiempo_entrega_cantidad' => $this->tiempo_entrega_cantidad,
+                'tiempo_entrega_unidad' => $this->tiempo_entrega_unidad,
                 'fecha_inicio_termino' => $this->terminoentrega,
                 'tipo_incoterms' => $this->tipoicoterm,
                 'servicio_a_prestar' => $this->prestar,
                 'frecuencia_suministro' => $this->suministrar,
                 'fecha_inicio' => $this->inicio,
                 'fecha_finalizacion' => $this->finalizacion,
+                'linea_especifica' => $this->linea_especifica,
             ]);
 
             // Actualizar producto

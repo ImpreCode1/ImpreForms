@@ -28,7 +28,7 @@
             <tbody class="divide-y divide-gray-200">
                 @foreach ($directores as $director)
                     <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">{{ $director->nombre_director }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $director->nombre_director_formatted }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $director->mail }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($director->activo)

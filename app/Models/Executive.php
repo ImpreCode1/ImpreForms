@@ -19,4 +19,14 @@ class Executive extends Model
         'codigo_area_funcional_ceco',
         'estado',
     ];
+
+    public function getNombreColaboradorFormattedAttribute()
+    {
+        $nombre = $this->attributes['nombre_colaborador'] ?? '';
+        if (strpos($nombre, ' ') !== false) {
+            $partes = explode(' ', trim($nombre), 2);
+            return $partes[1] . ' ' . $partes[0];
+        }
+        return $nombre;
+    }
 }

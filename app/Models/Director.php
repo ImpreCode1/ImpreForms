@@ -13,4 +13,14 @@ class Director extends Model
     {
         return $query->where('activo', true);
     }
+
+    public function getNombreDirectorFormattedAttribute()
+    {
+        $nombre = $this->attributes['nombre_director'] ?? '';
+        if (strpos($nombre, ' ') !== false) {
+            $partes = explode(' ', trim($nombre), 2);
+            return $partes[1] . ' ' . $partes[0];
+        }
+        return $nombre;
+    }
 }

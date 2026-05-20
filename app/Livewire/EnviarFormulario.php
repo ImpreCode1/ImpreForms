@@ -23,9 +23,22 @@ use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
+trait InvertirNombre
+{
+    public function invertirNombre($nombre)
+    {
+        $nombre = trim($nombre);
+        if (strpos($nombre, ' ') !== false) {
+            $partes = explode(' ', $nombre, 2);
+            return $partes[1] . ' ' . $partes[0];
+        }
+        return $nombre;
+    }
+}
+
 class EnviarFormulario extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, InvertirNombre;
     public $currentStep = 1;
 
     // identificadores de archivos por id
@@ -48,6 +61,7 @@ class EnviarFormulario extends Component
     // public $cotizacion;
     public $soluciones = '';
     public $linea;
+    public $linea_especifica;
     public $codlinea = '';
     public $nomgerente;
     // public $telgerente;
@@ -58,6 +72,8 @@ class EnviarFormulario extends Component
     public $lugarentrega;
     public $espais;
     public $tiempoentrega;
+    public $tiempo_entrega_cantidad;
+    public $tiempo_entrega_unidad;
     public $terminoentrega;
     public $tipoicoterm;
     public $prestar;
@@ -77,6 +93,7 @@ class EnviarFormulario extends Component
     public $clientname;
     public $mail;
     public $otros;
+    public $orden_compra;
 
     public $other;
     public $actualpago;
@@ -113,7 +130,8 @@ class EnviarFormulario extends Component
     public $cod;
     public $files = [];
     public $dragging = false;
-    public $entrega_realizar;
+    public $cantidad_entregas;
+    public $fecha_entrega;
     public $mmd = false;
     public $Ejecutivos;
     public $Lineas;
@@ -139,16 +157,17 @@ class EnviarFormulario extends Component
 
         // * Infonegocio
         'tipo_solicitud' => 'required',
-        'negocio' => 'required|numeric|min:1',
+        'negocio' => 'required|string|regex:/^[\d,\.]+$/',
         'nombre' => 'required|string|min:5',
         'correo' => 'required|email',
         'numero' => 'required|numeric',
         'crm' => 'required|numeric|unique:infonegocio,n_oportunidad_crm',
 
         // * Marca
-        'precio' => 'required|numeric|min:1',
+        'precio' => 'required|string|regex:/^[\d,\.]+$/',
         'soluciones' => 'required|string|min:5',
-        'linea' => 'required|string|min:5',
+        'linea' => 'nullable|string|in:EBG,Solar,Daas,HPE',
+        'linea_especifica' => 'nullable|string|in:G Solar,Daas,HP',
         'codlinea' => 'required|string',
         'nomgerente' => 'required|string|min:5',
         'nom_rep' => 'required|string',
@@ -170,19 +189,23 @@ class EnviarFormulario extends Component
         'mail' => 'nullable|email',
         'EjecutivoEmail' => 'nullable|email',
         'DirectorEmail' => 'nullable|email',
+        'orden_compra' => 'nullable|string|min:1',
 
         // * Información
         'entregacliente' => 'required|string|min:5',
-        'entrega_realizar' => 'required|string|min:5',
+        'cantidad_entregas' => 'nullable|integer|min:1',
+        'fecha_entrega' => 'nullable|date',
         'lugarentrega' => 'required|string|min:5',
         'espais' => 'required|string|min:5',
-        'tiempoentrega' => 'required|string|min:3',
+        'tiempoentrega' => 'nullable|string',
+        'tiempo_entrega_cantidad' => 'nullable|integer|min:1',
+        'tiempo_entrega_unidad' => 'nullable|string|in:Días,Semanas,Meses,Años',
         'terminoentrega' => 'required|date',
         'tipoicoterm' => 'required|string|min:2',
-        'prestar' => 'nullable|string|min:4',
-        'suministrar' => 'nullable|string|min:5',
+        'prestar' => 'nullable|string|min:1',
+        'suministrar' => 'nullable|string|min:1',
         'inicio' => 'nullable|date',
-        'finalizacion' => 'nullable|date',
+        'finalizacion' => 'nullable|date|after_or_equal:inicio',
 
         // * Producto
         'aplicagarantia' => 'required|in:si,no',
@@ -252,6 +275,8 @@ class EnviarFormulario extends Component
 
         'files.required' => 'Debe adjuntar al menos un documento.',
         'files.array' => 'Los documentos deben estar en formato válido.',
+
+        'finalizacion.after_or_equal' => 'La fecha de finalización no puede ser menor a la fecha de inicio.',
     ];
 
     // * mostrar garantia
@@ -341,14 +366,14 @@ class EnviarFormulario extends Component
                 'tipo_contrato' => $this->soluciones,
                 'linea' => $this->linea,
                 'codigo_linea' => $this->codlinea,
-                'nombre' => $this->nomgerente,
+                'nombre' => $this->invertirNombre($this->nomgerente),
                 'correo_electronico' => $this->corgerente,
                 'otros_pago' => $this->otros_pago,
                 'cel' => $this->clientname,
                 'email' => $this->mail,
-                'director' => $this->DirectorName,
+                'director' => $this->invertirNombre($this->DirectorName),
                 'correo_director' => $this->DirectorEmail,
-                'nombre_ejc' => $this->EjecutivoName,
+                'nombre_ejc' => $this->invertirNombre($this->EjecutivoName),
                 'email_ejc' => $this->EjecutivoEmail,
                 'tipo_solicitud' => $this->tipo_solicitud,
                 'moneda_precio_venta' => $this->moneda_precio_venta,
@@ -360,6 +385,7 @@ class EnviarFormulario extends Component
                 'porcentaje_anticipo' => $this->porcentaje_anticipo,
                 'fecha_pago_anticipo' => $this->fecha_pago_anticipo ?: null,
                 'otro' => $this->clientcode,
+                'orden_compra' => $this->orden_compra,
             ]);
 
             $this->marcaId = $marca->id;
@@ -368,16 +394,20 @@ class EnviarFormulario extends Component
             $informacion = Informacion::create([
                 'marcas_id' => $this->marcaId,
                 'realiza_entrega_cliente' => $this->entregacliente,
-                'entrega_realizar' => $this->entrega_realizar,
+                'cantidad_entregas' => $this->cantidad_entregas,
+                'fecha_entrega' => $this->fecha_entrega,
                 'lugar_entrega' => $this->lugarentrega,
                 'pais' => $this->espais,
                 'tiempo_entrega' => $this->tiempoentrega,
+                'tiempo_entrega_cantidad' => $this->tiempo_entrega_cantidad,
+                'tiempo_entrega_unidad' => $this->tiempo_entrega_unidad,
                 'fecha_inicio_termino' => $this->terminoentrega,
                 'tipo_incoterms' => $this->tipoicoterm,
                 'servicio_a_prestar' => $this->prestar,
                 'frecuencia_suministro' => $this->suministrar,
                 'fecha_inicio' => $this->inicio,
                 'fecha_finalizacion' => $this->finalizacion,
+                'linea_especifica' => $this->linea_especifica,
             ]);
 
             // ✅ Crear Producto

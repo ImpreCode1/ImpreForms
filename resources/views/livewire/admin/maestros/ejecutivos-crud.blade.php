@@ -28,7 +28,7 @@
             <tbody class="divide-y divide-gray-200">
                 @foreach ($ejecutivos as $ejecutivo)
                     <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">{{ $ejecutivo->nombre_colaborador }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $ejecutivo->nombre_colaborador_formatted }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $ejecutivo->mail }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($ejecutivo->activo)

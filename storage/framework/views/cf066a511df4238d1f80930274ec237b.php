@@ -1,15 +1,5 @@
 <div>
-    <?php if (isset($component)) { $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54 = $attributes; } ?>
-<?php $component = App\View\Components\AppLayout::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('app-layout'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-        <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8">
+    <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8">
             <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
                 <!-- Header con estadísticas -->
                 <div class="mb-8">
@@ -235,7 +225,7 @@
                                             <td class="px-2 py-3 text-gray-600 break-words">
                                                 <?php echo e($formulario->infonegocio->codigo_cliente); ?></td>
                                             <td class="px-2 py-3 text-gray-600 break-words">
-                                                <?php echo e($formulario->infonegocio->nombre); ?></td>
+                                                <?php echo e($formulario->infonegocio->nombre_formatted); ?></td>
                                             <td class="px-2 py-3 text-gray-600 break-words">
                                                 <?php echo e($formulario->infonegocio->n_oportunidad_crm); ?></td>
                                             <td class="px-2 py-3 text-center align-middle">
@@ -485,7 +475,7 @@
                                                 <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">Nombre del cliente</p>
                                                     <p class="text-sm text-slate-900">
-                                                        <?php echo e($selectedFormulario->infonegocio->nombre ?? 'No especificado'); ?>
+                                                        <?php echo e($selectedFormulario->infonegocio->nombre_formatted ?? 'No especificado'); ?>
 
                                                     </p>
                                                     <div class="h-px bg-slate-200 mt-2"></div>
@@ -590,6 +580,15 @@
                                                     <div class="h-px bg-slate-200 mt-2"></div>
                                                 </div>
 
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">Orden de compra</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        <?php echo e($selectedFormulario->orden_compra ?? 'No especificado'); ?>
+
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+
                                                 
                                             </div>
                                         </div>
@@ -636,6 +635,17 @@
                                                     <div class="h-px bg-slate-200 mt-2"></div>
                                                 </div>
 
+                                                <!--[if BLOCK]><![endif]--><?php if($selectedFormulario->informacion->isNotEmpty() && $selectedFormulario->informacion->first()->linea_especifica): ?>
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">Línea específica</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        <?php echo e($selectedFormulario->informacion->first()->linea_especifica); ?>
+
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+                                                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+
                                                 <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">Código de la línea
                                                     </p>
@@ -649,7 +659,7 @@
                                                 <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">Nombre</p>
                                                     <p class="text-sm text-slate-900">
-                                                        <?php echo e($selectedFormulario->nombre ?? 'No especificado'); ?></p>
+                                                        <?php echo e($selectedFormulario->nombre_formatted ?? 'No especificado'); ?></p>
                                                     <div class="h-px bg-slate-200 mt-2"></div>
                                                 </div>
                                                 
@@ -704,7 +714,7 @@
                                                     <div class="space-y-1">
                                                         <p class="text-sm font-medium text-black">Nombre</p>
                                                         <p class="text-sm text-slate-900">
-                                                            <?php echo e($selectedFormulario->nombre_ejc ?? 'No especificado'); ?>
+                                                            <?php echo e($selectedFormulario->nombre_ejc_formatted ?? 'No especificado'); ?>
 
                                                         </p>
                                                         <div class="h-px bg-slate-200 mt-2"></div>
@@ -777,10 +787,18 @@
                                                     </div>
 
                                                     <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">¿Cuántas entregas se
-                                                            van a realizar al cliente y en que fecha?</p>
+                                                        <p class="text-sm font-medium text-black">Cantidad de entregas</p>
                                                         <p class="text-sm text-slate-900">
-                                                            <?php echo e($informacion->entrega_realizar ?? 'No especificado'); ?>
+                                                            <?php echo e($informacion->cantidad_entregas ?? 'No especificado'); ?>
+
+                                                        </p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
+
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">Fecha de entrega</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            <?php echo e($informacion->fecha_entrega ? \Carbon\Carbon::parse($informacion->fecha_entrega)->format('d/m/Y') : 'No especificado'); ?>
 
                                                         </p>
                                                         <div class="h-px bg-slate-200 mt-2"></div>
@@ -808,7 +826,16 @@
                                                         <p class="text-sm font-medium text-black">Tiempo de entrega
                                                         </p>
                                                         <p class="text-sm text-slate-900">
-                                                            <?php echo e($informacion->tiempo_entrega ?? 'No especificado'); ?></p>
+                                                            <!--[if BLOCK]><![endif]--><?php if($informacion->tiempo_entrega_cantidad && $informacion->tiempo_entrega_unidad): ?>
+                                                                <?php echo e($informacion->tiempo_entrega_cantidad); ?> <?php echo e($informacion->tiempo_entrega_unidad); ?>
+
+                                                            <?php elseif($informacion->tiempo_entrega): ?>
+                                                                <?php echo e($informacion->tiempo_entrega); ?>
+
+                                                            <?php else: ?>
+                                                                No especificado
+                                                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                                                        </p>
                                                         <div class="h-px bg-slate-200 mt-2"></div>
                                                     </div>
 
@@ -1350,18 +1377,12 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
                 <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
             </div>
-     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
-<?php $attributes = $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
-<?php unset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
-<?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
-<?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
-<?php endif; ?>
+        </div>
 </div>
 
 

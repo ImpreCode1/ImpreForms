@@ -188,9 +188,6 @@ class FormularioInteractivo extends Component
         $this->formLink->completed_at = now();
         $this->formLink->save();
         return redirect()->to('/successful');
-
-        // Despachar el evento de recarga y redirección (si es necesario)
-        $this->dispatchBrowserEvent('reloadAndRedirect');
     }
 
     public function render()

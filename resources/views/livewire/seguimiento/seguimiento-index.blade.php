@@ -10,7 +10,7 @@
                 <div class="p-4 border-b border-gray-200">
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-4 md:mb-0">
                         <div class="flex flex-wrap items-center gap-2">
-                            <select wire:model="filtroEstado" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <select wire:model.live="filtroEstado" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                                 <option value="">Todos los estados</option>
                                 <option value="anulado">Anulado</option>
                                 <option value="declinado">Declinado</option>
@@ -24,34 +24,31 @@
                                 class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                         </div>
                         <div class="shrink-0">
-                            @if($isAdmin)
-                            <button wire:click="openModal(null)" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2">
+                            <button wire:click="exportar"
+                                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                Nuevo Seguimiento
-                            </button>
-                            <button wire:click="exportar" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2 ml-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
                                 </svg>
                                 Exportar Excel
                             </button>
-                            @endif
                         </div>
                     </div>
                 </div>
 
                 <div class="overflow-x-auto rounded-lg border border-gray-200">
-                    <table class="min-w-full min-w-[800px] divide-y divide-gray-200">
+                    <div class="min-w-[1100px]">
+                    <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
-                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Línea Primary</th>
+                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Línea Primera</th>
                                 <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
                                 <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
                                 <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha Apertura</th>
                                 <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha Facturación</th>
+                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actas Cierre</th>
+                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Observaciones</th>
                                 <th class="whitespace-nowrap px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
                             </tr>
                         </thead>
@@ -76,9 +73,15 @@
                                         {{ ucfirst(str_replace('_', ' ', $seg->estado)) }}
                                     </span>
                                 </td>
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900">${{ number_format($seg->valor, 2) }}</td>
+                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900">COP {{ number_format((float)$seg->valor, 0, ',', '.') }}</td>
                                 <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->fecha_apertura?->format('d/m/Y') }}</td>
                                 <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->fecha_facturacion?->format('d/m/Y') }}</td>
+                                <td class="px-4 py-4 text-sm text-gray-500 max-w-xs truncate" title="{{ $seg->actas_cierre }}">
+                                    {{ $seg->actas_cierre ? Str::limit($seg->actas_cierre, 40) : '—' }}
+                                </td>
+                                <td class="px-4 py-4 text-sm text-gray-500 max-w-xs truncate" title="{{ $seg->observaciones }}">
+                                    {{ $seg->observaciones ? Str::limit($seg->observaciones, 50) : '—' }}
+                                </td>
                                 <td class="whitespace-nowrap px-4 py-4 text-right text-sm font-medium">
                                     <button wire:click="openModal({{ $seg->id }})" class="text-indigo-600 hover:text-indigo-900">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,13 +92,14 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="7" class="px-4 py-8 text-center text-gray-500">
+                                <td colspan="9" class="px-4 py-8 text-center text-gray-500">
                                     No hay seguimientos registrados
                                 </td>
                             </tr>
                             @endforelse
                         </tbody>
                     </table>
+                    </div>
                 </div>
 
                 <div class="px-6 py-4 border-t border-gray-200">
