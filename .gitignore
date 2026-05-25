@@ -20,3 +20,4 @@ yarn-error.log
 .vite
 .claude
 /.claude
+storage

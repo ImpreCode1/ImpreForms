@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pago', function (Blueprint $table) {
             $table->integer('id', true);
-            $table->integer('marcas_id')->index('marcas_id');
+            $table->unsignedBigInteger('marcas_id')->index('marcas_id');
             $table->dateTime('fecha_pago')->nullable();
             $table->boolean('incluye_iva')->nullable();
             $table->timestamp('created_at')->useCurrent();

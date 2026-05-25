@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('infonegocio', function (Blueprint $table) {
-            $table->integer('id', true);
+            $table->id();
             $table->string('codigo_cliente');
             $table->string('nombre');
             $table->string('correo');
