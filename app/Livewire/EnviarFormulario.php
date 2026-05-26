@@ -165,7 +165,7 @@ class EnviarFormulario extends Component
         'precio' => 'required|string|regex:/^[\d,\.]+$/',
         'soluciones' => 'required|string|min:5',
         'linea' => 'nullable|string|in:EBG,Solar,Daas,HPE',
-        'linea_especifica' => 'nullable|string|in:G Solar,Daas,HP',
+        'linea_especifica' => 'nullable|string|in:EBG,Solar,Daas,HPE',
         'codlinea' => 'required|string',
         'nomgerente' => 'required|string|min:5',
         'nom_rep' => 'required|string',
@@ -358,6 +358,8 @@ class EnviarFormulario extends Component
                 'n_oportunidad_crm' => $this->crm,
                 'nom_rep' => $this->nom_rep,
             ]);
+
+            $this->precio = str_replace('.', ',', $this->precio);
 
             // ✅ Crear Marca
             $marca = Marca::create([
@@ -736,6 +738,11 @@ class EnviarFormulario extends Component
         if (!$value) {
             $this->porcentaje_anticipo = 0;
         }
+    }
+
+    public function updatedPrecio()
+    {
+        $this->precio = preg_replace('/[^0-9,.]/', '', $this->precio);
     }
 
     public function dragOver()

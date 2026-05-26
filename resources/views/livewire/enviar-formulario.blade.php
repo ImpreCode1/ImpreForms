@@ -66,7 +66,7 @@
                                         <label for="nombre" class="block text-sm font-medium text-gray-700">
                                             Nombre del cliente
                                         </label>
-                                        <input id="nombre" type="text" wire:model.live="nombre" readonly
+                                        <input id="nombre" type="text" value="{{ $nombre }}" readonly
                                             class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50
                                             {{ $errors->has('nombre') ? 'border-red-400' : 'border-blue-100' }}
                                             shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
@@ -148,7 +148,7 @@
                                         <label for="precio" class="block text-sm font-medium text-gray-700">
                                             Precio de venta que debe quedar en el contrato
                                         </label>
-                                        <input id="precio" type="text" wire:model.live="precio"
+                                        <input id="precio" type="text" wire:model.live="precio" inputmode="decimal"
                                             class="mt-1 block w-full rounded-md border-gray-300
                                             {{ $errors->has('precio') ? 'border-red-400' : 'border-blue-100' }}
                                             shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
@@ -246,25 +246,6 @@
                                         </div>
 
                                         <div>
-                                            <label for="linea" class="block text-sm font-medium text-gray-700">
-                                                Línea
-                                            </label>
-                                            <select id="linea" wire:model.live="linea"
-                                                class="mt-1 block w-full rounded-md border-gray-300
-                                                {{ $errors->has('linea') ? 'border-red-400' : 'border-blue-100' }}
-                                                shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
-                                                <option value="">Seleccionar línea</option>
-                                                <option value="EBG">EBG</option>
-                                                <option value="Solar">Solar</option>
-                                                <option value="Daas">Daas</option>
-                                                <option value="HPE">HPE</option>
-                                            </select>
-                                            @error('linea')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-
-                                        <div>
                                             <label for="linea_especifica" class="block text-sm font-medium text-gray-700">
                                                 Línea específica
                                             </label>
@@ -273,9 +254,10 @@
                                                 {{ $errors->has('linea_especifica') ? 'border-red-400' : 'border-blue-100' }}
                                                 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                                 <option value="">Seleccionar</option>
-                                                <option value="G Solar">G Solar</option>
+                                                <option value="EBG">EBG</option>
+                                                <option value="Solar">Solar</option>
                                                 <option value="Daas">Daas</option>
-                                                <option value="HP">HP</option>
+                                                <option value="HPE">HPE</option>
                                             </select>
                                             @error('linea_especifica')
                                                 <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -342,6 +324,7 @@
                                                 Correo Electrónico
                                             </label>
                                             <input id="DirectorEmail" type="text" wire:model.live="DirectorEmail"
+                                                value="{{ $DirectorEmail }}"
                                                 class="mt-1 block w-full rounded-md border-gray-300
                                                 {{ $errors->has('DirectorEmail') ? 'border-red-400' : 'border-blue-100' }}
                                                 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
@@ -380,7 +363,7 @@
                                                 Correo Electronico
                                             </label>
                                             <input id="EjecutivoEmail" type="text"
-                                                wire:model.live="EjecutivoEmail"
+                                                wire:model.live="EjecutivoEmail" value="{{ $EjecutivoEmail }}"
                                                 class="mt-1 block w-full rounded-md border-gray-300
                                                 {{ $errors->has('EjecutivoEmail') ? 'border-red-400' : 'border-blue-100' }}
                                                 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
@@ -1105,13 +1088,15 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    Livewire.on('validation-error', (data) => {
-        Swal.fire({
-            icon: 'error',
-            title: 'Errores en el formulario',
-            html: data.message
+    document.addEventListener('livewire:init', function () {
+        Livewire.on('validation-error', (data) => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Errores en el formulario',
+                html: data.message
+            })
         })
-    })
+    });
 </script>
 
 
@@ -1160,8 +1145,10 @@
     });
 
 
-    Livewire.on('reloadPage', () => {
-        location.reload();
+    document.addEventListener('livewire:init', function () {
+        Livewire.on('reloadPage', () => {
+            location.reload();
+        });
     });
 </script>
 </div>
