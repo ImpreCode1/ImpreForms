@@ -66,7 +66,7 @@
                                         <label for="nombre" class="block text-sm font-medium text-gray-700">
                                             Nombre del cliente
                                         </label>
-                                        <input id="nombre" type="text" value="{{ $nombre }}" readonly
+                                        <input id="nombre" type="text" wire:model.live="nombre" readonly
                                             class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50
                                             {{ $errors->has('nombre') ? 'border-red-400' : 'border-blue-100' }}
                                             shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
@@ -342,7 +342,6 @@
                                                 Correo Electrónico
                                             </label>
                                             <input id="DirectorEmail" type="text" wire:model.live="DirectorEmail"
-                                                value="{{ $DirectorEmail }}"
                                                 class="mt-1 block w-full rounded-md border-gray-300
                                                 {{ $errors->has('DirectorEmail') ? 'border-red-400' : 'border-blue-100' }}
                                                 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
@@ -381,7 +380,7 @@
                                                 Correo Electronico
                                             </label>
                                             <input id="EjecutivoEmail" type="text"
-                                                wire:model.live="EjecutivoEmail" value="{{ $EjecutivoEmail }}"
+                                                wire:model.live="EjecutivoEmail"
                                                 class="mt-1 block w-full rounded-md border-gray-300
                                                 {{ $errors->has('EjecutivoEmail') ? 'border-red-400' : 'border-blue-100' }}
                                                 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
