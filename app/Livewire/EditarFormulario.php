@@ -52,7 +52,7 @@ class EditarFormulario extends Component
     public $aplicagarantia, $terminogarantia, $aplicapoliza, $porcentaje;
     public $incluye_iva, $otros, $orden_compra;
     // public $cotizacion;
-    protected $listener = ['removeUpload', 'removeExistingFile', 'editFormulario'];
+    protected $listeners = ['removeUpload', 'removeExistingFile', 'editFormulario'];
     public $marcaId;
     // public $cod_ejc;
     public $nombre_ejc;
@@ -103,7 +103,7 @@ class EditarFormulario extends Component
         // 'cotizacion' => 'nullable|max:10240',
         'soluciones' => 'required|string|',
         'linea' => 'nullable|string|in:EBG,Solar,Daas,HPE',
-        'linea_especifica' => 'nullable|string|in:G Solar,Daas,HP',
+        'linea_especifica' => 'nullable|string|in:EBG,Solar,Daas,HPE',
         'codlinea' => 'required|string|',
         'nomgerente' => 'required|string|',
         // 'telgerente' => 'required|numeric',
@@ -270,7 +270,9 @@ class EditarFormulario extends Component
 
     public function updated($propertyName)
     {
-        $this->validateOnly($propertyName);
+        if (array_key_exists($propertyName, $this->rules ?? [])) {
+            $this->validateOnly($propertyName);
+        }
     }
 
     public function handleDrop($files)

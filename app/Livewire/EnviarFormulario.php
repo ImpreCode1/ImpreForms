@@ -581,14 +581,12 @@ class EnviarFormulario extends Component
         }
     }
 
-    public function updatedPorcentaje($value)
+    public function updatedAplicapoliza($value)
     {
-        // Si la garantía es "sí", hacer que el término de garantía sea obligatorio
         if ($value === 'si') {
             $this->rules['porcentaje'] = 'required|numeric|min:1';
         } else {
             $this->rules['porcentaje'] = 'nullable';
-            // $this->terminogarantia = ''; // Resetear el campo si selecciona "No"
         }
     }
 
