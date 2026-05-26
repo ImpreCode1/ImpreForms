@@ -321,14 +321,13 @@
                                                 Nombre
                                             </label>
                                             <select id="nombre_dir" wire:model.live="selectedDirector"
-                                                wire:change="updateDirectorEmail"
                                                 class="mt-1 block w-full rounded-md border-gray-300
                                                 {{ $errors->has('selectedDirector') ? 'border-red-400' : 'border-blue-100' }}
                                                 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                                 <option value="">Seleccione un Director</option>
-                                                @foreach ($Directores as $Director)
-                                                    <option value="{{ $Director->id }}">
-                                                        {{ $Director->nombre_director_formatted }}
+                                                @foreach ($directores as $director)
+                                                    <option value="{{ $director->id }}">
+                                                        {{ $director->nombre_director_formatted }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -362,14 +361,13 @@
                                                 Nombre
                                             </label>
                                             <select id="nombre_ejc" wire:model.live="selectedEjecutivo"
-                                                wire:change="updateEjecutivoEmail"
                                                 class="mt-1 block w-full rounded-md border-gray-300
                                                 {{ $errors->has('selectedEjecutivo') ? 'border-red-400' : 'border-blue-100' }}
                                                 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                                 <option value="">Seleccione un Ejecutivo</option>
-                                                @foreach ($Ejecutivos as $Ejecutivo)
-                                                    <option value="{{ $Ejecutivo->id }}">
-                                                        {{ $Ejecutivo->nombre_colaborador_formatted }}</option>
+                                                @foreach ($ejecutivos as $ejecutivo)
+                                                    <option value="{{ $ejecutivo->id }}">
+                                                        {{ $ejecutivo->nombre_colaborador_formatted }}</option>
                                                 @endforeach
                                             </select>
                                             @error('selectedEjecutivo')

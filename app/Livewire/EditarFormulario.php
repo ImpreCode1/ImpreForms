@@ -527,7 +527,7 @@ class EditarFormulario extends Component
             'correo_director' => $this->cor2gerente,
             'tipo_solicitud' => $this->tipo_solicitud,
             // 'cod_ejc' => $this->cod_ejc,
-            'nombre_ejc' => $this->invertirNombre($this->nombre_ejc),
+            'nombre_ejc' => $this->nombre_ejc,
             // 'telefono_ejc' => $this->telefono_ejc,
             'email_ejc' => $this->email_ejc,
             'moneda_precio_venta' => $this->moneda_precio_venta,
@@ -545,7 +545,7 @@ class EditarFormulario extends Component
         // Actualizar información del negocio
         $this->formulario->infonegocio()->update([
             'codigo_cliente' => $this->negocio,
-            'nombre' => $this->invertirNombre($this->nombres),
+            'nombre' => $this->nombres,
             'correo' => $this->correo,
             'numero_celular' => $this->numero,
             'n_oportunidad_crm' => $this->crms,

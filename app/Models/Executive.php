@@ -22,11 +22,28 @@ class Executive extends Model
 
     public function getNombreColaboradorFormattedAttribute()
     {
-        $nombre = $this->attributes['nombre_colaborador'] ?? '';
-        if (strpos($nombre, ' ') !== false) {
-            $partes = explode(' ', trim($nombre), 2);
-            return $partes[1] . ' ' . $partes[0];
+        try {
+            $nombre = trim($this->nombre_colaborador ?? '');
+            if (empty($nombre)) return '';
+
+            if (!str_contains($nombre, '  ')) {
+                return ucwords(strtolower($nombre));
+            }
+
+            $partes = explode('  ', $nombre, 2);
+            $apellido1 = trim($partes[0]);
+            $palabras = array_filter(explode(' ', trim($partes[1])));
+            $palabras = array_values($palabras);
+
+            if (count($palabras) === 0) return ucwords(strtolower($nombre));
+            if (count($palabras) === 1) return ucwords(strtolower($palabras[0] . ' ' . $apellido1));
+
+            $apellido2 = $palabras[0];
+            $nombres = implode(' ', array_slice($palabras, 1));
+            $completo = trim("$nombres $apellido1 $apellido2");
+            return ucwords(strtolower($completo));
+        } catch (\Exception $e) {
+            return ucwords(strtolower($this->nombre_colaborador ?? ''));
         }
-        return $nombre;
     }
 }

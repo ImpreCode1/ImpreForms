@@ -113,7 +113,6 @@ class EnviarFormulario extends Component
     public $documentosGuardados = [];
     public $archivosNuevos = [];
 
-    public $Directores = [];
     public $selectedDirector;
     public $DirectorEmail = '';
 
@@ -133,7 +132,6 @@ class EnviarFormulario extends Component
     public $cantidad_entregas;
     public $fecha_entrega;
     public $mmd = false;
-    public $Ejecutivos;
     public $Lineas;
     public $selectedEjecutivo;
     public $EjecutivoEmail = '';
@@ -282,7 +280,9 @@ class EnviarFormulario extends Component
     // * mostrar garantia
     public function updated($propertyName)
     {
-        $this->validateOnly($propertyName);
+        if (array_key_exists($propertyName, $this->rules ?? [])) {
+            $this->validateOnly($propertyName);
+        }
     }
 
     public function updatedHasAdvancePayment($value)
@@ -298,6 +298,7 @@ class EnviarFormulario extends Component
 
     public function changeStep($step)
     {
+        $this->resetValidation();
         $this->currentStep = $step;
     }
 
@@ -366,14 +367,14 @@ class EnviarFormulario extends Component
                 'tipo_contrato' => $this->soluciones,
                 'linea' => $this->linea,
                 'codigo_linea' => $this->codlinea,
-                'nombre' => $this->invertirNombre($this->nomgerente),
+                'nombre' => $this->nomgerente,
                 'correo_electronico' => $this->corgerente,
                 'otros_pago' => $this->otros_pago,
                 'cel' => $this->clientname,
                 'email' => $this->mail,
-                'director' => $this->invertirNombre($this->DirectorName),
+                'director' => $this->DirectorName,
                 'correo_director' => $this->DirectorEmail,
-                'nombre_ejc' => $this->invertirNombre($this->EjecutivoName),
+                'nombre_ejc' => $this->EjecutivoName,
                 'email_ejc' => $this->EjecutivoEmail,
                 'tipo_solicitud' => $this->tipo_solicitud,
                 'moneda_precio_venta' => $this->moneda_precio_venta,
@@ -605,30 +606,36 @@ class EnviarFormulario extends Component
             $this->corgerente = $colaborador->mail;
         }
 
-        $this->Ejecutivos = Executive::all();
         $this->Lineas = Linea::all();
-        $this->Directores = Director::all();
     }
 
-    public function updateDirectorEmail()
+    public function updatedSelectedDirector()
     {
-        $director = Director::find($this->selectedDirector);
+        $value = $this->selectedDirector;
+        if (!$value) {
+            $this->DirectorEmail = '';
+            $this->DirectorName = '';
+            return;
+        }
+        $director = \App\Models\Director::find($value);
         if ($director) {
             $this->DirectorEmail = $director->mail;
-            $this->DirectorName = $director->nombre_director;
+            $this->DirectorName = $director->nombre_director_formatted;
         }
     }
 
-    public function updateEjecutivoEmail()
+    public function updatedSelectedEjecutivo()
     {
-        $ejecutivo = Executive::find($this->selectedEjecutivo);
-        // dd($ejecutivo);
-        if ($ejecutivo) {
-            $this->EjecutivoEmail = $ejecutivo->mail;
-            $this->EjecutivoName = $ejecutivo->nombre_colaborador;
-        } else {
+        $value = $this->selectedEjecutivo;
+        if (!$value) {
             $this->EjecutivoEmail = '';
             $this->EjecutivoName = '';
+            return;
+        }
+        $ejecutivo = \App\Models\Executive::find($value);
+        if ($ejecutivo) {
+            $this->EjecutivoEmail = $ejecutivo->mail;
+            $this->EjecutivoName = $ejecutivo->nombre_colaborador_formatted;
         }
     }
 
@@ -759,7 +766,8 @@ class EnviarFormulario extends Component
             'currentStep' => $this->currentStep,
             'operacionesLink' => $this->operacionesLink,
             'financieraLink' => $this->financieraLink,
-            // 'directors' => $this->directors,
+            'ejecutivos' => \App\Models\Executive::whereNotNull('nombre_colaborador')->orderBy('nombre_colaborador')->get(),
+            'directores' => \App\Models\Director::orderBy('nombre_director')->get(),
         ]);
     }
 }

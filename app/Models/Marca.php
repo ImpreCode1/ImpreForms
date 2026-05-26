@@ -122,21 +122,11 @@ class Marca extends Model
 
     public function getNombreFormattedAttribute()
     {
-        $nombre = $this->attributes['nombre'] ?? '';
-        if (strpos($nombre, ' ') !== false) {
-            $partes = explode(' ', trim($nombre), 2);
-            return $partes[1] . ' ' . $partes[0];
-        }
-        return $nombre;
+        return $this->nombre;
     }
 
     public function getNombreEjcFormattedAttribute()
     {
-        $nombre = $this->attributes['nombre_ejc'] ?? '';
-        if (strpos($nombre, ' ') !== false) {
-            $partes = explode(' ', trim($nombre), 2);
-            return $partes[1] . ' ' . $partes[0];
-        }
-        return $nombre;
+        return $this->nombre_ejc;
     }
 }
