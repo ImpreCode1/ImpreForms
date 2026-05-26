@@ -1,56 +1,55 @@
-/.phpunit.cache
+# Laravel Framework
+/vendor
 /node_modules
 /public/build
 /public/hot
 /public/storage
+
+# Storage
 /storage/*.key
-/vendor
-.env
-.env.backup
-.env.production
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+
+# Testing
+/.phpunit.cache
 .phpunit.result.cache
-Homestead.json
-Homestead.yaml
-auth.json
-npm-debug.log
-yarn-error.log 
-/.fleet
-/.idea
+
+# IDE
 /.vscode
+/.idea
+/.fleet
+
+# Editor
 .vite
 .claude
 /.claude
-storage
 .antigravitycli
-.editorconfig
-.gitattributes
-.gitignore
-artisan
-composer.json
-composer.lock
-env
+
+# Environment files (all variants)
 .env
 .env.example
 .env.local
 .env.testing
-.env.production
 .env.staging
+.env.production
 .env.backup
 .env.dusk.local
 .env.dusk.testing
-.env.dusk.production
 .env.dusk.staging
+.env.dusk.production
 .env.dusk.backup
 .env.phpunit
 .env.phpunit.local
 .env.phpunit.testing
-.env.phpunit.production
 .env.phpunit.staging
+.env.phpunit.production
 .env.phpunit.backup
-/.antigravitycli
-/.editorconfig
-/.gitattributes
-/.gitignore
-/.idea
-/.vscode
-/.fleet
+
+# System files
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
