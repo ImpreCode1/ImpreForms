@@ -63,6 +63,7 @@ class EnviarFormulario extends Component
     public $linea;
     public $linea_especifica;
     public $codlinea = '';
+    public $nombreLinea = '';
     public $nomgerente;
     // public $telgerente;
     public $corgerente;
@@ -645,6 +646,7 @@ class EnviarFormulario extends Component
 
         if ($codigo === '') {
             $this->linea = null;
+            $this->nombreLinea = '';
             $this->selectedCodigo = null;
 
             return;
@@ -654,9 +656,11 @@ class EnviarFormulario extends Component
 
         if ($linea) {
             $this->linea = $linea->linea;   // nombre de la línea
+            $this->nombreLinea = $linea->linea;
             $this->selectedCodigo = $linea->id; // opcional
         } else {
             $this->linea = null;
+            $this->nombreLinea = '';
             $this->selectedCodigo = null;
         }
     }

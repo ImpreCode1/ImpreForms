@@ -232,20 +232,7 @@
 
                                     <div class="grid md:grid-cols-2 gap-4">
 
-                                        <div>
-                                            <label for="codlinea" class="block text-sm font-medium text-gray-700">
-                                                Código de la línea
-                                            </label>
-                                            <input type="text" id="codlinea" wire:model.live="codlinea"
-                                                class="mt-1 block w-full rounded-md border-gray-300
-                                                {{ $errors->has('codlinea') ? 'border-red-400' : 'border-blue-100' }}
-                                                shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                            @error('codlinea')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-
-                                        <div>
+                                        <div class="md:col-span-2">
                                             <label for="linea_especifica" class="block text-sm font-medium text-gray-700">
                                                 Línea específica
                                             </label>
@@ -264,7 +251,28 @@
                                             @enderror
                                         </div>
 
+                                        <div>
+                                            <label for="codlinea" class="block text-sm font-medium text-gray-700">
+                                                Código de la línea
+                                            </label>
+                                            <input type="text" id="codlinea" wire:model.live="codlinea"
+                                                class="mt-1 block w-full rounded-md border-gray-300
+                                                {{ $errors->has('codlinea') ? 'border-red-400' : 'border-blue-100' }}
+                                                shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                            @error('codlinea')
+                                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                            @enderror
+                                        </div>
 
+                                        <div>
+                                            <label for="nombre_linea" class="block text-sm font-medium text-gray-700">
+                                                Nombre de la línea
+                                            </label>
+                                            <input id="nombre_linea" type="text" wire:model.live="nombreLinea"
+                                                readonly
+                                                class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50
+                                                shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        </div>
 
                                         <div>
                                             <label for="nomgerente" class="block text-sm font-medium text-gray-700">
