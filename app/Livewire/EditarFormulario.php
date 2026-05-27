@@ -44,6 +44,7 @@ class EditarFormulario extends Component
     public $dragging = false;
     public $negocio, $nombres, $correo, $numero, $crms;
     public $oc, $precio, $soluciones, $linea, $linea_especifica, $codlinea;
+    public $nombreLinea = '';
     public $nomgerente,  $corgerente, $director, $cor2gerente;
     public $entregacliente, $lugarentrega, $espais, $tiempoentrega, $tiempo_entrega_cantidad, $tiempo_entrega_unidad, $terminoentrega, $tipoicoterm;
     public $prestar, $suministrar, $inicio, $finalizacion;
@@ -350,6 +351,10 @@ class EditarFormulario extends Component
         $this->soluciones = $this->formulario->tipo_contrato;
         $this->linea = $this->formulario->linea;
         $this->codlinea = $this->formulario->codigo_linea;
+        $this->nombreLinea = $this->formulario->codigo_linea 
+            ? (\App\Models\Linea::where('codigo_linea', $this->formulario->codigo_linea)
+                ->value('linea') ?? '')
+            : '';
         $this->nomgerente = $this->formulario->nombre;
         $this->corgerente = $this->formulario->correo_electronico;
         $this->clientcode = $this->formulario->otro;
