@@ -146,6 +146,7 @@ class EditarFormulario extends Component
         'porcentaje_anticipo' => 'nullable|numeric|min:0|max:100',
         'fecha_pago_anticipo' => 'nullable|date',
         'otros_pago' => 'nullable|string',
+        'archivosNuevos.*' => 'file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png,gif,zip,msg,eml|max:10240',
     ];
 
     protected $messages = [
@@ -280,7 +281,12 @@ class EditarFormulario extends Component
     {
         foreach ($files as $file) {
             if ($file->isValid()) {
-                $this->tempFiles[] = $file;
+                $id = uniqid();
+                $this->tempFiles[$id] = [
+                    'file' => $file,
+                    'name' => $file->getClientOriginalName(),
+                    'size' => round($file->getSize() / 1024, 2),
+                ];
             }
         }
     }
@@ -293,11 +299,15 @@ class EditarFormulario extends Component
 
         foreach ($this->archivosNuevos as $file) {
             if ($file->isValid()) {
-                $this->tempFiles[] = $file;
+                $id = uniqid();
+                $this->tempFiles[$id] = [
+                    'file' => $file,
+                    'name' => $file->getClientOriginalName(),
+                    'size' => round($file->getSize() / 1024, 2),
+                ];
             }
         }
 
-        // Reset the input so the same files can be selected again from any folder
         $this->archivosNuevos = [];
     }
 
@@ -311,11 +321,10 @@ class EditarFormulario extends Component
         $this->dragging = false;
     }
 
-    public function quitarArchivo($index)
+    public function quitarArchivo($id)
     {
-        if (isset($this->tempFiles[$index])) {
-            unset($this->tempFiles[$index]);
-            $this->tempFiles = array_values($this->tempFiles);
+        if (isset($this->tempFiles[$id])) {
+            unset($this->tempFiles[$id]);
         }
     }
 
@@ -470,8 +479,8 @@ class EditarFormulario extends Component
     {
         foreach ($this->tempFiles as $file) {
             try {
-                $originalName = $file->getClientOriginalName();
-                $path = $file->store('documents', 'public');
+                $originalName = $file['name'];
+                $path = $file['file']->store('documents', 'public');
 
                 Documento::create([
                     'nombre_original' => $originalName,
@@ -483,10 +492,8 @@ class EditarFormulario extends Component
             }
         }
 
-        // Reinicia la lista de archivos nuevos
         $this->tempFiles = [];
 
-        // Recargar los archivos existentes
         $this->loadExistingFiles();
     }
 

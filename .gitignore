@@ -66,6 +66,9 @@ Thumbs.db
 # Logs
 *.log
 
+# Bootstrap cache
+/bootstrap/cache/*
+
 # Temporary verification scripts
 check_env.js
 check_env.py
