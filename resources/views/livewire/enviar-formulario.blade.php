@@ -53,7 +53,7 @@
                                         <label for="negocio" class="block text-sm font-medium text-gray-700">
                                             Código Cliente
                                         </label>
-                                        <input type="text" id="negocio" wire:model.live="negocio"
+                                        <input type="text" id="negocio" wire:model.blur="negocio"
                                             class="mt-1 block w-full rounded-md border-gray-300
                                             {{ $errors->has('negocio') ? 'border-red-400' : 'border-blue-100' }}
                                             shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
@@ -980,8 +980,13 @@
                                 <div class="flex flex-col mt-6">
                                     @if ($errors->any())
                                         <div class="alert alert-danger mb-4 text-center">
-                                            <span class="text-red-500">Parece que algunos campos del formulario aún no
+                                            <span class="text-red-500 font-medium">Parece que algunos campos del formulario aún no
                                                 están completos o contienen información incorrecta.</span>
+                                            <ul class="mt-2 text-left text-sm text-red-600 list-disc pl-5 max-w-md mx-auto">
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
                                         </div>
                                     @endif
                                     <div class="flex justify-center space-x-6">

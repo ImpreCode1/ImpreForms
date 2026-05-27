@@ -2,33 +2,14 @@
 
 namespace App\Livewire;
 
+use App\Livewire\Traits\FormatearFechas;
+use App\Livewire\Traits\InvertirNombre;
 use App\Models\Documento;
 use App\Models\Marca;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-
-trait FormatearFechas
-{
-    public function formatearFecha($fecha)
-    {
-        return $fecha ? date('Y-m-d', strtotime($fecha)) : null;
-    }
-}
-
-trait InvertirNombre
-{
-    public function invertirNombre($nombre)
-    {
-        $nombre = trim($nombre);
-        if (strpos($nombre, ' ') !== false) {
-            $partes = explode(' ', $nombre, 2);
-            return $partes[1] . ' ' . $partes[0];
-        }
-        return $nombre;
-    }
-}
 
 class EditarFormulario extends Component
 {
@@ -126,15 +107,15 @@ class EditarFormulario extends Component
 
         'clientname' => 'nullable|numeric',
         'mail' => 'nullable|email',
-        'aplicagarantia' => 'required|string|',
-        'aplicapoliza' => 'required|string|',
+        'aplicagarantia' => 'required|in:si,no',
+        'aplicapoliza' => 'required|in:si,no',
         'incluye_iva' => 'required',
         'forma_pago' => 'required|string|max:255',
-        'moneda' => 'required|string|',
+        'moneda' => 'nullable|string',
         //'fecha_pago' => 'required|date',
         'otros' => 'nullable|string',
         'orden_compra' => 'nullable|string|min:1',
-        'moneda_precio_venta' => 'nullable|string|',
+        'moneda_precio_venta' => 'required|string',
         'fecha_cada_pago' => 'nullable|string',
         'hay_anticipo' => 'nullable|boolean',
         'porcentaje_anticipo' => 'nullable|numeric|min:0|max:100',
@@ -341,8 +322,6 @@ class EditarFormulario extends Component
         ])->findOrFail($formulario);
 
         // A partir de aquí, se mantiene tu lógica actual
-        $this->marcaId = $this->formulario->marca_id;
-
         $this->negocio = $this->formulario->infonegocio->codigo_cliente;
         $this->nombres = $this->formulario->infonegocio->nombre_formatted;
         $this->correo = $this->formulario->infonegocio->correo;
@@ -375,7 +354,7 @@ class EditarFormulario extends Component
         $this->forma_pago = $this->formulario->forma_pago;
         $this->fecha_cada_pago = $this->formulario->fecha_cada_pago;
         $this->moneda = $this->formulario->moneda;
-        $this->incluir_iva = $this->formulario->incluir_iva;
+        $this->incluye_iva = $this->formulario->incluir_iva;
         $this->hay_anticipo = $this->formulario->hay_anticipo;
         $this->porcentaje_anticipo = $this->formulario->porcentaje_anticipo;
         $this->fecha_pago_anticipo = $this->formulario->fecha_pago_anticipo;
@@ -547,7 +526,7 @@ class EditarFormulario extends Component
             'forma_pago' => $this->forma_pago,
             'fecha_cada_pago' => $this->fecha_cada_pago,
             'moneda' => $this->moneda,
-            'incluir_iva' => $this->incluir_iva,
+            'incluir_iva' => $this->incluye_iva,
             'hay_anticipo' => $this->hay_anticipo,
             'porcentaje_anticipo' => $this->porcentaje_anticipo,
             'fecha_pago_anticipo' => $this->fecha_pago_anticipo,

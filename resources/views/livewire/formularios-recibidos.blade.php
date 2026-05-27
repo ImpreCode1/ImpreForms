@@ -20,8 +20,7 @@
                                     </svg>
                                     <div
                                         class="absolute inset-0 flex items-center justify-center text-blue-500 text-3xl font-bold">
-                                        {{-- {{ $totalFormularios }} --}}
-                                        =
+                                        {{ $totalFormularios }}
                                     </div>
 
                                 </div>

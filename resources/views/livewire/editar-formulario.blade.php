@@ -297,7 +297,7 @@
                             <label for="nombre_linea" class="block text-sm font-medium text-gray-700">
                                 Nombre de la línea
                             </label>
-                            <input id="nombre_linea" type="text" wire:model.live="nombreLinea"
+                            <input id="nombre_linea" type="text" value="{{ $nombreLinea }}"
                                 readonly
                                 class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50
                                 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />

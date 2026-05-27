@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Livewire\Traits\InvertirNombre;
 use App\Models\Codigo;
 use App\Models\Colaborador;
 use App\Models\Director;
@@ -22,19 +23,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-
-trait InvertirNombre
-{
-    public function invertirNombre($nombre)
-    {
-        $nombre = trim($nombre);
-        if (strpos($nombre, ' ') !== false) {
-            $partes = explode(' ', $nombre, 2);
-            return $partes[1] . ' ' . $partes[0];
-        }
-        return $nombre;
-    }
-}
 
 class EnviarFormulario extends Component
 {
@@ -338,10 +326,12 @@ class EnviarFormulario extends Component
         } catch (\Illuminate\Validation\ValidationException $e) {
             $mensajes = [];
             foreach ($e->errors() as $campo => $errores) {
-                $mensajes[] = ucfirst($campo).': '.implode(', ', $errores);
+                foreach ($errores as $error) {
+                    $mensajes[] = $error;
+                }
             }
 
-            $mensaje = 'Por favor corrija los siguientes campos:<br>'.implode('<br>', $mensajes);
+            $mensaje = implode('<br>', $mensajes);
 
             $this->dispatch('validation-error', message: $mensaje);
 
