@@ -36,8 +36,6 @@ class EditarFormulario extends Component
     // $telgerente
     // $telgerente2
     public $formulario;
-    public $attachments = [];
-    public $temporaryFiles = [];
     public $existingFiles = [];
     public $archivosNuevos = [];
     public $tempFiles = [];
@@ -60,7 +58,6 @@ class EditarFormulario extends Component
     // public $telefono_ejc;
     public $email_ejc;
     public $documentos;
-    public $documento;
     public $tipo_solicitud;
     public $nom_rep;
     public $cantidad_entregas;
@@ -71,7 +68,6 @@ class EditarFormulario extends Component
     public $forma_pago;
     public $fecha_cada_pago;
     public $moneda;
-    public $incluir_iva;
     public $hay_anticipo;
     public $porcentaje_anticipo;
     public $fecha_pago_anticipo;
@@ -131,9 +127,7 @@ class EditarFormulario extends Component
         'clientname' => 'nullable|numeric',
         'mail' => 'nullable|email',
         'aplicagarantia' => 'required|string|',
-        'terminogarantia' => 'nullable|string|',
         'aplicapoliza' => 'required|string|',
-        'porcentaje' => 'nullable|numeric',
         'incluye_iva' => 'required',
         'forma_pago' => 'required|string|max:255',
         'moneda' => 'required|string|',
@@ -146,6 +140,7 @@ class EditarFormulario extends Component
         'porcentaje_anticipo' => 'nullable|numeric|min:0|max:100',
         'fecha_pago_anticipo' => 'nullable|date',
         'otros_pago' => 'nullable|string',
+        'archivosNuevos' => 'nullable|array',
         'archivosNuevos.*' => 'file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png,gif,zip,msg,eml|max:10240',
     ];
 
@@ -275,6 +270,10 @@ class EditarFormulario extends Component
         if (array_key_exists($propertyName, $this->rules ?? [])) {
             $this->validateOnly($propertyName);
         }
+    }
+
+    public function editFormulario()
+    {
     }
 
     public function handleDrop($files)

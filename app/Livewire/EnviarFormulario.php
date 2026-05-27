@@ -165,7 +165,6 @@ class EnviarFormulario extends Component
         // * Marca
         'precio' => 'required|string|regex:/^[\d,\.]+$/',
         'soluciones' => 'required|string|min:5',
-        'linea' => 'nullable|string|in:EBG,Solar,Daas,HPE',
         'linea_especifica' => 'nullable|string|in:EBG,Solar,Daas,HPE',
         'codlinea' => 'required|string',
         'nomgerente' => 'required|string|min:5',
@@ -276,6 +275,8 @@ class EnviarFormulario extends Component
         'files.array' => 'Los documentos deben estar en formato válido.',
 
         'finalizacion.after_or_equal' => 'La fecha de finalización no puede ser menor a la fecha de inicio.',
+        'selectedDirector' => 'nullable|string',
+        'selectedEjecutivo' => 'nullable|string',
     ];
 
     // * mostrar garantia
@@ -596,7 +597,7 @@ class EnviarFormulario extends Component
         $this->dispatch('reloadPage');
     }
 
-    public function mount()
+    public function mount($operacionesLink = null, $financieraLink = null)
     {
         $this->files = [];
 
@@ -608,6 +609,11 @@ class EnviarFormulario extends Component
         }
 
         $this->Lineas = Linea::all();
+
+        if ($operacionesLink || $financieraLink) {
+            $this->operacionesLink = $operacionesLink;
+            $this->financieraLink = $financieraLink;
+        }
     }
 
     public function updatedSelectedDirector()
@@ -757,15 +763,9 @@ class EnviarFormulario extends Component
         $this->dragging = false;
     }
 
-    public function mounts($operacionesLink, $financieraLink)
-    {
-        $this->operacionesLink = $operacionesLink;
-        $this->financieraLink = $financieraLink;
-    }
-
     public function copyToClipboard($text)
     {
-        $this->dispatchBrowserEvent('copyToClipboard', ['text' => $text]);
+        $this->dispatch('copy-to-clipboard', text: $text);
         session()->flash('link', 'Enlace copiado al portapapeles');
     }
 

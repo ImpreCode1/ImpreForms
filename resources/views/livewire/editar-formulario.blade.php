@@ -30,9 +30,6 @@
                             <option value="Alcance">Alcance</option> --}}
                         </select>
                     </div>
-                    @error('tipo_solicitud')
-                        <span class="text-sm text-red-500 text-center block">{{ $message }}</span>
-                    @enderror
 
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
@@ -662,15 +659,15 @@
                         </div>
 
                         <div>
-                            <label for="incluir_iva" class="block text-sm font-medium text-gray-700">¿Incluir
+                            <label for="incluye_iva" class="block text-sm font-medium text-gray-700">¿Incluir
                                 IVA?</label>
-                            <select id="incluir_iva" wire:model.live="incluir_iva"
-                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('incluir_iva') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                            <select id="incluye_iva" wire:model.live="incluye_iva"
+                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('incluye_iva') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                 <option value="" disabled>Seleccione una opción</option>
                                 <option value="1">Sí</option>
                                 <option value="0">No</option>
                             </select>
-                            @error('incluir_iva')
+                            @error('incluye_iva')
                                 <span class="text-red-500 text-sm">{{ $message }}</span>
                             @enderror
                         </div>

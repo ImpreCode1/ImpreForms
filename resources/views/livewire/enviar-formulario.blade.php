@@ -974,7 +974,7 @@
                                     </ul>
                                 </div>
                             @endif
-                            <div class="flex flex-col mt-6"> @error('archivos.*')
+                            <div class="flex flex-col mt-6"> @error('files.*')
                                     <span class="text-red-500 text-sm mt-2">{{ $message }}</span>
                                 @enderror <br>
                                 <div class="flex flex-col mt-6">
@@ -1161,6 +1161,9 @@
     document.addEventListener('livewire:init', function () {
         Livewire.on('reloadPage', () => {
             location.reload();
+        });
+        Livewire.on('copy-to-clipboard', ({ text }) => {
+            copyToClipboard(text);
         });
     });
 </script>
