@@ -365,7 +365,7 @@ class EditarFormulario extends Component
             $info = $this->formulario->informacion->first();
             $this->entregacliente = $info->realiza_entrega_cliente;
             $this->cantidad_entregas = $info->cantidad_entregas;
-            $this->fecha_entrega = $info->fecha_entrega ? $info->fecha_entrega->format('Y-m-d') : null;
+            $this->fecha_entrega = $info->fecha_entrega ? \Carbon\Carbon::parse($info->fecha_entrega)->format('Y-m-d') : null;
             $this->lugarentrega = $info->lugar_entrega;
             $this->espais = $info->pais;
             $this->tiempoentrega = $info->tiempo_entrega;

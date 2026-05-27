@@ -324,10 +324,62 @@ class EnviarFormulario extends Component
             // ✅ Validaciones
             $this->validate();
         } catch (\Illuminate\Validation\ValidationException $e) {
+            $etiquetas = [
+                'files'                => 'Documentos adjuntos',
+                'tipo_solicitud'       => 'Tipo de solicitud',
+                'negocio'              => 'Código del cliente',
+                'nombre'               => 'Nombre del cliente',
+                'correo'               => 'Correo del representante legal',
+                'numero'               => 'Número celular',
+                'crm'                  => 'N° oportunidad CRM',
+                'precio'               => 'Precio de venta',
+                'soluciones'           => 'Soluciones',
+                'linea_especifica'     => 'Línea específica',
+                'codlinea'             => 'Código de línea',
+                'nomgerente'           => 'Nombre del gerente de producto',
+                'nom_rep'              => 'Nombre del representante legal',
+                'corgerente'           => 'Correo del gerente',
+                'DirectorName'         => 'Nombre del director',
+                'moneda_precio_venta'  => 'Moneda del precio de venta',
+                'forma_pago'           => 'Forma de pago',
+                'fecha_cada_pago'      => 'Plazos de pago',
+                'moneda'               => 'Moneda (pago)',
+                'incluir_iva'          => 'Incluye IVA',
+                'hay_anticipo'         => 'Hay anticipo',
+                'porcentaje_anticipo'  => 'Porcentaje de anticipo',
+                'fecha_pago_anticipo'  => 'Fecha de pago anticipo',
+                'otros_pago'           => 'Otros (pago)',
+                'clientcode'           => 'Otro',
+                'clientname'           => 'Teléfono',
+                'mail'                 => 'Correo adicional',
+                'EjecutivoEmail'       => 'Correo del ejecutivo',
+                'DirectorEmail'        => 'Correo del director',
+                'orden_compra'         => 'Orden de compra',
+                'entregacliente'       => '¿Quién realiza la entrega?',
+                'cantidad_entregas'    => 'Cantidad de entregas',
+                'fecha_entrega'        => 'Fecha de entrega',
+                'lugarentrega'         => 'Lugar de entrega',
+                'espais'               => 'País',
+                'tiempo_entrega_cantidad' => 'Tiempo de entrega (cantidad)',
+                'tiempo_entrega_unidad'   => 'Tiempo de entrega (unidad)',
+                'terminoentrega'       => 'Fecha término de entrega',
+                'tipoicoterm'          => 'Tipo de incoterms',
+                'prestar'              => 'Servicio a prestar',
+                'suministrar'          => 'Frecuencia de suministro',
+                'inicio'               => 'Fecha de inicio',
+                'finalizacion'         => 'Fecha de finalización',
+                'aplicagarantia'       => '¿Aplica garantía?',
+                'terminogarantia'      => 'Término de garantía',
+                'aplicapoliza'         => '¿Aplica póliza?',
+                'porcentaje'           => 'Porcentaje de póliza',
+                'incluye_iva'          => '¿Incluye IVA?',
+            ];
+
             $mensajes = [];
             foreach ($e->errors() as $campo => $errores) {
+                $etiqueta = $etiquetas[$campo] ?? $campo;
                 foreach ($errores as $error) {
-                    $mensajes[] = $error;
+                    $mensajes[] = "<b>{$etiqueta}:</b> {$error}";
                 }
             }
 
