@@ -510,34 +510,38 @@
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
                                     </div>
-                                    <div class="flex gap-4">
-                                        <div class="flex-1">
-                                            <label for="tiempo_entrega_cantidad"
-                                                class="block text-sm font-medium text-gray-700">Tiempo de entrega</label>
-                                            <input id="tiempo_entrega_cantidad" type="number" wire:model.live="tiempo_entrega_cantidad" min="1"
-                                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tiempo_entrega_cantidad') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                            @error('tiempo_entrega_cantidad')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                        <div class="w-32">
+                                    <div>
+                                        <label for="tiempo_entrega_cantidad"
+                                            class="block text-sm font-medium text-gray-700">
+                                            Tiempo de entrega
+                                        </label>
+                                        <div class="flex gap-2 mt-1">
+                                            <input id="tiempo_entrega_cantidad" type="number"
+                                                wire:model.live="tiempo_entrega_cantidad" min="1"
+                                                class="flex-1 rounded-md border-gray-300
+                                                {{ $errors->has('tiempo_entrega_cantidad') ? 'border-red-400' : 'border-blue-100' }}
+                                                shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                             <select wire:model.live="tiempo_entrega_unidad"
-                                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tiempo_entrega_unidad') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
-                                                <option value="">Seleccionar</option>
+                                                class="w-32 rounded-md border-gray-300
+                                                {{ $errors->has('tiempo_entrega_unidad') ? 'border-red-400' : 'border-blue-100' }}
+                                                shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                                <option value="">Unidad</option>
                                                 <option value="Días">Días</option>
                                                 <option value="Semanas">Semanas</option>
                                                 <option value="Meses">Meses</option>
                                                 <option value="Años">Años</option>
                                             </select>
-                                            @error('tiempo_entrega_unidad')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
                                         </div>
+                                        @error('tiempo_entrega_cantidad')
+                                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                                        @enderror
+                                        @error('tiempo_entrega_unidad')
+                                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                                        @enderror
                                     </div>
                                     <div>
                                         <label for="terminoentrega"
-                                            class="block text-sm font-medium text-gray-700">Fecha de inicio del término
-                                            de entrega (día, mes, año)</label>
+                                            class="block text-sm font-medium text-gray-700">A partir de qué fecha se cuenta el término de entrega (día, mes, año)</label>
                                         <input id="terminoentrega" type="date" wire:model.live="terminoentrega"
                                             class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('terminoentrega') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                         @error('terminoentrega')
@@ -863,6 +867,7 @@
                                                 <li>Cotización</li>
                                                 <li>Correo electronico de aprobación del margen (si aplica)</li>
                                                 <li>Correo electrónico de aprobación del factor (si aplica)</li>
+                                                <li>Orden de compra</li>
                                             </ul>
                                         </div>
 
