@@ -409,6 +409,7 @@ class EnviarFormulario extends Component
             $marca = Marca::create([
                 'infonegocio_id' => $infonegocio->id,
                 'user_id' => auth()->id(),
+                'fecha' => now(),
                 'precio_venta' => $this->precio,
                 'tipo_contrato' => $this->soluciones,
                 'linea' => $this->linea,
