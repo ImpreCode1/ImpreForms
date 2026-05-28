@@ -255,17 +255,10 @@
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
                             <label for="linea" class="block text-sm font-medium text-gray-700">Línea</label>
-                            <select id="linea" wire:model.live="linea"
-                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('linea') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
-                                <option value="">Seleccionar línea</option>
-                                <option value="EBG">EBG</option>
-                                <option value="Solar">Solar</option>
-                                <option value="Daas">Daas</option>
-                                <option value="HPE">HPE</option>
-                            </select>
-                            @error('linea')
-                                <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
-                            @enderror
+                            <input id="linea" type="text" value="{{ $linea }}"
+                                readonly
+                                class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50
+                                shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                         </div>
 
                         <div>
@@ -293,7 +286,7 @@
                             @enderror
                         </div>
 
-                        <div>
+                        {{-- <div>
                             <label for="nombre_linea" class="block text-sm font-medium text-gray-700">
                                 Nombre de la línea
                             </label>
@@ -301,7 +294,7 @@
                                 readonly
                                 class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50
                                 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                        </div>
+                        </div> --}}
 
                         <div>
                             <label for="nomgerente" class="block text-sm font-medium text-gray-700">Nombre</label>

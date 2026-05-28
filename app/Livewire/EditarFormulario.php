@@ -7,6 +7,7 @@ use App\Livewire\Traits\InvertirNombre;
 use App\Models\Documento;
 use App\Models\Marca;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -73,14 +74,10 @@ class EditarFormulario extends Component
 
         // 'fecha' => 'required|date',
         // 'oc' => 'required|string|',
-        'precio' => [
-            'required',
-            'regex:/^\d{1,3}(?:[\.,]\d{3})*(?:[\.,]\d+)?$/',
-            'min:5',
-        ],
+        'precio' => 'required|string|regex:/^[\d,\.]+$/',
         // 'cotizacion' => 'nullable|max:10240',
         'soluciones' => 'required|string|',
-        'linea' => 'nullable|string|in:EBG,Solar,Daas,HPE',
+        'linea' => 'nullable|string',
         'linea_especifica' => 'nullable|string|in:EBG,Solar,Daas,HPE',
         'codlinea' => 'required|string|',
         'nomgerente' => 'required|string|',
@@ -100,17 +97,17 @@ class EditarFormulario extends Component
         'tiempo_entrega_unidad' => 'nullable|string|in:Días,Semanas,Meses,Años',
         'terminoentrega' => 'required|string|',
         'tipoicoterm' => 'required|string|max:255',
-        'prestar' => 'nullable|string|min:1',
-        'suministrar' => 'nullable|string|min:1',
+        'prestar' => 'nullable|string',
+        'suministrar' => 'nullable|string',
         'inicio' => 'nullable|date',
-        'finalizacion' => 'nullable|date|after_or_equal:inicio',
+        'finalizacion' => 'nullable|date',
 
         'clientname' => 'nullable|numeric',
         'mail' => 'nullable|email',
         'aplicagarantia' => 'required|in:si,no',
         'aplicapoliza' => 'required|in:si,no',
         'incluye_iva' => 'required',
-        'forma_pago' => 'required|string|max:255',
+        'forma_pago' => 'nullable|string|max:255',
         'moneda' => 'nullable|string',
         //'fecha_pago' => 'required|date',
         'otros' => 'nullable|string',
@@ -158,11 +155,8 @@ class EditarFormulario extends Component
         // 'fecha.date' => 'El campo "Fecha" debe ser una fecha válida.',
         'oc.required' => 'El campo "OC" es obligatorio.',
         'oc.string' => 'El campo "OC" debe ser una cadena de texto.',
-        'precio' => [
-            'required' => 'El campo "Precio" es obligatorio.',
-            'regex' => 'El campo "Precio" debe ser un número válido con formato adecuado. Ejemplo: 1,000.00 o 1000.00.',
-            'min' => 'El campo "Precio" debe tener al menos :min caracteres.',
-        ],
+        'precio.required' => 'El campo "Precio" es obligatorio.',
+        'precio.regex' => 'El campo "Precio" solo puede contener números, comas y puntos.',
 
 
 
@@ -221,7 +215,6 @@ class EditarFormulario extends Component
         'aplicapoliza.string' => 'El campo "Aplicar Póliza" debe ser una cadena de texto.',
         'porcentaje.required' => 'El campo "Porcentaje" es obligatorio.',
         'porcentaje.numeric' => 'El campo "Porcentaje" debe ser un número sin espacios.',
-        'forma_pago.required' => 'El campo "Forma de Pago" es obligatorio.',
         'forma_pago.string' => 'El campo "Forma de Pago" debe ser una cadena de texto.',
         'moneda.required' => 'El campo "Moneda" es obligatorio.',
         'moneda.string' => 'El campo "Moneda" debe ser una cadena de texto.',
@@ -243,7 +236,7 @@ class EditarFormulario extends Component
         // 'cotizacion.required' => 'La cotización es requerida.',
         // 'cotizacion.max' => 'El tamaño máximo permitido para la cotización es de 10 MB.',
 
-        'finalizacion.after_or_equal' => 'La fecha de finalización no puede ser menor a la fecha de inicio.',
+
     ];
 
     public function updated($propertyName)
@@ -253,8 +246,25 @@ class EditarFormulario extends Component
         }
     }
 
-    public function editFormulario()
+    public function updatedCodlinea($value)
     {
+        $codigo = trim((string) $value);
+
+        if ($codigo === '') {
+            $this->linea = null;
+            $this->nombreLinea = '';
+            return;
+        }
+
+        $linea = \App\Models\Linea::where('codigo_linea', $codigo)->first();
+
+        if ($linea) {
+            $this->linea = $linea->linea;
+            $this->nombreLinea = $linea->linea;
+        } else {
+            $this->linea = null;
+            $this->nombreLinea = '';
+        }
     }
 
     public function handleDrop($files)
@@ -390,11 +400,6 @@ class EditarFormulario extends Component
             }
         }
 
-        if ($this->formulario->pago && $this->formulario->pago->isNotEmpty()) {
-            $pago = $this->formulario->pago->first();
-            $this->incluye_iva = $pago->incluye_iva;
-        }
-
         $this->existingFiles = $this->formulario->documento
             ->map(function ($documento) {
                 return [
@@ -477,125 +482,94 @@ class EditarFormulario extends Component
 
     public function submit()
     {
-        // $rules = $this->rules;
-        // if (!$this->formulario->adjunto_cotizacion && !$this->cotizacion) {
-        //     $rules['cotizacion'] = 'required|mimes:pdf,doc,docx,xls,xlsx|max:10240';
-        // }
-        // $this->validate($rules);
+        $this->validate();
 
-        // $rutaAnterior = $this->formulario->adjunto_cotizacion;
-
-        // if ($this->cotizacion instanceof \Illuminate\Http\UploadedFile) {
-        //     $originalName = $this->cotizacion->getClientOriginalName();
-        //     $path = "public/cotizacion/{$originalName}";
-
-        //     if ($rutaAnterior && Storage::exists($rutaAnterior)) {
-        //         Storage::delete($rutaAnterior);
-        //     }
-
-        //     $this->cotizacion->storeAs('public/cotizacion', $originalName);
-        //     $this->formulario->update([
-        //         'adjunto_cotizacion' => $path,
-        //     ]);
-        // }
-
-        $this->formulario->update([
-            // 'n_oc' => $this->oc,
-            // 'fecha' => $this->fecha,
-            'precio_venta' => $this->precio,
-            'tipo_contrato' => $this->soluciones,
-            'linea' => $this->linea,
-            'codigo_linea' => $this->codlinea,
-            'nombre' => $this->nomgerente,
-            // 'telefono' => $this->telgerente,
-            'correo_electronico' => $this->corgerente,
-            'otro' => $this->clientcode,
-            'cel' => $this->clientname,
-            'email' => $this->mail,
-            'director' => $this->director,
-            // 'numero' => $this->tel2gerente,
-
-
-            'correo_director' => $this->cor2gerente,
-            'tipo_solicitud' => $this->tipo_solicitud,
-            // 'cod_ejc' => $this->cod_ejc,
-            'nombre_ejc' => $this->nombre_ejc,
-            // 'telefono_ejc' => $this->telefono_ejc,
-            'email_ejc' => $this->email_ejc,
-            'moneda_precio_venta' => $this->moneda_precio_venta,
-            'forma_pago' => $this->forma_pago,
-            'fecha_cada_pago' => $this->fecha_cada_pago,
-            'moneda' => $this->moneda,
-            'incluir_iva' => $this->incluye_iva,
-            'hay_anticipo' => $this->hay_anticipo,
-            'porcentaje_anticipo' => $this->porcentaje_anticipo,
-            'fecha_pago_anticipo' => $this->fecha_pago_anticipo,
-            'otros_pago' => $this->otros_pago,
-            'orden_compra' => $this->orden_compra,
-        ]);
-
-        // Actualizar información del negocio
-        $this->formulario->infonegocio()->update([
-            'codigo_cliente' => $this->negocio,
-            'nombre' => $this->nombres,
-            'correo' => $this->correo,
-            'numero_celular' => $this->numero,
-            'n_oportunidad_crm' => $this->crms,
-            'nom_rep' => $this->nom_rep,
-        ]);
-
-        // Actualizar información
-        if ($info = $this->formulario->informacion->first()) {
-            $info->update([
-                'realiza_entrega_cliente' => $this->entregacliente,
-                'cantidad_entregas' => $this->cantidad_entregas,
-                'fecha_entrega' => $this->fecha_entrega,
-                'lugar_entrega' => $this->lugarentrega,
-                'pais' => $this->espais,
-                'tiempo_entrega' => $this->tiempoentrega,
-                'tiempo_entrega_cantidad' => $this->tiempo_entrega_cantidad,
-                'tiempo_entrega_unidad' => $this->tiempo_entrega_unidad,
-                'fecha_inicio_termino' => $this->terminoentrega,
-                'tipo_incoterms' => $this->tipoicoterm,
-                'servicio_a_prestar' => $this->prestar,
-                'frecuencia_suministro' => $this->suministrar,
-                'fecha_inicio' => $this->inicio,
-                'fecha_finalizacion' => $this->finalizacion,
-                'linea_especifica' => $this->linea_especifica,
+        DB::transaction(function () {
+            $this->formulario->update([
+                'precio_venta' => $this->precio,
+                'tipo_contrato' => $this->soluciones,
+                'linea' => $this->linea,
+                'codigo_linea' => $this->codlinea,
+                'nombre' => $this->nomgerente,
+                'correo_electronico' => $this->corgerente,
+                'otro' => $this->clientcode,
+                'cel' => $this->clientname,
+                'email' => $this->mail,
+                'director' => $this->director,
+                'correo_director' => $this->cor2gerente,
+                'tipo_solicitud' => $this->tipo_solicitud,
+                'nombre_ejc' => $this->nombre_ejc,
+                'email_ejc' => $this->email_ejc,
+                'moneda_precio_venta' => $this->moneda_precio_venta,
+                'forma_pago' => $this->forma_pago,
+                'fecha_cada_pago' => $this->fecha_cada_pago,
+                'moneda' => $this->moneda,
+                'incluir_iva' => $this->incluye_iva,
+                'hay_anticipo' => $this->hay_anticipo,
+                'porcentaje_anticipo' => $this->porcentaje_anticipo,
+                'fecha_pago_anticipo' => $this->fecha_pago_anticipo,
+                'otros_pago' => $this->otros_pago,
+                'orden_compra' => $this->orden_compra,
             ]);
 
-            // Actualizar producto
-            if ($producto = $info->producto->first()) {
-                $producto->update([
-                    // 'detalles_equipos' => $this->details,
-                    'aplica_garantia' => $this->aplicagarantia,
-                    'termino_garantia' => $this->terminogarantia,
-                    'aplica_poliza' => $this->aplicapoliza,
-                    'porcentaje_poliza' => $this->porcentaje,
+            $this->formulario->infonegocio()->update([
+                'codigo_cliente' => $this->negocio,
+                'nombre' => $this->nombres,
+                'correo' => $this->correo,
+                'numero_celular' => $this->numero,
+                'n_oportunidad_crm' => $this->crms,
+                'nom_rep' => $this->nom_rep,
+            ]);
+
+            if ($info = $this->formulario->informacion->first()) {
+                $info->update([
+                    'realiza_entrega_cliente' => $this->entregacliente,
+                    'cantidad_entregas' => $this->cantidad_entregas,
+                    'fecha_entrega' => $this->fecha_entrega,
+                    'lugar_entrega' => $this->lugarentrega,
+                    'pais' => $this->espais,
+                    'tiempo_entrega' => $this->tiempoentrega,
+                    'tiempo_entrega_cantidad' => $this->tiempo_entrega_cantidad,
+                    'tiempo_entrega_unidad' => $this->tiempo_entrega_unidad,
+                    'fecha_inicio_termino' => $this->terminoentrega,
+                    'tipo_incoterms' => $this->tipoicoterm,
+                    'servicio_a_prestar' => $this->prestar,
+                    'frecuencia_suministro' => $this->suministrar,
+                    'fecha_inicio' => $this->inicio,
+                    'fecha_finalizacion' => $this->finalizacion,
+                    'linea_especifica' => $this->linea_especifica,
                 ]);
-            }
-        }
-        // Actualizar pago
-        if ($pago = $this->formulario->pago->first()) {
-            $pago->update([
-                // 'fecha_pago' => $this->fecha_pago,
-                'incluye_iva' => $this->incluye_iva,
-            ]);
-        }
 
-        if (!empty($this->archivosParaEliminar)) {
-            foreach ($this->archivosParaEliminar as $id) {
-                $documento = Documento::find($id);
-                if ($documento) {
-                    Storage::disk('public')->delete($documento->ruta_documento);
-                    $documento->delete();
+                if ($producto = $info->producto->first()) {
+                    $producto->update([
+                        'aplica_garantia' => $this->aplicagarantia,
+                        'termino_garantia' => $this->terminogarantia,
+                        'aplica_poliza' => $this->aplicapoliza,
+                        'porcentaje_poliza' => $this->porcentaje,
+                    ]);
                 }
             }
 
-            $this->archivosParaEliminar = [];
-        }
+            if ($pago = $this->formulario->pago->first()) {
+                $pago->update([
+                    'incluye_iva' => $this->incluye_iva,
+                ]);
+            }
 
-        $this->saveNewFiles();
+            if (!empty($this->archivosParaEliminar)) {
+                foreach ($this->archivosParaEliminar as $id) {
+                    $documento = Documento::find($id);
+                    if ($documento) {
+                        Storage::disk('public')->delete($documento->ruta_documento);
+                        $documento->delete();
+                    }
+                }
+
+                $this->archivosParaEliminar = [];
+            }
+
+            $this->saveNewFiles();
+        });
 
         $this->dispatch('formularioUpdated');
         return redirect()->route('historial');
