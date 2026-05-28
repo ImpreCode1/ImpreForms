@@ -571,7 +571,7 @@ class EditarFormulario extends Component
             $this->saveNewFiles();
         });
 
-        $this->dispatch('formularioUpdated');
+        session()->flash('message', 'Formulario actualizado correctamente.');
         return redirect()->route('historial');
     }
 
