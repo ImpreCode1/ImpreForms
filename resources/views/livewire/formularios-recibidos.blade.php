@@ -526,8 +526,8 @@
                                                 <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">Fecha</p>
                                                     <p class="text-sm text-slate-900">
-                                                        {{ $selectedFormulario->fecha ? \Carbon\Carbon::parse($selectedFormulario->fecha)->format('Y-m-d') : 'No especificado' }}
-                                                    </p>
+                                                 
+                            {{ $selectedFormulario->fecha ? \Carbon\Carbon::parse($selectedFormulario->created_at)->format('Y-m-d') : 'No especificado' }}                               </p>
                                                     <div class="h-px bg-slate-200 mt-2"></div>
                                                 </div>
 
