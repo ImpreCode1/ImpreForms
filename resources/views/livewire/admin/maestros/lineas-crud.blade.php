@@ -15,6 +15,11 @@
         </div>
     @endif
 
+    <div class="mb-4">
+        <input type="text" wire:model.live.debounce.300ms="search" placeholder="Buscar línea o código..."
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+    </div>
+
     <div class="overflow-x-auto">
         <table class="min-w-full bg-white border border-gray-200 rounded-lg">
             <thead class="bg-gray-50">

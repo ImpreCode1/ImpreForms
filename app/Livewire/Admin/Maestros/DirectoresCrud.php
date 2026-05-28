@@ -12,6 +12,7 @@ class DirectoresCrud extends Component
 {
     use WithPagination;
 
+    public $search = '';
     public $showModal = false;
     public $editMode = false;
     public $directorId = null;
@@ -29,7 +30,12 @@ class DirectoresCrud extends Component
 
     public function render()
     {
-        $directores = Director::orderBy('id', 'desc')->whereNotNull('nombre_director')->get();
+        $directores = Director::orderBy('id', 'desc')->whereNotNull('nombre_director')
+            ->when($this->search, fn($q) => $q->where(function($q) {
+                $q->where('nombre_director', 'like', "%{$this->search}%")
+                  ->orWhere('mail', 'like', "%{$this->search}%");
+            }))
+            ->get();
         return view('livewire.admin.maestros.directores-crud', compact('directores'));
     }
 

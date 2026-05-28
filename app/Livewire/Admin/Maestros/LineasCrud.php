@@ -12,6 +12,7 @@ class LineasCrud extends Component
 {
     use WithPagination;
 
+    public $search = '';
     public $showModal = false;
     public $editMode = false;
     public $lineaId = null;
@@ -29,7 +30,12 @@ class LineasCrud extends Component
 
     public function render()
     {
-        $lineas = Linea::orderBy('id', 'desc')->whereNotNull('linea')->get();
+        $lineas = Linea::orderBy('id', 'desc')->whereNotNull('linea')
+            ->when($this->search, fn($q) => $q->where(function($q) {
+                $q->where('linea', 'like', "%{$this->search}%")
+                  ->orWhere('codigo_linea', 'like', "%{$this->search}%");
+            }))
+            ->get();
         return view('livewire.admin.maestros.lineas-crud', compact('lineas'));
     }
 

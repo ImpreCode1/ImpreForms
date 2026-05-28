@@ -12,6 +12,7 @@ class EjecutivosCrud extends Component
 {
     use WithPagination;
 
+    public $search = '';
     public $showModal = false;
     public $editMode = false;
     public $ejecutivoId = null;
@@ -29,7 +30,12 @@ class EjecutivosCrud extends Component
 
     public function render()
     {
-        $ejecutivos = Ejecutivo::orderBy('id', 'desc')->whereNotNull('nombre_colaborador')->get();
+        $ejecutivos = Ejecutivo::orderBy('id', 'desc')->whereNotNull('nombre_colaborador')
+            ->when($this->search, fn($q) => $q->where(function($q) {
+                $q->where('nombre_colaborador', 'like', "%{$this->search}%")
+                  ->orWhere('mail', 'like', "%{$this->search}%");
+            }))
+            ->get();
         return view('livewire.admin.maestros.ejecutivos-crud', compact('ejecutivos'));
     }
 

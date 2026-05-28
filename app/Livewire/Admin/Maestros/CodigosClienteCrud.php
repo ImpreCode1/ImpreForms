@@ -12,6 +12,7 @@ class CodigosClienteCrud extends Component
 {
     use WithPagination;
 
+    public $search = '';
     public $showModal = false;
     public $editMode = false;
     public $codigoId = null;
@@ -29,7 +30,12 @@ class CodigosClienteCrud extends Component
 
     public function render()
     {
-        $codigos = Codigo::orderBy('id', 'desc')->paginate(20);
+        $codigos = Codigo::orderBy('id', 'desc')
+            ->when($this->search, fn($q) => $q->where(function($q) {
+                $q->where('codigo_cliente', 'like', "%{$this->search}%")
+                  ->orWhere('nombre_cliente', 'like', "%{$this->search}%");
+            }))
+            ->paginate(20);
         return view('livewire.admin.maestros.codigos-cliente-crud', compact('codigos'));
     }
 
