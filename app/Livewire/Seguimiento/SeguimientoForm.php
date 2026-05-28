@@ -11,6 +11,7 @@ class SeguimientoForm extends Component
     public $seguimientoId = null;
     public $editMode = false;
 
+    public $numero_oportunidad = '';
     public $cliente = '';
     public $linea_primaria = '';
     public $estado = 'pendiente';
@@ -68,6 +69,7 @@ class SeguimientoForm extends Component
 
     protected function resetForm()
     {
+        $this->numero_oportunidad = '';
         $this->cliente = '';
         $this->linea_primaria = '';
         $this->estado = 'pendiente';
@@ -95,6 +97,7 @@ class SeguimientoForm extends Component
         if ($seg) {
             // Campos de solo lectura: siempre desde la Marca origen
             $marca = $seg->marca;
+            $this->numero_oportunidad = $marca?->infonegocio?->n_oportunidad_crm ?? $seg->numero_oportunidad;
             $this->cliente        = $marca?->infonegocio?->nombre ?? $seg->cliente;
             $this->linea_primaria = $marca?->linea ?? $seg->linea_primaria;
             $this->valor          = $marca?->precio_venta !== null
@@ -107,10 +110,10 @@ class SeguimientoForm extends Component
             $this->fecha_cierre = $seg->fecha_cierre?->format('Y-m-d');
             $this->fecha_facturacion = $seg->fecha_facturacion?->format('Y-m-d');
             $this->estado_negocio = $seg->estado_negocio;
-            $this->incoterm = $seg->incoterm;
-            $this->anticipos = $seg->anticipos;
-            $this->tiempos_entrega = $seg->tiempos_entrega;
-            $this->forma_pago = $seg->forma_pago;
+            $this->incoterm = $marca?->informacion->first()?->tipo_incoterms ?? $seg->incoterm;
+            $this->anticipos = $this->buildAnticiposFromMarca($marca) ?? $seg->anticipos;
+            $this->tiempos_entrega = $this->buildTiemposEntregaFromMarca($marca) ?? $seg->tiempos_entrega;
+            $this->forma_pago = $marca?->forma_pago ?? $seg->forma_pago;
             $this->facturacion = $seg->facturacion;
             $this->actas_cierre = $seg->actas_cierre;
             $this->observaciones = $seg->observaciones;
@@ -140,6 +143,7 @@ class SeguimientoForm extends Component
         ]);
 
         $data = [
+            'numero_oportunidad' => $this->numero_oportunidad,
             'cliente' => $this->cliente,
             'linea_primaria' => $this->linea_primaria,
             'estado' => $this->estado,
@@ -254,6 +258,36 @@ class SeguimientoForm extends Component
                 'descripcion' => $factura['descripcion'] !== '' ? $factura['descripcion'] : null,
             ]);
         }
+    }
+
+    private function buildAnticiposFromMarca($marca)
+    {
+        if (!$marca || !$marca->hay_anticipo) return null;
+
+        $parts = [];
+        if ($marca->porcentaje_anticipo) {
+            $parts[] = $marca->porcentaje_anticipo . '%';
+        }
+        if ($marca->fecha_pago_anticipo) {
+            $parts[] = 'Fecha: ' . \Carbon\Carbon::parse($marca->fecha_pago_anticipo)->format('d/m/Y');
+        }
+        if ($marca->otros_pago) {
+            $parts[] = $marca->otros_pago;
+        }
+
+        return !empty($parts) ? implode(' - ', $parts) : 'Sí';
+    }
+
+    private function buildTiemposEntregaFromMarca($marca)
+    {
+        $info = $marca?->informacion->first();
+        $cantidad = $info?->tiempo_entrega_cantidad;
+        $unidad = $info?->tiempo_entrega_unidad;
+
+        if ($cantidad || $unidad) {
+            return trim(($cantidad ?? '') . ' ' . ($unidad ?? ''));
+        }
+        return null;
     }
 
     public function closeModal()

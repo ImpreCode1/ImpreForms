@@ -13,6 +13,13 @@
                         <form wire:submit.prevent="save" class="mt-4 space-y-4">
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
+                                    <label class="block text-sm font-medium text-gray-700">N° Oportunidad</label>
+                                    <div class="mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-800 font-medium">
+                                        {{ $numero_oportunidad ?: '—' }}
+                                    </div>
+                                </div>
+
+                                <div>
                                     <label class="block text-sm font-medium text-gray-700">Cliente</label>
                                     <div class="mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-800 font-medium">
                                         {{ $cliente ?: '—' }}
@@ -74,7 +81,11 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Estado Negocio</label>
-                                    <input type="text" wire:model="estado_negocio" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <select wire:model="estado_negocio" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                        <option value="">Seleccionar</option>
+                                        <option value="Oferta Mercantil">Oferta Mercantil</option>
+                                        <option value="Contrato">Contrato</option>
+                                    </select>
                                 </div>
 
                                 <div>

@@ -15,6 +15,7 @@ use App\Models\Linea;
 use App\Models\Marca;
 use App\Models\Pago;
 use App\Models\Producto;
+use App\Models\Seguimiento;
 use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -528,6 +529,44 @@ class EnviarFormulario extends Component
                 }
             }
 
+            // ✅ Crear / actualizar Seguimiento (después de que todos los datos existen)
+            $anticiposText = null;
+            if ($this->hay_anticipo) {
+                $parts = [];
+                if ($this->porcentaje_anticipo) {
+                    $parts[] = $this->porcentaje_anticipo . '%';
+                }
+                if ($this->fecha_pago_anticipo) {
+                    $parts[] = 'Fecha: ' . \Carbon\Carbon::parse($this->fecha_pago_anticipo)->format('d/m/Y');
+                }
+                if ($this->otros_pago) {
+                    $parts[] = $this->otros_pago;
+                }
+                $anticiposText = !empty($parts) ? implode(' - ', $parts) : 'Sí';
+            }
+
+            $tiempos = '';
+            if ($this->tiempo_entrega_cantidad || $this->tiempo_entrega_unidad) {
+                $tiempos = trim(($this->tiempo_entrega_cantidad ?? '') . ' ' . ($this->tiempo_entrega_unidad ?? ''));
+            }
+
+            Seguimiento::updateOrCreate(
+                ['marca_id' => $marca->id],
+                [
+                    'numero_oportunidad' => $this->crm,
+                    'cliente'            => $infonegocio->nombre,
+                    'linea_primaria'     => $marca->linea,
+                    'valor'              => self::parseValor($this->precio),
+                    'fecha_apertura'     => now()->toDateString(),
+                    'incoterm'           => $this->tipoicoterm,
+                    'anticipos'          => $anticiposText,
+                    'tiempos_entrega'    => $tiempos ?: null,
+                    'forma_pago'         => $this->forma_pago,
+                    'fecha_facturacion'  => $this->fecha_pago ?? null,
+                    'crm_sync_at'        => now(),
+                ]
+            );
+
             // ✅ Confirmar transacción
             DB::commit();
 
@@ -810,6 +849,28 @@ class EnviarFormulario extends Component
     {
         $this->dispatch('copy-to-clipboard', text: $text);
         session()->flash('link', 'Enlace copiado al portapapeles');
+    }
+
+    private static function parseValor(?string $raw): ?float
+    {
+        if ($raw === null || $raw === '') {
+            return null;
+        }
+
+        $clean = preg_replace('/[^\d.,]/', '', $raw);
+
+        if (preg_match('/\d{1,3}(\.\d{3})+(,\d+)?$/', $clean)) {
+            $clean = str_replace('.', '', $clean);
+            $clean = str_replace(',', '.', $clean);
+        } elseif (preg_match('/\d{1,3}(,\d{3})+(\.\d+)?$/', $clean)) {
+            $clean = str_replace(',', '', $clean);
+        } elseif (str_contains($clean, ',') && !str_contains($clean, '.')) {
+            $clean = str_replace(',', '.', $clean);
+        } else {
+            $clean = str_replace(',', '', $clean);
+        }
+
+        return is_numeric($clean) ? (float) $clean : null;
     }
 
     public function render()
