@@ -73,7 +73,7 @@
                                         {{ ucfirst(str_replace('_', ' ', $seg->estado)) }}
                                     </span>
                                 </td>
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900">COP {{ number_format((float)$seg->valor, 0, ',', '.') }}</td>
+                                <td class="whitespace-nowrap px-4 py-4 text-sm tex t-gray-900">COP {{ number_format((float)$seg->valor, 0, ',', '.') }}</td>
                                 <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->fecha_apertura?->format('d/m/Y') }}</td>
                                 <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->fecha_facturacion?->format('d/m/Y') }}</td>
                                 <td class="px-4 py-4 text-sm text-gray-500 max-w-xs truncate" title="{{ $seg->actas_cierre }}">

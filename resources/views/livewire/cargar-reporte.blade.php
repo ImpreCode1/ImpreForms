@@ -19,7 +19,7 @@
                     @endif
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         {{-- Sección de Colaboradores --}}
-                        <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-2xl">
+                        {{-- <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-2xl">
                             <div class="bg-gradient-to-r from-blue-500 to-blue-600 py-4 px-6">
                                 <h2 class="text-xl font-bold text-white flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -101,7 +101,7 @@
                                     Procesando archivo...
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
                         {{-- Sección de Ejecutivos --}}
                         <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-2xl">
