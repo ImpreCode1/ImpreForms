@@ -28,16 +28,20 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Estado *</label>
-                                    <select wire:model="estado" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500">
-                                        <option value="pendiente">Pendiente</option>
-                                        <option value="en_proceso">En Proceso</option>
-                                        <option value="facturado">Facturado</option>
-                                        <option value="facturado_y_pagado">Facturado y Pagado</option>
-                                        <option value="recurrencia">Recurrencia</option>
-                                        <option value="declinado">Declinado</option>
-                                        <option value="anulado">Anulado</option>
-                                    </select>
-                                    @error('estado') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                                    @if($editMode)
+                                        <div class="mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-800">{{ $estado }}</div>
+                                    @else
+                                        <select wire:model="estado" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                            <option value="pendiente">Pendiente</option>
+                                            <option value="en_proceso">En Proceso</option>
+                                            <option value="facturado">Facturado</option>
+                                            <option value="facturado_y_pagado">Facturado y Pagado</option>
+                                            <option value="recurrencia">Recurrencia</option>
+                                            <option value="declinado">Declinado</option>
+                                            <option value="anulado">Anulado</option>
+                                        </select>
+                                        @error('estado') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                                    @endif
                                 </div>
 
                                 <div>
@@ -49,7 +53,11 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Fecha Cierre</label>
-                                    <input type="date" wire:model="fecha_cierre" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                    @if($editMode)
+                                        <div class="mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-800">{{ $fecha_cierre ? \Carbon\Carbon::parse($fecha_cierre)->format('d/m/Y') : '—' }}</div>
+                                    @else
+                                        <input type="date" wire:model="fecha_cierre" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                    @endif
                                 </div>
 
                                 <div>
@@ -71,24 +79,40 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Incoterm</label>
-                                    <input type="text" wire:model="incoterm" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                    @if($editMode)
+                                        <div class="mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-800">{{ $incoterm ?: '—' }}</div>
+                                    @else
+                                        <input type="text" wire:model="incoterm" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                    @endif
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Anticipos</label>
-                                    <textarea wire:model="anticipos" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                                    @if($editMode)
+                                        <div class="mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-800">{{ $anticipos ?: '—' }}</div>
+                                    @else
+                                        <textarea wire:model="anticipos" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                                    @endif
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Tiempos Entrega</label>
-                                    <textarea wire:model="tiempos_entrega" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                                    @if($editMode)
+                                        <div class="mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-800">{{ $tiempos_entrega ?: '—' }}</div>
+                                    @else
+                                        <textarea wire:model="tiempos_entrega" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                                    @endif
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Forma Pago</label>
-                                    <textarea wire:model="forma_pago" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                                    @if($editMode)
+                                        <div class="mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm text-gray-800">{{ $forma_pago ?: '—' }}</div>
+                                    @else
+                                        <textarea wire:model="forma_pago" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                                    @endif
                                 </div>
 
                                 <div>
@@ -126,72 +150,6 @@
                             </div>
                         </form>
 
-                        @if($editMode)
-                        <div class="mt-6 border-t pt-4">
-                            <h4 class="text-lg font-medium text-gray-900 mb-4">Facturas</h4>
-
-                            <div class="mb-4 p-4 bg-gray-50 rounded-lg">
-                                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                                    <div>
-                                        <label class="block text-xs font-medium text-gray-500">Número Factura</label>
-                                        <input type="text" wire:model="newNumeroFactura" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-1.5 px-2 text-sm">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-medium text-gray-500">Fecha</label>
-                                        <input type="date" wire:model="newFechaFactura" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-1.5 px-2 text-sm">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-medium text-gray-500">Valor</label>
-                                        <input type="number" step="0.01" wire:model="newValorFactura" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-1.5 px-2 text-sm">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-medium text-gray-500">Descripción</label>
-                                        <input type="text" wire:model="newDescripcionFactura" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-1.5 px-2 text-sm">
-                                    </div>
-                                </div>
-                                <div class="mt-3 flex gap-2">
-                                    @if($facturaEditIndex !== null)
-                                        <button wire:click="updateFactura({{ $facturaEditIndex }})" class="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">Actualizar</button>
-                                        <button wire:click="cancelEditFactura" class="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded hover:bg-gray-400">Cancelar</button>
-                                    @else
-                                        <button wire:click="addFactura" class="px-3 py-1 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700">Agregar Factura</button>
-                                    @endif
-                                </div>
-                            </div>
-
-                            @if(count($facturas) > 0)
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Número</th>
-                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
-                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
-                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Descripción</th>
-                                            <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                        @foreach($facturas as $index => $factura)
-                                        <tr>
-                                            <td class="px-3 py-2 text-sm text-gray-900">{{ $factura['numero_factura'] }}</td>
-                                            <td class="px-3 py-2 text-sm text-gray-500">{{ $factura['fecha'] }}</td>
-                                            <td class="px-3 py-2 text-sm text-gray-900">${{ number_format((float)$factura['valor'], 2) }}</td>
-                                            <td class="px-3 py-2 text-sm text-gray-500">{{ $factura['descripcion'] }}</td>
-                                            <td class="px-3 py-2 text-right text-sm">
-                                                <button wire:click="editFactura({{ $index }})" class="text-indigo-600 hover:text-indigo-900 mr-2">Editar</button>
-                                                <button wire:click="deleteFactura({{ $index }})" class="text-red-600 hover:text-red-900">Eliminar</button>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            @else
-                            <p class="text-sm text-gray-500">No hay facturas registradas.</p>
-                            @endif
-                        </div>
-                        @endif
                     </div>
                 </div>
             </div>

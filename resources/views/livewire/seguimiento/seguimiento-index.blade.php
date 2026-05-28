@@ -20,8 +20,8 @@
                                 <option value="pendiente">Pendiente</option>
                                 <option value="recurrencia">Recurrencia</option>
                             </select>
-                            <input type="text" wire:model.live.debounce.300ms="filtroCliente" placeholder="Buscar cliente..."
-                                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <input type="text" wire:model.live.debounce.300ms="filtroBusqueda" placeholder="Buscar cliente, oportunidad o línea..."
+                                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-72">
                         </div>
                         <div class="shrink-0">
                             <button wire:click="exportar"
@@ -36,26 +36,34 @@
                     </div>
                 </div>
 
-                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                <div class="overflow-x-auto w-full rounded-lg border border-gray-200">
                     <div class="min-w-[1100px]">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
+                                <th class="sticky left-0 z-20 bg-white px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap border-r border-gray-200">
+                                    N° Oportunidad
+                                </th>
+                                <th class="sticky left-[140px] z-20 bg-white px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap border-r border-gray-200">Cliente</th>
                                 <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Línea Primera</th>
                                 <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado Negocio</th>
                                 <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
                                 <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha Apertura</th>
+                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha Cierre</th>
                                 <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha Facturación</th>
-                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actas Cierre</th>
-                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Observaciones</th>
+                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ac. Cierre</th>
+                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Obs.</th>
                                 <th class="whitespace-nowrap px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
                             @forelse($seguimientos as $seg)
                             <tr class="hover:bg-gray-50">
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900">{{ $seg->cliente }}</td>
+                                <td class="sticky left-0 z-10 bg-white px-4 py-3 text-sm text-gray-900 whitespace-nowrap border-r border-gray-200">
+                                    {{ $seg->numero_oportunidad ?? '—' }}
+                                </td>
+                                <td class="sticky left-[140px] z-10 bg-white px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap border-r border-gray-200">{{ $seg->cliente }}</td>
                                 <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->linea_primaria }}</td>
                                 <td class="whitespace-nowrap px-4 py-4">
                                     @php
@@ -73,26 +81,36 @@
                                         {{ ucfirst(str_replace('_', ' ', $seg->estado)) }}
                                     </span>
                                 </td>
-                                <td class="whitespace-nowrap px-4 py-4 text-sm tex t-gray-900">COP {{ number_format((float)$seg->valor, 0, ',', '.') }}</td>
+                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->estado_negocio ?: '—' }}</td>
+                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900">{{ $seg->valor ? number_format((float)$seg->valor, 0, ',', '.') : '—' }}</td>
                                 <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->fecha_apertura?->format('d/m/Y') }}</td>
+                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->fecha_cierre?->format('d/m/Y') }}</td>
                                 <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->fecha_facturacion?->format('d/m/Y') }}</td>
-                                <td class="px-4 py-4 text-sm text-gray-500 max-w-xs truncate" title="{{ $seg->actas_cierre }}">
-                                    {{ $seg->actas_cierre ? Str::limit($seg->actas_cierre, 40) : '—' }}
+                                <td class="whitespace-nowrap px-4 py-4 text-sm text-center">
+                                    <span class="{{ $seg->actas_cierre ? 'text-green-600' : 'text-red-500' }}">{{ $seg->actas_cierre ? '✅ Sí' : '❌ No' }}</span>
                                 </td>
-                                <td class="px-4 py-4 text-sm text-gray-500 max-w-xs truncate" title="{{ $seg->observaciones }}">
-                                    {{ $seg->observaciones ? Str::limit($seg->observaciones, 50) : '—' }}
+                                <td class="whitespace-nowrap px-4 py-4 text-sm text-center">
+                                    <span class="{{ $seg->observaciones ? 'text-green-600' : 'text-red-500' }}">{{ $seg->observaciones ? '✅ Sí' : '❌ No' }}</span>
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-4 text-right text-sm font-medium">
-                                    <button wire:click="openModal({{ $seg->id }})" class="text-indigo-600 hover:text-indigo-900">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>
-                                    </button>
+                                    <div class="flex items-center justify-end gap-1">
+                                        <button wire:click="openDetail({{ $seg->id }})" class="text-gray-500 hover:text-gray-700 p-1" title="Ver detalles">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                            </svg>
+                                        </button>
+                                        <button wire:click="openModal({{ $seg->id }})" class="text-indigo-600 hover:text-indigo-900 p-1" title="Editar seguimiento">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="9" class="px-4 py-8 text-center text-gray-500">
+                                <td colspan="12" class="px-4 py-8 text-center text-gray-500">
                                     No hay seguimientos registrados
                                 </td>
                             </tr>
@@ -115,5 +133,48 @@
         :key="$seguimientoId ?? 'new-' . now()->timestamp"
         @close-modal.window="$wire.set('showModal', false); $wire.set('seguimientoId', null)"
     />
+    @endif
+
+    @if($showDetailModal && $detailSeguimiento)
+    <div class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" wire:click="closeDetail"></div>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Detalles del Seguimiento</h3>
+                    <div class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+                        @foreach([
+                            'N° Oportunidad' => $detailSeguimiento->numero_oportunidad ?? '—',
+                            'Cliente' => $detailSeguimiento->cliente ?: '—',
+                            'Línea Primera' => $detailSeguimiento->linea_primaria ?: '—',
+                            'Estado' => ucfirst(str_replace('_', ' ', $detailSeguimiento->estado)),
+                            'Estado Negocio' => $detailSeguimiento->estado_negocio ?: '—',
+                            'Valor' => $detailSeguimiento->valor ? 'COP ' . number_format((float)$detailSeguimiento->valor, 0, ',', '.') : '—',
+                            'Fecha Apertura' => $detailSeguimiento->fecha_apertura?->format('d/m/Y') ?: '—',
+                            'Fecha Cierre' => $detailSeguimiento->fecha_cierre?->format('d/m/Y') ?: '—',
+                            'Fecha Facturación' => $detailSeguimiento->fecha_facturacion?->format('d/m/Y') ?: '—',
+                            'Incoterm' => $detailSeguimiento->incoterm ?: '—',
+                            'Anticipos' => $detailSeguimiento->anticipos ?: '—',
+                            'Tiempos Entrega' => $detailSeguimiento->tiempos_entrega ?: '—',
+                            'Forma Pago' => $detailSeguimiento->forma_pago ?: '—',
+                            'Facturación' => $detailSeguimiento->facturacion ?: '—',
+                            'Actas Cierre' => $detailSeguimiento->actas_cierre ?: '—',
+                            'Observaciones' => $detailSeguimiento->observaciones ?: '—',
+                        ] as $label => $value)
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">{{ $label }}</p>
+                            <p class="text-gray-900 mt-0.5">{{ $value }}</p>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" wire:click="closeDetail" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     @endif
 </div>

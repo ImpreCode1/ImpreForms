@@ -24,14 +24,20 @@ class SeguimientosExport implements
 {
     public function __construct(
         private string $filtroEstado = '',
-        private string $filtroCliente = ''
+        private string $filtroBusqueda = ''
     ) {}
 
     public function query()
     {
-        return Seguimiento::query()
+        return Seguimiento::with('marca.infonegocio')
             ->when($this->filtroEstado, fn($q) => $q->where('estado', $this->filtroEstado))
-            ->when($this->filtroCliente, fn($q) => $q->where('cliente', 'like', '%' . $this->filtroCliente . '%'))
+            ->when($this->filtroBusqueda, fn($q) => $q->where(function($q) {
+                $q->where('cliente', 'like', '%' . $this->filtroBusqueda . '%')
+                  ->orWhere('linea_primaria', 'like', '%' . $this->filtroBusqueda . '%')
+                  ->orWhereHas('marca.infonegocio', fn($q) =>
+                      $q->where('n_oportunidad_crm', 'like', '%' . $this->filtroBusqueda . '%')
+                  );
+            }))
             ->orderBy('fecha_apertura', 'desc');
     }
 

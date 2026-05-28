@@ -13,16 +13,41 @@ class MarcaObserver
             return;
         }
 
-        $marca->loadMissing('infonegocio');
+        $this->syncSeguimiento($marca);
+    }
 
-        Seguimiento::create([
-            'marca_id'       => $marca->id,
-            'cliente'        => $marca->infonegocio->nombre ?? null,
-            'linea_primaria' => $marca->linea ?? null,
-            'fecha_apertura' => $marca->created_at?->toDateString(),
-            'valor'          => self::parseValor($marca->precio_venta),
-            'estado'         => 'pendiente',
-        ]);
+    public function updated(Marca $marca): void
+    {
+        $this->syncSeguimiento($marca);
+    }
+
+    protected function syncSeguimiento(Marca $marca): void
+    {
+        $marca->loadMissing('infonegocio', 'informacion', 'pago');
+
+        $info = $marca->informacion->first();
+        $pago = $marca->pago->first();
+
+        $tiempos = '';
+        if ($info?->tiempo_entrega_cantidad || $info?->tiempo_entrega_unidad) {
+            $tiempos = trim(($info->tiempo_entrega_cantidad ?? '') . ' ' . ($info->tiempo_entrega_unidad ?? ''));
+        }
+
+        Seguimiento::updateOrCreate(
+            ['marca_id' => $marca->id],
+            [
+                'cliente'            => $marca->infonegocio?->nombre,
+                'linea_primaria'     => $marca->linea,
+                'valor'              => self::parseValor($marca->precio_venta),
+                'fecha_apertura'     => $marca->created_at?->toDateString(),
+                'incoterm'           => $info?->tipo_incoterms,
+                'tiempos_entrega'    => $tiempos ?: null,
+                'fecha_cierre'       => $info?->fecha_finalizacion,
+                'fecha_facturacion'  => $pago?->fecha_pago,
+                'forma_pago'         => $marca->forma_pago,
+                'crm_sync_at'        => now(),
+            ]
+        );
     }
 
     private static function parseValor(?string $raw): ?float
@@ -30,19 +55,20 @@ class MarcaObserver
         if ($raw === null || $raw === '') {
             return null;
         }
-        // Eliminar cualquier carácter que no sea dígito, punto o coma
+
         $clean = preg_replace('/[^\d.,]/', '', $raw);
-        // Si usa punto como separador de miles y coma decimal: "1.000.000,50"
+
         if (preg_match('/\d{1,3}(\.\d{3})+(,\d+)?$/', $clean)) {
             $clean = str_replace('.', '', $clean);
             $clean = str_replace(',', '.', $clean);
+        } elseif (preg_match('/\d{1,3}(,\d{3})+(\.\d+)?$/', $clean)) {
+            $clean = str_replace(',', '', $clean);
         } elseif (str_contains($clean, ',') && !str_contains($clean, '.')) {
-            // Coma como decimal: "1000000,50"
             $clean = str_replace(',', '.', $clean);
         } else {
-            // Punto como decimal o sin decimales: "1000000" / "1000000.50"
             $clean = str_replace(',', '', $clean);
         }
+
         return is_numeric($clean) ? (float) $clean : null;
     }
 }

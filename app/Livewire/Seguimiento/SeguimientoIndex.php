@@ -14,9 +14,11 @@ class SeguimientoIndex extends Component
     use WithPagination;
 
     public $filtroEstado = '';
-    public $filtroCliente = '';
+    public $filtroBusqueda = '';
     public $showModal = false;
     public $seguimientoId = null;
+    public $showDetailModal = false;
+    public $detailSeguimiento = null;
 
     protected $paginationTheme = 'tailwind';
 
@@ -29,9 +31,15 @@ class SeguimientoIndex extends Component
     #[Computed]
     public function seguimientos()
     {
-        return Seguimiento::query()
+        return Seguimiento::with('marca.infonegocio')
             ->when($this->filtroEstado, fn($q) => $q->where('estado', $this->filtroEstado))
-            ->when($this->filtroCliente, fn($q) => $q->where('cliente', 'like', '%' . $this->filtroCliente . '%'))
+            ->when($this->filtroBusqueda, fn($q) => $q->where(function($q) {
+                $q->where('cliente', 'like', '%' . $this->filtroBusqueda . '%')
+                  ->orWhere('linea_primaria', 'like', '%' . $this->filtroBusqueda . '%')
+                  ->orWhereHas('marca.infonegocio', fn($q) =>
+                      $q->where('n_oportunidad_crm', 'like', '%' . $this->filtroBusqueda . '%')
+                  );
+            }))
             ->orderBy('fecha_apertura', 'desc')
             ->paginate(10);
     }
@@ -52,11 +60,23 @@ class SeguimientoIndex extends Component
         $this->seguimientoId = null;
     }
 
+    public function openDetail($id)
+    {
+        $this->detailSeguimiento = Seguimiento::with('marca.infonegocio', 'marca.informacion', 'marca.pago')->find($id);
+        $this->showDetailModal = true;
+    }
+
+    public function closeDetail()
+    {
+        $this->showDetailModal = false;
+        $this->detailSeguimiento = null;
+    }
+
     public function exportar(): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $filename = 'BASE_PROYECTOS_' . now()->format('Ymd_Hi') . '.xlsx';
         return Excel::download(
-            new SeguimientosExport($this->filtroEstado, $this->filtroCliente),
+            new SeguimientosExport($this->filtroEstado, $this->filtroBusqueda),
             $filename
         );
     }

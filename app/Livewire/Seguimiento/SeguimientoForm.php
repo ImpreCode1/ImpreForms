@@ -90,7 +90,7 @@ class SeguimientoForm extends Component
 
     public function loadSeguimiento()
     {
-        $seg = Seguimiento::with(['facturas', 'marca.infonegocio'])->find($this->seguimientoId);
+        $seg = Seguimiento::with(['facturas', 'marca.infonegocio', 'marca.informacion', 'marca.pago'])->find($this->seguimientoId);
 
         if ($seg) {
             // Campos de solo lectura: siempre desde la Marca origen
@@ -98,7 +98,7 @@ class SeguimientoForm extends Component
             $this->cliente        = $marca?->infonegocio?->nombre ?? $seg->cliente;
             $this->linea_primaria = $marca?->linea ?? $seg->linea_primaria;
             $this->valor          = $marca?->precio_venta !== null
-                ? $marca->precio_venta
+                ? str_replace(',', '', $marca->precio_venta)
                 : ($seg->valor !== null ? (string) $seg->valor : null);
             $this->fecha_apertura = $marca?->created_at?->format('Y-m-d')
                 ?? $seg->fecha_apertura?->format('Y-m-d');
@@ -179,6 +179,11 @@ class SeguimientoForm extends Component
                 'descripcion' => $this->newDescripcionFactura,
             ];
 
+            $this->facturacion = collect($this->facturas)
+                ->pluck('numero_factura')
+                ->filter()
+                ->implode(', ');
+
             $this->saveFacturasToDb();
 
             $this->reset(['newNumeroFactura', 'newFechaFactura', 'newValorFactura', 'newDescripcionFactura']);
@@ -204,6 +209,11 @@ class SeguimientoForm extends Component
             'descripcion' => $this->newDescripcionFactura,
         ];
 
+        $this->facturacion = collect($this->facturas)
+            ->pluck('numero_factura')
+            ->filter()
+            ->implode(', ');
+
         $this->saveFacturasToDb();
         $this->cancelEditFactura();
     }
@@ -219,6 +229,12 @@ class SeguimientoForm extends Component
         if (isset($this->facturas[$index])) {
             unset($this->facturas[$index]);
             $this->facturas = array_values($this->facturas);
+
+            $this->facturacion = collect($this->facturas)
+                ->pluck('numero_factura')
+                ->filter()
+                ->implode(', ');
+
             $this->saveFacturasToDb();
         }
     }
@@ -234,8 +250,8 @@ class SeguimientoForm extends Component
             $seguimiento->facturas()->create([
                 'numero_factura' => $factura['numero_factura'],
                 'fecha' => $factura['fecha'],
-                'valor' => $factura['valor'],
-                'descripcion' => $factura['descripcion'],
+                'valor' => $factura['valor'] !== '' ? $factura['valor'] : null,
+                'descripcion' => $factura['descripcion'] !== '' ? $factura['descripcion'] : null,
             ]);
         }
     }
