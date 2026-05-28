@@ -531,13 +531,13 @@
                                                     <div class="h-px bg-slate-200 mt-2"></div>
                                                 </div>
 
-                                                <div class="space-y-1">
+                                                {{-- <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">N° OC</p>
                                                     <p class="text-sm text-slate-900">
                                                         {{ $selectedFormulario->n_oc ?? 'No especificado' }}
                                                     </p>
                                                     <div class="h-px bg-slate-200 mt-2"></div>
-                                                </div>
+                                                </div> --}}
 
                                                 <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">¿Incluye IVA?</p>
@@ -928,7 +928,7 @@
                                                 <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">Forma de pago</p>
                                                     <p class="text-sm text-slate-900">
-                                                        $ {{ $selectedFormulario->forma_pago ?? 'No especificado' }}
+                                                        {{ $selectedFormulario->forma_pago ?? 'No especificado' }}
                                                     </p>
                                                     <div class="h-px bg-slate-200 mt-2"></div>
                                                 </div>
@@ -936,7 +936,6 @@
                                                 <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">Plazos</p>
                                                     <p class="text-sm text-slate-900">
-                                                        $
                                                         {{ $selectedFormulario->fecha_cada_pago ?? 'No especificado' }}
                                                     </p>
                                                     <div class="h-px bg-slate-200 mt-2"></div>

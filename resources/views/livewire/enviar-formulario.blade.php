@@ -528,7 +528,6 @@
                                                 class="w-32 rounded-md border-gray-300
                                                 {{ $errors->has('tiempo_entrega_unidad') ? 'border-red-400' : 'border-blue-100' }}
                                                 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
-                                                <option value="">Unidad</option>
                                                 <option value="Días">Días</option>
                                                 <option value="Semanas">Semanas</option>
                                                 <option value="Meses">Meses</option>
