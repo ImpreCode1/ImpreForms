@@ -111,8 +111,8 @@
                                     'color' => 'text-green-500',
                                 ],
                                 [
-                                    'name'  => 'Subir reporte',
-                                    'route' => 'cargar-reporte',
+                                    'name'  => 'Gestionar reporte',
+                                    'route' => 'gestionar-reporte',
                                     'icon'  => 'M13 10V3L4 14h7v7l9-11h-7z',
                                     'color' => 'text-yellow-500',
                                 ],

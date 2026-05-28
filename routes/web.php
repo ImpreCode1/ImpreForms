@@ -28,9 +28,9 @@ Route::view('profile', 'profile')
 Route::view('successful', 'successful')
     ->name('successful');
 
-Route::view('cargar-reporte', 'cargar-reporte')
+Route::view('gestionar-reporte', 'gestionar-reporte')
     ->middleware(['auth', 'verified'])
-    ->name('cargar-reporte');
+    ->name('gestionar-reporte');
 
 // Route::get('/cargar-reporte', CargarReporte::class)->name('cargar.reporte');
 
