@@ -635,8 +635,7 @@
                         </div>
 
                         <div>
-                            <label for="fecha_cada_pago" class="block text-sm font-medium text-gray-700">Fecha de cada
-                                pago:</label>
+                            <label for="fecha_cada_pago" class="block text-sm font-medium text-gray-700">Plazos</label>
                             <input id="fecha_cada_pago" type="text" wire:model.live="fecha_cada_pago"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('fecha_cada_pago') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                             @error('fecha_cada_pago')

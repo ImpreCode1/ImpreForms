@@ -934,7 +934,7 @@
                                                 </div>
 
                                                 <div class="space-y-1">
-                                                    <p class="text-sm font-medium text-black">Forma de pago</p>
+                                                    <p class="text-sm font-medium text-black">Plazos</p>
                                                     <p class="text-sm text-slate-900">
                                                         $
                                                         {{ $selectedFormulario->fecha_cada_pago ?? 'No especificado' }}
