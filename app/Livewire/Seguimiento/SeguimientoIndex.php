@@ -43,7 +43,7 @@ class SeguimientoIndex extends Component
                       $q->where('n_oportunidad_crm', 'like', '%' . $this->filtroBusqueda . '%')
                   );
             }))
-            ->orderBy('fecha_apertura', 'desc')
+            ->orderBy('fecha_apertura', 'asc')
             ->paginate(10);
     }
 
