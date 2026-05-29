@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('financiera', function (Blueprint $table) {
             $table->integer('id', true);
-            $table->integer('marcas_id')->index('marcas_id');
+            $table->unsignedBigInteger('marcas_id')->index('marcas_id');
             $table->string('plazo')->nullable();
             $table->string('forma_pago')->nullable();
             $table->string('moneda')->nullable();

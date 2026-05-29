@@ -15,7 +15,7 @@ use App\Models\Colaborador;
 use App\Models\Director;
 use App\Models\Linea;
 
-class CargarReporte extends Component
+class GestionarReporte extends Component
 {
     use WithFileUploads;
     public $archivoColaboradores;
@@ -123,6 +123,6 @@ class CargarReporte extends Component
     }
     public function render()
     {
-        return view('livewire.cargar-reporte');
+        return view('livewire.gestionar-reporte');
     }
 }

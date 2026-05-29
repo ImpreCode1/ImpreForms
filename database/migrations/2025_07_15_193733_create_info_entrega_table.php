@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('info_entrega', function (Blueprint $table) {
             $table->integer('id', true);
-            $table->integer('marcas_id')->index('marcas_id');
+            $table->unsignedBigInteger('marcas_id')->index('marcas_id');
             $table->string('entrega_cliente')->nullable();
             $table->string('lugar_entrega')->nullable();
             $table->string('pais')->nullable();

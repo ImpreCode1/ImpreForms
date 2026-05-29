@@ -35,6 +35,11 @@ class ActiveDirectoryService
             return null;
         }
 
+        if (!function_exists('ldap_connect')) {
+            Log::error('AD: La extensión LDAP de PHP no está habilitada');
+            return null;
+        }
+
         $ldap = @ldap_connect($this->server);
 
         if (!$ldap) {
@@ -104,6 +109,10 @@ class ActiveDirectoryService
 
     public function getAllUsers(): array
     {
+        if (!function_exists('ldap_connect')) {
+            return [];
+        }
+
         $ldap = @ldap_connect($this->server);
 
         if (!$ldap) {

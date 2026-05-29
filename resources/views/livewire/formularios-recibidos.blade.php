@@ -1,6 +1,5 @@
 <div>
-    <x-app-layout>
-        <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8">
+    <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8">
             <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
                 <!-- Header con estadísticas -->
                 <div class="mb-8">
@@ -21,8 +20,7 @@
                                     </svg>
                                     <div
                                         class="absolute inset-0 flex items-center justify-center text-blue-500 text-3xl font-bold">
-                                        {{-- {{ $totalFormularios }} --}}
-                                        =
+                                        {{ $totalFormularios }}
                                     </div>
 
                                 </div>
@@ -226,7 +224,7 @@
                                             <td class="px-2 py-3 text-gray-600 break-words">
                                                 {{ $formulario->infonegocio->codigo_cliente }}</td>
                                             <td class="px-2 py-3 text-gray-600 break-words">
-                                                {{ $formulario->infonegocio->nombre }}</td>
+                                                {{ $formulario->infonegocio->nombre_formatted }}</td>
                                             <td class="px-2 py-3 text-gray-600 break-words">
                                                 {{ $formulario->infonegocio->n_oportunidad_crm }}</td>
                                             <td class="px-2 py-3 text-center align-middle">
@@ -347,6 +345,7 @@
                                                             </svg>
                                                         </button>
                                                     @endif
+
 
                                                     <a href="mailto:{{ $formulario->correo_electronico ?? '' }}?subject=Observación del contrato&body=Buen día,"
                                                         class="w-7 h-7 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center">
@@ -472,7 +471,7 @@
                                                 <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">Nombre del cliente</p>
                                                     <p class="text-sm text-slate-900">
-                                                        {{ $selectedFormulario->infonegocio->nombre ?? 'No especificado' }}
+                                                        {{ $selectedFormulario->infonegocio->nombre_formatted ?? 'No especificado' }}
                                                     </p>
                                                     <div class="h-px bg-slate-200 mt-2"></div>
                                                 </div>
@@ -527,18 +526,18 @@
                                                 <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">Fecha</p>
                                                     <p class="text-sm text-slate-900">
-                                                        {{ \Carbon\Carbon::parse($selectedFormulario->fecha)->format('Y-m-d') ?? 'No especificado' }}
-                                                    </p>
+                                                 
+                            {{ $selectedFormulario->fecha ? \Carbon\Carbon::parse($selectedFormulario->created_at)->format('Y-m-d') : 'No especificado' }}                               </p>
                                                     <div class="h-px bg-slate-200 mt-2"></div>
                                                 </div>
 
-                                                <div class="space-y-1">
+                                                {{-- <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">N° OC</p>
                                                     <p class="text-sm text-slate-900">
                                                         {{ $selectedFormulario->n_oc ?? 'No especificado' }}
                                                     </p>
                                                     <div class="h-px bg-slate-200 mt-2"></div>
-                                                </div>
+                                                </div> --}}
 
                                                 <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">¿Incluye IVA?</p>
@@ -563,6 +562,14 @@
                                                     <p class="text-sm text-slate-900">
                                                         $
                                                         {{ $selectedFormulario->moneda_precio_venta ?? 'No especificado' }}
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">Orden de compra</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        {{ $selectedFormulario->orden_compra ?? 'No especificado' }}
                                                     </p>
                                                     <div class="h-px bg-slate-200 mt-2"></div>
                                                 </div>
@@ -618,6 +625,16 @@
                                                     <div class="h-px bg-slate-200 mt-2"></div>
                                                 </div>
 
+                                                @if($selectedFormulario->informacion->isNotEmpty() && $selectedFormulario->informacion->first()->linea_especifica)
+                                                <div class="space-y-1">
+                                                    <p class="text-sm font-medium text-black">Línea específica</p>
+                                                    <p class="text-sm text-slate-900">
+                                                        {{ $selectedFormulario->informacion->first()->linea_especifica }}
+                                                    </p>
+                                                    <div class="h-px bg-slate-200 mt-2"></div>
+                                                </div>
+                                                @endif
+
                                                 <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">Código de la línea
                                                     </p>
@@ -630,7 +647,7 @@
                                                 <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">Nombre</p>
                                                     <p class="text-sm text-slate-900">
-                                                        {{ $selectedFormulario->nombre ?? 'No especificado' }}</p>
+                                                        {{ $selectedFormulario->nombre_formatted ?? 'No especificado' }}</p>
                                                     <div class="h-px bg-slate-200 mt-2"></div>
                                                 </div>
                                                 {{--
@@ -699,7 +716,7 @@
                                                     <div class="space-y-1">
                                                         <p class="text-sm font-medium text-black">Nombre</p>
                                                         <p class="text-sm text-slate-900">
-                                                            {{ $selectedFormulario->nombre_ejc ?? 'No especificado' }}
+                                                            {{ $selectedFormulario->nombre_ejc_formatted ?? 'No especificado' }}
                                                         </p>
                                                         <div class="h-px bg-slate-200 mt-2"></div>
                                                     </div>
@@ -775,10 +792,17 @@
                                                     </div>
 
                                                     <div class="space-y-1">
-                                                        <p class="text-sm font-medium text-black">¿Cuántas entregas se
-                                                            van a realizar al cliente y en que fecha?</p>
+                                                        <p class="text-sm font-medium text-black">Cantidad de entregas</p>
                                                         <p class="text-sm text-slate-900">
-                                                            {{ $informacion->entrega_realizar ?? 'No especificado' }}
+                                                            {{ $informacion->cantidad_entregas ?? 'No especificado' }}
+                                                        </p>
+                                                        <div class="h-px bg-slate-200 mt-2"></div>
+                                                    </div>
+
+                                                    <div class="space-y-1">
+                                                        <p class="text-sm font-medium text-black">Fecha de entrega</p>
+                                                        <p class="text-sm text-slate-900">
+                                                            {{ $informacion->fecha_entrega ? \Carbon\Carbon::parse($informacion->fecha_entrega)->format('d/m/Y') : 'No especificado' }}
                                                         </p>
                                                         <div class="h-px bg-slate-200 mt-2"></div>
                                                     </div>
@@ -810,7 +834,14 @@
                                                         <p class="text-sm font-medium text-black">Tiempo de entrega
                                                         </p>
                                                         <p class="text-sm text-slate-900">
-                                                            {{ $informacion->tiempo_entrega ?? 'No especificado' }}</p>
+                                                            @if($informacion->tiempo_entrega_cantidad && $informacion->tiempo_entrega_unidad)
+                                                                {{ $informacion->tiempo_entrega_cantidad }} {{ $informacion->tiempo_entrega_unidad }}
+                                                            @elseif($informacion->tiempo_entrega)
+                                                                {{ $informacion->tiempo_entrega }}
+                                                            @else
+                                                                No especificado
+                                                            @endif
+                                                        </p>
                                                         <div class="h-px bg-slate-200 mt-2"></div>
                                                     </div>
 
@@ -897,15 +928,14 @@
                                                 <div class="space-y-1">
                                                     <p class="text-sm font-medium text-black">Forma de pago</p>
                                                     <p class="text-sm text-slate-900">
-                                                        $ {{ $selectedFormulario->forma_pago ?? 'No especificado' }}
+                                                        {{ $selectedFormulario->forma_pago ?? 'No especificado' }}
                                                     </p>
                                                     <div class="h-px bg-slate-200 mt-2"></div>
                                                 </div>
 
                                                 <div class="space-y-1">
-                                                    <p class="text-sm font-medium text-black">Forma de pago</p>
+                                                    <p class="text-sm font-medium text-black">Plazos</p>
                                                     <p class="text-sm text-slate-900">
-                                                        $
                                                         {{ $selectedFormulario->fecha_cada_pago ?? 'No especificado' }}
                                                     </p>
                                                     <div class="h-px bg-slate-200 mt-2"></div>
@@ -1322,10 +1352,13 @@
                                             @endif
                                         </div>
                                     </div>
-                                </div>
+                                </div>{{-- cierra max-w-4xl content --}}
+                            </div>{{-- cierra relative bg-white rounded-lg --}}
+                        </div>{{-- cierra relative min-h-screen modal --}}
+                    </div>{{-- cierra x-data modal --}}
                 @endif
-            </div>
-    </x-app-layout>
+            </div>{{-- cierra max-w-screen-2xl --}}
+        </div>{{-- cierra min-h-screen bg-gradient --}}
 </div>
 
 

@@ -25,4 +25,8 @@ class Infonegocio extends Model
         return $this->hasMany(Marca::class);
     }
 
+    public function getNombreFormattedAttribute()
+    {
+        return $this->nombre;
+    }
 }

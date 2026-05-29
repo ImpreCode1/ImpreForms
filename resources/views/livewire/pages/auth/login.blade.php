@@ -58,6 +58,12 @@ new #[Layout('layouts.guest')] class extends Component
           <p class="text-gray-500">Accede a tu cuenta personal</p>
         </div>
 
+        @if(session('logout_success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg text-sm text-center mb-4">
+                {{ session('logout_success') }}
+            </div>
+        @endif
+
             <!-- Error Message -->
         @if ($errors->has('email'))
             <div class="text-sm text-red-500 text-center mb-4">{{ $errors->first('email') }}</div>

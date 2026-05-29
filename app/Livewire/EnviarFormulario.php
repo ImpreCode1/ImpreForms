@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Livewire\Traits\InvertirNombre;
 use App\Models\Codigo;
 use App\Models\Colaborador;
 use App\Models\Director;
@@ -14,6 +15,7 @@ use App\Models\Linea;
 use App\Models\Marca;
 use App\Models\Pago;
 use App\Models\Producto;
+use App\Models\Seguimiento;
 use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +27,7 @@ use Livewire\WithFileUploads;
 
 class EnviarFormulario extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, InvertirNombre;
     public $currentStep = 1;
 
     // identificadores de archivos por id
@@ -48,7 +50,9 @@ class EnviarFormulario extends Component
     // public $cotizacion;
     public $soluciones = '';
     public $linea;
+    public $linea_especifica;
     public $codlinea = '';
+    public $nombreLinea = '';
     public $nomgerente;
     // public $telgerente;
     public $corgerente;
@@ -58,6 +62,8 @@ class EnviarFormulario extends Component
     public $lugarentrega;
     public $espais;
     public $tiempoentrega;
+    public $tiempo_entrega_cantidad;
+    public $tiempo_entrega_unidad;
     public $terminoentrega;
     public $tipoicoterm;
     public $prestar;
@@ -77,6 +83,7 @@ class EnviarFormulario extends Component
     public $clientname;
     public $mail;
     public $otros;
+    public $orden_compra;
 
     public $other;
     public $actualpago;
@@ -96,7 +103,6 @@ class EnviarFormulario extends Component
     public $documentosGuardados = [];
     public $archivosNuevos = [];
 
-    public $Directores = [];
     public $selectedDirector;
     public $DirectorEmail = '';
 
@@ -113,9 +119,9 @@ class EnviarFormulario extends Component
     public $cod;
     public $files = [];
     public $dragging = false;
-    public $entrega_realizar;
+    public $cantidad_entregas;
+    public $fecha_entrega;
     public $mmd = false;
-    public $Ejecutivos;
     public $Lineas;
     public $selectedEjecutivo;
     public $EjecutivoEmail = '';
@@ -139,16 +145,16 @@ class EnviarFormulario extends Component
 
         // * Infonegocio
         'tipo_solicitud' => 'required',
-        'negocio' => 'required|numeric|min:1',
+        'negocio' => 'required|string|regex:/^[\d,\.]+$/',
         'nombre' => 'required|string|min:5',
         'correo' => 'required|email',
         'numero' => 'required|numeric',
         'crm' => 'required|numeric|unique:infonegocio,n_oportunidad_crm',
 
         // * Marca
-        'precio' => 'required|numeric|min:1',
+        'precio' => 'required|string|regex:/^[\d,\.]+$/',
         'soluciones' => 'required|string|min:5',
-        'linea' => 'required|string|min:5',
+        'linea_especifica' => 'nullable|string|in:EBG,Solar,Daas,HPE',
         'codlinea' => 'required|string',
         'nomgerente' => 'required|string|min:5',
         'nom_rep' => 'required|string',
@@ -170,19 +176,23 @@ class EnviarFormulario extends Component
         'mail' => 'nullable|email',
         'EjecutivoEmail' => 'nullable|email',
         'DirectorEmail' => 'nullable|email',
+        'orden_compra' => 'nullable|string|min:1',
 
         // * Información
         'entregacliente' => 'required|string|min:5',
-        'entrega_realizar' => 'required|string|min:5',
+        'cantidad_entregas' => 'nullable|integer|min:1',
+        'fecha_entrega' => 'nullable|date',
         'lugarentrega' => 'required|string|min:5',
         'espais' => 'required|string|min:5',
-        'tiempoentrega' => 'required|string|min:3',
+        'tiempoentrega' => 'nullable|string',
+        'tiempo_entrega_cantidad' => 'nullable|integer|min:1',
+        'tiempo_entrega_unidad' => 'nullable|string|in:Días,Semanas,Meses,Años',
         'terminoentrega' => 'required|date',
         'tipoicoterm' => 'required|string|min:2',
-        'prestar' => 'nullable|string|min:4',
-        'suministrar' => 'nullable|string|min:5',
+        'prestar' => 'nullable|string|min:1',
+        'suministrar' => 'nullable|string|min:1',
         'inicio' => 'nullable|date',
-        'finalizacion' => 'nullable|date',
+        'finalizacion' => 'nullable|date|after_or_equal:inicio',
 
         // * Producto
         'aplicagarantia' => 'required|in:si,no',
@@ -252,12 +262,18 @@ class EnviarFormulario extends Component
 
         'files.required' => 'Debe adjuntar al menos un documento.',
         'files.array' => 'Los documentos deben estar en formato válido.',
+
+        'finalizacion.after_or_equal' => 'La fecha de finalización no puede ser menor a la fecha de inicio.',
+        'selectedDirector' => 'nullable|string',
+        'selectedEjecutivo' => 'nullable|string',
     ];
 
     // * mostrar garantia
     public function updated($propertyName)
     {
-        $this->validateOnly($propertyName);
+        if (array_key_exists($propertyName, $this->rules ?? [])) {
+            $this->validateOnly($propertyName);
+        }
     }
 
     public function updatedHasAdvancePayment($value)
@@ -273,6 +289,7 @@ class EnviarFormulario extends Component
 
     public function changeStep($step)
     {
+        $this->resetValidation();
         $this->currentStep = $step;
     }
 
@@ -308,12 +325,66 @@ class EnviarFormulario extends Component
             // ✅ Validaciones
             $this->validate();
         } catch (\Illuminate\Validation\ValidationException $e) {
+            $etiquetas = [
+                'files'                => 'Documentos adjuntos',
+                'tipo_solicitud'       => 'Tipo de solicitud',
+                'negocio'              => 'Código del cliente',
+                'nombre'               => 'Nombre del cliente',
+                'correo'               => 'Correo del representante legal',
+                'numero'               => 'Número celular',
+                'crm'                  => 'N° oportunidad CRM',
+                'precio'               => 'Precio de venta',
+                'soluciones'           => 'Soluciones',
+                'linea_especifica'     => 'Línea específica',
+                'codlinea'             => 'Código de línea',
+                'nomgerente'           => 'Nombre del gerente de producto',
+                'nom_rep'              => 'Nombre del representante legal',
+                'corgerente'           => 'Correo del gerente',
+                'DirectorName'         => 'Nombre del director',
+                'moneda_precio_venta'  => 'Moneda del precio de venta',
+                'forma_pago'           => 'Forma de pago',
+                'fecha_cada_pago'      => 'Plazos de pago',
+                'moneda'               => 'Moneda (pago)',
+                'incluir_iva'          => 'Incluye IVA',
+                'hay_anticipo'         => 'Hay anticipo',
+                'porcentaje_anticipo'  => 'Porcentaje de anticipo',
+                'fecha_pago_anticipo'  => 'Fecha de pago anticipo',
+                'otros_pago'           => 'Otros (pago)',
+                'clientcode'           => 'Otro',
+                'clientname'           => 'Teléfono',
+                'mail'                 => 'Correo adicional',
+                'EjecutivoEmail'       => 'Correo del ejecutivo',
+                'DirectorEmail'        => 'Correo del director',
+                'orden_compra'         => 'Orden de compra',
+                'entregacliente'       => '¿Quién realiza la entrega?',
+                'cantidad_entregas'    => 'Cantidad de entregas',
+                'fecha_entrega'        => 'Fecha de entrega',
+                'lugarentrega'         => 'Lugar de entrega',
+                'espais'               => 'País',
+                'tiempo_entrega_cantidad' => 'Tiempo de entrega (cantidad)',
+                'tiempo_entrega_unidad'   => 'Tiempo de entrega (unidad)',
+                'terminoentrega'       => 'Fecha término de entrega',
+                'tipoicoterm'          => 'Tipo de incoterms',
+                'prestar'              => 'Servicio a prestar',
+                'suministrar'          => 'Frecuencia de suministro',
+                'inicio'               => 'Fecha de inicio',
+                'finalizacion'         => 'Fecha de finalización',
+                'aplicagarantia'       => '¿Aplica garantía?',
+                'terminogarantia'      => 'Término de garantía',
+                'aplicapoliza'         => '¿Aplica póliza?',
+                'porcentaje'           => 'Porcentaje de póliza',
+                'incluye_iva'          => '¿Incluye IVA?',
+            ];
+
             $mensajes = [];
             foreach ($e->errors() as $campo => $errores) {
-                $mensajes[] = ucfirst($campo).': '.implode(', ', $errores);
+                $etiqueta = $etiquetas[$campo] ?? $campo;
+                foreach ($errores as $error) {
+                    $mensajes[] = "<b>{$etiqueta}:</b> {$error}";
+                }
             }
 
-            $mensaje = 'Por favor corrija los siguientes campos:<br>'.implode('<br>', $mensajes);
+            $mensaje = implode('<br>', $mensajes);
 
             $this->dispatch('validation-error', message: $mensaje);
 
@@ -333,10 +404,13 @@ class EnviarFormulario extends Component
                 'nom_rep' => $this->nom_rep,
             ]);
 
+            $this->precio = str_replace('.', ',', $this->precio);
+
             // ✅ Crear Marca
             $marca = Marca::create([
                 'infonegocio_id' => $infonegocio->id,
                 'user_id' => auth()->id(),
+                'fecha' => now(),
                 'precio_venta' => $this->precio,
                 'tipo_contrato' => $this->soluciones,
                 'linea' => $this->linea,
@@ -360,6 +434,7 @@ class EnviarFormulario extends Component
                 'porcentaje_anticipo' => $this->porcentaje_anticipo,
                 'fecha_pago_anticipo' => $this->fecha_pago_anticipo ?: null,
                 'otro' => $this->clientcode,
+                'orden_compra' => $this->orden_compra,
             ]);
 
             $this->marcaId = $marca->id;
@@ -368,16 +443,20 @@ class EnviarFormulario extends Component
             $informacion = Informacion::create([
                 'marcas_id' => $this->marcaId,
                 'realiza_entrega_cliente' => $this->entregacliente,
-                'entrega_realizar' => $this->entrega_realizar,
+                'cantidad_entregas' => $this->cantidad_entregas,
+                'fecha_entrega' => $this->fecha_entrega,
                 'lugar_entrega' => $this->lugarentrega,
                 'pais' => $this->espais,
                 'tiempo_entrega' => $this->tiempoentrega,
+                'tiempo_entrega_cantidad' => $this->tiempo_entrega_cantidad,
+                'tiempo_entrega_unidad' => $this->tiempo_entrega_unidad,
                 'fecha_inicio_termino' => $this->terminoentrega,
                 'tipo_incoterms' => $this->tipoicoterm,
                 'servicio_a_prestar' => $this->prestar,
                 'frecuencia_suministro' => $this->suministrar,
                 'fecha_inicio' => $this->inicio,
                 'fecha_finalizacion' => $this->finalizacion,
+                'linea_especifica' => $this->linea_especifica,
             ]);
 
             // ✅ Crear Producto
@@ -449,6 +528,44 @@ class EnviarFormulario extends Component
                     ]);
                 }
             }
+
+            // ✅ Crear / actualizar Seguimiento (después de que todos los datos existen)
+            $anticiposText = null;
+            if ($this->hay_anticipo) {
+                $parts = [];
+                if ($this->porcentaje_anticipo) {
+                    $parts[] = $this->porcentaje_anticipo . '%';
+                }
+                if ($this->fecha_pago_anticipo) {
+                    $parts[] = 'Fecha: ' . \Carbon\Carbon::parse($this->fecha_pago_anticipo)->format('d/m/Y');
+                }
+                if ($this->otros_pago) {
+                    $parts[] = $this->otros_pago;
+                }
+                $anticiposText = !empty($parts) ? implode(' - ', $parts) : 'Sí';
+            }
+
+            $tiempos = '';
+            if ($this->tiempo_entrega_cantidad || $this->tiempo_entrega_unidad) {
+                $tiempos = trim(($this->tiempo_entrega_cantidad ?? '') . ' ' . ($this->tiempo_entrega_unidad ?? ''));
+            }
+
+            Seguimiento::updateOrCreate(
+                ['marca_id' => $marca->id],
+                [
+                    'numero_oportunidad' => $this->crm,
+                    'cliente'            => $infonegocio->nombre,
+                    'linea_primaria'     => $marca->linea,
+                    'valor'              => self::parseValor($this->precio),
+                    'fecha_apertura'     => now()->toDateString(),
+                    'incoterm'           => $this->tipoicoterm,
+                    'anticipos'          => $anticiposText,
+                    'tiempos_entrega'    => $tiempos ?: null,
+                    'forma_pago'         => $this->forma_pago,
+                    'fecha_facturacion'  => $this->fecha_pago ?? null,
+                    'crm_sync_at'        => now(),
+                ]
+            );
 
             // ✅ Confirmar transacción
             DB::commit();
@@ -548,14 +665,12 @@ class EnviarFormulario extends Component
         }
     }
 
-    public function updatedPorcentaje($value)
+    public function updatedAplicapoliza($value)
     {
-        // Si la garantía es "sí", hacer que el término de garantía sea obligatorio
         if ($value === 'si') {
             $this->rules['porcentaje'] = 'required|numeric|min:1';
         } else {
             $this->rules['porcentaje'] = 'nullable';
-            // $this->terminogarantia = ''; // Resetear el campo si selecciona "No"
         }
     }
 
@@ -564,7 +679,7 @@ class EnviarFormulario extends Component
         $this->dispatch('reloadPage');
     }
 
-    public function mount()
+    public function mount($operacionesLink = null, $financieraLink = null)
     {
         $this->files = [];
 
@@ -575,30 +690,41 @@ class EnviarFormulario extends Component
             $this->corgerente = $colaborador->mail;
         }
 
-        $this->Ejecutivos = Executive::all();
         $this->Lineas = Linea::all();
-        $this->Directores = Director::all();
-    }
 
-    public function updateDirectorEmail()
-    {
-        $director = Director::find($this->selectedDirector);
-        if ($director) {
-            $this->DirectorEmail = $director->mail;
-            $this->DirectorName = $director->nombre_director;
+        if ($operacionesLink || $financieraLink) {
+            $this->operacionesLink = $operacionesLink;
+            $this->financieraLink = $financieraLink;
         }
     }
 
-    public function updateEjecutivoEmail()
+    public function updatedSelectedDirector()
     {
-        $ejecutivo = Executive::find($this->selectedEjecutivo);
-        // dd($ejecutivo);
-        if ($ejecutivo) {
-            $this->EjecutivoEmail = $ejecutivo->mail;
-            $this->EjecutivoName = $ejecutivo->nombre_colaborador;
-        } else {
+        $value = $this->selectedDirector;
+        if (!$value) {
+            $this->DirectorEmail = '';
+            $this->DirectorName = '';
+            return;
+        }
+        $director = \App\Models\Director::find($value);
+        if ($director) {
+            $this->DirectorEmail = $director->mail;
+            $this->DirectorName = $director->nombre_director_formatted;
+        }
+    }
+
+    public function updatedSelectedEjecutivo()
+    {
+        $value = $this->selectedEjecutivo;
+        if (!$value) {
             $this->EjecutivoEmail = '';
             $this->EjecutivoName = '';
+            return;
+        }
+        $ejecutivo = \App\Models\Executive::find($value);
+        if ($ejecutivo) {
+            $this->EjecutivoEmail = $ejecutivo->mail;
+            $this->EjecutivoName = $ejecutivo->nombre_colaborador_formatted;
         }
     }
 
@@ -608,6 +734,7 @@ class EnviarFormulario extends Component
 
         if ($codigo === '') {
             $this->linea = null;
+            $this->nombreLinea = '';
             $this->selectedCodigo = null;
 
             return;
@@ -617,9 +744,11 @@ class EnviarFormulario extends Component
 
         if ($linea) {
             $this->linea = $linea->linea;   // nombre de la línea
+            $this->nombreLinea = $linea->linea;
             $this->selectedCodigo = $linea->id; // opcional
         } else {
             $this->linea = null;
+            $this->nombreLinea = '';
             $this->selectedCodigo = null;
         }
     }
@@ -701,6 +830,11 @@ class EnviarFormulario extends Component
         }
     }
 
+    public function updatedPrecio()
+    {
+        $this->precio = preg_replace('/[^0-9,.]/', '', $this->precio);
+    }
+
     public function dragOver()
     {
         $this->dragging = true;
@@ -711,16 +845,32 @@ class EnviarFormulario extends Component
         $this->dragging = false;
     }
 
-    public function mounts($operacionesLink, $financieraLink)
-    {
-        $this->operacionesLink = $operacionesLink;
-        $this->financieraLink = $financieraLink;
-    }
-
     public function copyToClipboard($text)
     {
-        $this->dispatchBrowserEvent('copyToClipboard', ['text' => $text]);
+        $this->dispatch('copy-to-clipboard', text: $text);
         session()->flash('link', 'Enlace copiado al portapapeles');
+    }
+
+    private static function parseValor(?string $raw): ?float
+    {
+        if ($raw === null || $raw === '') {
+            return null;
+        }
+
+        $clean = preg_replace('/[^\d.,]/', '', $raw);
+
+        if (preg_match('/\d{1,3}(\.\d{3})+(,\d+)?$/', $clean)) {
+            $clean = str_replace('.', '', $clean);
+            $clean = str_replace(',', '.', $clean);
+        } elseif (preg_match('/\d{1,3}(,\d{3})+(\.\d+)?$/', $clean)) {
+            $clean = str_replace(',', '', $clean);
+        } elseif (str_contains($clean, ',') && !str_contains($clean, '.')) {
+            $clean = str_replace(',', '.', $clean);
+        } else {
+            $clean = str_replace(',', '', $clean);
+        }
+
+        return is_numeric($clean) ? (float) $clean : null;
     }
 
     public function render()
@@ -729,7 +879,8 @@ class EnviarFormulario extends Component
             'currentStep' => $this->currentStep,
             'operacionesLink' => $this->operacionesLink,
             'financieraLink' => $this->financieraLink,
-            // 'directors' => $this->directors,
+            'ejecutivos' => \App\Models\Executive::whereNotNull('nombre_colaborador')->orderBy('nombre_colaborador')->get(),
+            'directores' => \App\Models\Director::orderBy('nombre_director')->get(),
         ]);
     }
 }

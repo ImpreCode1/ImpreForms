@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('marcas', function (Blueprint $table) {
             $table->id(); // reemplaza integer('id', true)
-            $table->foreignId('infonegocio_id')->constrained()->cascadeOnDelete(); // si deseas relación
-            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete(); // opcionalmente cambia según lo necesites
+            $table->foreignId('infonegocio_id')->constrained('infonegocio')->cascadeOnDelete();
+            $table->unsignedBigInteger('user_id')->nullable();
 
             $table->dateTime('fecha')->nullable();
             $table->string('n_oc')->nullable();

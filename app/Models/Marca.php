@@ -44,6 +44,7 @@ class Marca extends Model
         'fecha_pago_anticipo',
         'otros_pago',
         'moneda_precio_venta',
+        'orden_compra',
     ];
 
     public function infonegocio()
@@ -86,6 +87,11 @@ class Marca extends Model
         return $this->hasMany(FormLink::class, 'marca_id', 'id');
     }
 
+    public function seguimiento()
+    {
+        return $this->hasOne(Seguimiento::class, 'marca_id');
+    }
+
 
     public function getEstadoAttribute()
     {
@@ -112,5 +118,15 @@ class Marca extends Model
         }
 
         return 'En Proceso';
+    }
+
+    public function getNombreFormattedAttribute()
+    {
+        return $this->nombre;
+    }
+
+    public function getNombreEjcFormattedAttribute()
+    {
+        return $this->nombre_ejc;
     }
 }

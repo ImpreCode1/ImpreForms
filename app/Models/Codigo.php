@@ -13,5 +13,11 @@ class Codigo extends Model
     protected $fillable = [
         'codigo_cliente',
         'nombre_cliente',
+        'activo',
     ];
+
+    public function scopeActivos($query)
+    {
+        return $query->where('activo', true);
+    }
 }

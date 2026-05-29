@@ -30,9 +30,6 @@
                             <option value="Alcance">Alcance</option> --}}
                         </select>
                     </div>
-                    @error('tipo_solicitud')
-                        <span class="text-sm text-red-500 text-center block">{{ $message }}</span>
-                    @enderror
 
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
@@ -230,16 +227,12 @@
                             <select id="soluciones" wire:model.live="soluciones"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('soluciones') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                 <option value="" disabled>Seleccionar Solución</option>
-                                <option value="Líneas Huawei EBG, Datacenter y Solar, líneas de paneles solares">
-                                    Líneas Huawei EBG, Datacenter y Solar, líneas de paneles
-                                    solares</option>
-                                <option value="Oportunidades cerradas con condiciones particulares">
-                                    Oportunidades cerradas con condiciones particulares
-                                </option>
-                                <option value="Productos que no sean de línea para un negocio específico">
-                                    Productos que no sean de línea para un negocio
-                                    específico
-                                </option>
+                                <option value="Negocios que involucren productos y servicios">Negocios que involucren productos y servicios</option>
+                                <option value="Líneas Huawei EBG, Datacenter y Solar, líneas de paneles solares (Longi y Trina)">Líneas Huawei EBG, Datacenter y Solar, líneas de paneles solares (Longi y Trina)</option>
+                                <option value="Oportunidades Cerradas con condiciones particulares diferentes al negocio tradicional transaccional">Oportunidades Cerradas con condiciones particulares diferentes al negocio tradicional transaccional</option>
+                                <option value="Productos Sobre pedido">Productos Sobre pedido</option>
+                                <option value="Oportunidades cerradas de cualquier valor con incumplimiento o condiciones financieras especiales">Oportunidades cerradas de cualquier valor con incumplimiento o condiciones financieras especiales</option>
+                                <option value="Por demanda">Por demanda</option>
                             </select>
                             @error('soluciones')
                                 <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -261,10 +254,24 @@
 
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
-                            <label for="linea" class="block text-sm font-medium text-gray-700">Linea</label>
-                            <input id="linea" type="text" wire:model.live="linea"
-                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('linea') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                            @error('linea')
+                            <label for="linea" class="block text-sm font-medium text-gray-700">Línea</label>
+                            <input id="linea" type="text" value="{{ $linea }}"
+                                readonly
+                                class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50
+                                shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                        </div>
+
+                        <div>
+                            <label for="linea_especifica" class="block text-sm font-medium text-gray-700">Línea específica</label>
+                            <select id="linea_especifica" wire:model.live="linea_especifica"
+                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('linea_especifica') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                <option value="">Seleccionar</option>
+                                <option value="EBG">EBG</option>
+                                <option value="Solar">Solar</option>
+                                <option value="Daas">Daas</option>
+                                <option value="HPE">HPE</option>
+                            </select>
+                            @error('linea_especifica')
                                 <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                             @enderror
                         </div>
@@ -278,6 +285,16 @@
                                 <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
                             @enderror
                         </div>
+
+                        {{-- <div>
+                            <label for="nombre_linea" class="block text-sm font-medium text-gray-700">
+                                Nombre de la línea
+                            </label>
+                            <input id="nombre_linea" type="text" value="{{ $nombreLinea }}"
+                                readonly
+                                class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50
+                                shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                        </div> --}}
 
                         <div>
                             <label for="nomgerente" class="block text-sm font-medium text-gray-700">Nombre</label>
@@ -413,6 +430,16 @@
                             @enderror
                         </div>
 
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Orden de compra</label>
+                            <input type="text" wire:model.live="orden_compra"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"
+                                placeholder="Opcional" />
+                            @error('orden_compra')
+                                <span class="text-red-500 text-sm mt-1 block"> {{ $message }}</span>
+                            @enderror
+                        </div>
+
                     </div>
                 </div>
 
@@ -443,11 +470,20 @@
                             </div>
 
                             <div>
-                                <label for="entrega_realizar" class="block text-sm font-medium text-gray-700">¿Cuántas
-                                    entregas se van a realizar al cliente y en que fecha?</label>
-                                <input id="entrega_realizar" type="text" wire:model.live="entrega_realizar"
-                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('entrega_realizar') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                @error('entrega_realizar')
+                                <label for="cantidad_entregas" class="block text-sm font-medium text-gray-700">Cantidad
+                                    de entregas</label>
+                                <input id="cantidad_entregas" type="number" min="1" wire:model.live="cantidad_entregas"
+                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('cantidad_entregas') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                @error('cantidad_entregas')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="fecha_entrega" class="block text-sm font-medium text-gray-700">Fecha de
+                                    entrega</label>
+                                <input id="fecha_entrega" type="date" wire:model.live="fecha_entrega"
+                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('fecha_entrega') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                @error('fecha_entrega')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -472,13 +508,25 @@
                             </div>
 
                             <div>
-                                <label for="tiempoentrega" class="block text-sm font-medium text-gray-700">Tiempo de
-                                    entrega</label>
-                                <input id="tiempoentrega" type="text" wire:model.live="tiempoentrega"
-                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tiempoentrega') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                @error('tiempoentrega')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
+                                <label class="block text-sm font-medium text-gray-700">
+                                    Tiempo de entrega
+                                </label>
+                                <div class="flex gap-2 mt-1">
+                                    <input id="tiempo_entrega_cantidad" type="number" 
+                                        wire:model.live="tiempo_entrega_cantidad" min="1"
+                                        class="flex-1 rounded-md border-gray-300 
+                                        {{ $errors->has('tiempo_entrega_cantidad') ? 'border-red-400' : 'border-blue-100' }}
+                                        shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    <select wire:model.live="tiempo_entrega_unidad"
+                                        class="w-32 rounded-md border-gray-300
+                                        {{ $errors->has('tiempo_entrega_unidad') ? 'border-red-400' : 'border-blue-100' }}
+                                        shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                        <option value="Días">Días</option>
+                                        <option value="Semanas">Semanas</option>
+                                        <option value="Meses">Meses</option>
+                                        <option value="Años">Años</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <div>
@@ -579,8 +627,7 @@
                         </div>
 
                         <div>
-                            <label for="fecha_cada_pago" class="block text-sm font-medium text-gray-700">Fecha de cada
-                                pago:</label>
+                            <label for="fecha_cada_pago" class="block text-sm font-medium text-gray-700">Plazos</label>
                             <input id="fecha_cada_pago" type="text" wire:model.live="fecha_cada_pago"
                                 class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('fecha_cada_pago') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                             @error('fecha_cada_pago')
@@ -603,15 +650,15 @@
                         </div>
 
                         <div>
-                            <label for="incluir_iva" class="block text-sm font-medium text-gray-700">¿Incluir
+                            <label for="incluye_iva" class="block text-sm font-medium text-gray-700">¿Incluir
                                 IVA?</label>
-                            <select id="incluir_iva" wire:model.live="incluir_iva"
-                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('incluir_iva') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                            <select id="incluye_iva" wire:model.live="incluye_iva"
+                                class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('incluye_iva') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                 <option value="" disabled>Seleccione una opción</option>
                                 <option value="1">Sí</option>
                                 <option value="0">No</option>
                             </select>
-                            @error('incluir_iva')
+                            @error('incluye_iva')
                                 <span class="text-red-500 text-sm">{{ $message }}</span>
                             @enderror
                         </div>
@@ -686,7 +733,7 @@
                                 <select wire:model.live="aplicagarantia" id="garantia"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicagarantia') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                     <option value="" disabled>Selecciona una opción</option>
-                                    <option value="sí">Sí</option>
+                                    <option value="si">Sí</option>
                                     <option value="no">No</option>
                                 </select>
                                 @error('aplicagarantia')
@@ -726,7 +773,7 @@
                                 <select wire:model.live="aplicapoliza" id="aplicapoliza"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicapoliza') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
                                     <option value="" disabled>Selecciona una opción</option>
-                                    <option value="sí">Sí</option>
+                                    <option value="si">Sí</option>
                                     <option value="no">No</option>
                                 </select>
                                 @error('aplicapoliza')
@@ -764,13 +811,13 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                         </svg>
-                                        <a target="_blank" class="text-sm text-blue-600 hover:underline">
+                                        <a href="{{ Storage::url($file['path']) }}" target="_blank" class="text-sm text-blue-600 hover:underline">
                                             {{ $file['name'] }}
                                         </a>
-
                                     </div>
                                     <button type="button"
                                         wire:click="marcarArchivosParaEliminar({{ $file['id'] }})"
+                                        wire:confirm="¿Estás seguro de eliminar este archivo?"
                                         class="text-red-500 hover:text-red-700">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
@@ -782,11 +829,6 @@
                             @endforeach
                         </div>
                     </div>
-                    {{-- <div>
-                        <label for="documento">Subir Documento:</label>
-                        <input type="file" wire:model="documento" id="documento">
-                        @error('documento') <span class="error">{{ $message }}</span> @enderror
-                    </div> --}}
                 @endif
 
 
@@ -808,15 +850,23 @@
             </div>
 
             <div class="w-full">
-                <!-- Zona de subida de archivos -->
-                <div wire:drop.prevent="handleDrop($event.dataTransfer.files)"
-                    wire:dragover.prevent="dragOver" wire:dragleave.prevent="dragLeave"
-                    class="relative border-2 border-dashed border-gray-300 rounded-lg p-8 text-center transition-all duration-200 ease-in-out hover:border-blue-400">
-                    <input type="file" wire:model="archivosNuevos" multiple
-                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                        accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.msg,.zip,.eml">
+                <h2 class="text-lg font-bold text-gray-900 mt-6 mb-4 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke-width="1.5" stroke="currentColor" class="size-6 mr-3 text-green-500">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
+                    </svg> Adjuntar Documentación
+                </h2>
 
-                    <div class="pointer-events-none space-y-4">
+                <div class="border-dashed border-2 border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors duration-300"
+                    wire:drop.prevent="handleDrop($event.dataTransfer.files)"
+                    wire:dragover.prevent="dragOver" wire:dragleave.prevent="dragLeave">
+
+                    <input type="file" wire:model="archivosNuevos" multiple class="hidden"
+                        id="file-upload"
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.msg,.zip,.eml" />
+
+                    <label for="file-upload" class="cursor-pointer">
                         <div class="flex flex-col items-center">
                             <div class="bg-blue-50 p-4 rounded-full mb-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-500"
@@ -841,6 +891,7 @@
                                     <li>Cotización</li>
                                     <li>Correo electronico de aprobación del margen (si aplica)</li>
                                     <li>Correo electrónico de aprobación del factor (si aplica)</li>
+                                    <li>Orden de compra</li>
                                 </ul>
                             </div>
 
@@ -851,38 +902,78 @@
                                         d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9a1 1 0 00-1-1z"
                                         clip-rule="evenodd" />
                                 </svg>
-                                <p>Formatos permitidos: <strong>PDF, DOC, DOCX, XLS, XLSX, JPG, JPEG, PNG, MSG,
-                                                    ZIP, EML</strong>. Tamaño máximo:
-                                    <strong>10MB</strong>.
+                                <p>
+                                    Formatos permitidos:
+                                    <strong>PDF, DOC, DOCX, XLS, XLSX, JPG, JPEG, PNG, MSG,
+                                        ZIP, EML</strong>.
+                                    Tamaño máximo: <strong>10MB</strong>.
                                 </p>
                             </div>
 
-                            <p class="text-blue-600 mt-4 font-medium text-sm">Haga clic o arrastre archivos para seleccionar uno o
-                                varios documentos</p>
+                            <p class="text-blue-600 mt-4 font-medium text-sm">Haga clic para seleccionar
+                                uno o varios documentos</p>
                         </div>
+                    </label>
+
+                    <div wire:loading wire:target="archivosNuevos"
+                        class="flex justify-center items-center text-blue-600 bg-blue-50 border border-blue-200 rounded-lg px-6 py-3 mt-2 shadow-sm">
+                        <svg class="animate-spin h-6 w-6 text-blue-600 mr-2"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10"
+                                stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z">
+                            </path>
+                        </svg>
                     </div>
+
+                    @error('archivosNuevos')
+                        <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+                    @error('archivosNuevos.*')
+                        <p class="text-red-500 text-sm mt-2">
+                            {{ $message ??
+                                'El formato del archivo que intentas subir no está permitido. Usa: PDF, DOC, DOCX, XLS, XLSX, JPG, JPEG, PNG, MSG, ZIP, EML' }}
+                        </p>
+                    @enderror
                 </div>
 
-                <!-- Archivos seleccionados -->
                 @if (count($tempFiles) > 0)
-                    <div class="mt-6">
-                        <h3 class="text-sm font-semibold text-gray-700 mb-3">
-                            Archivos seleccionados ({{ count($tempFiles) }})
-                        </h3>
-                        <div class="space-y-3">
-                            @foreach ($tempFiles as $index => $archivo)
-                                <div
-                                    class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
-                                    <div class="flex items-center">
-                                        <span class="text-gray-700">{{ $archivo->getClientOriginalName() }}</span>
+                    <div class="mt-4">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">Archivos Seleccionados:</h3>
+                        <ul class="space-y-2">
+                            @foreach ($tempFiles as $id => $file)
+                                <li wire:key="file-{{ $id }}"
+                                    class="bg-gray-50 rounded-lg p-3 flex items-center justify-between group hover:bg-gray-100 transition-all duration-200">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="p-2 bg-blue-100 rounded-lg">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-5 w-5 text-blue-600" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <span class="text-sm font-medium text-gray-700">{{ $file['name'] }}</span>
+                                            <span class="text-xs text-gray-500">{{ $file['size'] }} KB</span>
+                                        </div>
                                     </div>
-                                    <button wire:click="quitarArchivo({{ $index }})" type="button"
-                                        class="text-red-500 hover:text-red-700">
-                                        Eliminar
+                                    <button type="button"
+                                        wire:click="quitarArchivo('{{ $id }}')"
+                                        class="hidden group-hover:flex items-center space-x-1 text-sm text-red-500 hover:text-red-700 transition-colors duration-200">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                        <span>Eliminar</span>
                                     </button>
-                                </div>
+                                </li>
                             @endforeach
-                        </div>
+                        </ul>
                     </div>
                 @endif
             </div>

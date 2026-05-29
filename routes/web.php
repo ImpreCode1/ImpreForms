@@ -28,9 +28,9 @@ Route::view('profile', 'profile')
 Route::view('successful', 'successful')
     ->name('successful');
 
-Route::view('cargar-reporte', 'cargar-reporte')
+Route::view('gestionar-reporte', 'gestionar-reporte')
     ->middleware(['auth', 'verified'])
-    ->name('cargar-reporte');
+    ->name('gestionar-reporte');
 
 // Route::get('/cargar-reporte', CargarReporte::class)->name('cargar.reporte');
 
@@ -66,6 +66,12 @@ Route::view('/historial', 'historial')
 //     ->name('formularios-recibidos');
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/seguimiento', function () {
+        return view('seguimiento.index');
+    })->name('seguimiento');
+
+    Route::get('/exportar-excel', [FormulariosRecibidos::class, 'exportar'])->name('exportar');
+
     Route::get('/gestionar-usuarios', [GestionarUsuariosController::class, 'index'])->name('gestionar-usuarios');
     Route::patch('/usuarios/{user}/rol', [GestionarUsuariosController::class, 'updateRol'])->name('usuarios.updateRol');
     Route::delete('/usuarios/{user}', [GestionarUsuariosController::class, 'destroy'])->name('usuarios.destroy');
@@ -73,6 +79,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/formularios-recibidos', function () {
         return view('formularios-recibidos');
     })->name('formularios-recibidos');
+
+    Route::prefix('admin/maestros')->group(function () {
+        Route::get('/ejecutivos', fn() => view('admin.maestros.ejecutivos'))->name('admin.maestros.ejecutivos');
+        Route::get('/directores', fn() => view('admin.maestros.directores'))->name('admin.maestros.directores');
+        Route::get('/lineas', fn() => view('admin.maestros.lineas'))->name('admin.maestros.lineas');
+        Route::get('/codigos-cliente', fn() => view('admin.maestros.codigos-cliente'))->name('admin.maestros.codigos-cliente');
+    });
 });
 // * : ruta para el cierre de sesion.
 
@@ -88,7 +101,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 //     return view('formulario', ['mostrarFormularioInteractivo' => false, 'mostrarFormularioFinanciera' => true]);
 // });
 
-Route::get('/enviar-formulario', EnviarFormulario::class);
+Route::get('/enviar-formulario', EnviarFormulario::class)->middleware(['auth']);
 
 // Ruta para el formulario interactivo
 Route::get('/formulario-operaciones/{link}', function ($link) {
@@ -143,6 +156,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/correos-operaciones-financiera', function () {
         return view('correos-operaciones-financiera');
     })->name('correos');
+
+    Route::get('/seguimiento', fn() => view('seguimiento.index'))->name('seguimiento.index');
 });
 
 Route::get('/documentos/{documento}', [FormulariosRecibidos::class, 'ver'])->name('documentos.ver');
