@@ -110,7 +110,7 @@
                                 <td class="whitespace-nowrap px-3 py-2.5 text-xs tabular-nums font-medium text-gray-900 bg-white border-b border-gray-200">{{ $seg->valor ? '$' . number_format((float)$seg->valor, 0, ',', '.') : '—' }}</td>
                                 <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->estado_negocio ?? '' }}">
                                     @if ($editingCell === $seg->id . '.estado_negocio')
-                                    <select wire:model="editValue" wire:change="saveField({{ $seg->id }}, 'estado_negocio')" wire:blur="saveField({{ $seg->id }}, 'estado_negocio')" wire:keydown.escape="cancelEdit" class="w-full border border-indigo-300 rounded px-1.5 py-1 text-xs focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 bg-white cursor-pointer" autofocus>
+                                    <select wire:model="editValue" wire:change="saveField({{ $seg->id }}, 'estado_negocio')" wire:blur="cancelEdit" wire:keydown.escape="cancelEdit" class="w-full border border-indigo-300 rounded px-1.5 py-1 text-xs focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 bg-white cursor-pointer" autofocus>
                                         <option value="">—</option>
                                         <option value="Contrato">Contrato</option>
                                         <option value="Oferta Mercantil">Oferta Mercantil</option>
@@ -121,7 +121,7 @@
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-2.5 bg-white border-b border-gray-200">
                                     @if ($editingCell === $seg->id . '.estado')
-                                    <select wire:model="editValue" wire:change="saveField({{ $seg->id }}, 'estado')" wire:blur="saveField({{ $seg->id }}, 'estado')" wire:keydown.escape="cancelEdit" class="w-full border border-indigo-300 rounded px-1.5 py-1 text-xs focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 bg-white cursor-pointer" autofocus>
+                                    <select wire:model="editValue" wire:change="saveField({{ $seg->id }}, 'estado')" wire:blur="cancelEdit" wire:keydown.escape="cancelEdit" class="w-full border border-indigo-300 rounded px-1.5 py-1 text-xs focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 bg-white cursor-pointer" autofocus>
                                         <option value="anulado">Anulado</option>
                                         <option value="declinado">Declinado</option>
                                         <option value="en_proceso">En Proceso</option>
