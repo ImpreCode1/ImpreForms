@@ -20,6 +20,9 @@ class SeguimientoIndex extends Component
     public $showDetailModal = false;
     public $detailSeguimiento = null;
 
+    public $editingCell = null;
+    public $editValue = null;
+
     protected $paginationTheme = 'tailwind';
 
     #[Computed]
@@ -70,6 +73,48 @@ class SeguimientoIndex extends Component
     {
         $this->showDetailModal = false;
         $this->detailSeguimiento = null;
+    }
+
+    public function startEdit($id, $field)
+    {
+        $this->editingCell = null;
+        $this->editValue = null;
+
+        $record = Seguimiento::find($id);
+        if (!$record) return;
+
+        $this->editingCell = $id . '.' . $field;
+
+        if (in_array($field, ['fecha_cierre', 'fecha_facturacion'])) {
+            $this->editValue = $record->$field?->format('Y-m-d');
+        } else {
+            $this->editValue = $record->$field;
+        }
+    }
+
+    public function saveField($id, $field)
+    {
+        $record = Seguimiento::find($id);
+        if (!$record) return;
+
+        $this->validate([
+            'editValue' => match($field) {
+                'fecha_cierre', 'fecha_facturacion' => 'nullable|date',
+                'estado' => 'required|in:anulado,declinado,en_proceso,facturado,facturado_y_pagado,pendiente,recurrencia',
+                default => 'nullable|string|max:65535',
+            },
+        ]);
+
+        $record->update([$field => $this->editValue]);
+
+        $this->editingCell = null;
+        $this->editValue = null;
+    }
+
+    public function cancelEdit()
+    {
+        $this->editingCell = null;
+        $this->editValue = null;
     }
 
     public function exportar(): \Symfony\Component\HttpFoundation\BinaryFileResponse

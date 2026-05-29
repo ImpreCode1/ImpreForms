@@ -93,11 +93,44 @@
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200">{{ $seg->linea_primaria ?: '—' }}</td>
                                 <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200">{{ $seg->fecha_apertura?->format('d/m/Y') ?: '—' }}</td>
-                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200">{{ $seg->fecha_cierre?->format('d/m/Y') ?: '—' }}</td>
-                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200">{{ $seg->fecha_facturacion?->format('d/m/Y') ?: '—' }}</td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200">
+                                    @if ($editingCell === $seg->id . '.fecha_cierre')
+                                    <input type="date" wire:model="editValue" wire:blur="saveField({{ $seg->id }}, 'fecha_cierre')" wire:keydown.enter="saveField({{ $seg->id }}, 'fecha_cierre')" wire:keydown.escape="cancelEdit" class="w-full border border-indigo-300 rounded px-1.5 py-1 text-xs focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 bg-white" autofocus>
+                                    @else
+                                    <span wire:click="startEdit({{ $seg->id }}, 'fecha_cierre')" class="cursor-pointer hover:bg-indigo-50 rounded px-1 -mx-1 transition block">{{ $seg->fecha_cierre?->format('d/m/Y') ?: '—' }}</span>
+                                    @endif
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200">
+                                    @if ($editingCell === $seg->id . '.fecha_facturacion')
+                                    <input type="date" wire:model="editValue" wire:blur="saveField({{ $seg->id }}, 'fecha_facturacion')" wire:keydown.enter="saveField({{ $seg->id }}, 'fecha_facturacion')" wire:keydown.escape="cancelEdit" class="w-full border border-indigo-300 rounded px-1.5 py-1 text-xs focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 bg-white" autofocus>
+                                    @else
+                                    <span wire:click="startEdit({{ $seg->id }}, 'fecha_facturacion')" class="cursor-pointer hover:bg-indigo-50 rounded px-1 -mx-1 transition block">{{ $seg->fecha_facturacion?->format('d/m/Y') ?: '—' }}</span>
+                                    @endif
+                                </td>
                                 <td class="whitespace-nowrap px-3 py-2.5 text-xs tabular-nums font-medium text-gray-900 bg-white border-b border-gray-200">{{ $seg->valor ? '$' . number_format((float)$seg->valor, 0, ',', '.') : '—' }}</td>
-                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->estado_negocio ?? '' }}">{{ $seg->estado_negocio ?: '—' }}</td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->estado_negocio ?? '' }}">
+                                    @if ($editingCell === $seg->id . '.estado_negocio')
+                                    <select wire:model="editValue" wire:change="saveField({{ $seg->id }}, 'estado_negocio')" wire:blur="saveField({{ $seg->id }}, 'estado_negocio')" wire:keydown.escape="cancelEdit" class="w-full border border-indigo-300 rounded px-1.5 py-1 text-xs focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 bg-white cursor-pointer" autofocus>
+                                        <option value="">—</option>
+                                        <option value="Contrato">Contrato</option>
+                                        <option value="Oferta Mercantil">Oferta Mercantil</option>
+                                    </select>
+                                    @else
+                                    <span wire:click="startEdit({{ $seg->id }}, 'estado_negocio')" class="cursor-pointer hover:bg-indigo-50 rounded px-1 -mx-1 transition block truncate">{{ $seg->estado_negocio ?: '—' }}</span>
+                                    @endif
+                                </td>
                                 <td class="whitespace-nowrap px-3 py-2.5 bg-white border-b border-gray-200">
+                                    @if ($editingCell === $seg->id . '.estado')
+                                    <select wire:model="editValue" wire:change="saveField({{ $seg->id }}, 'estado')" wire:blur="saveField({{ $seg->id }}, 'estado')" wire:keydown.escape="cancelEdit" class="w-full border border-indigo-300 rounded px-1.5 py-1 text-xs focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 bg-white cursor-pointer" autofocus>
+                                        <option value="anulado">Anulado</option>
+                                        <option value="declinado">Declinado</option>
+                                        <option value="en_proceso">En Proceso</option>
+                                        <option value="facturado">Facturado</option>
+                                        <option value="facturado_y_pagado">Facturado y Pagado</option>
+                                        <option value="pendiente">Pendiente</option>
+                                        <option value="recurrencia">Recurrencia</option>
+                                    </select>
+                                    @else
                                     @php
                                     $colors = [
                                         'anulado' => 'bg-red-100 text-red-800',
@@ -109,17 +142,38 @@
                                         'recurrencia' => 'bg-purple-100 text-purple-800',
                                     ];
                                     @endphp
-                                    <span class="inline-block px-2 py-0.5 text-xs font-semibold rounded-full leading-tight {{ $colors[$seg->estado] ?? 'bg-gray-100 text-gray-800' }}">
-                                        {{ ucfirst(str_replace('_', ' ', $seg->estado)) }}
+                                    <span wire:click="startEdit({{ $seg->id }}, 'estado')" class="cursor-pointer hover:opacity-80 transition">
+                                        <span class="inline-block px-2 py-0.5 text-xs font-semibold rounded-full leading-tight {{ $colors[$seg->estado] ?? 'bg-gray-100 text-gray-800' }}">
+                                            {{ ucfirst(str_replace('_', ' ', $seg->estado)) }}
+                                        </span>
                                     </span>
+                                    @endif
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200">{{ $seg->incoterm ?: '—' }}</td>
                                 <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->anticipos ?? '' }}">{{ $seg->anticipos ?: '—' }}</td>
                                 <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200">{{ $seg->tiempos_entrega ?: '—' }}</td>
                                 <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->forma_pago ?? '' }}">{{ $seg->forma_pago ?: '—' }}</td>
-                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->facturacion ?? '' }}">{{ $seg->facturacion ?: '—' }}</td>
-                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->actas_cierre ?? '' }}">{{ $seg->actas_cierre ?: '—' }}</td>
-                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->observaciones ?? '' }}">{{ $seg->observaciones ?: '—' }}</td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->facturacion ?? '' }}">
+                                    @if ($editingCell === $seg->id . '.facturacion')
+                                    <input type="text" wire:model="editValue" wire:blur="saveField({{ $seg->id }}, 'facturacion')" wire:keydown.enter="saveField({{ $seg->id }}, 'facturacion')" wire:keydown.escape="cancelEdit" class="w-full border border-indigo-300 rounded px-1.5 py-1 text-xs focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 bg-white" autofocus>
+                                    @else
+                                    <span wire:click="startEdit({{ $seg->id }}, 'facturacion')" class="cursor-pointer hover:bg-indigo-50 rounded px-1 -mx-1 transition block truncate">{{ $seg->facturacion ?: '—' }}</span>
+                                    @endif
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->actas_cierre ?? '' }}">
+                                    @if ($editingCell === $seg->id . '.actas_cierre')
+                                    <input type="text" wire:model="editValue" wire:blur="saveField({{ $seg->id }}, 'actas_cierre')" wire:keydown.enter="saveField({{ $seg->id }}, 'actas_cierre')" wire:keydown.escape="cancelEdit" class="w-full border border-indigo-300 rounded px-1.5 py-1 text-xs focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 bg-white" autofocus>
+                                    @else
+                                    <span wire:click="startEdit({{ $seg->id }}, 'actas_cierre')" class="cursor-pointer hover:bg-indigo-50 rounded px-1 -mx-1 transition block truncate">{{ $seg->actas_cierre ?: '—' }}</span>
+                                    @endif
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->observaciones ?? '' }}">
+                                    @if ($editingCell === $seg->id . '.observaciones')
+                                    <input type="text" wire:model="editValue" wire:blur="saveField({{ $seg->id }}, 'observaciones')" wire:keydown.enter="saveField({{ $seg->id }}, 'observaciones')" wire:keydown.escape="cancelEdit" class="w-full border border-indigo-300 rounded px-1.5 py-1 text-xs focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 bg-white" autofocus>
+                                    @else
+                                    <span wire:click="startEdit({{ $seg->id }}, 'observaciones')" class="cursor-pointer hover:bg-indigo-50 rounded px-1 -mx-1 transition block truncate">{{ $seg->observaciones ?: '—' }}</span>
+                                    @endif
+                                </td>
                                 <td class="whitespace-nowrap px-3 py-2.5 text-right bg-white border-b border-gray-200">
                                     <div class="flex items-center justify-end gap-0.5">
                                         <button wire:click="openDetail({{ $seg->id }})" class="text-gray-400 hover:text-indigo-600 p-1.5 rounded-lg hover:bg-indigo-50 transition-colors duration-150" title="Ver detalles">
