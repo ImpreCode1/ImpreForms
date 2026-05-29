@@ -36,72 +36,100 @@
                     </div>
                 </div>
 
-                <div class="overflow-x-auto w-full rounded-lg border border-gray-200">
-                    <div class="min-w-[1100px]">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                <div class="overflow-x-auto w-full rounded-lg border border-gray-200" style="position: relative;">
+                    <table class="min-w-[2800px] w-full" style="table-layout: fixed; border-collapse: separate; border-spacing: 0;">
+                        <colgroup>
+                            <col style="width: 180px;">
+                            <col style="width: 250px;">
+                            <col style="width: 150px;">
+                            <col style="width: 130px;">
+                            <col style="width: 130px;">
+                            <col style="width: 130px;">
+                            <col style="width: 140px;">
+                            <col style="width: 170px;">
+                            <col style="width: 150px;">
+                            <col style="width: 110px;">
+                            <col style="width: 150px;">
+                            <col style="width: 150px;">
+                            <col style="width: 150px;">
+                            <col style="width: 150px;">
+                            <col style="width: 150px;">
+                            <col style="width: 220px;">
+                            <col style="width: 100px;">
+                        </colgroup>
+                        <thead class="sticky top-0 z-[6] bg-gray-50">
                             <tr>
-                                <th class="sticky left-0 z-20 bg-white px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap border-r border-gray-200">
+                                <th class="bg-gray-50 px-3 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap border-b border-r border-gray-200" style="position: sticky; left: 0; z-index: 5;">
                                     N° Oportunidad
                                 </th>
-                                <th class="sticky left-[140px] z-20 bg-white px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap border-r border-gray-200">Cliente</th>
-                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Línea Primera</th>
-                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado Negocio</th>
-                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
-                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha Apertura</th>
-                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha Cierre</th>
-                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha Facturación</th>
-                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ac. Cierre</th>
-                                <th class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Obs.</th>
-                                <th class="whitespace-nowrap px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
+                                <th class="bg-gray-50 px-3 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap border-b border-r border-gray-200" style="position: sticky; left: 180px; z-index: 5; box-shadow: 2px 0 8px -2px rgba(0,0,0,0.12);">
+                                    Cliente
+                                </th>
+                                <th class="whitespace-nowrap px-3 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase border-b border-gray-200 bg-gray-50">Línea Primera</th>
+                                <th class="whitespace-nowrap px-3 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase border-b border-gray-200 bg-gray-50">Fecha Apertura</th>
+                                <th class="whitespace-nowrap px-3 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase border-b border-gray-200 bg-gray-50">Fecha Cierre</th>
+                                <th class="whitespace-nowrap px-3 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase border-b border-gray-200 bg-gray-50">Fecha Facturación</th>
+                                <th class="whitespace-nowrap px-3 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase border-b border-gray-200 bg-gray-50">Valor</th>
+                                <th class="whitespace-nowrap px-3 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase border-b border-gray-200 bg-gray-50">Estado Negocio</th>
+                                <th class="whitespace-nowrap px-3 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase border-b border-gray-200 bg-gray-50">Estado</th>
+                                <th class="whitespace-nowrap px-3 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase border-b border-gray-200 bg-gray-50">Incoterm</th>
+                                <th class="whitespace-nowrap px-3 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase border-b border-gray-200 bg-gray-50">Anticipos</th>
+                                <th class="whitespace-nowrap px-3 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase border-b border-gray-200 bg-gray-50">Tiempos Entrega</th>
+                                <th class="whitespace-nowrap px-3 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase border-b border-gray-200 bg-gray-50">Forma Pago</th>
+                                <th class="whitespace-nowrap px-3 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase border-b border-gray-200 bg-gray-50">Facturación</th>
+                                <th class="whitespace-nowrap px-3 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase border-b border-gray-200 bg-gray-50">Actas Cierre</th>
+                                <th class="whitespace-nowrap px-3 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase border-b border-gray-200 bg-gray-50">Observaciones</th>
+                                <th class="whitespace-nowrap px-3 py-2.5 text-right text-xs font-semibold text-gray-600 uppercase border-b border-gray-200 bg-gray-50">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200">
+                        <tbody>
                             @forelse($seguimientos as $seg)
-                            <tr class="hover:bg-gray-50">
-                                <td class="sticky left-0 z-10 bg-white px-4 py-3 text-sm text-gray-900 whitespace-nowrap border-r border-gray-200">
-                                    {{ $seg->numero_oportunidad ?? '—' }}
+                            <tr class="hover:bg-indigo-50/40 transition-colors duration-150 odd:bg-gray-50/40">
+                                <td class="bg-white px-3 py-2.5 text-xs text-gray-900 whitespace-nowrap border-b border-r border-gray-200" style="position: sticky; left: 0; z-index: 4;">
+                                    <span class="block truncate" title="{{ $seg->numero_oportunidad ?? '' }}">{{ $seg->numero_oportunidad ?? '—' }}</span>
                                 </td>
-                                <td class="sticky left-[140px] z-10 bg-white px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap border-r border-gray-200">{{ $seg->cliente }}</td>
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->linea_primaria }}</td>
-                                <td class="whitespace-nowrap px-4 py-4">
+                                <td class="bg-white px-3 py-2.5 text-xs font-medium text-gray-900 whitespace-nowrap border-b border-r border-gray-200" style="position: sticky; left: 180px; z-index: 4; box-shadow: 2px 0 8px -2px rgba(0,0,0,0.12);">
+                                    <span class="block truncate" title="{{ $seg->cliente }}">{{ $seg->cliente }}</span>
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200">{{ $seg->linea_primaria ?: '—' }}</td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200">{{ $seg->fecha_apertura?->format('d/m/Y') ?: '—' }}</td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200">{{ $seg->fecha_cierre?->format('d/m/Y') ?: '—' }}</td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200">{{ $seg->fecha_facturacion?->format('d/m/Y') ?: '—' }}</td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs tabular-nums font-medium text-gray-900 bg-white border-b border-gray-200">{{ $seg->valor ? '$' . number_format((float)$seg->valor, 0, ',', '.') : '—' }}</td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->estado_negocio ?? '' }}">{{ $seg->estado_negocio ?: '—' }}</td>
+                                <td class="whitespace-nowrap px-3 py-2.5 bg-white border-b border-gray-200">
                                     @php
                                     $colors = [
                                         'anulado' => 'bg-red-100 text-red-800',
-                                        'declinado' => 'bg-gray-100 text-gray-800',
+                                        'declinado' => 'bg-gray-200 text-gray-700',
                                         'en_proceso' => 'bg-blue-100 text-blue-800',
                                         'facturado' => 'bg-green-100 text-green-800',
-                                        'facturado_y_pagado' => 'bg-green-700 text-white',
-                                        'pendiente' => 'bg-yellow-100 text-yellow-800',
+                                        'facturado_y_pagado' => 'bg-emerald-600 text-white',
+                                        'pendiente' => 'bg-amber-100 text-amber-800',
                                         'recurrencia' => 'bg-purple-100 text-purple-800',
                                     ];
                                     @endphp
-                                    <span class="px-2 py-1 text-xs font-semibold rounded-full {{ $colors[$seg->estado] ?? 'bg-gray-100 text-gray-800' }}">
+                                    <span class="inline-block px-2 py-0.5 text-xs font-semibold rounded-full leading-tight {{ $colors[$seg->estado] ?? 'bg-gray-100 text-gray-800' }}">
                                         {{ ucfirst(str_replace('_', ' ', $seg->estado)) }}
                                     </span>
                                 </td>
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->estado_negocio ?: '—' }}</td>
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900">{{ $seg->valor ? number_format((float)$seg->valor, 0, ',', '.') : '—' }}</td>
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->fecha_apertura?->format('d/m/Y') }}</td>
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->fecha_cierre?->format('d/m/Y') }}</td>
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500">{{ $seg->fecha_facturacion?->format('d/m/Y') }}</td>
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-center">
-                                    <span class="{{ $seg->actas_cierre ? 'text-green-600' : 'text-red-500' }}">{{ $seg->actas_cierre ? '✅ Sí' : '❌ No' }}</span>
-                                </td>
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-center">
-                                    <span class="{{ $seg->observaciones ? 'text-green-600' : 'text-red-500' }}">{{ $seg->observaciones ? '✅ Sí' : '❌ No' }}</span>
-                                </td>
-                                <td class="whitespace-nowrap px-4 py-4 text-right text-sm font-medium">
-                                    <div class="flex items-center justify-end gap-1">
-                                        <button wire:click="openDetail({{ $seg->id }})" class="text-gray-500 hover:text-gray-700 p-1" title="Ver detalles">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200">{{ $seg->incoterm ?: '—' }}</td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->anticipos ?? '' }}">{{ $seg->anticipos ?: '—' }}</td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200">{{ $seg->tiempos_entrega ?: '—' }}</td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->forma_pago ?? '' }}">{{ $seg->forma_pago ?: '—' }}</td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->facturacion ?? '' }}">{{ $seg->facturacion ?: '—' }}</td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->actas_cierre ?? '' }}">{{ $seg->actas_cierre ?: '—' }}</td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-xs text-gray-600 bg-white border-b border-gray-200 truncate" title="{{ $seg->observaciones ?? '' }}">{{ $seg->observaciones ?: '—' }}</td>
+                                <td class="whitespace-nowrap px-3 py-2.5 text-right bg-white border-b border-gray-200">
+                                    <div class="flex items-center justify-end gap-0.5">
+                                        <button wire:click="openDetail({{ $seg->id }})" class="text-gray-400 hover:text-indigo-600 p-1.5 rounded-lg hover:bg-indigo-50 transition-colors duration-150" title="Ver detalles">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                             </svg>
                                         </button>
-                                        <button wire:click="openModal({{ $seg->id }})" class="text-indigo-600 hover:text-indigo-900 p-1" title="Editar seguimiento">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <button wire:click="openModal({{ $seg->id }})" class="text-gray-400 hover:text-indigo-600 p-1.5 rounded-lg hover:bg-indigo-50 transition-colors duration-150" title="Editar seguimiento">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                             </svg>
                                         </button>
@@ -110,14 +138,13 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="12" class="px-4 py-8 text-center text-gray-500">
+                                <td colspan="17" class="px-4 py-8 text-center text-gray-500 whitespace-nowrap border-b border-gray-200">
                                     No hay seguimientos registrados
                                 </td>
                             </tr>
                             @endforelse
                         </tbody>
                     </table>
-                    </div>
                 </div>
 
                 <div class="px-6 py-4 border-t border-gray-200">
