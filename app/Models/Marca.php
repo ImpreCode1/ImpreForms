@@ -51,6 +51,10 @@ class Marca extends Model
         'autorizado_por',
     ];
 
+    protected $casts = [
+        'autorizado_en' => 'datetime',
+    ];
+
     public function infonegocio()
     {
         return $this->belongsTo(Infonegocio::class);
