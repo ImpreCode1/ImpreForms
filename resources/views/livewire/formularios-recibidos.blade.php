@@ -431,7 +431,7 @@
                                 </div>
 
                                 @if(auth()->user()->isAdmin() && $selectedFormulario)
-                                <div class="sticky top-[61px] z-10 flex justify-end px-6 py-0 pointer-events-none">
+                                <div class="absolute top-[61px] right-0 z-20 flex justify-end px-6 py-2 pointer-events-none">
                                     <div class="pointer-events-auto w-72 rounded-xl border shadow-lg bg-white"
                                          x-data="{ expandido: false }">
 
