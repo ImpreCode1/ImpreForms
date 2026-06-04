@@ -86,6 +86,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/lineas', fn() => view('admin.maestros.lineas'))->name('admin.maestros.lineas');
         Route::get('/codigos-cliente', fn() => view('admin.maestros.codigos-cliente'))->name('admin.maestros.codigos-cliente');
     });
+
+    Route::get('/autorizacion', \App\Livewire\Autorizacion\AutorizacionIndex::class)
+        ->name('autorizacion.index');
 });
 // * : ruta para el cierre de sesion.
 
