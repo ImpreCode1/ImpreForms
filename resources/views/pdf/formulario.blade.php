@@ -499,7 +499,23 @@
         <div class="info-value">{{ $formulario->infoEntrega->first()->otros ?? 'No especificado' }}</div>
     </div>
 
+    {{-- correos internos --}}
+    <br>
+    <div class="header">
+        <h1>Contactos Internos</h1>
+    </div>
 
+    <div class="info-section">
+        <span class="info-label">Correo Operaciones</span>
+        <div class="info-value">operaciones@impresistem.com</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Correo Financiero</span>
+        <div class="info-value">financiero@impresistem.com</div>
+    </div>
+
+<div class="footer">
 
 
     {{-- productos --}}
