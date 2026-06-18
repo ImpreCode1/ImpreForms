@@ -119,7 +119,7 @@ class EditarFormulario extends Component
 
         'clientname' => 'nullable|numeric',
         'mail' => 'nullable|email',
-        'aplicagarantia' => 'required|in:si,no',
+        'aplicagarantia' => 'nullable|in:Fábrica,Impresistem',
         'aplicapoliza' => 'required|in:si,no',
         'aseguradora_poliza' => 'nullable|string',
         'aseguradora_poliza_otro' => 'nullable|string',

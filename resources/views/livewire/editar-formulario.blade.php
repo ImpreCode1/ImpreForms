@@ -854,9 +854,9 @@
                                     garantía?</label>
                                 <select wire:model.live="aplicagarantia" id="garantia"
                                     class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicagarantia') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
-                                    <option value="" disabled>Selecciona una opción</option>
-                                    <option value="si">Sí</option>
-                                    <option value="no">No</option>
+                                    <option value="">Seleccione...</option>
+                                    <option value="Fábrica">Fábrica</option>
+                                    <option value="Impresistem">Impresistem</option>
                                 </select>
                                 @error('aplicagarantia')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>

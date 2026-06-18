@@ -210,8 +210,8 @@ class EnviarFormulario extends Component
         'finalizacion' => 'nullable|date|after_or_equal:inicio',
 
         // * Producto
-        'aplicagarantia' => 'required|in:si,no',
-        'terminogarantia' => 'nullable|required_if:aplicagarantia,si|string|min:1',
+        'aplicagarantia' => 'nullable|in:Fábrica,Impresistem',
+        'terminogarantia' => 'nullable|string|min:1',
         'aplicapoliza' => 'required|in:si,no',
         'porcentaje' => 'nullable|numeric|min:0|max:100',
         'aseguradora_poliza' => 'nullable|string',
@@ -702,13 +702,12 @@ class EnviarFormulario extends Component
 
     public function updatedAplicagarantia($value)
     {
-        // Si la garantía es "sí", hacer que el término de garantía sea obligatorio
-        if ($value === 'si') {
+        if ($value === 'Fábrica' || $value === 'Impresistem') {
             $this->rules['terminogarantia'] = 'required|string|min:3';
         } else {
             $this->rules['terminogarantia'] = 'nullable';
-            // $this->terminogarantia = ''; // Resetear el campo si selecciona "No"
         }
+    }
     }
 
     public function updatedAplicapoliza($value)
