@@ -168,6 +168,19 @@
     <br>
     <br>
 
+    {{-- aprobación contrato --}}
+    <br>
+    <div class="header">
+        <h1>Aprobación del Contrato</h1>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Acceso a la plataforma</span>
+        <div class="info-value">
+            Ingrese a la plataforma en <strong>contratos.impresistem.com</strong> y busque por el N° de oportunidad CRM <strong>{{ $formulario->infonegocio->n_oportunidad_crm ?? 'No especificado' }}</strong> para aprobar, rechazar o consultar el historial de esta solicitud.
+        </div>
+    </div>
+
 
 
     {{-- gerente de producto --}}
