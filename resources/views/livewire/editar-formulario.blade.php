@@ -76,6 +76,33 @@
                             </div>
 
                             <div>
+                                <label for="nit" class="block text-sm font-medium text-gray-700">NIT</label>
+                                <input id="nit" type="text" wire:model.live="nit"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm {{ $errors->has('nit') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                @error('nit')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="direccion_domicilio" class="block text-sm font-medium text-gray-700">Dirección según Cámara de Comercio</label>
+                                <input id="direccion_domicilio" type="text" wire:model.live="direccion_domicilio"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm {{ $errors->has('direccion_domicilio') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                @error('direccion_domicilio')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="cc_representante" class="block text-sm font-medium text-gray-700">Cédula del representante legal</label>
+                                <input id="cc_representante" type="text" wire:model.live="cc_representante"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm {{ $errors->has('cc_representante') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                @error('cc_representante')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div>
                                 <label for="correo" class="block text-sm font-medium text-gray-700">Correo</label>
                                 <input type="email" wire:model.live="correo"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm {{ $errors->has('correo') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
@@ -710,6 +737,101 @@
                 </div>
             </div>
 
+            <!-- Información Financiera Section -->
+            <div class="bg-gray-50 p-6 rounded-lg mt-6">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2l4 7h-8l4-7z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9v10c0 1.105 1.025 2 2.267 2.233L12 22l3.733-2.767C16.975 21 18 20.105 18 19V9l-6 4-6-4z" />
+                    </svg> Información Financiera
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="facturacion_moneda" class="block text-sm font-medium text-gray-700">
+                            Moneda de facturación
+                        </label>
+                        <select id="facturacion_moneda" wire:model.live="facturacion_moneda"
+                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('facturacion_moneda') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                            <option value="">Seleccione...</option>
+                            <option value="COP">COP</option>
+                            <option value="USD">USD</option>
+                        </select>
+                        @error('facturacion_moneda')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="trm" class="block text-sm font-medium text-gray-700">TRM</label>
+                        <select id="trm" wire:model.live="trm"
+                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('trm') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                            <option value="">Seleccione...</option>
+                            <option value="Pactada">Pactada</option>
+                            <option value="TRM del día de factura">TRM del día de factura</option>
+                        </select>
+                        @error('trm')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="cuenta_compensacion" class="block text-sm font-medium text-gray-700">
+                            Cuenta de compensación
+                        </label>
+                        <select id="cuenta_compensacion" wire:model.live="cuenta_compensacion"
+                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('cuenta_compensacion') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                            <option value="">Seleccione...</option>
+                            <option value="Sí">Sí</option>
+                            <option value="No">No</option>
+                        </select>
+                        @error('cuenta_compensacion')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="saldo_restante_porcentaje" class="block text-sm font-medium text-gray-700">
+                            Saldo restante (%)
+                        </label>
+                        <input id="saldo_restante_porcentaje" type="number" step="0.01" min="0" max="100"
+                            wire:model.live="saldo_restante_porcentaje"
+                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('saldo_restante_porcentaje') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                        @error('saldo_restante_porcentaje')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="saldo_restante_valor" class="block text-sm font-medium text-gray-700">
+                            Saldo restante valor
+                        </label>
+                        <input id="saldo_restante_valor" type="number" step="0.01" min="0"
+                            wire:model.live="saldo_restante_valor"
+                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('saldo_restante_valor') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                        @error('saldo_restante_valor')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="saldo_restante_fecha_pago" class="block text-sm font-medium text-gray-700">
+                            Fecha de pago saldo restante
+                        </label>
+                        <input id="saldo_restante_fecha_pago" type="date"
+                            wire:model.live="saldo_restante_fecha_pago"
+                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('saldo_restante_fecha_pago') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                        @error('saldo_restante_fecha_pago')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="otras_observaciones" class="block text-sm font-medium text-gray-700">
+                            Otras observaciones
+                        </label>
+                        <textarea id="otras_observaciones" wire:model.live="otras_observaciones" rows="3"
+                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('otras_observaciones') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"></textarea>
+                        @error('otras_observaciones')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+
             <div class="form-step">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Garantías Section -->
@@ -788,6 +910,33 @@
                                 @error('porcentaje')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
                                 @enderror
+                            </div>
+
+                            <div x-data="{ showOtroAseguradora: false }" x-init="$watch('$wire.aseguradora_poliza', value => showOtroAseguradora = value === 'Otro')">
+                                <label for="aseguradora_poliza" class="block text-sm font-medium text-gray-700">
+                                    Aseguradora de la póliza
+                                </label>
+                                <select id="aseguradora_poliza" wire:model.live="aseguradora_poliza"
+                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aseguradora_poliza') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                    <option value="">Seleccione...</option>
+                                    <option value="Sura">Sura</option>
+                                    <option value="Seguros Bolívar">Seguros Bolívar</option>
+                                    <option value="Seguros Mundial">Seguros Mundial</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                                @error('aseguradora_poliza')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
+                                <div x-show="showOtroAseguradora" x-cloak class="mt-2">
+                                    <label for="aseguradora_poliza_otro" class="block text-sm font-medium text-gray-700">
+                                        Especifique la aseguradora
+                                    </label>
+                                    <input id="aseguradora_poliza_otro" type="text" wire:model.live="aseguradora_poliza_otro"
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aseguradora_poliza_otro') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    @error('aseguradora_poliza_otro')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
+                                </div>
                             </div>
 
                         </div>
