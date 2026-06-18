@@ -110,7 +110,7 @@ class EditarFormulario extends Component
         'tiempoentrega' => 'nullable|string',
         'tiempo_entrega_cantidad' => 'nullable|integer|min:1',
         'tiempo_entrega_unidad' => 'nullable|string|in:Días,Semanas,Meses,Años',
-        'terminoentrega' => 'required|string|',
+        'terminoentrega' => 'required|date',
         'tipoicoterm' => 'required|string|max:255',
         'prestar' => 'nullable|string',
         'suministrar' => 'nullable|string',
