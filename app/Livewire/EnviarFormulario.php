@@ -71,6 +71,9 @@ class EnviarFormulario extends Component
     public $inicio;
     public $finalizacion;
     public $nom_rep;
+    public $nit;
+    public $direccion_domicilio;
+    public $cc_representante;
     // public $details;
     public $aplicagarantia = '';
     public $terminogarantia;
@@ -88,6 +91,15 @@ class EnviarFormulario extends Component
     public $other;
     public $actualpago;
     public $monedaactual;
+    public $facturacion_moneda;
+    public $trm;
+    public $cuenta_compensacion;
+    public $saldo_restante_porcentaje;
+    public $saldo_restante_valor;
+    public $saldo_restante_fecha_pago;
+    public $otras_observaciones;
+    public $aseguradora_poliza;
+    public $aseguradora_poliza_otro;
     public $porcentaje;
     public $aplicapoliza = '';
     public $fecha_pago;
@@ -158,6 +170,9 @@ class EnviarFormulario extends Component
         'codlinea' => 'required|string',
         'nomgerente' => 'required|string|min:5',
         'nom_rep' => 'required|string',
+        'nit' => 'nullable|string',
+        'direccion_domicilio' => 'nullable|string',
+        'cc_representante' => 'nullable|string',
         'corgerente' => 'required|email',
         'DirectorName' => 'required|string|min:5',
         'forma_pago' => 'nullable|string',
@@ -199,6 +214,15 @@ class EnviarFormulario extends Component
         'terminogarantia' => 'nullable|required_if:aplicagarantia,si|string|min:1',
         'aplicapoliza' => 'required|in:si,no',
         'porcentaje' => 'nullable|numeric|min:0|max:100',
+        'aseguradora_poliza' => 'nullable|string',
+        'aseguradora_poliza_otro' => 'nullable|string',
+        'facturacion_moneda' => 'nullable|in:COP,USD',
+        'trm' => 'nullable|in:Pactada,TRM del día de factura',
+        'cuenta_compensacion' => 'nullable|in:Sí,No',
+        'saldo_restante_porcentaje' => 'nullable|numeric|min:0|max:100',
+        'saldo_restante_valor' => 'nullable|numeric|min:0',
+        'saldo_restante_fecha_pago' => 'nullable|date',
+        'otras_observaciones' => 'nullable|string|max:500',
         'incluye_iva' => 'boolean|required|in:0,1',
     ];
 
@@ -339,6 +363,9 @@ class EnviarFormulario extends Component
                 'codlinea'             => 'Código de línea',
                 'nomgerente'           => 'Nombre del gerente de producto',
                 'nom_rep'              => 'Nombre del representante legal',
+                'nit'                  => 'NIT',
+                'direccion_domicilio'  => 'Dirección de domicilio',
+                'cc_representante'     => 'Cédula del representante legal',
                 'corgerente'           => 'Correo del gerente',
                 'DirectorName'         => 'Nombre del director',
                 'moneda_precio_venta'  => 'Moneda del precio de venta',
@@ -373,6 +400,14 @@ class EnviarFormulario extends Component
                 'terminogarantia'      => 'Término de garantía',
                 'aplicapoliza'         => '¿Aplica póliza?',
                 'porcentaje'           => 'Porcentaje de póliza',
+                'aseguradora_poliza'   => 'Aseguradora de la póliza',
+                'facturacion_moneda'   => 'Moneda de facturación',
+                'trm'                  => 'TRM',
+                'cuenta_compensacion'  => 'Cuenta de compensación',
+                'saldo_restante_porcentaje' => 'Saldo restante (%)',
+                'saldo_restante_valor'      => 'Saldo restante valor',
+                'saldo_restante_fecha_pago' => 'Fecha de pago saldo restante',
+                'otras_observaciones'  => 'Otras observaciones',
                 'incluye_iva'          => '¿Incluye IVA?',
             ];
 
@@ -402,6 +437,9 @@ class EnviarFormulario extends Component
                 'numero_celular' => $this->numero,
                 'n_oportunidad_crm' => $this->crm,
                 'nom_rep' => $this->nom_rep,
+                'nit' => $this->nit,
+                'direccion_domicilio' => $this->direccion_domicilio,
+                'cc_representante' => $this->cc_representante,
             ]);
 
             $this->precio = str_replace('.', ',', $this->precio);
@@ -466,6 +504,7 @@ class EnviarFormulario extends Component
                 'termino_garantia' => $this->terminogarantia,
                 'aplica_poliza' => $this->aplicapoliza,
                 'porcentaje_poliza' => $this->porcentaje,
+                'aseguradora_poliza' => $this->aseguradora_poliza === 'Otro' ? $this->aseguradora_poliza_otro : $this->aseguradora_poliza,
             ]);
 
             // ✅ Crear Pago
@@ -478,6 +517,13 @@ class EnviarFormulario extends Component
             Financiera::create([
                 'marcas_id' => $this->marcaId,
                 'otros' => $this->otros,
+                'facturacion_moneda' => $this->facturacion_moneda,
+                'trm' => $this->trm,
+                'cuenta_compensacion' => $this->cuenta_compensacion,
+                'saldo_restante_porcentaje' => $this->saldo_restante_porcentaje,
+                'saldo_restante_valor' => $this->saldo_restante_valor,
+                'saldo_restante_fecha_pago' => $this->saldo_restante_fecha_pago,
+                'otras_observaciones' => $this->otras_observaciones,
             ]);
 
             // ✅ Crear links únicos

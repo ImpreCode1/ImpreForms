@@ -32,6 +32,18 @@ class EditarFormulario extends Component
     public $cod;
     public $aplicagarantia, $terminogarantia, $aplicapoliza, $porcentaje;
     public $incluye_iva, $otros, $orden_compra;
+    public $nit;
+    public $direccion_domicilio;
+    public $cc_representante;
+    public $facturacion_moneda;
+    public $trm;
+    public $cuenta_compensacion;
+    public $saldo_restante_porcentaje;
+    public $saldo_restante_valor;
+    public $saldo_restante_fecha_pago;
+    public $otras_observaciones;
+    public $aseguradora_poliza;
+    public $aseguradora_poliza_otro;
     // public $cotizacion;
     protected $listeners = ['removeUpload', 'removeExistingFile', 'editFormulario'];
     public $marcaId;
@@ -68,6 +80,9 @@ class EditarFormulario extends Component
         'negocio' => 'required|string|regex:/^[\d,\.]+$/',
         'nombres' => 'required|string|',
         'nom_rep' => 'required|string',
+        'nit' => 'nullable|string',
+        'direccion_domicilio' => 'nullable|string',
+        'cc_representante' => 'nullable|string',
         'correo' => 'required|email|',
         'numero' => 'required|numeric',
         'crms' => 'required|string',
@@ -106,6 +121,15 @@ class EditarFormulario extends Component
         'mail' => 'nullable|email',
         'aplicagarantia' => 'required|in:si,no',
         'aplicapoliza' => 'required|in:si,no',
+        'aseguradora_poliza' => 'nullable|string',
+        'aseguradora_poliza_otro' => 'nullable|string',
+        'facturacion_moneda' => 'nullable|in:COP,USD',
+        'trm' => 'nullable|in:Pactada,TRM del día de factura',
+        'cuenta_compensacion' => 'nullable|in:Sí,No',
+        'saldo_restante_porcentaje' => 'nullable|numeric|min:0|max:100',
+        'saldo_restante_valor' => 'nullable|numeric|min:0',
+        'saldo_restante_fecha_pago' => 'nullable|date',
+        'otras_observaciones' => 'nullable|string|max:500',
         'incluye_iva' => 'required',
         'forma_pago' => 'nullable|string|max:255',
         'moneda' => 'nullable|string',
@@ -338,6 +362,19 @@ class EditarFormulario extends Component
         $this->numero = $this->formulario->infonegocio->numero_celular;
         $this->crms = $this->formulario->infonegocio->n_oportunidad_crm;
         $this->nom_rep = $this->formulario->infonegocio->nom_rep;
+        $this->nit = $this->formulario->infonegocio->nit;
+        $this->direccion_domicilio = $this->formulario->infonegocio->direccion_domicilio;
+        $this->cc_representante = $this->formulario->infonegocio->cc_representante;
+
+        if ($this->formulario->financiera) {
+            $this->facturacion_moneda = $this->formulario->financiera->facturacion_moneda;
+            $this->trm = $this->formulario->financiera->trm;
+            $this->cuenta_compensacion = $this->formulario->financiera->cuenta_compensacion;
+            $this->saldo_restante_porcentaje = $this->formulario->financiera->saldo_restante_porcentaje;
+            $this->saldo_restante_valor = $this->formulario->financiera->saldo_restante_valor;
+            $this->saldo_restante_fecha_pago = $this->formulario->financiera->saldo_restante_fecha_pago;
+            $this->otras_observaciones = $this->formulario->financiera->otras_observaciones;
+        }
 
         $this->tipo_solicitud = $this->formulario->tipo_solicitud;
         $this->nombre_ejc = $this->formulario->nombre_ejc_formatted;
@@ -397,6 +434,7 @@ class EditarFormulario extends Component
                 $this->terminogarantia = $producto->termino_garantia;
                 $this->aplicapoliza = $producto->aplica_poliza;
                 $this->porcentaje = $producto->porcentaje_poliza;
+                $this->aseguradora_poliza = $producto->aseguradora_poliza;
             }
         }
 
@@ -519,6 +557,9 @@ class EditarFormulario extends Component
                 'numero_celular' => $this->numero,
                 'n_oportunidad_crm' => $this->crms,
                 'nom_rep' => $this->nom_rep,
+                'nit' => $this->nit,
+                'direccion_domicilio' => $this->direccion_domicilio,
+                'cc_representante' => $this->cc_representante,
             ]);
 
             if ($info = $this->formulario->informacion->first()) {
@@ -546,6 +587,7 @@ class EditarFormulario extends Component
                         'termino_garantia' => $this->terminogarantia,
                         'aplica_poliza' => $this->aplicapoliza,
                         'porcentaje_poliza' => $this->porcentaje,
+                        'aseguradora_poliza' => $this->aseguradora_poliza === 'Otro' ? $this->aseguradora_poliza_otro : $this->aseguradora_poliza,
                     ]);
                 }
             }
@@ -553,6 +595,18 @@ class EditarFormulario extends Component
             if ($pago = $this->formulario->pago->first()) {
                 $pago->update([
                     'incluye_iva' => $this->incluye_iva,
+                ]);
+            }
+
+            if ($financiera = $this->formulario->financiera) {
+                $financiera->update([
+                    'facturacion_moneda' => $this->facturacion_moneda,
+                    'trm' => $this->trm,
+                    'cuenta_compensacion' => $this->cuenta_compensacion,
+                    'saldo_restante_porcentaje' => $this->saldo_restante_porcentaje,
+                    'saldo_restante_valor' => $this->saldo_restante_valor,
+                    'saldo_restante_fecha_pago' => $this->saldo_restante_fecha_pago,
+                    'otras_observaciones' => $this->otras_observaciones,
                 ]);
             }
 
