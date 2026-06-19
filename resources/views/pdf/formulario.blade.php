@@ -183,21 +183,6 @@
     <br>
     <br>
 
-    {{-- aprobación contrato --}}
-    <br>
-    <div class="header">
-        <h1>Aprobación del Contrato</h1>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Acceso a la plataforma</span>
-        <div class="info-value">
-            Ingrese a la plataforma en <strong>contratos.impresistem.com</strong> y busque por el N° de oportunidad CRM <strong>{{ $formulario->infonegocio->n_oportunidad_crm ?? 'No especificado' }}</strong> para aprobar, rechazar o consultar el historial de esta solicitud.
-        </div>
-    </div>
-
-
-
     {{-- objeto del contrato --}}
     <br>
     <br>
@@ -590,22 +575,6 @@
         <div class="info-value">{{ $formulario->infoEntrega->first()->otros ?? 'No especificado' }}</div>
     </div>
 
-    {{-- correos internos --}}
-    <br>
-    <div class="header">
-        <h1>Contactos Internos</h1>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Correo Operaciones</span>
-        <div class="info-value">operaciones@impresistem.com</div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">Correo Financiero</span>
-        <div class="info-value">financiero@impresistem.com</div>
-    </div>
-
 <div class="footer">
 
 
@@ -723,6 +692,35 @@
         <div class="info-value">{{ $formulario->financiera->first()->otras_observaciones ?? 'No especificado' }}</div>
     </div>
 
+
+    {{-- correos internos --}}
+    <br>
+    <div class="header">
+        <h1>Contactos Internos</h1>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Correo Operaciones</span>
+        <div class="info-value">operaciones@impresistem.com</div>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Correo Financiero</span>
+        <div class="info-value">financiero@impresistem.com</div>
+    </div>
+
+    {{-- aprobación contrato --}}
+    <br>
+    <div class="header">
+        <h1>Aprobación del Contrato</h1>
+    </div>
+
+    <div class="info-section">
+        <span class="info-label">Acceso a la plataforma</span>
+        <div class="info-value">
+            Ingrese a la plataforma en <strong>contratos.impresistem.com</strong> y busque por el N° de oportunidad CRM <strong>{{ $formulario->infonegocio->n_oportunidad_crm ?? 'No especificado' }}</strong> para aprobar, rechazar o consultar el historial de esta solicitud.
+        </div>
+    </div>
 
 
     <div class="footer">
