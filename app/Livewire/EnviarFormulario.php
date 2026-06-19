@@ -15,6 +15,7 @@ use App\Models\Linea;
 use App\Models\Marca;
 use App\Models\Pago;
 use App\Models\Producto;
+use App\Models\ObjetoContrato;
 use App\Models\Seguimiento;
 use App\Models\Setting;
 use Carbon\Carbon;
@@ -114,6 +115,7 @@ class EnviarFormulario extends Component
     public $archivos = [];
     public $documentosGuardados = [];
     public $archivosNuevos = [];
+    public $objetoContrato = [];
 
     public $selectedDirector;
     public $DirectorEmail = '';
@@ -224,6 +226,13 @@ class EnviarFormulario extends Component
         'saldo_restante_fecha_pago' => 'nullable|date',
         'otras_observaciones' => 'nullable|string|max:500',
         'incluye_iva' => 'boolean|required|in:0,1',
+
+        // * Objeto del Contrato
+        'objetoContrato' => 'nullable|array',
+        'objetoContrato.*.descripcion' => 'required_with:objetoContrato.*.cantidad|string|max:500',
+        'objetoContrato.*.cantidad' => 'required_with:objetoContrato.*.descripcion|integer|min:1',
+        'objetoContrato.*.tipo' => 'nullable|string|in:Hardware,Licencia,HiCare,Servicio',
+        'objetoContrato.*.precio_unitario' => 'nullable|numeric|min:0',
     ];
 
     protected $messages = [
@@ -290,6 +299,17 @@ class EnviarFormulario extends Component
         'finalizacion.after_or_equal' => 'La fecha de finalización no puede ser menor a la fecha de inicio.',
         'selectedDirector' => 'nullable|string',
         'selectedEjecutivo' => 'nullable|string',
+
+        // Objeto del Contrato
+        'objetoContrato.*.descripcion.required_with' => 'La descripción del producto es obligatoria cuando se especifica una cantidad.',
+        'objetoContrato.*.descripcion.string' => 'La descripción debe ser texto.',
+        'objetoContrato.*.descripcion.max' => 'La descripción no puede superar los 500 caracteres.',
+        'objetoContrato.*.cantidad.required_with' => 'La cantidad es obligatoria cuando se especifica una descripción.',
+        'objetoContrato.*.cantidad.integer' => 'La cantidad debe ser un número entero.',
+        'objetoContrato.*.cantidad.min' => 'La cantidad mínima es 1.',
+        'objetoContrato.*.tipo.in' => 'El tipo seleccionado no es válido.',
+        'objetoContrato.*.precio_unitario.numeric' => 'El precio unitario debe ser un número.',
+        'objetoContrato.*.precio_unitario.min' => 'El precio unitario no puede ser negativo.',
     ];
 
     // * mostrar garantia
@@ -340,6 +360,37 @@ class EnviarFormulario extends Component
         if ($value === 'no') {
             $this->advancePaymentPercentage = null;
             $this->advancePaymentDate = null;
+        }
+    }
+
+    public function agregarFila()
+    {
+        $this->objetoContrato[] = [
+            'descripcion' => '',
+            'cantidad' => 1,
+            'tipo' => '',
+            'precio_unitario' => 0,
+            'precio_total' => 0,
+        ];
+    }
+
+    public function eliminarFila($index)
+    {
+        unset($this->objetoContrato[$index]);
+        $this->objetoContrato = array_values($this->objetoContrato);
+    }
+
+    public function updatedObjetoContrato($value, $key)
+    {
+        $parts = explode('.', $key);
+        if (count($parts) === 2) {
+            $index = $parts[0];
+            $field = $parts[1];
+            if (in_array($field, ['cantidad', 'precio_unitario']) && isset($this->objetoContrato[$index])) {
+                $cantidad = (float) ($this->objetoContrato[$index]['cantidad'] ?? 0);
+                $precioUnitario = (float) ($this->objetoContrato[$index]['precio_unitario'] ?? 0);
+                $this->objetoContrato[$index]['precio_total'] = round($cantidad * $precioUnitario, 2);
+            }
         }
     }
 
@@ -506,6 +557,20 @@ class EnviarFormulario extends Component
                 'porcentaje_poliza' => $this->porcentaje,
                 'aseguradora_poliza' => $this->aseguradora_poliza === 'Otro' ? $this->aseguradora_poliza_otro : $this->aseguradora_poliza,
             ]);
+
+            // ✅ Crear Objeto del Contrato
+            foreach ($this->objetoContrato as $item) {
+                if (!empty($item['descripcion']) && !empty($item['cantidad'])) {
+                    ObjetoContrato::create([
+                        'marca_id' => $this->marcaId,
+                        'descripcion' => $item['descripcion'],
+                        'cantidad' => $item['cantidad'],
+                        'tipo' => $item['tipo'],
+                        'precio_unitario' => $item['precio_unitario'],
+                        'precio_total' => $item['precio_total'],
+                    ]);
+                }
+            }
 
             // ✅ Crear Pago
             Pago::create([

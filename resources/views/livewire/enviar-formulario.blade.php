@@ -873,6 +873,126 @@
                             </div>
                         </div>
 
+                        <!-- Objeto del Contrato Section -->
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-emerald-500"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                                Objeto del Contrato
+                            </h2>
+
+                            <div class="overflow-x-auto">
+                                <table class="w-full border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-gray-300">
+                                            <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Descripción</th>
+                                            <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Cantidad</th>
+                                            <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tipo</th>
+                                            <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Precio Unitario</th>
+                                            <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Precio Total</th>
+                                            <th class="px-3 py-2"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($objetoContrato as $index => $item)
+                                            <tr wire:key="item-{{ $index }}" class="border-b border-gray-200 hover:bg-white transition-colors" x-data>
+                                                <td class="px-3 py-2">
+                                                    <input type="text" wire:model.live="objetoContrato.{{ $index }}.descripcion"
+                                                        placeholder="Descripción del producto o servicio"
+                                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('objetoContrato.' . $index . '.descripcion') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                                    @error('objetoContrato.' . $index . '.descripcion')
+                                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                    @enderror
+                                                </td>
+                                                <td class="px-3 py-2">
+                                                    <input data-cantidad type="number" min="1"
+                                                        wire:model.live="objetoContrato.{{ $index }}.cantidad"
+                                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('objetoContrato.' . $index . '.cantidad') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                                    @error('objetoContrato.' . $index . '.cantidad')
+                                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                    @enderror
+                                                </td>
+                                                <td class="px-3 py-2">
+                                                    <select wire:model.live="objetoContrato.{{ $index }}.tipo"
+                                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('objetoContrato.' . $index . '.tipo') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                                        <option value="">Seleccione...</option>
+                                                        <option value="Hardware">Hardware</option>
+                                                        <option value="Licencia">Licencia</option>
+                                                        <option value="HiCare">HiCare</option>
+                                                        <option value="Servicio">Servicio</option>
+                                                    </select>
+                                                    @error('objetoContrato.' . $index . '.tipo')
+                                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                    @enderror
+                                                </td>
+                                                <td class="px-3 py-2">
+                                                    <input data-precio-u type="number" step="0.01" min="0"
+                                                        wire:model.live="objetoContrato.{{ $index }}.precio_unitario"
+                                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('objetoContrato.' . $index . '.precio_unitario') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                                    @error('objetoContrato.' . $index . '.precio_unitario')
+                                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                    @enderror
+                                                </td>
+                                                <td class="px-3 py-2">
+                                                    <input type="number" step="0.01" readonly
+                                                        x-bind:value="(parseFloat($el.closest('tr').querySelector('[data-cantidad]')?.value) || 0) * (parseFloat($el.closest('tr').querySelector('[data-precio-u]')?.value) || 0)"
+                                                        wire:model="objetoContrato.{{ $index }}.precio_total"
+                                                        class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-500 shadow-sm cursor-not-allowed" />
+                                                </td>
+                                                <td class="px-3 py-2 text-center">
+                                                    <button type="button" wire:click="eliminarFila({{ $index }})"
+                                                        class="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition-colors duration-200"
+                                                        title="Eliminar ítem">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="border-t-2 border-gray-300">
+                                            <td colspan="4" class="px-3 py-3 text-right text-sm font-bold text-gray-700">
+                                                Total General:
+                                            </td>
+                                            <td class="px-3 py-3 text-sm font-bold text-gray-900">
+                                                <span x-data="{ total: 0 }" x-init="
+                                                    total = () => {
+                                                        let sum = 0;
+                                                        document.querySelectorAll('[data-cantidad]').forEach(el => {
+                                                            const tr = el.closest('tr');
+                                                            const qty = parseFloat(el.value) || 0;
+                                                            const price = parseFloat(tr.querySelector('[data-precio-u]')?.value) || 0;
+                                                            sum += qty * price;
+                                                        });
+                                                        return sum.toFixed(2);
+                                                    };
+                                                    $watch('$wire.objetoContrato', () => { total = total(); });
+                                                " x-text="total()">
+                                                    {{ number_format(array_sum(array_column($objetoContrato, 'precio_total')), 2) }}
+                                                </span>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            <div class="mt-4">
+                                <button type="button" wire:click="agregarFila"
+                                    class="inline-flex items-center px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors duration-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    Agregar ítem
+                                </button>
+                            </div>
+                        </div>
+
                         {{-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> --}}
                         <!-- Garantías Section -->
                         <div class="bg-gray-50 p-6 rounded-lg">

@@ -6,6 +6,7 @@ use App\Livewire\Traits\FormatearFechas;
 use App\Livewire\Traits\InvertirNombre;
 use App\Models\Documento;
 use App\Models\Marca;
+use App\Models\ObjetoContrato;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -66,7 +67,7 @@ class EditarFormulario extends Component
     public $porcentaje_anticipo;
     public $fecha_pago_anticipo;
     public $otros_pago;
-
+    public $objetoContrato = [];
 
     protected $rules = [
         // validaciones
@@ -438,6 +439,11 @@ class EditarFormulario extends Component
             }
         }
 
+        // ✅ Cargar Objeto del Contrato
+        $this->objetoContrato = ObjetoContrato::where('marca_id', $this->marcaId)
+            ->get()
+            ->toArray();
+
         $this->existingFiles = $this->formulario->documento
             ->map(function ($documento) {
                 return [
@@ -518,6 +524,37 @@ class EditarFormulario extends Component
         $this->loadExistingFiles();
     }
 
+    public function agregarFila()
+    {
+        $this->objetoContrato[] = [
+            'descripcion' => '',
+            'cantidad' => 1,
+            'tipo' => '',
+            'precio_unitario' => 0,
+            'precio_total' => 0,
+        ];
+    }
+
+    public function eliminarFila($index)
+    {
+        unset($this->objetoContrato[$index]);
+        $this->objetoContrato = array_values($this->objetoContrato);
+    }
+
+    public function updatedObjetoContrato($value, $key)
+    {
+        $parts = explode('.', $key);
+        if (count($parts) === 2) {
+            $index = $parts[0];
+            $field = $parts[1];
+            if (in_array($field, ['cantidad', 'precio_unitario']) && isset($this->objetoContrato[$index])) {
+                $cantidad = (float) ($this->objetoContrato[$index]['cantidad'] ?? 0);
+                $precioUnitario = (float) ($this->objetoContrato[$index]['precio_unitario'] ?? 0);
+                $this->objetoContrato[$index]['precio_total'] = round($cantidad * $precioUnitario, 2);
+            }
+        }
+    }
+
     public function submit()
     {
         $this->validate();
@@ -588,6 +625,21 @@ class EditarFormulario extends Component
                         'aplica_poliza' => $this->aplicapoliza,
                         'porcentaje_poliza' => $this->porcentaje,
                         'aseguradora_poliza' => $this->aseguradora_poliza === 'Otro' ? $this->aseguradora_poliza_otro : $this->aseguradora_poliza,
+                    ]);
+                }
+            }
+
+            // ✅ Guardar Objeto del Contrato
+            ObjetoContrato::where('marca_id', $this->marcaId)->delete();
+            foreach ($this->objetoContrato as $item) {
+                if (!empty($item['descripcion']) && !empty($item['cantidad'])) {
+                    ObjetoContrato::create([
+                        'marca_id' => $this->marcaId,
+                        'descripcion' => $item['descripcion'],
+                        'cantidad' => $item['cantidad'],
+                        'tipo' => $item['tipo'],
+                        'precio_unitario' => $item['precio_unitario'],
+                        'precio_total' => $item['precio_total'],
                     ]);
                 }
             }
