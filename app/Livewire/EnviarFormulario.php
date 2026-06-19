@@ -708,7 +708,6 @@ class EnviarFormulario extends Component
             $this->rules['terminogarantia'] = 'nullable';
         }
     }
-    }
 
     public function updatedAplicapoliza($value)
     {
