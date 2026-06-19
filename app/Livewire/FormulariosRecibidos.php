@@ -401,7 +401,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public function downloadFormulario($id)
     {
         try {
-            $formulario = Marca::with(['infonegocio', 'informacion.producto', 'pago', 'financiera', 'infoEntrega', 'documento', 'formLinks'])->findOrFail($id);
+            $formulario = Marca::with(['infonegocio', 'informacion.producto', 'pago', 'financiera', 'infoEntrega', 'documento', 'formLinks', 'objetoContrato'])->findOrFail($id);
 
             $pdf = FacadePdf::loadView('pdf.formulario', compact('formulario'));
 
