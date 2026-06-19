@@ -602,6 +602,7 @@
     {{-- <h4 class="text-3xl font-bold mb-6 text-center text-stone-950 tracking-wide">
         Información condiciones financieras
     </h4> --}}
+</div>
 
     {{-- condiciones  --}}
     <div class="header">
