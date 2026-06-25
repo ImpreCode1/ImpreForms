@@ -430,7 +430,7 @@
                                     </button>
                                 </div>
 
-                                @if(auth()->user()->rol === 'admin')
+                                @if(strtolower(auth()->user()->rol) === 'admin')
                                 <div x-data="{ mostrarRechazo: false }"
                                      class="absolute top-[61px] right-4 z-50 bg-white border border-gray-200
                                             rounded-xl shadow-lg p-3 w-56">
