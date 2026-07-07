@@ -345,6 +345,8 @@ class EditarFormulario extends Component
 
     public function mount($formulario)
     {
+        abort_if(auth()->user()->isUser(), 403, 'No tiene permisos para editar este formulario.');
+
         // Buscar el formulario completo por ID con todas las relaciones necesarias
         $this->formulario = Marca::with([
             'infonegocio',
