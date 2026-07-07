@@ -367,14 +367,15 @@ class EditarFormulario extends Component
         $this->direccion_domicilio = $this->formulario->infonegocio->direccion_domicilio;
         $this->cc_representante = $this->formulario->infonegocio->cc_representante;
 
-        if ($this->formulario->financiera) {
-            $this->facturacion_moneda = $this->formulario->financiera->first()?->facturacion_moneda;
-            $this->trm = $this->formulario->financiera->trm;
-            $this->cuenta_compensacion = $this->formulario->financiera->cuenta_compensacion;
-            $this->saldo_restante_porcentaje = $this->formulario->financiera->saldo_restante_porcentaje;
-            $this->saldo_restante_valor = $this->formulario->financiera->saldo_restante_valor;
-            $this->saldo_restante_fecha_pago = $this->formulario->financiera->saldo_restante_fecha_pago;
-            $this->otras_observaciones = $this->formulario->financiera->otras_observaciones;
+        if ($this->formulario->financiera->isNotEmpty()) {
+            $financiera = $this->formulario->financiera->first();
+            $this->facturacion_moneda = $financiera?->facturacion_moneda;
+            $this->trm = $financiera?->trm;
+            $this->cuenta_compensacion = $financiera?->cuenta_compensacion;
+            $this->saldo_restante_porcentaje = $financiera?->saldo_restante_porcentaje;
+            $this->saldo_restante_valor = $financiera?->saldo_restante_valor;
+            $this->saldo_restante_fecha_pago = $financiera?->saldo_restante_fecha_pago;
+            $this->otras_observaciones = $financiera?->otras_observaciones;
         }
 
         $this->tipo_solicitud = $this->formulario->tipo_solicitud;
