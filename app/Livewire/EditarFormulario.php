@@ -368,7 +368,7 @@ class EditarFormulario extends Component
         $this->cc_representante = $this->formulario->infonegocio->cc_representante;
 
         if ($this->formulario->financiera) {
-            $this->facturacion_moneda = $this->formulario->financiera->facturacion_moneda;
+            $this->facturacion_moneda = $this->formulario->financiera->first()?->facturacion_moneda;
             $this->trm = $this->formulario->financiera->trm;
             $this->cuenta_compensacion = $this->formulario->financiera->cuenta_compensacion;
             $this->saldo_restante_porcentaje = $this->formulario->financiera->saldo_restante_porcentaje;
