@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EditarFormulario extends Component
 {
@@ -68,6 +69,12 @@ class EditarFormulario extends Component
     public $fecha_pago_anticipo;
     public $otros_pago;
     public $objetoContrato = [];
+    public $excelFile = null;
+    public $excelHeaders = [];
+    public $excelRows = [];
+    public $columnMapping = [];
+    public $excelPreview = [];
+    public $showExcelMapping = false;
 
     protected $rules = [
         // validaciones
@@ -542,6 +549,123 @@ class EditarFormulario extends Component
     {
         unset($this->objetoContrato[$index]);
         $this->objetoContrato = array_values($this->objetoContrato);
+    }
+
+    public function updatedExcelFile()
+    {
+        $this->validate([
+            'excelFile' => 'file|mimes:xlsx,xls,csv|max:5120',
+        ]);
+
+        $data = Excel::toArray(null, $this->excelFile);
+        $rows = $data[0] ?? [];
+
+        if (empty($rows) || empty($rows[0])) {
+            session()->flash('error', 'El archivo está vacío o no tiene encabezados.');
+            return;
+        }
+
+        $this->excelHeaders = $rows[0];
+        $this->excelRows = array_slice($rows, 1);
+        $this->columnMapping = array_fill(0, count($this->excelHeaders), '');
+        $this->showExcelMapping = true;
+        $this->buildPreview();
+    }
+
+    public function updatedColumnMapping()
+    {
+        $this->buildPreview();
+    }
+
+    public function confirmarMapeoExcel()
+    {
+        $this->applyExcelRows();
+    }
+
+    public function applyExcelWithErrors()
+    {
+        $this->buildPreview();
+        $this->applyExcelRows();
+    }
+
+    private function applyExcelRows()
+    {
+        $validas = array_filter($this->excelPreview, fn($row) => $row['error'] === null);
+        $validas = array_values($validas);
+
+        if (empty($validas)) {
+            session()->flash('error', 'No hay filas válidas para aplicar. Revise el mapeo o el archivo.');
+            return;
+        }
+
+        $this->objetoContrato = array_map(fn($row) => [
+            'descripcion'     => $row['descripcion'],
+            'cantidad'        => (float) $row['cantidad'],
+            'tipo'            => $row['tipo'],
+            'precio_unitario' => (float) $row['precio_unitario'],
+            'precio_total'    => (float) $row['precio_total'],
+        ], $validas);
+
+        $this->resetExcelState();
+        session()->flash('message', 'Objeto del Contrato reemplazado desde Excel (' . count($validas) . ' filas).');
+    }
+
+    public function cancelarMapeoExcel()
+    {
+        $this->resetExcelState();
+    }
+
+    private function resetExcelState()
+    {
+        $this->excelFile = null;
+        $this->excelHeaders = [];
+        $this->excelRows = [];
+        $this->columnMapping = [];
+        $this->excelPreview = [];
+        $this->showExcelMapping = false;
+    }
+
+    private function buildPreview()
+    {
+        $mappedColumns = [
+            'descripcion'     => array_search('Descripción', $this->columnMapping),
+            'cantidad'        => array_search('Cantidad', $this->columnMapping),
+            'tipo'            => array_search('Tipo', $this->columnMapping),
+            'precio_unitario' => array_search('Precio Unitario', $this->columnMapping),
+        ];
+
+        $this->excelPreview = [];
+
+        foreach ($this->excelRows as $row) {
+            $item = [
+                'descripcion'     => $mappedColumns['descripcion'] !== false ? trim((string) ($row[$mappedColumns['descripcion']] ?? '')) : '',
+                'cantidad'        => $mappedColumns['cantidad'] !== false ? trim((string) ($row[$mappedColumns['cantidad']] ?? '')) : '',
+                'tipo'            => $mappedColumns['tipo'] !== false ? trim((string) ($row[$mappedColumns['tipo']] ?? '')) : '',
+                'precio_unitario' => $mappedColumns['precio_unitario'] !== false ? trim((string) ($row[$mappedColumns['precio_unitario']] ?? '')) : '',
+                'error'           => null,
+            ];
+
+            $errors = [];
+            if ($item['descripcion'] === '') {
+                $errors[] = 'Descripción requerida';
+            }
+            if ($item['cantidad'] === '' || !is_numeric($item['cantidad'])) {
+                $errors[] = 'Cantidad debe ser numérica';
+            }
+            if ($item['precio_unitario'] === '' || !is_numeric($item['precio_unitario'])) {
+                $errors[] = 'Precio unitario debe ser numérico';
+            }
+
+            if (!empty($errors)) {
+                $item['error'] = implode('; ', $errors);
+            } else {
+                $item['cantidad'] = (float) $item['cantidad'];
+                $item['precio_unitario'] = (float) $item['precio_unitario'];
+                $item['precio_total'] = round($item['cantidad'] * $item['precio_unitario'], 2);
+            }
+
+            $this->excelPreview[] = $item;
+        }
     }
 
     public function updatedObjetoContrato($value, $key)

@@ -843,6 +843,114 @@
                     Objeto del Contrato
                 </h2>
 
+                <div class="mb-4 p-4 bg-white rounded-lg border border-dashed border-gray-300">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Cargar desde Excel
+                    </label>
+                    <input type="file" wire:model="excelFile" accept=".xlsx,.xls,.csv"
+                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                    <div wire:loading wire:target="excelFile" class="text-sm text-gray-500 mt-1 flex items-center gap-1">
+                        <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                        Procesando archivo...
+                    </div>
+                    @error('excelFile') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
+
+                @if ($showExcelMapping)
+                    <div class="mb-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                        <h3 class="text-sm font-semibold text-amber-800 mb-3">Mapear columnas del Excel</h3>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                            @foreach ($excelHeaders as $index => $header)
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">{{ $header }}</label>
+                                    <select wire:model.live="columnMapping.{{ $index }}"
+                                        class="block w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-200">
+                                        <option value="">-- Ignorar --</option>
+                                        <option value="Descripción">Descripción</option>
+                                        <option value="Cantidad">Cantidad</option>
+                                        <option value="Tipo">Tipo</option>
+                                        <option value="Precio Unitario">Precio Unitario</option>
+                                    </select>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        @if (!empty($excelPreview))
+                            <div class="overflow-x-auto mb-3">
+                                <table class="w-full text-sm border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-amber-300">
+                                            <th class="px-2 py-1 text-left">#</th>
+                                            <th class="px-2 py-1 text-left">Descripción</th>
+                                            <th class="px-2 py-1 text-left">Cantidad</th>
+                                            <th class="px-2 py-1 text-left">Tipo</th>
+                                            <th class="px-2 py-1 text-left">P. Unitario</th>
+                                            <th class="px-2 py-1 text-left">P. Total</th>
+                                            <th class="px-2 py-1 text-left">Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($excelPreview as $i => $previewRow)
+                                            <tr class="border-b border-amber-100 {{ $previewRow['error'] ? 'bg-red-50' : '' }}">
+                                                <td class="px-2 py-1 text-gray-500">{{ $i + 1 }}</td>
+                                                <td class="px-2 py-1">{{ $previewRow['descripcion'] }}</td>
+                                                <td class="px-2 py-1">{{ $previewRow['cantidad'] }}</td>
+                                                <td class="px-2 py-1">{{ $previewRow['tipo'] }}</td>
+                                                <td class="px-2 py-1">{{ $previewRow['precio_unitario'] }}</td>
+                                                <td class="px-2 py-1">{{ $previewRow['precio_total'] ?? '' }}</td>
+                                                <td class="px-2 py-1">
+                                                    @if ($previewRow['error'])
+                                                        <span class="text-red-600 text-xs font-medium">{{ $previewRow['error'] }}</span>
+                                                    @else
+                                                        <span class="text-green-600 text-xs">✓ Válida</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
+
+                        @php
+                            $hasErrorsInPreview = collect($excelPreview)->contains(fn($r) => $r['error'] !== null);
+                        @endphp
+
+                        @if ($hasErrorsInPreview)
+                            <div class="text-sm text-amber-700 mb-2">
+                                ⚠ Hay filas con errores. Al confirmar, solo se aplicarán las filas válidas.
+                            </div>
+                        @endif
+
+                        <div class="flex gap-2">
+                            @if (!empty($excelPreview) && $hasErrorsInPreview)
+                                <button type="button" wire:click="applyExcelWithErrors"
+                                    onclick="return confirm('Se aplicarán solo las filas válidas. ¿Continuar?')"
+                                    class="inline-flex items-center px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700">
+                                    Aplicar solo las filas válidas
+                                </button>
+                            @else
+                                <button type="button" wire:click="confirmarMapeoExcel"
+                                    onclick="return confirm('¿Reemplazar el Objeto del Contrato actual con los datos del Excel? Esta acción no se puede deshacer.')"
+                                    class="inline-flex items-center px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700">
+                                    Confirmar y reemplazar
+                                </button>
+                            @endif
+                            <button type="button" wire:click="cancelarMapeoExcel"
+                                class="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-300">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                @endif
+
                 <div class="overflow-x-auto">
                     <table class="w-full border-collapse">
                         <thead>
