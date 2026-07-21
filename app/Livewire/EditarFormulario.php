@@ -45,7 +45,6 @@ class EditarFormulario extends Component
     public $saldo_restante_fecha_pago;
     public $otras_observaciones;
     public $aseguradora_poliza;
-    public $aseguradora_poliza_otro;
     // public $cotizacion;
     protected $listeners = ['removeUpload', 'removeExistingFile', 'editFormulario'];
     public $marcaId;
@@ -129,8 +128,7 @@ class EditarFormulario extends Component
         'mail' => 'nullable|email',
         'aplicagarantia' => 'nullable|in:Fábrica,Impresistem',
         'aplicapoliza' => 'required|in:si,no',
-        'aseguradora_poliza' => 'nullable|string',
-        'aseguradora_poliza_otro' => 'nullable|string',
+        'aseguradora_poliza' => 'nullable|string|max:255',
         'facturacion_moneda' => 'nullable|in:COP,USD',
         'trm' => 'nullable|in:Pactada,TRM del día de factura',
         'cuenta_compensacion' => 'nullable|in:Sí,No',
@@ -751,7 +749,7 @@ class EditarFormulario extends Component
                         'termino_garantia' => $this->terminogarantia,
                         'aplica_poliza' => $this->aplicapoliza,
                         'porcentaje_poliza' => $this->porcentaje,
-                        'aseguradora_poliza' => $this->aseguradora_poliza === 'Otro' ? $this->aseguradora_poliza_otro : $this->aseguradora_poliza,
+                        'aseguradora_poliza' => $this->aseguradora_poliza,
                     ]);
                 }
             }

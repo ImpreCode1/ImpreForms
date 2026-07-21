@@ -1140,31 +1140,15 @@
                                 @enderror
                             </div>
 
-                            <div x-data="{ showOtroAseguradora: false }" x-init="$watch('$wire.aseguradora_poliza', value => showOtroAseguradora = value === 'Otro')">
+                            <div>
                                 <label for="aseguradora_poliza" class="block text-sm font-medium text-gray-700">
                                     Aseguradora de la póliza
                                 </label>
-                                <select id="aseguradora_poliza" wire:model.live="aseguradora_poliza"
-                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aseguradora_poliza') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
-                                    <option value="">Seleccione...</option>
-                                    <option value="Sura">Sura</option>
-                                    <option value="Seguros Bolívar">Seguros Bolívar</option>
-                                    <option value="Seguros Mundial">Seguros Mundial</option>
-                                    <option value="Otro">Otro</option>
-                                </select>
+                                <input id="aseguradora_poliza" type="text" wire:model.live="aseguradora_poliza"
+                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aseguradora_poliza') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
                                 @error('aseguradora_poliza')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
                                 @enderror
-                                <div x-show="showOtroAseguradora" x-cloak class="mt-2">
-                                    <label for="aseguradora_poliza_otro" class="block text-sm font-medium text-gray-700">
-                                        Especifique la aseguradora
-                                    </label>
-                                    <input id="aseguradora_poliza_otro" type="text" wire:model.live="aseguradora_poliza_otro"
-                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aseguradora_poliza_otro') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                    @error('aseguradora_poliza_otro')
-                                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                                    @enderror
-                                </div>
                             </div>
 
                         </div>
