@@ -53,6 +53,8 @@
                                     <tr class="bg-gradient-to-r from-slate-50 to-blue-50">
                                         <th scope="col" class="px-6 py-5 text-sm font-semibold text-slate-900">Codigo
                                             Cliente</th>
+                                        <th scope="col" class="px-6 py-5 text-sm font-semibold text-slate-900">Oportunidad</th>
+                                        <th scope="col" class="px-6 py-5 text-sm font-semibold text-slate-900">Nombre del Cliente</th>
                                         <th scope="col" class="px-6 py-5 text-sm font-semibold text-slate-900">Tipo de
                                             solicitud
                                         </th>
@@ -87,6 +89,13 @@
                                                 <span
                                                     class="font-medium text-slate-900">{{ $formulario->infonegocio->codigo_cliente }}</span>
                                             </div>
+                                        </td>
+
+                                        <td class="px-6 py-4">
+                                            <span class="text-sm text-slate-600">{{ $formulario->infonegocio->n_oportunidad_crm ?? 'No especificado' }}</span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="text-sm font-medium text-slate-700">{{ $formulario->infonegocio->nombre ?? 'No especificado' }}</span>
                                         </td>
 
                                         <td class="px-6 py-4">
