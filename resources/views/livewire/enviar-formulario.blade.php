@@ -1354,19 +1354,7 @@
                             <div class="flex flex-col mt-6"> @error('files.*')
                                     <span class="text-red-500 text-sm mt-2">{{ $message }}</span>
                                 @enderror <br>
-                                <div class="flex flex-col mt-6">
-                                    @if ($errors->any())
-                                        <div class="alert alert-danger mb-4 text-center">
-                                            <span class="text-red-500 font-medium">Parece que algunos campos del formulario aún no
-                                                están completos o contienen información incorrecta.</span>
-                                            <ul class="mt-2 text-left text-sm text-red-600 list-disc pl-5 max-w-md mx-auto">
-                                                @foreach ($errors->all() as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
-                                    <div class="flex justify-center space-x-6">
+                                <div class="flex justify-center space-x-6">
                                         <button wire:click="changeStep(1)" type="button"
                                             class="group relative bg-white border-2 border-gray-300 text-gray-700 py-3 px-8 rounded-xl hover:border-gray-400 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3">
                                             <div
@@ -1424,6 +1412,26 @@
                                     </div>
                                 </div>
                                 <br>
+
+                                @if ($errors->any())
+                                    <div class="alert alert-danger mb-4 text-center">
+                                        <span class="text-red-500 font-medium">Parece que algunos campos del formulario aún no
+                                            están completos o contienen información incorrecta.</span>
+                                        <ul class="mt-2 text-left text-sm text-red-600 list-disc pl-5 max-w-md mx-auto">
+                                            @foreach ($errors->toArray() as $campo => $mensajes)
+                                                @php
+                                                    $campoBase = explode('.', $campo)[0];
+                                                    $paso = $pasoPorCampo[$campoBase] ?? 2;
+                                                    $etiqueta = $etiquetas[$campoBase] ?? $campoBase;
+                                                @endphp
+                                                @foreach ($mensajes as $mensaje)
+                                                    <li><b>(Paso {{ $paso }})</b> {{ $etiqueta }}: {{ $mensaje }}</li>
+                                                @endforeach
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+
                                 <div id="modalContainer">
                                     @if ($mmd)
                                         <div

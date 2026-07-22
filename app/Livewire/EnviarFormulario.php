@@ -32,6 +32,19 @@ class EnviarFormulario extends Component
     use WithFileUploads, InvertirNombre;
     public $currentStep = 1;
 
+    private array $pasoPorCampo = [
+        'tipo_solicitud' => 1, 'negocio' => 1, 'nombre' => 1,
+        'nom_rep' => 1, 'nit' => 1, 'direccion_domicilio' => 1,
+        'cc_representante' => 1, 'correo' => 1, 'numero' => 1,
+        'crm' => 1, 'incluye_iva' => 1, 'precio' => 1,
+        'moneda_precio_venta' => 1, 'soluciones' => 1,
+        'linea_especifica' => 1, 'codlinea' => 1, 'nomgerente' => 1,
+        'corgerente' => 1, 'selectedDirector' => 1, 'DirectorEmail' => 1,
+        'selectedEjecutivo' => 1, 'EjecutivoEmail' => 1,
+        'clientcode' => 1, 'clientname' => 1, 'mail' => 1,
+        'orden_compra' => 1, 'DirectorName' => 1,
+    ];
+
     // identificadores de archivos por id
 
     public $marcasId;
@@ -522,67 +535,19 @@ class EnviarFormulario extends Component
             // ✅ Validaciones
             $this->validate();
         } catch (\Illuminate\Validation\ValidationException $e) {
-            $etiquetas = [
-                'files'                => 'Documentos adjuntos',
-                'tipo_solicitud'       => 'Tipo de solicitud',
-                'negocio'              => 'Código del cliente',
-                'nombre'               => 'Nombre del cliente',
-                'correo'               => 'Correo del representante legal',
-                'numero'               => 'Número celular',
-                'crm'                  => 'N° oportunidad CRM',
-                'precio'               => 'Precio de venta',
-                'soluciones'           => 'Soluciones',
-                'linea_especifica'     => 'Línea específica',
-                'codlinea'             => 'Código de línea',
-                'nomgerente'           => 'Nombre del gerente de producto',
-                'nom_rep'              => 'Nombre del representante legal',
-                'nit'                  => 'NIT',
-                'direccion_domicilio'  => 'Dirección de domicilio',
-                'cc_representante'     => 'Cédula del representante legal',
-                'corgerente'           => 'Correo del gerente',
-                'DirectorName'         => 'Nombre del director',
-                'moneda_precio_venta'  => 'Moneda del precio de venta',
-                'forma_pago'           => 'Forma de pago',
-                'fecha_cada_pago'      => 'Plazos de pago',
-                'moneda'               => 'Moneda (pago)',
-                'incluir_iva'          => 'Incluye IVA',
-                'hay_anticipo'         => 'Hay anticipo',
-                'porcentaje_anticipo'  => 'Porcentaje de anticipo',
-                'fecha_pago_anticipo'  => 'Fecha de pago anticipo',
-                'otros_pago'           => 'Otros (pago)',
-                'clientcode'           => 'Otro',
-                'clientname'           => 'Teléfono',
-                'mail'                 => 'Correo adicional',
-                'EjecutivoEmail'       => 'Correo del ejecutivo',
-                'DirectorEmail'        => 'Correo del director',
-                'orden_compra'         => 'Orden de compra',
-                'entregacliente'       => '¿Quién realiza la entrega?',
-                'cantidad_entregas'    => 'Cantidad de entregas',
-                'fecha_entrega'        => 'Fecha de entrega',
-                'lugarentrega'         => 'Lugar de entrega',
-                'espais'               => 'País',
-                'tiempo_entrega_cantidad' => 'Tiempo de entrega (cantidad)',
-                'tiempo_entrega_unidad'   => 'Tiempo de entrega (unidad)',
-                'terminoentrega'       => 'Fecha término de entrega',
-                'tipoicoterm'          => 'Tipo de incoterms',
-                'prestar'              => 'Servicio a prestar',
-                'suministrar'          => 'Frecuencia de suministro',
-                'inicio'               => 'Fecha de inicio',
-                'finalizacion'         => 'Fecha de finalización',
-                'aplicagarantia'       => '¿Aplica garantía?',
-                'terminogarantia'      => 'Término de garantía',
-                'aplicapoliza'         => '¿Aplica póliza?',
-                'porcentaje'           => 'Porcentaje de póliza',
-                'aseguradora_poliza'   => 'Aseguradora de la póliza',
-                'facturacion_moneda'   => 'Moneda de facturación',
-                'trm'                  => 'TRM',
-                'cuenta_compensacion'  => 'Cuenta de compensación',
-                'saldo_restante_porcentaje' => 'Saldo restante (%)',
-                'saldo_restante_valor'      => 'Saldo restante valor',
-                'saldo_restante_fecha_pago' => 'Fecha de pago saldo restante',
-                'otras_observaciones'  => 'Otras observaciones',
-                'incluye_iva'          => '¿Incluye IVA?',
-            ];
+            $etiquetas = $this->getEtiquetas();
+            $camposConError = $e->validator->errors()->keys();
+            $primerCampo = $camposConError[0] ?? null;
+            $primerPaso = 2;
+
+            if ($primerCampo) {
+                $campoBase = explode('.', $primerCampo)[0];
+                $primerPaso = $this->pasoPorCampo[$campoBase] ?? 2;
+            }
+
+            if ($primerPaso !== $this->currentStep) {
+                $this->currentStep = $primerPaso;
+            }
 
             $mensajes = [];
             foreach ($e->errors() as $campo => $errores) {
@@ -1104,6 +1069,71 @@ class EnviarFormulario extends Component
         return is_numeric($clean) ? (float) $clean : null;
     }
 
+    private function getEtiquetas(): array
+    {
+        return [
+            'files'                => 'Documentos adjuntos',
+            'tipo_solicitud'       => 'Tipo de solicitud',
+            'negocio'              => 'Código del cliente',
+            'nombre'               => 'Nombre del cliente',
+            'correo'               => 'Correo del representante legal',
+            'numero'               => 'Número celular',
+            'crm'                  => 'N° oportunidad CRM',
+            'precio'               => 'Precio de venta',
+            'soluciones'           => 'Soluciones',
+            'linea_especifica'     => 'Línea específica',
+            'codlinea'             => 'Código de línea',
+            'nomgerente'           => 'Nombre del gerente de producto',
+            'nom_rep'              => 'Nombre del representante legal',
+            'nit'                  => 'NIT',
+            'direccion_domicilio'  => 'Dirección de domicilio',
+            'cc_representante'     => 'Cédula del representante legal',
+            'corgerente'           => 'Correo del gerente',
+            'DirectorName'         => 'Nombre del director',
+            'moneda_precio_venta'  => 'Moneda del precio de venta',
+            'forma_pago'           => 'Forma de pago',
+            'fecha_cada_pago'      => 'Plazos de pago',
+            'moneda'               => 'Moneda (pago)',
+            'incluir_iva'          => 'Incluye IVA',
+            'hay_anticipo'         => 'Hay anticipo',
+            'porcentaje_anticipo'  => 'Porcentaje de anticipo',
+            'fecha_pago_anticipo'  => 'Fecha de pago anticipo',
+            'otros_pago'           => 'Otros (pago)',
+            'clientcode'           => 'Otro',
+            'clientname'           => 'Teléfono',
+            'mail'                 => 'Correo adicional',
+            'EjecutivoEmail'       => 'Correo del ejecutivo',
+            'DirectorEmail'        => 'Correo del director',
+            'orden_compra'         => 'Orden de compra',
+            'entregacliente'       => '¿Quién realiza la entrega?',
+            'cantidad_entregas'    => 'Cantidad de entregas',
+            'fecha_entrega'        => 'Fecha de entrega',
+            'lugarentrega'         => 'Lugar de entrega',
+            'espais'               => 'País',
+            'tiempo_entrega_cantidad' => 'Tiempo de entrega (cantidad)',
+            'tiempo_entrega_unidad'   => 'Tiempo de entrega (unidad)',
+            'terminoentrega'       => 'Fecha término de entrega',
+            'tipoicoterm'          => 'Tipo de incoterms',
+            'prestar'              => 'Servicio a prestar',
+            'suministrar'          => 'Frecuencia de suministro',
+            'inicio'               => 'Fecha de inicio',
+            'finalizacion'         => 'Fecha de finalización',
+            'aplicagarantia'       => '¿Aplica garantía?',
+            'terminogarantia'      => 'Término de garantía',
+            'aplicapoliza'         => '¿Aplica póliza?',
+            'porcentaje'           => 'Porcentaje de póliza',
+            'aseguradora_poliza'   => 'Aseguradora de la póliza',
+            'facturacion_moneda'   => 'Moneda de facturación',
+            'trm'                  => 'TRM',
+            'cuenta_compensacion'  => 'Cuenta de compensación',
+            'saldo_restante_porcentaje' => 'Saldo restante (%)',
+            'saldo_restante_valor'      => 'Saldo restante valor',
+            'saldo_restante_fecha_pago' => 'Fecha de pago saldo restante',
+            'otras_observaciones'  => 'Otras observaciones',
+            'incluye_iva'          => '¿Incluye IVA?',
+        ];
+    }
+
     public function render()
     {
         return view('livewire.enviar-formulario', [
@@ -1112,6 +1142,8 @@ class EnviarFormulario extends Component
             'financieraLink' => $this->financieraLink,
             'ejecutivos' => \App\Models\Executive::whereNotNull('nombre_colaborador')->orderBy('nombre_colaborador')->get(),
             'directores' => \App\Models\Director::orderBy('nombre_director')->get(),
+            'pasoPorCampo' => $this->pasoPorCampo,
+            'etiquetas' => $this->getEtiquetas(),
         ]);
     }
 }
