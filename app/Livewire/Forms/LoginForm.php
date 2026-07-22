@@ -35,6 +35,19 @@ class LoginForm extends Form
     {
         $this->ensureIsNotRateLimited();
 
+        if (app()->environment('local') && config('app.debug')) {
+            $localUser = User::where('email', $this->email)->first();
+    
+            if ($localUser && \Hash::check($this->password, $localUser->password)) {
+                Auth::login($localUser, $this->remember);
+                RateLimiter::clear($this->throttleKey());
+        
+                return $localUser->rol === 'Admin' || $localUser->rol === 'admin'
+                    ? route('formularios-recibidos') 
+                    : route('menu');
+            }
+        }
+
         $adService = new ActiveDirectoryService();
         $username = explode('@', $this->email)[0];
         

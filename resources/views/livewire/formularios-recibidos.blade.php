@@ -430,6 +430,49 @@
                                     </button>
                                 </div>
 
+                                @if(strtolower(auth()->user()->rol) === 'admin')
+                                <div x-data="{ mostrarRechazo: false }"
+                                     class="absolute top-[61px] right-4 z-50 bg-white border border-gray-200
+                                            rounded-xl shadow-lg p-3 w-56">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                                            Autorización
+                                        </span>
+                                        <span class="text-xs px-2 py-0.5 rounded-full font-medium
+                                            {{ $selectedFormulario?->estado_autorizacion === 'aprobado'
+                                               ? 'bg-green-100 text-green-700'
+                                               : ($selectedFormulario?->estado_autorizacion === 'rechazado'
+                                                  ? 'bg-red-100 text-red-700'
+                                                  : 'bg-yellow-100 text-yellow-700') }}">
+                                            {{ ucfirst($selectedFormulario?->estado_autorizacion ?? 'Pendiente') }}
+                                        </span>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button wire:click="aprobarFormulario"
+                                            class="flex-1 py-1.5 rounded-lg bg-green-500 hover:bg-green-600
+                                                   text-white text-xs font-medium transition">
+                                            ✓ Aprobar
+                                        </button>
+                                        <button @click="mostrarRechazo = !mostrarRechazo"
+                                            class="flex-1 py-1.5 rounded-lg bg-red-500 hover:bg-red-600
+                                                   text-white text-xs font-medium transition">
+                                            ✗ Rechazar
+                                        </button>
+                                    </div>
+                                    <div x-show="mostrarRechazo" x-cloak class="mt-2">
+                                        <textarea wire:model="comentarioAutorizacion"
+                                            placeholder="Motivo del rechazo (mínimo 5 caracteres)..."
+                                            class="w-full text-xs border border-gray-300 rounded-lg p-2
+                                                   resize-none focus:ring-1 focus:ring-red-400"
+                                            rows="3"></textarea>
+                                        <button wire:click="rechazarFormulario"
+                                            class="w-full mt-1 py-1.5 rounded-lg bg-red-600 hover:bg-red-700
+                                                   text-white text-xs font-medium transition">
+                                            Confirmar rechazo
+                                        </button>
+                                    </div>
+                                </div>
+                                @endif
                                 <div class="max-w-4xl mx-auto p-6 space-y-6 bg-blue-50">
                                     {{-- tipo solicitud  --}}
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200 max-w-full">

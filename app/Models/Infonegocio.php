@@ -18,6 +18,9 @@ class Infonegocio extends Model
         'numero_celular',
         'n_oportunidad_crm',
         'nom_rep',
+        'nit',
+        'direccion_domicilio',
+        'cc_representante',
     ];
 
     public function marcas()

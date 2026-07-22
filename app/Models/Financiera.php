@@ -21,6 +21,13 @@ class Financiera extends Model
         'porcentaje',
         'fecha_pago',
         'otros',
+        'facturacion_moneda',
+        'trm',
+        'cuenta_compensacion',
+        'saldo_restante_porcentaje',
+        'saldo_restante_valor',
+        'saldo_restante_fecha_pago',
+        'otras_observaciones',
     ];
 
     public function marca()

@@ -92,6 +92,11 @@ class Marca extends Model
         return $this->hasOne(Seguimiento::class, 'marca_id');
     }
 
+    public function objetoContrato()
+    {
+        return $this->hasMany(ObjetoContrato::class);
+    }
+
 
     public function getEstadoAttribute()
     {

@@ -18,6 +18,7 @@ class Producto extends Model
         'termino_garantia',
         'aplica_poliza',
         'porcentaje_poliza',
+        'aseguradora_poliza',
     ];
 
     public function informacion()

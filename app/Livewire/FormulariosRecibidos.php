@@ -50,6 +50,9 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
 
     public $open = false;
 
+    public string $comentarioAutorizacion = '';
+    public bool $mostrarRechazo = false;
+
     protected $listeners = ['openModal' => 'loadFormulario'];
 
     public function approveFormulario($id)
@@ -222,6 +225,8 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
 
     public function closeModal()
     {
+        $this->comentarioAutorizacion = '';
+        $this->mostrarRechazo = false;
         $this->selectedFormulario = null;
         $this->open = false;
     }
@@ -401,7 +406,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public function downloadFormulario($id)
     {
         try {
-            $formulario = Marca::with(['infonegocio', 'informacion.producto', 'pago', 'financiera', 'infoEntrega', 'documento', 'formLinks'])->findOrFail($id);
+            $formulario = Marca::with(['infonegocio', 'informacion.producto', 'pago', 'financiera', 'infoEntrega', 'documento', 'formLinks', 'objetoContrato'])->findOrFail($id);
 
             $pdf = FacadePdf::loadView('pdf.formulario', compact('formulario'));
 
@@ -436,6 +441,52 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
             $fullPath,
             $documento->nombre_original
         );
+    }
+
+    public function aprobarFormulario(): void
+    {
+        if (!$this->selectedFormulario) return;
+
+        $this->selectedFormulario->update([
+            'estado_autorizacion'     => 'aprobado',
+            'autorizado_por'          => auth()->id(),
+            'autorizado_en'           => now(),
+            'comentario_autorizacion' => $this->comentarioAutorizacion ?: null,
+        ]);
+
+        $this->comentarioAutorizacion = '';
+        $this->mostrarRechazo = false;
+        session()->flash('message', 'Formulario aprobado correctamente.');
+        $this->closeModal();
+    }
+
+    public function rechazarFormulario(): void
+    {
+        $this->validate([
+            'comentarioAutorizacion' => 'required|min:5',
+        ], [
+            'comentarioAutorizacion.required' => 'El comentario es obligatorio para rechazar.',
+            'comentarioAutorizacion.min'      => 'El comentario debe tener al menos 5 caracteres.',
+        ]);
+
+        if (!$this->selectedFormulario) return;
+
+        $this->selectedFormulario->update([
+            'estado_autorizacion'     => 'rechazado',
+            'autorizado_por'          => auth()->id(),
+            'autorizado_en'           => now(),
+            'comentario_autorizacion' => $this->comentarioAutorizacion,
+        ]);
+
+        $this->comentarioAutorizacion = '';
+        $this->mostrarRechazo = false;
+        session()->flash('message', 'Formulario rechazado.');
+        $this->closeModal();
+    }
+
+    public function toggleRechazo(): void
+    {
+        $this->mostrarRechazo = !$this->mostrarRechazo;
     }
 
     public function render()

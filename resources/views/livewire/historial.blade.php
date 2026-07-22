@@ -64,8 +64,10 @@
                                             Envio</th> --}}
                                         <th scope="col" class="px-6 py-5 text-sm font-semibold text-slate-900">Estado
                                         </th>
+                                        @unless (auth()->user()->isUser())
                                         <th scope="col" class="px-6 py-5 text-sm font-semibold text-slate-900">Acciones
                                         </th>
+                                        @endunless
                                     </tr>
                                 </thead>
 
@@ -233,6 +235,7 @@
                                             </span>
                                         </td>
 
+                                        @unless (auth()->user()->isUser())
                                         <td class="px-6 py-4">
                                             {{-- @dd($formulario) --}}
                                         <a href="{{ route('editar-formulario', $formulario->id) }}"
@@ -243,9 +246,10 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="M16.862 4.487l3.621 3.621a2.25 2.25 0 010 3.182l-8.465 8.465a2.25 2.25 0 01-1.306.615l-4.404.845a2.25 2.25 0 01-2.697-2.698l.845-4.404a2.25 2.25 0 01.615-1.306l8.465-8.465a2.25 2.25 0 013.182 0z" />
                                             </svg>
-                                            </a>    
+                                            </a>
 
                                         </td>
+                                        @endunless
 
                                     </tr>
                                 @endforeach
