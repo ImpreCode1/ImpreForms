@@ -461,9 +461,11 @@ public function aprobarFormulario(): void
         $this->closeModal();
     }
 
-    public function rechazarFormulario(): void
-    {
-        $this->validate([
+public function rechazarFormulario(): void
+{
+    abort_unless(auth()->check() && auth()->user()->isAdmin(), 403);
+
+    $this->validate([
             'comentarioAutorizacion' => 'required|min:5',
         ], [
             'comentarioAutorizacion.required' => 'El comentario es obligatorio para rechazar.',
