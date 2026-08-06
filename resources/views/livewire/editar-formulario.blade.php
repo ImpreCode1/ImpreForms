@@ -549,6 +549,7 @@
                                     <option value="DDP">DDP</option>
                                     <option value="FCA">FCA</option>
                                     <option value="FOB">FOB</option>
+                                    <option value="EXW">EXW</option>
                                 </select>
                                 @error('tipoicoterm')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
