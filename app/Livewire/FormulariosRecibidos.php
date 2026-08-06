@@ -442,9 +442,11 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
         );
     }
 
-    public function aprobarFormulario(): void
-    {
-        if (!$this->selectedFormulario) return;
+public function aprobarFormulario(): void
+{
+    abort_unless(auth()->check() && auth()->user()->isAdmin(), 403);
+
+    if (!$this->selectedFormulario) return;
 
         $this->selectedFormulario->update([
             'estado_autorizacion'     => 'aprobado',
