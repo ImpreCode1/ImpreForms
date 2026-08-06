@@ -49,6 +49,8 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public $maxFormularios;
 
     public $open = false;
+    public string $comentarioAutorizacion = '';
+    public bool $mostrarRechazo = false;
 
     public string $comentarioAutorizacion = '';
     public bool $mostrarRechazo = false;

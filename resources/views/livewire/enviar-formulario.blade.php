@@ -592,8 +592,14 @@
                                     <div>
                                         <label for="tipoicoterm" class="block text-sm font-medium text-gray-700">¿Qué
                                             tipo de incoterms aplica?</label>
-                                        <input id="tipoicoterm" type="text" wire:model.live="tipoicoterm"
-                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tipoicoterm') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        <select id="tipoicoterm" wire:model.live="tipoicoterm"
+                                            class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('tipoicoterm') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                            <option value="" disabled>Seleccione tipo de incoterms</option>
+                                            <option value="CIF">CIF</option>
+                                            <option value="DDP">DDP</option>
+                                            <option value="FCA">FCA</option>
+                                            <option value="FOB">FOB</option>
+                                            <option value="EXW">EXW</option>
                                         @error('tipoicoterm')
                                             <span class="text-red-500 text-sm">{{ $message }}</span>
                                         @enderror
