@@ -15,6 +15,7 @@ use App\Models\Linea;
 use App\Models\Marca;
 use App\Models\Pago;
 use App\Models\Producto;
+use App\Models\ObjetoContrato;
 use App\Models\Seguimiento;
 use App\Models\Setting;
 use Carbon\Carbon;
@@ -24,11 +25,25 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EnviarFormulario extends Component
 {
     use WithFileUploads, InvertirNombre;
     public $currentStep = 1;
+
+    private array $pasoPorCampo = [
+        'tipo_solicitud' => 1, 'negocio' => 1, 'nombre' => 1,
+        'nom_rep' => 1, 'nit' => 1, 'direccion_domicilio' => 1,
+        'cc_representante' => 1, 'correo' => 1, 'numero' => 1,
+        'crm' => 1, 'incluye_iva' => 1, 'precio' => 1,
+        'moneda_precio_venta' => 1, 'soluciones' => 1,
+        'linea_especifica' => 1, 'codlinea' => 1, 'nomgerente' => 1,
+        'corgerente' => 1, 'selectedDirector' => 1, 'DirectorEmail' => 1,
+        'selectedEjecutivo' => 1, 'EjecutivoEmail' => 1,
+        'clientcode' => 1, 'clientname' => 1, 'mail' => 1,
+        'orden_compra' => 1, 'DirectorName' => 1,
+    ];
 
     // identificadores de archivos por id
 
@@ -71,6 +86,9 @@ class EnviarFormulario extends Component
     public $inicio;
     public $finalizacion;
     public $nom_rep;
+    public $nit;
+    public $direccion_domicilio;
+    public $cc_representante;
     // public $details;
     public $aplicagarantia = '';
     public $terminogarantia;
@@ -88,6 +106,14 @@ class EnviarFormulario extends Component
     public $other;
     public $actualpago;
     public $monedaactual;
+    public $facturacion_moneda;
+    public $trm;
+    public $cuenta_compensacion;
+    public $saldo_restante_porcentaje;
+    public $saldo_restante_valor;
+    public $saldo_restante_fecha_pago;
+    public $otras_observaciones;
+    public $aseguradora_poliza;
     public $porcentaje;
     public $aplicapoliza = '';
     public $fecha_pago;
@@ -102,6 +128,13 @@ class EnviarFormulario extends Component
     public $archivos = [];
     public $documentosGuardados = [];
     public $archivosNuevos = [];
+    public $objetoContrato = [];
+    public $excelFile = null;
+    public $excelHeaders = [];
+    public $excelRows = [];
+    public $columnMapping = [];
+    public $excelPreview = [];
+    public $showExcelMapping = false;
 
     public $selectedDirector;
     public $DirectorEmail = '';
@@ -158,6 +191,9 @@ class EnviarFormulario extends Component
         'codlinea' => 'required|string',
         'nomgerente' => 'required|string|min:5',
         'nom_rep' => 'required|string',
+        'nit' => 'nullable|string',
+        'direccion_domicilio' => 'nullable|string',
+        'cc_representante' => 'nullable|string',
         'corgerente' => 'required|email',
         'DirectorName' => 'required|string|min:5',
         'forma_pago' => 'nullable|string',
@@ -195,11 +231,26 @@ class EnviarFormulario extends Component
         'finalizacion' => 'nullable|date|after_or_equal:inicio',
 
         // * Producto
-        'aplicagarantia' => 'required|in:si,no',
-        'terminogarantia' => 'nullable|required_if:aplicagarantia,si|string|min:1',
+        'aplicagarantia' => 'nullable|in:Fábrica,Impresistem',
+        'terminogarantia' => 'nullable|string|min:1',
         'aplicapoliza' => 'required|in:si,no',
         'porcentaje' => 'nullable|numeric|min:0|max:100',
+        'aseguradora_poliza' => 'nullable|string|max:255',
+        'facturacion_moneda' => 'nullable|in:COP,USD',
+        'trm' => 'nullable|in:Pactada,TRM del día de factura',
+        'cuenta_compensacion' => 'nullable|in:Sí,No',
+        'saldo_restante_porcentaje' => 'nullable|numeric|min:0|max:100',
+        'saldo_restante_valor' => 'nullable|numeric|min:0',
+        'saldo_restante_fecha_pago' => 'nullable|date',
+        'otras_observaciones' => 'nullable|string|max:500',
         'incluye_iva' => 'boolean|required|in:0,1',
+
+        // * Objeto del Contrato
+        'objetoContrato' => 'nullable|array',
+        'objetoContrato.*.descripcion' => 'required_with:objetoContrato.*.cantidad|string|max:500',
+        'objetoContrato.*.cantidad' => 'required_with:objetoContrato.*.descripcion|integer|min:1',
+        'objetoContrato.*.tipo' => 'nullable|string|in:Hardware,Licencia,HiCare,Servicio',
+        'objetoContrato.*.precio_unitario' => 'nullable|numeric|min:0',
     ];
 
     protected $messages = [
@@ -266,6 +317,17 @@ class EnviarFormulario extends Component
         'finalizacion.after_or_equal' => 'La fecha de finalización no puede ser menor a la fecha de inicio.',
         'selectedDirector' => 'nullable|string',
         'selectedEjecutivo' => 'nullable|string',
+
+        // Objeto del Contrato
+        'objetoContrato.*.descripcion.required_with' => 'La descripción del producto es obligatoria cuando se especifica una cantidad.',
+        'objetoContrato.*.descripcion.string' => 'La descripción debe ser texto.',
+        'objetoContrato.*.descripcion.max' => 'La descripción no puede superar los 500 caracteres.',
+        'objetoContrato.*.cantidad.required_with' => 'La cantidad es obligatoria cuando se especifica una descripción.',
+        'objetoContrato.*.cantidad.integer' => 'La cantidad debe ser un número entero.',
+        'objetoContrato.*.cantidad.min' => 'La cantidad mínima es 1.',
+        'objetoContrato.*.tipo.in' => 'El tipo seleccionado no es válido.',
+        'objetoContrato.*.precio_unitario.numeric' => 'El precio unitario debe ser un número.',
+        'objetoContrato.*.precio_unitario.min' => 'El precio unitario no puede ser negativo.',
     ];
 
     // * mostrar garantia
@@ -319,62 +381,173 @@ class EnviarFormulario extends Component
         }
     }
 
+    public function agregarFila()
+    {
+        $this->objetoContrato[] = [
+            'descripcion' => '',
+            'cantidad' => 1,
+            'tipo' => '',
+            'precio_unitario' => 0,
+            'precio_total' => 0,
+        ];
+    }
+
+    public function eliminarFila($index)
+    {
+        unset($this->objetoContrato[$index]);
+        $this->objetoContrato = array_values($this->objetoContrato);
+    }
+
+    public function updatedExcelFile()
+    {
+        $this->validate([
+            'excelFile' => 'file|mimes:xlsx,xls,csv|max:5120',
+        ]);
+
+        $data = Excel::toArray(null, $this->excelFile);
+        $rows = $data[0] ?? [];
+
+        if (empty($rows) || empty($rows[0])) {
+            session()->flash('error', 'El archivo está vacío o no tiene encabezados.');
+            return;
+        }
+
+        $this->excelHeaders = $rows[0];
+        $this->excelRows = array_slice($rows, 1);
+        $this->columnMapping = array_fill(0, count($this->excelHeaders), '');
+        $this->showExcelMapping = true;
+        $this->buildPreview();
+    }
+
+    public function updatedColumnMapping()
+    {
+        $this->buildPreview();
+    }
+
+    public function confirmarMapeoExcel()
+    {
+        $this->applyExcelRows();
+    }
+
+    public function applyExcelWithErrors()
+    {
+        $this->buildPreview();
+        $this->applyExcelRows();
+    }
+
+    private function applyExcelRows()
+    {
+        $validas = array_filter($this->excelPreview, fn($row) => $row['error'] === null);
+        $validas = array_values($validas);
+
+        if (empty($validas)) {
+            session()->flash('error', 'No hay filas válidas para aplicar. Revise el mapeo o el archivo.');
+            return;
+        }
+
+        $this->objetoContrato = array_map(fn($row) => [
+            'descripcion'     => $row['descripcion'],
+            'cantidad'        => (float) $row['cantidad'],
+            'tipo'            => $row['tipo'],
+            'precio_unitario' => (float) $row['precio_unitario'],
+            'precio_total'    => (float) $row['precio_total'],
+        ], $validas);
+
+        $this->resetExcelState();
+        session()->flash('message', 'Objeto del Contrato reemplazado desde Excel (' . count($validas) . ' filas).');
+    }
+
+    public function cancelarMapeoExcel()
+    {
+        $this->resetExcelState();
+    }
+
+    private function resetExcelState()
+    {
+        $this->excelFile = null;
+        $this->excelHeaders = [];
+        $this->excelRows = [];
+        $this->columnMapping = [];
+        $this->excelPreview = [];
+        $this->showExcelMapping = false;
+    }
+
+    private function buildPreview()
+    {
+        $mappedColumns = [
+            'descripcion'     => array_search('Descripción', $this->columnMapping),
+            'cantidad'        => array_search('Cantidad', $this->columnMapping),
+            'tipo'            => array_search('Tipo', $this->columnMapping),
+            'precio_unitario' => array_search('Precio Unitario', $this->columnMapping),
+        ];
+
+        $this->excelPreview = [];
+
+        foreach ($this->excelRows as $row) {
+            $item = [
+                'descripcion'     => $mappedColumns['descripcion'] !== false ? trim((string) ($row[$mappedColumns['descripcion']] ?? '')) : '',
+                'cantidad'        => $mappedColumns['cantidad'] !== false ? trim((string) ($row[$mappedColumns['cantidad']] ?? '')) : '',
+                'tipo'            => $mappedColumns['tipo'] !== false ? trim((string) ($row[$mappedColumns['tipo']] ?? '')) : '',
+                'precio_unitario' => $mappedColumns['precio_unitario'] !== false ? trim((string) ($row[$mappedColumns['precio_unitario']] ?? '')) : '',
+                'error'           => null,
+            ];
+
+            $errors = [];
+            if ($item['descripcion'] === '') {
+                $errors[] = 'Descripción requerida';
+            }
+            if ($item['cantidad'] === '' || !is_numeric($item['cantidad'])) {
+                $errors[] = 'Cantidad debe ser numérica';
+            }
+            if ($item['precio_unitario'] === '' || !is_numeric($item['precio_unitario'])) {
+                $errors[] = 'Precio unitario debe ser numérico';
+            }
+
+            if (!empty($errors)) {
+                $item['error'] = implode('; ', $errors);
+            } else {
+                $item['cantidad'] = (float) $item['cantidad'];
+                $item['precio_unitario'] = (float) $item['precio_unitario'];
+                $item['precio_total'] = round($item['cantidad'] * $item['precio_unitario'], 2);
+            }
+
+            $this->excelPreview[] = $item;
+        }
+    }
+
+    public function updatedObjetoContrato($value, $key)
+    {
+        $parts = explode('.', $key);
+        if (count($parts) === 2) {
+            $index = $parts[0];
+            $field = $parts[1];
+            if (in_array($field, ['cantidad', 'precio_unitario']) && isset($this->objetoContrato[$index])) {
+                $cantidad = (float) ($this->objetoContrato[$index]['cantidad'] ?? 0);
+                $precioUnitario = (float) ($this->objetoContrato[$index]['precio_unitario'] ?? 0);
+                $this->objetoContrato[$index]['precio_total'] = round($cantidad * $precioUnitario, 2);
+            }
+        }
+    }
+
     public function submit()
     {
         try {
             // ✅ Validaciones
             $this->validate();
         } catch (\Illuminate\Validation\ValidationException $e) {
-            $etiquetas = [
-                'files'                => 'Documentos adjuntos',
-                'tipo_solicitud'       => 'Tipo de solicitud',
-                'negocio'              => 'Código del cliente',
-                'nombre'               => 'Nombre del cliente',
-                'correo'               => 'Correo del representante legal',
-                'numero'               => 'Número celular',
-                'crm'                  => 'N° oportunidad CRM',
-                'precio'               => 'Precio de venta',
-                'soluciones'           => 'Soluciones',
-                'linea_especifica'     => 'Línea específica',
-                'codlinea'             => 'Código de línea',
-                'nomgerente'           => 'Nombre del gerente de producto',
-                'nom_rep'              => 'Nombre del representante legal',
-                'corgerente'           => 'Correo del gerente',
-                'DirectorName'         => 'Nombre del director',
-                'moneda_precio_venta'  => 'Moneda del precio de venta',
-                'forma_pago'           => 'Forma de pago',
-                'fecha_cada_pago'      => 'Plazos de pago',
-                'moneda'               => 'Moneda (pago)',
-                'incluir_iva'          => 'Incluye IVA',
-                'hay_anticipo'         => 'Hay anticipo',
-                'porcentaje_anticipo'  => 'Porcentaje de anticipo',
-                'fecha_pago_anticipo'  => 'Fecha de pago anticipo',
-                'otros_pago'           => 'Otros (pago)',
-                'clientcode'           => 'Otro',
-                'clientname'           => 'Teléfono',
-                'mail'                 => 'Correo adicional',
-                'EjecutivoEmail'       => 'Correo del ejecutivo',
-                'DirectorEmail'        => 'Correo del director',
-                'orden_compra'         => 'Orden de compra',
-                'entregacliente'       => '¿Quién realiza la entrega?',
-                'cantidad_entregas'    => 'Cantidad de entregas',
-                'fecha_entrega'        => 'Fecha de entrega',
-                'lugarentrega'         => 'Lugar de entrega',
-                'espais'               => 'País',
-                'tiempo_entrega_cantidad' => 'Tiempo de entrega (cantidad)',
-                'tiempo_entrega_unidad'   => 'Tiempo de entrega (unidad)',
-                'terminoentrega'       => 'Fecha término de entrega',
-                'tipoicoterm'          => 'Tipo de incoterms',
-                'prestar'              => 'Servicio a prestar',
-                'suministrar'          => 'Frecuencia de suministro',
-                'inicio'               => 'Fecha de inicio',
-                'finalizacion'         => 'Fecha de finalización',
-                'aplicagarantia'       => '¿Aplica garantía?',
-                'terminogarantia'      => 'Término de garantía',
-                'aplicapoliza'         => '¿Aplica póliza?',
-                'porcentaje'           => 'Porcentaje de póliza',
-                'incluye_iva'          => '¿Incluye IVA?',
-            ];
+            $etiquetas = $this->getEtiquetas();
+            $camposConError = $e->validator->errors()->keys();
+            $primerCampo = $camposConError[0] ?? null;
+            $primerPaso = 2;
+
+            if ($primerCampo) {
+                $campoBase = explode('.', $primerCampo)[0];
+                $primerPaso = $this->pasoPorCampo[$campoBase] ?? 2;
+            }
+
+            if ($primerPaso !== $this->currentStep) {
+                $this->currentStep = $primerPaso;
+            }
 
             $mensajes = [];
             foreach ($e->errors() as $campo => $errores) {
@@ -402,6 +575,9 @@ class EnviarFormulario extends Component
                 'numero_celular' => $this->numero,
                 'n_oportunidad_crm' => $this->crm,
                 'nom_rep' => $this->nom_rep,
+                'nit' => $this->nit,
+                'direccion_domicilio' => $this->direccion_domicilio,
+                'cc_representante' => $this->cc_representante,
             ]);
 
             $this->precio = str_replace('.', ',', $this->precio);
@@ -468,7 +644,22 @@ class EnviarFormulario extends Component
                 'termino_garantia' => $this->terminogarantia,
                 'aplica_poliza' => $this->aplicapoliza,
                 'porcentaje_poliza' => $this->porcentaje,
+                'aseguradora_poliza' => $this->aseguradora_poliza,
             ]);
+
+            // ✅ Crear Objeto del Contrato
+            foreach ($this->objetoContrato as $item) {
+                if (!empty($item['descripcion']) && !empty($item['cantidad'])) {
+                    ObjetoContrato::create([
+                        'marca_id' => $this->marcaId,
+                        'descripcion' => $item['descripcion'],
+                        'cantidad' => $item['cantidad'],
+                        'tipo' => $item['tipo'],
+                        'precio_unitario' => $item['precio_unitario'],
+                        'precio_total' => $item['precio_total'],
+                    ]);
+                }
+            }
 
             // ✅ Crear Pago
             Pago::create([
@@ -480,6 +671,13 @@ class EnviarFormulario extends Component
             Financiera::create([
                 'marcas_id' => $this->marcaId,
                 'otros' => $this->otros,
+                'facturacion_moneda' => $this->facturacion_moneda,
+                'trm' => $this->trm,
+                'cuenta_compensacion' => $this->cuenta_compensacion,
+                'saldo_restante_porcentaje' => $this->saldo_restante_porcentaje,
+                'saldo_restante_valor' => $this->saldo_restante_valor,
+                'saldo_restante_fecha_pago' => $this->saldo_restante_fecha_pago,
+                'otras_observaciones' => $this->otras_observaciones,
             ]);
 
             // ✅ Crear links únicos
@@ -658,12 +856,10 @@ class EnviarFormulario extends Component
 
     public function updatedAplicagarantia($value)
     {
-        // Si la garantía es "sí", hacer que el término de garantía sea obligatorio
-        if ($value === 'si') {
+        if ($value === 'Fábrica' || $value === 'Impresistem') {
             $this->rules['terminogarantia'] = 'required|string|min:3';
         } else {
             $this->rules['terminogarantia'] = 'nullable';
-            // $this->terminogarantia = ''; // Resetear el campo si selecciona "No"
         }
     }
 
@@ -875,6 +1071,71 @@ class EnviarFormulario extends Component
         return is_numeric($clean) ? (float) $clean : null;
     }
 
+    private function getEtiquetas(): array
+    {
+        return [
+            'files'                => 'Documentos adjuntos',
+            'tipo_solicitud'       => 'Tipo de solicitud',
+            'negocio'              => 'Código del cliente',
+            'nombre'               => 'Nombre del cliente',
+            'correo'               => 'Correo del representante legal',
+            'numero'               => 'Número celular',
+            'crm'                  => 'N° oportunidad CRM',
+            'precio'               => 'Precio de venta',
+            'soluciones'           => 'Soluciones',
+            'linea_especifica'     => 'Línea específica',
+            'codlinea'             => 'Código de línea',
+            'nomgerente'           => 'Nombre del gerente de producto',
+            'nom_rep'              => 'Nombre del representante legal',
+            'nit'                  => 'NIT',
+            'direccion_domicilio'  => 'Dirección de domicilio',
+            'cc_representante'     => 'Cédula del representante legal',
+            'corgerente'           => 'Correo del gerente',
+            'DirectorName'         => 'Nombre del director',
+            'moneda_precio_venta'  => 'Moneda del precio de venta',
+            'forma_pago'           => 'Forma de pago',
+            'fecha_cada_pago'      => 'Plazos de pago',
+            'moneda'               => 'Moneda (pago)',
+            'incluir_iva'          => 'Incluye IVA',
+            'hay_anticipo'         => 'Hay anticipo',
+            'porcentaje_anticipo'  => 'Porcentaje de anticipo',
+            'fecha_pago_anticipo'  => 'Fecha de pago anticipo',
+            'otros_pago'           => 'Otros (pago)',
+            'clientcode'           => 'Otro',
+            'clientname'           => 'Teléfono',
+            'mail'                 => 'Correo adicional',
+            'EjecutivoEmail'       => 'Correo del ejecutivo',
+            'DirectorEmail'        => 'Correo del director',
+            'orden_compra'         => 'Orden de compra',
+            'entregacliente'       => '¿Quién realiza la entrega?',
+            'cantidad_entregas'    => 'Cantidad de entregas',
+            'fecha_entrega'        => 'Fecha de entrega',
+            'lugarentrega'         => 'Lugar de entrega',
+            'espais'               => 'País',
+            'tiempo_entrega_cantidad' => 'Tiempo de entrega (cantidad)',
+            'tiempo_entrega_unidad'   => 'Tiempo de entrega (unidad)',
+            'terminoentrega'       => 'Fecha término de entrega',
+            'tipoicoterm'          => 'Tipo de incoterms',
+            'prestar'              => 'Servicio a prestar',
+            'suministrar'          => 'Frecuencia de suministro',
+            'inicio'               => 'Fecha de inicio',
+            'finalizacion'         => 'Fecha de finalización',
+            'aplicagarantia'       => '¿Aplica garantía?',
+            'terminogarantia'      => 'Término de garantía',
+            'aplicapoliza'         => '¿Aplica póliza?',
+            'porcentaje'           => 'Porcentaje de póliza',
+            'aseguradora_poliza'   => 'Aseguradora de la póliza',
+            'facturacion_moneda'   => 'Moneda de facturación',
+            'trm'                  => 'TRM',
+            'cuenta_compensacion'  => 'Cuenta de compensación',
+            'saldo_restante_porcentaje' => 'Saldo restante (%)',
+            'saldo_restante_valor'      => 'Saldo restante valor',
+            'saldo_restante_fecha_pago' => 'Fecha de pago saldo restante',
+            'otras_observaciones'  => 'Otras observaciones',
+            'incluye_iva'          => '¿Incluye IVA?',
+        ];
+    }
+
     public function render()
     {
         return view('livewire.enviar-formulario', [
@@ -883,6 +1144,8 @@ class EnviarFormulario extends Component
             'financieraLink' => $this->financieraLink,
             'ejecutivos' => \App\Models\Executive::whereNotNull('nombre_colaborador')->orderBy('nombre_colaborador')->get(),
             'directores' => \App\Models\Director::orderBy('nombre_director')->get(),
+            'pasoPorCampo' => $this->pasoPorCampo,
+            'etiquetas' => $this->getEtiquetas(),
         ]);
     }
 }

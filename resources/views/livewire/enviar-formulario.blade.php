@@ -92,6 +92,45 @@
                                     </div>
 
                                     <div>
+                                        <label for="nit" class="block text-sm font-medium text-gray-700">
+                                            NIT
+                                        </label>
+                                        <input id="nit" type="text" wire:model.live="nit"
+                                            class="mt-1 block w-full rounded-md border-gray-300
+                                            {{ $errors->has('nit') ? 'border-red-400' : 'border-blue-100' }}
+                                            shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        @error('nit')
+                                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div>
+                                        <label for="direccion_domicilio" class="block text-sm font-medium text-gray-700">
+                                            Dirección según Cámara de Comercio
+                                        </label>
+                                        <input id="direccion_domicilio" type="text" wire:model.live="direccion_domicilio"
+                                            class="mt-1 block w-full rounded-md border-gray-300
+                                            {{ $errors->has('direccion_domicilio') ? 'border-red-400' : 'border-blue-100' }}
+                                            shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        @error('direccion_domicilio')
+                                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div>
+                                        <label for="cc_representante" class="block text-sm font-medium text-gray-700">
+                                            Cédula del representante legal
+                                        </label>
+                                        <input id="cc_representante" type="text" wire:model.live="cc_representante"
+                                            class="mt-1 block w-full rounded-md border-gray-300
+                                            {{ $errors->has('cc_representante') ? 'border-red-400' : 'border-blue-100' }}
+                                            shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                        @error('cc_representante')
+                                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div>
                                         <label for="correo" class="block text-sm font-medium text-gray-700">
                                             Correo electronico del representante legal
                                         </label>
@@ -743,6 +782,331 @@
                             <br>
                         </div>
 
+                        <!-- Información Financiera Section -->
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2l4 7h-8l4-7z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9v10c0 1.105 1.025 2 2.267 2.233L12 22l3.733-2.767C16.975 21 18 20.105 18 19V9l-6 4-6-4z" />
+                                </svg> Información Financiera
+                            </h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="facturacion_moneda" class="block text-sm font-medium text-gray-700">
+                                        Moneda de facturación
+                                    </label>
+                                    <select id="facturacion_moneda" wire:model.live="facturacion_moneda"
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('facturacion_moneda') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                        <option value="">Seleccione...</option>
+                                        <option value="COP">COP</option>
+                                        <option value="USD">USD</option>
+                                    </select>
+                                    @error('facturacion_moneda')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label for="trm" class="block text-sm font-medium text-gray-700">
+                                        TRM
+                                    </label>
+                                    <select id="trm" wire:model.live="trm"
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('trm') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                        <option value="">Seleccione...</option>
+                                        <option value="Pactada">Pactada</option>
+                                        <option value="TRM del día de factura">TRM del día de factura</option>
+                                    </select>
+                                    @error('trm')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label for="cuenta_compensacion" class="block text-sm font-medium text-gray-700">
+                                        Cuenta de compensación
+                                    </label>
+                                    <select id="cuenta_compensacion" wire:model.live="cuenta_compensacion"
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('cuenta_compensacion') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                        <option value="">Seleccione...</option>
+                                        <option value="Sí">Sí</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                    @error('cuenta_compensacion')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label for="saldo_restante_porcentaje" class="block text-sm font-medium text-gray-700">
+                                        Saldo restante (%)
+                                    </label>
+                                    <input id="saldo_restante_porcentaje" type="number" step="0.01" min="0" max="100"
+                                        wire:model.live="saldo_restante_porcentaje"
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('saldo_restante_porcentaje') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    @error('saldo_restante_porcentaje')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label for="saldo_restante_valor" class="block text-sm font-medium text-gray-700">
+                                        Saldo restante valor
+                                    </label>
+                                    <input id="saldo_restante_valor" type="number" step="0.01" min="0"
+                                        wire:model.live="saldo_restante_valor"
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('saldo_restante_valor') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    @error('saldo_restante_valor')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label for="saldo_restante_fecha_pago" class="block text-sm font-medium text-gray-700">
+                                        Fecha de pago saldo restante
+                                    </label>
+                                    <input id="saldo_restante_fecha_pago" type="date"
+                                        wire:model.live="saldo_restante_fecha_pago"
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('saldo_restante_fecha_pago') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    @error('saldo_restante_fecha_pago')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="otras_observaciones" class="block text-sm font-medium text-gray-700">
+                                        Otras observaciones
+                                    </label>
+                                    <textarea id="otras_observaciones" wire:model.live="otras_observaciones" rows="3"
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('otras_observaciones') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200"></textarea>
+                                    @error('otras_observaciones')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Objeto del Contrato Section -->
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-emerald-500"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                                Objeto del Contrato
+                            </h2>
+
+                            <div class="mb-4 p-4 bg-white rounded-lg border border-dashed border-gray-300">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Cargar desde Excel
+                                </label>
+                                <input type="file" wire:model="excelFile" accept=".xlsx,.xls,.csv"
+                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                                <div wire:loading wire:target="excelFile" class="text-sm text-gray-500 mt-1 flex items-center gap-1">
+                                    <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                    </svg>
+                                    Procesando archivo...
+                                </div>
+                                @error('excelFile') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            @if ($showExcelMapping)
+                                <div class="mb-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                                    <h3 class="text-sm font-semibold text-amber-800 mb-3">Mapear columnas del Excel</h3>
+
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                                        @foreach ($excelHeaders as $index => $header)
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-600 mb-1">{{ $header }}</label>
+                                                <select wire:model.live="columnMapping.{{ $index }}"
+                                                    class="block w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-200">
+                                                    <option value="">-- Ignorar --</option>
+                                                    <option value="Descripción">Descripción</option>
+                                                    <option value="Cantidad">Cantidad</option>
+                                                    <option value="Tipo">Tipo</option>
+                                                    <option value="Precio Unitario">Precio Unitario</option>
+                                                </select>
+                                            </div>
+                                        @endforeach
+                                    </div>
+
+                                    @if (!empty($excelPreview))
+                                        <div class="overflow-x-auto mb-3">
+                                            <table class="w-full text-sm border-collapse">
+                                                <thead>
+                                                    <tr class="border-b border-amber-300">
+                                                        <th class="px-2 py-1 text-left">#</th>
+                                                        <th class="px-2 py-1 text-left">Descripción</th>
+                                                        <th class="px-2 py-1 text-left">Cantidad</th>
+                                                        <th class="px-2 py-1 text-left">Tipo</th>
+                                                        <th class="px-2 py-1 text-left">P. Unitario</th>
+                                                        <th class="px-2 py-1 text-left">P. Total</th>
+                                                        <th class="px-2 py-1 text-left">Estado</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($excelPreview as $i => $previewRow)
+                                                        <tr class="border-b border-amber-100 {{ $previewRow['error'] ? 'bg-red-50' : '' }}">
+                                                            <td class="px-2 py-1 text-gray-500">{{ $i + 1 }}</td>
+                                                            <td class="px-2 py-1">{{ $previewRow['descripcion'] }}</td>
+                                                            <td class="px-2 py-1">{{ $previewRow['cantidad'] }}</td>
+                                                            <td class="px-2 py-1">{{ $previewRow['tipo'] }}</td>
+                                                            <td class="px-2 py-1">{{ $previewRow['precio_unitario'] }}</td>
+                                                            <td class="px-2 py-1">{{ $previewRow['precio_total'] ?? '' }}</td>
+                                                            <td class="px-2 py-1">
+                                                                @if ($previewRow['error'])
+                                                                    <span class="text-red-600 text-xs font-medium">{{ $previewRow['error'] }}</span>
+                                                                @else
+                                                                    <span class="text-green-600 text-xs">✓ Válida</span>
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        @php
+                                            $hasErrorsInPreview = collect($excelPreview)->contains(fn($r) => $r['error'] !== null);
+                                        @endphp
+
+                                        @if ($hasErrorsInPreview)
+                                            <div class="text-sm text-amber-700 mb-2">
+                                                ⚠ Hay filas con errores. Al confirmar, solo se aplicarán las filas válidas.
+                                            </div>
+                                        @endif
+                                    @endif
+
+                                    <div class="flex gap-2">
+                                        @if (!empty($excelPreview) && $hasErrorsInPreview)
+                                            <button type="button" wire:click="applyExcelWithErrors"
+                                                onclick="return confirm('Se aplicarán solo las filas válidas. ¿Continuar?')"
+                                                class="inline-flex items-center px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700">
+                                                Aplicar solo las filas válidas
+                                            </button>
+                                        @else
+                                            <button type="button" wire:click="confirmarMapeoExcel"
+                                                onclick="return confirm('¿Reemplazar el Objeto del Contrato actual con los datos del Excel? Esta acción no se puede deshacer.')"
+                                                class="inline-flex items-center px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700">
+                                                Confirmar y reemplazar
+                                            </button>
+                                        @endif
+                                        <button type="button" wire:click="cancelarMapeoExcel"
+                                            class="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-300">
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <div class="overflow-x-auto">
+                                <table class="w-full border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-gray-300">
+                                            <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Descripción</th>
+                                            <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Cantidad</th>
+                                            <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tipo</th>
+                                            <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Precio Unitario</th>
+                                            <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Precio Total</th>
+                                            <th class="px-3 py-2"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($objetoContrato as $index => $item)
+                                            <tr wire:key="item-{{ $index }}" class="border-b border-gray-200 hover:bg-white transition-colors" x-data>
+                                                <td class="px-3 py-2">
+                                                    <input type="text" wire:model.live="objetoContrato.{{ $index }}.descripcion"
+                                                        placeholder="Descripción del producto o servicio"
+                                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('objetoContrato.' . $index . '.descripcion') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                                    @error('objetoContrato.' . $index . '.descripcion')
+                                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                    @enderror
+                                                </td>
+                                                <td class="px-3 py-2">
+                                                    <input data-cantidad type="number" min="1"
+                                                        wire:model.live="objetoContrato.{{ $index }}.cantidad"
+                                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('objetoContrato.' . $index . '.cantidad') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                                    @error('objetoContrato.' . $index . '.cantidad')
+                                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                    @enderror
+                                                </td>
+                                                <td class="px-3 py-2">
+                                                    <select wire:model.live="objetoContrato.{{ $index }}.tipo"
+                                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('objetoContrato.' . $index . '.tipo') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
+                                                        <option value="">Seleccione...</option>
+                                                        <option value="Hardware">Hardware</option>
+                                                        <option value="Licencia">Licencia</option>
+                                                        <option value="HiCare">HiCare</option>
+                                                        <option value="Servicio">Servicio</option>
+                                                    </select>
+                                                    @error('objetoContrato.' . $index . '.tipo')
+                                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                    @enderror
+                                                </td>
+                                                <td class="px-3 py-2">
+                                                    <input data-precio-u type="number" step="0.01" min="0"
+                                                        wire:model.live="objetoContrato.{{ $index }}.precio_unitario"
+                                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('objetoContrato.' . $index . '.precio_unitario') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                                    @error('objetoContrato.' . $index . '.precio_unitario')
+                                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                                    @enderror
+                                                </td>
+                                                <td class="px-3 py-2">
+                                                    <input type="number" step="0.01" readonly
+                                                        x-bind:value="(parseFloat($el.closest('tr').querySelector('[data-cantidad]')?.value) || 0) * (parseFloat($el.closest('tr').querySelector('[data-precio-u]')?.value) || 0)"
+                                                        wire:model="objetoContrato.{{ $index }}.precio_total"
+                                                        class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-500 shadow-sm cursor-not-allowed" />
+                                                </td>
+                                                <td class="px-3 py-2 text-center">
+                                                    <button type="button" wire:click="eliminarFila({{ $index }})"
+                                                        class="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition-colors duration-200"
+                                                        title="Eliminar ítem">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="border-t-2 border-gray-300">
+                                            <td colspan="4" class="px-3 py-3 text-right text-sm font-bold text-gray-700">
+                                                Total General:
+                                            </td>
+                                            <td class="px-3 py-3 text-sm font-bold text-gray-900">
+                                                <span x-data="{ total: 0 }" x-init="
+                                                    total = () => {
+                                                        let sum = 0;
+                                                        document.querySelectorAll('[data-cantidad]').forEach(el => {
+                                                            const tr = el.closest('tr');
+                                                            const qty = parseFloat(el.value) || 0;
+                                                            const price = parseFloat(tr.querySelector('[data-precio-u]')?.value) || 0;
+                                                            sum += qty * price;
+                                                        });
+                                                        return sum.toFixed(2);
+                                                    };
+                                                    $watch('$wire.objetoContrato', () => { total = total(); });
+                                                " x-text="total()">
+                                                    {{ number_format(array_sum(array_column($objetoContrato, 'precio_total')), 2) }}
+                                                </span>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            <div class="mt-4">
+                                <button type="button" wire:click="agregarFila"
+                                    class="inline-flex items-center px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors duration-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    Agregar ítem
+                                </button>
+                            </div>
+                        </div>
+
                         {{-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> --}}
                         <!-- Garantías Section -->
                         <div class="bg-gray-50 p-6 rounded-lg">
@@ -761,15 +1125,15 @@
                                         algún tipo de garantía? </label>
                                     <select wire:model.live="aplicagarantia" id="garantia"
                                         class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicagarantia') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
-                                        <option value="" disabled>Selecciona una opción</option>
-                                        <option value="si">Sí</option>
-                                        <option value="no">No</option>
+                                        <option value="">Seleccione...</option>
+                                        <option value="Fábrica">Fábrica</option>
+                                        <option value="Impresistem">Impresistem</option>
                                     </select>
                                     @error('aplicagarantia')
                                         <span class="text-red-500 text-sm">{{ $message }}</span>
                                     @enderror
                                 </div>
-                                @if ($aplicagarantia === 'si')
+                                @if ($aplicagarantia === 'Fábrica' || $aplicagarantia === 'Impresistem')
                                     <div>
                                         <label for="terminogarantia" class="block text-sm font-medium text-gray-700">
                                             ¿Cuál es el término de la garantía? </label>
@@ -824,6 +1188,17 @@
                                             <span class="text-red-500 text-sm"> {{ $message }}</span>
                                         @enderror
                                     @endif
+                                </div>
+
+                                <div>
+                                    <label for="aseguradora_poliza" class="block text-sm font-medium text-gray-700">
+                                        Aseguradora de la póliza
+                                    </label>
+                                    <input id="aseguradora_poliza" type="text" wire:model.live="aseguradora_poliza"
+                                        class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aseguradora_poliza') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                                    @error('aseguradora_poliza')
+                                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                                    @enderror
                                 </div>
 
                             </div>
@@ -985,19 +1360,7 @@
                             <div class="flex flex-col mt-6"> @error('files.*')
                                     <span class="text-red-500 text-sm mt-2">{{ $message }}</span>
                                 @enderror <br>
-                                <div class="flex flex-col mt-6">
-                                    @if ($errors->any())
-                                        <div class="alert alert-danger mb-4 text-center">
-                                            <span class="text-red-500 font-medium">Parece que algunos campos del formulario aún no
-                                                están completos o contienen información incorrecta.</span>
-                                            <ul class="mt-2 text-left text-sm text-red-600 list-disc pl-5 max-w-md mx-auto">
-                                                @foreach ($errors->all() as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
-                                    <div class="flex justify-center space-x-6">
+                                <div class="flex justify-center space-x-6">
                                         <button wire:click="changeStep(1)" type="button"
                                             class="group relative bg-white border-2 border-gray-300 text-gray-700 py-3 px-8 rounded-xl hover:border-gray-400 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-3">
                                             <div
@@ -1055,6 +1418,26 @@
                                     </div>
                                 </div>
                                 <br>
+
+                                @if ($errors->any())
+                                    <div class="alert alert-danger mb-4 text-center">
+                                        <span class="text-red-500 font-medium">Parece que algunos campos del formulario aún no
+                                            están completos o contienen información incorrecta.</span>
+                                        <ul class="mt-2 text-left text-sm text-red-600 list-disc pl-5 max-w-md mx-auto">
+                                            @foreach ($errors->toArray() as $campo => $mensajes)
+                                                @php
+                                                    $campoBase = explode('.', $campo)[0];
+                                                    $paso = $pasoPorCampo[$campoBase] ?? 2;
+                                                    $etiqueta = $etiquetas[$campoBase] ?? $campoBase;
+                                                @endphp
+                                                @foreach ($mensajes as $mensaje)
+                                                    <li><b>(Paso {{ $paso }})</b> {{ $etiqueta }}: {{ $mensaje }}</li>
+                                                @endforeach
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+
                                 <div id="modalContainer">
                                     @if ($mmd)
                                         <div

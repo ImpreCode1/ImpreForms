@@ -430,110 +430,49 @@
                                     </button>
                                 </div>
 
-                                @if(auth()->user()->isAdmin() && $selectedFormulario)
-                                <div class="absolute top-[61px] right-0 z-20 flex justify-end px-6 py-2 pointer-events-none">
-                                    <div class="pointer-events-auto w-72 rounded-xl border shadow-lg bg-white"
-                                         x-data="{ expandido: false }">
-
-                                        @php
-                                            $badgeClases = [
-                                                'pendiente'   => 'bg-yellow-100 text-yellow-800 border-yellow-200',
-                                                'en_revision' => 'bg-blue-100 text-blue-800 border-blue-200',
-                                                'aprobado'    => 'bg-green-100 text-green-800 border-green-200',
-                                                'rechazado'   => 'bg-red-100 text-red-800 border-red-200',
-                                            ];
-                                            $estadoActual = $selectedFormulario->estado_autorizacion ?? 'pendiente';
-                                            $claseEstado  = $badgeClases[$estadoActual] ?? 'bg-gray-100 text-gray-800 border-gray-200';
-                                        @endphp
-
-                                        <div class="flex items-center justify-between px-4 py-2 border-b cursor-pointer rounded-t-xl bg-gray-50"
-                                             @click="expandido = !expandido">
-                                            <div class="flex items-center gap-2">
-                                                <svg class="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                                </svg>
-                                                <span class="text-xs font-semibold text-gray-700">Autorización</span>
-                                            </div>
-                                            <div class="flex items-center gap-2">
-                                                <span class="rounded-full px-2 py-0.5 text-xs font-medium border {{ $claseEstado }}">
-                                                    {{ ucfirst(str_replace('_', ' ', $estadoActual)) }}
-                                                </span>
-                                                <svg class="h-3 w-3 text-gray-400 transition-transform"
-                                                     :class="expandido ? 'rotate-180' : ''"
-                                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                                </svg>
-                                            </div>
-                                        </div>
-
-                                        <div x-show="expandido" x-cloak class="px-4 py-3 space-y-3">
-
-                                            @if($selectedFormulario->estado_autorizacion === 'aprobado')
-                                                <div class="flex items-center gap-2 text-green-700 text-xs">
-                                                    <svg class="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                                    </svg>
-                                                    <span>Aprobado el {{ $selectedFormulario->autorizado_en?->format('d/m/Y H:i') ?? '—' }}</span>
-                                                </div>
-                                                @if($selectedFormulario->comentario_autorizacion)
-                                                    <p class="text-xs text-slate-500">{{ $selectedFormulario->comentario_autorizacion }}</p>
-                                                @endif
-
-                                            @elseif($selectedFormulario->estado_autorizacion === 'rechazado')
-                                                <div class="flex items-center gap-2 text-red-700 text-xs">
-                                                    <svg class="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                                    </svg>
-                                                    <span>Rechazado el {{ $selectedFormulario->autorizado_en?->format('d/m/Y H:i') ?? '—' }}</span>
-                                                </div>
-                                                @if($selectedFormulario->comentario_autorizacion)
-                                                    <p class="text-xs text-slate-500"><span class="font-medium">Motivo:</span> {{ $selectedFormulario->comentario_autorizacion }}</p>
-                                                @endif
-
-                                            @else
-                                                @if($mostrarRechazo)
-                                                    <div class="space-y-2">
-                                                        <label class="block text-xs font-medium text-gray-700">
-                                                            Motivo del rechazo <span class="text-red-500">*</span>
-                                                        </label>
-                                                        <textarea wire:model="comentarioAutorizacion"
-                                                                  rows="3"
-                                                                  class="w-full rounded border border-gray-300 px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-red-400"
-                                                                  placeholder="Explica el motivo..."></textarea>
-                                                        @error('comentarioAutorizacion')
-                                                            <p class="text-xs text-red-600">{{ $message }}</p>
-                                                        @enderror
-                                                    </div>
-                                                    <div class="flex gap-2">
-                                                        <button wire:click="toggleRechazo"
-                                                                class="flex-1 rounded border border-gray-300 py-1.5 text-xs text-gray-600 hover:bg-gray-50">
-                                                            Cancelar
-                                                        </button>
-                                                        <button wire:click="rechazarFormulario"
-                                                                class="flex-1 rounded bg-red-600 py-1.5 text-xs font-medium text-white hover:bg-red-700">
-                                                            Confirmar
-                                                        </button>
-                                                    </div>
-                                                @else
-                                                    <p class="text-xs text-slate-500">Revisa el formulario y toma una decisión.</p>
-                                                    <div class="flex gap-2">
-                                                        <button wire:click="toggleRechazo"
-                                                                class="flex-1 rounded border border-red-300 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50">
-                                                            Rechazar
-                                                        </button>
-                                                        <button wire:click="aprobarFormulario"
-                                                                class="flex-1 rounded bg-green-600 py-1.5 text-xs font-medium text-white hover:bg-green-700">
-                                                            Aprobar
-                                                        </button>
-                                                    </div>
-                                                @endif
-                                            @endif
-
-                                        </div>
+                                @if(strtolower(auth()->user()->rol) === 'admin')
+                                <div x-data="{ mostrarRechazo: false }"
+                                     class="absolute top-[61px] right-4 z-50 bg-white border border-gray-200
+                                            rounded-xl shadow-lg p-3 w-56">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                                            Autorización
+                                        </span>
+                                        <span class="text-xs px-2 py-0.5 rounded-full font-medium
+                                            {{ $selectedFormulario?->estado_autorizacion === 'aprobado'
+                                               ? 'bg-green-100 text-green-700'
+                                               : ($selectedFormulario?->estado_autorizacion === 'rechazado'
+                                                  ? 'bg-red-100 text-red-700'
+                                                  : 'bg-yellow-100 text-yellow-700') }}">
+                                            {{ ucfirst($selectedFormulario?->estado_autorizacion ?? 'Pendiente') }}
+                                        </span>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button wire:click="aprobarFormulario"
+                                            class="flex-1 py-1.5 rounded-lg bg-green-500 hover:bg-green-600
+                                                   text-white text-xs font-medium transition">
+                                            ✓ Aprobar
+                                        </button>
+                                        <button @click="mostrarRechazo = !mostrarRechazo"
+                                            class="flex-1 py-1.5 rounded-lg bg-red-500 hover:bg-red-600
+                                                   text-white text-xs font-medium transition">
+                                            ✗ Rechazar
+                                        </button>
+                                    </div>
+                                    <div x-show="mostrarRechazo" x-cloak class="mt-2">
+                                        <textarea wire:model="comentarioAutorizacion"
+                                            placeholder="Motivo del rechazo (mínimo 5 caracteres)..."
+                                            class="w-full text-xs border border-gray-300 rounded-lg p-2
+                                                   resize-none focus:ring-1 focus:ring-red-400"
+                                            rows="3"></textarea>
+                                        <button wire:click="rechazarFormulario"
+                                            class="w-full mt-1 py-1.5 rounded-lg bg-red-600 hover:bg-red-700
+                                                   text-white text-xs font-medium transition">
+                                            Confirmar rechazo
+                                        </button>
                                     </div>
                                 </div>
                                 @endif
-
                                 <div class="max-w-4xl mx-auto p-6 space-y-6 bg-blue-50">
                                     {{-- tipo solicitud  --}}
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200 max-w-full">

@@ -52,6 +52,9 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public string $comentarioAutorizacion = '';
     public bool $mostrarRechazo = false;
 
+    public string $comentarioAutorizacion = '';
+    public bool $mostrarRechazo = false;
+
     protected $listeners = ['openModal' => 'loadFormulario'];
 
     public function approveFormulario($id)
@@ -405,7 +408,7 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public function downloadFormulario($id)
     {
         try {
-            $formulario = Marca::with(['infonegocio', 'informacion.producto', 'pago', 'financiera', 'infoEntrega', 'documento', 'formLinks'])->findOrFail($id);
+            $formulario = Marca::with(['infonegocio', 'informacion.producto', 'pago', 'financiera', 'infoEntrega', 'documento', 'formLinks', 'objetoContrato'])->findOrFail($id);
 
             $pdf = FacadePdf::loadView('pdf.formulario', compact('formulario'));
 
@@ -442,11 +445,9 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
         );
     }
 
-public function aprobarFormulario(): void
-{
-    abort_unless(auth()->check() && auth()->user()->isAdmin(), 403);
-
-    if (!$this->selectedFormulario) return;
+    public function aprobarFormulario(): void
+    {
+        if (!$this->selectedFormulario) return;
 
         $this->selectedFormulario->update([
             'estado_autorizacion'     => 'aprobado',
@@ -461,11 +462,9 @@ public function aprobarFormulario(): void
         $this->closeModal();
     }
 
-public function rechazarFormulario(): void
-{
-    abort_unless(auth()->check() && auth()->user()->isAdmin(), 403);
-
-    $this->validate([
+    public function rechazarFormulario(): void
+    {
+        $this->validate([
             'comentarioAutorizacion' => 'required|min:5',
         ], [
             'comentarioAutorizacion.required' => 'El comentario es obligatorio para rechazar.',

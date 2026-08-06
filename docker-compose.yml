@@ -1,0 +1,46 @@
+services:
+  app:
+    env_file:
+    - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: impreforms_app
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+      - mailpit
+    networks:
+      - impreforms
+
+  mysql:
+    image: mysql:8.0
+    container_name: impreforms_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: contratos_local
+    ports:
+      - "3307:3306"   # 3307 para no chocar con Laragon si aún no lo desinstalas del todo
+    volumes:
+      - impreforms_db:/var/lib/mysql
+    networks:
+      - impreforms
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: impreforms_mailpit
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    networks:
+      - impreforms
+
+volumes:
+  impreforms_db:
+
+networks:
+  impreforms:

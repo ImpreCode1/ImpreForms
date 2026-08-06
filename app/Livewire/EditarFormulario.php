@@ -6,11 +6,13 @@ use App\Livewire\Traits\FormatearFechas;
 use App\Livewire\Traits\InvertirNombre;
 use App\Models\Documento;
 use App\Models\Marca;
+use App\Models\ObjetoContrato;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EditarFormulario extends Component
 {
@@ -32,6 +34,17 @@ class EditarFormulario extends Component
     public $cod;
     public $aplicagarantia, $terminogarantia, $aplicapoliza, $porcentaje;
     public $incluye_iva, $otros, $orden_compra;
+    public $nit;
+    public $direccion_domicilio;
+    public $cc_representante;
+    public $facturacion_moneda;
+    public $trm;
+    public $cuenta_compensacion;
+    public $saldo_restante_porcentaje;
+    public $saldo_restante_valor;
+    public $saldo_restante_fecha_pago;
+    public $otras_observaciones;
+    public $aseguradora_poliza;
     // public $cotizacion;
     protected $listeners = ['removeUpload', 'removeExistingFile', 'editFormulario'];
     public $marcaId;
@@ -54,7 +67,13 @@ class EditarFormulario extends Component
     public $porcentaje_anticipo;
     public $fecha_pago_anticipo;
     public $otros_pago;
-
+    public $objetoContrato = [];
+    public $excelFile = null;
+    public $excelHeaders = [];
+    public $excelRows = [];
+    public $columnMapping = [];
+    public $excelPreview = [];
+    public $showExcelMapping = false;
 
     protected $rules = [
         // validaciones
@@ -68,6 +87,9 @@ class EditarFormulario extends Component
         'negocio' => 'required|string|regex:/^[\d,\.]+$/',
         'nombres' => 'required|string|',
         'nom_rep' => 'required|string',
+        'nit' => 'nullable|string',
+        'direccion_domicilio' => 'nullable|string',
+        'cc_representante' => 'nullable|string',
         'correo' => 'required|email|',
         'numero' => 'required|numeric',
         'crms' => 'required|string',
@@ -95,7 +117,7 @@ class EditarFormulario extends Component
         'tiempoentrega' => 'nullable|string',
         'tiempo_entrega_cantidad' => 'nullable|integer|min:1',
         'tiempo_entrega_unidad' => 'nullable|string|in:Días,Semanas,Meses,Años',
-        'terminoentrega' => 'required|string|',
+        'terminoentrega' => 'required|date',
         'tipoicoterm' => 'required|string|max:255',
         'prestar' => 'nullable|string',
         'suministrar' => 'nullable|string',
@@ -104,8 +126,16 @@ class EditarFormulario extends Component
 
         'clientname' => 'nullable|numeric',
         'mail' => 'nullable|email',
-        'aplicagarantia' => 'required|in:si,no',
+        'aplicagarantia' => 'nullable|in:Fábrica,Impresistem',
         'aplicapoliza' => 'required|in:si,no',
+        'aseguradora_poliza' => 'nullable|string|max:255',
+        'facturacion_moneda' => 'nullable|in:COP,USD',
+        'trm' => 'nullable|in:Pactada,TRM del día de factura',
+        'cuenta_compensacion' => 'nullable|in:Sí,No',
+        'saldo_restante_porcentaje' => 'nullable|numeric|min:0|max:100',
+        'saldo_restante_valor' => 'nullable|numeric|min:0',
+        'saldo_restante_fecha_pago' => 'nullable|date',
+        'otras_observaciones' => 'nullable|string|max:500',
         'incluye_iva' => 'required',
         'forma_pago' => 'nullable|string|max:255',
         'moneda' => 'nullable|string',
@@ -320,6 +350,8 @@ class EditarFormulario extends Component
 
     public function mount($formulario)
     {
+        abort_if(auth()->user()->isUser(), 403, 'No tiene permisos para editar este formulario.');
+
         // Buscar el formulario completo por ID con todas las relaciones necesarias
         $this->formulario = Marca::with([
             'infonegocio',
@@ -338,6 +370,20 @@ class EditarFormulario extends Component
         $this->numero = $this->formulario->infonegocio->numero_celular;
         $this->crms = $this->formulario->infonegocio->n_oportunidad_crm;
         $this->nom_rep = $this->formulario->infonegocio->nom_rep;
+        $this->nit = $this->formulario->infonegocio->nit;
+        $this->direccion_domicilio = $this->formulario->infonegocio->direccion_domicilio;
+        $this->cc_representante = $this->formulario->infonegocio->cc_representante;
+
+        if ($this->formulario->financiera->isNotEmpty()) {
+            $financiera = $this->formulario->financiera->first();
+            $this->facturacion_moneda = $financiera?->facturacion_moneda;
+            $this->trm = $financiera?->trm;
+            $this->cuenta_compensacion = $financiera?->cuenta_compensacion;
+            $this->saldo_restante_porcentaje = $financiera?->saldo_restante_porcentaje;
+            $this->saldo_restante_valor = $financiera?->saldo_restante_valor;
+            $this->saldo_restante_fecha_pago = $financiera?->saldo_restante_fecha_pago;
+            $this->otras_observaciones = $financiera?->otras_observaciones;
+        }
 
         $this->tipo_solicitud = $this->formulario->tipo_solicitud;
         $this->nombre_ejc = $this->formulario->nombre_ejc_formatted;
@@ -397,8 +443,14 @@ class EditarFormulario extends Component
                 $this->terminogarantia = $producto->termino_garantia;
                 $this->aplicapoliza = $producto->aplica_poliza;
                 $this->porcentaje = $producto->porcentaje_poliza;
+                $this->aseguradora_poliza = $producto->aseguradora_poliza;
             }
         }
+
+        // ✅ Cargar Objeto del Contrato
+        $this->objetoContrato = ObjetoContrato::where('marca_id', $this->marcaId)
+            ->get()
+            ->toArray();
 
         $this->existingFiles = $this->formulario->documento
             ->map(function ($documento) {
@@ -480,6 +532,154 @@ class EditarFormulario extends Component
         $this->loadExistingFiles();
     }
 
+    public function agregarFila()
+    {
+        $this->objetoContrato[] = [
+            'descripcion' => '',
+            'cantidad' => 1,
+            'tipo' => '',
+            'precio_unitario' => 0,
+            'precio_total' => 0,
+        ];
+    }
+
+    public function eliminarFila($index)
+    {
+        unset($this->objetoContrato[$index]);
+        $this->objetoContrato = array_values($this->objetoContrato);
+    }
+
+    public function updatedExcelFile()
+    {
+        $this->validate([
+            'excelFile' => 'file|mimes:xlsx,xls,csv|max:5120',
+        ]);
+
+        $data = Excel::toArray(null, $this->excelFile);
+        $rows = $data[0] ?? [];
+
+        if (empty($rows) || empty($rows[0])) {
+            session()->flash('error', 'El archivo está vacío o no tiene encabezados.');
+            return;
+        }
+
+        $this->excelHeaders = $rows[0];
+        $this->excelRows = array_slice($rows, 1);
+        $this->columnMapping = array_fill(0, count($this->excelHeaders), '');
+        $this->showExcelMapping = true;
+        $this->buildPreview();
+    }
+
+    public function updatedColumnMapping()
+    {
+        $this->buildPreview();
+    }
+
+    public function confirmarMapeoExcel()
+    {
+        $this->applyExcelRows();
+    }
+
+    public function applyExcelWithErrors()
+    {
+        $this->buildPreview();
+        $this->applyExcelRows();
+    }
+
+    private function applyExcelRows()
+    {
+        $validas = array_filter($this->excelPreview, fn($row) => $row['error'] === null);
+        $validas = array_values($validas);
+
+        if (empty($validas)) {
+            session()->flash('error', 'No hay filas válidas para aplicar. Revise el mapeo o el archivo.');
+            return;
+        }
+
+        $this->objetoContrato = array_map(fn($row) => [
+            'descripcion'     => $row['descripcion'],
+            'cantidad'        => (float) $row['cantidad'],
+            'tipo'            => $row['tipo'],
+            'precio_unitario' => (float) $row['precio_unitario'],
+            'precio_total'    => (float) $row['precio_total'],
+        ], $validas);
+
+        $this->resetExcelState();
+        session()->flash('message', 'Objeto del Contrato reemplazado desde Excel (' . count($validas) . ' filas).');
+    }
+
+    public function cancelarMapeoExcel()
+    {
+        $this->resetExcelState();
+    }
+
+    private function resetExcelState()
+    {
+        $this->excelFile = null;
+        $this->excelHeaders = [];
+        $this->excelRows = [];
+        $this->columnMapping = [];
+        $this->excelPreview = [];
+        $this->showExcelMapping = false;
+    }
+
+    private function buildPreview()
+    {
+        $mappedColumns = [
+            'descripcion'     => array_search('Descripción', $this->columnMapping),
+            'cantidad'        => array_search('Cantidad', $this->columnMapping),
+            'tipo'            => array_search('Tipo', $this->columnMapping),
+            'precio_unitario' => array_search('Precio Unitario', $this->columnMapping),
+        ];
+
+        $this->excelPreview = [];
+
+        foreach ($this->excelRows as $row) {
+            $item = [
+                'descripcion'     => $mappedColumns['descripcion'] !== false ? trim((string) ($row[$mappedColumns['descripcion']] ?? '')) : '',
+                'cantidad'        => $mappedColumns['cantidad'] !== false ? trim((string) ($row[$mappedColumns['cantidad']] ?? '')) : '',
+                'tipo'            => $mappedColumns['tipo'] !== false ? trim((string) ($row[$mappedColumns['tipo']] ?? '')) : '',
+                'precio_unitario' => $mappedColumns['precio_unitario'] !== false ? trim((string) ($row[$mappedColumns['precio_unitario']] ?? '')) : '',
+                'error'           => null,
+            ];
+
+            $errors = [];
+            if ($item['descripcion'] === '') {
+                $errors[] = 'Descripción requerida';
+            }
+            if ($item['cantidad'] === '' || !is_numeric($item['cantidad'])) {
+                $errors[] = 'Cantidad debe ser numérica';
+            }
+            if ($item['precio_unitario'] === '' || !is_numeric($item['precio_unitario'])) {
+                $errors[] = 'Precio unitario debe ser numérico';
+            }
+
+            if (!empty($errors)) {
+                $item['error'] = implode('; ', $errors);
+            } else {
+                $item['cantidad'] = (float) $item['cantidad'];
+                $item['precio_unitario'] = (float) $item['precio_unitario'];
+                $item['precio_total'] = round($item['cantidad'] * $item['precio_unitario'], 2);
+            }
+
+            $this->excelPreview[] = $item;
+        }
+    }
+
+    public function updatedObjetoContrato($value, $key)
+    {
+        $parts = explode('.', $key);
+        if (count($parts) === 2) {
+            $index = $parts[0];
+            $field = $parts[1];
+            if (in_array($field, ['cantidad', 'precio_unitario']) && isset($this->objetoContrato[$index])) {
+                $cantidad = (float) ($this->objetoContrato[$index]['cantidad'] ?? 0);
+                $precioUnitario = (float) ($this->objetoContrato[$index]['precio_unitario'] ?? 0);
+                $this->objetoContrato[$index]['precio_total'] = round($cantidad * $precioUnitario, 2);
+            }
+        }
+    }
+
     public function submit()
     {
         $this->validate();
@@ -519,6 +719,9 @@ class EditarFormulario extends Component
                 'numero_celular' => $this->numero,
                 'n_oportunidad_crm' => $this->crms,
                 'nom_rep' => $this->nom_rep,
+                'nit' => $this->nit,
+                'direccion_domicilio' => $this->direccion_domicilio,
+                'cc_representante' => $this->cc_representante,
             ]);
 
             if ($info = $this->formulario->informacion->first()) {
@@ -546,6 +749,22 @@ class EditarFormulario extends Component
                         'termino_garantia' => $this->terminogarantia,
                         'aplica_poliza' => $this->aplicapoliza,
                         'porcentaje_poliza' => $this->porcentaje,
+                        'aseguradora_poliza' => $this->aseguradora_poliza,
+                    ]);
+                }
+            }
+
+            // ✅ Guardar Objeto del Contrato
+            ObjetoContrato::where('marca_id', $this->marcaId)->delete();
+            foreach ($this->objetoContrato as $item) {
+                if (!empty($item['descripcion']) && !empty($item['cantidad'])) {
+                    ObjetoContrato::create([
+                        'marca_id' => $this->marcaId,
+                        'descripcion' => $item['descripcion'],
+                        'cantidad' => $item['cantidad'],
+                        'tipo' => $item['tipo'],
+                        'precio_unitario' => $item['precio_unitario'],
+                        'precio_total' => $item['precio_total'],
                     ]);
                 }
             }
@@ -553,6 +772,18 @@ class EditarFormulario extends Component
             if ($pago = $this->formulario->pago->first()) {
                 $pago->update([
                     'incluye_iva' => $this->incluye_iva,
+                ]);
+            }
+
+            if ($financiera = $this->formulario->financiera) {
+                $financiera->update([
+                    'facturacion_moneda' => $this->facturacion_moneda,
+                    'trm' => $this->trm,
+                    'cuenta_compensacion' => $this->cuenta_compensacion,
+                    'saldo_restante_porcentaje' => $this->saldo_restante_porcentaje,
+                    'saldo_restante_valor' => $this->saldo_restante_valor,
+                    'saldo_restante_fecha_pago' => $this->saldo_restante_fecha_pago,
+                    'otras_observaciones' => $this->otras_observaciones,
                 ]);
             }
 
