@@ -661,6 +661,8 @@ class EnviarFormulario extends Component
                 'orden_compra' => $this->orden_compra,
             ]);
 
+            $marca->update(['estado_autorizacion' => 'pendiente']);
+
             $this->marcaId = $marca->id;
 
             // ✅ Crear Información

@@ -45,6 +45,14 @@ class Marca extends Model
         'otros_pago',
         'moneda_precio_venta',
         'orden_compra',
+        'estado_autorizacion',
+        'comentario_autorizacion',
+        'autorizado_en',
+        'autorizado_por',
+    ];
+
+    protected $casts = [
+        'autorizado_en' => 'datetime',
     ];
 
     public function infonegocio()
@@ -133,5 +141,15 @@ class Marca extends Model
     public function getNombreEjcFormattedAttribute()
     {
         return $this->nombre_ejc;
+    }
+
+    public function scopePendientesAutorizacion($query)
+    {
+        return $query->where('estado_autorizacion', 'pendiente');
+    }
+
+    public function autorizador()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'autorizado_por');
     }
 }
