@@ -866,21 +866,30 @@
                     <div class="mb-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
                         <h3 class="text-sm font-semibold text-amber-800 mb-3">Mapear columnas del Excel</h3>
 
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                            @foreach ($excelHeaders as $index => $header)
-                                <div>
-                                    <label class="block text-xs font-medium text-gray-600 mb-1">{{ $header }}</label>
-                                    <select wire:model.live="columnMapping.{{ $index }}"
-                                        class="block w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-200">
-                                        <option value="">-- Ignorar --</option>
-                                        <option value="Descripción">Descripción</option>
-                                        <option value="Cantidad">Cantidad</option>
-                                        <option value="Tipo">Tipo</option>
-                                        <option value="Precio Unitario">Precio Unitario</option>
-                                    </select>
-                                </div>
-                            @endforeach
-                        </div>
+                        @if ($excelAutoMatched)
+                            <div class="text-sm text-emerald-700 mb-4 flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                Columnas detectadas automáticamente.
+                            </div>
+                        @else
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                                @foreach ($excelHeaders as $index => $header)
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-600 mb-1">{{ $header }}</label>
+                                        <select wire:model.live="columnMapping.{{ $index }}"
+                                            class="block w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-200">
+                                            <option value="">-- Ignorar --</option>
+                                            <option value="Descripción">Descripción</option>
+                                            <option value="Cantidad">Cantidad</option>
+                                            <option value="Tipo">Tipo</option>
+                                            <option value="Precio Unitario">Precio Unitario</option>
+                                        </select>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
 
                         @if (!empty($excelPreview))
                             <div class="overflow-x-auto mb-3">
@@ -1062,49 +1071,6 @@
 
             <div class="form-step">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Garantías Section -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-orange-500"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 2l4 7h-8l4-7z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 9v10c0 1.105 1.025 2 2.267 2.233L12 22l3.733-2.767C16.975 21 18 20.105 18 19V9l-6 4-6-4z" />
-                            </svg>
-                            Garantías
-                        </h2>
-                        <div class="grid gap-4">
-                            <div>
-                                <label for="garantia" class="block text-sm font-medium text-gray-700">¿Aplica
-                                    algún
-                                    tipo de
-                                    garantía?</label>
-                                <select wire:model.live="aplicagarantia" id="garantia"
-                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('aplicagarantia') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200">
-                                    <option value="">Seleccione...</option>
-                                    <option value="Fábrica">Fábrica</option>
-                                    <option value="Impresistem">Impresistem</option>
-                                </select>
-                                @error('aplicagarantia')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div>
-                                <label for="terminogarantia" class="block text-sm font-medium text-gray-700">¿Cuál
-                                    es
-                                    el término de
-                                    la
-                                    garantía?</label>
-                                <input id="terminogarantia" type="text" wire:model.live="terminogarantia"
-                                    class="mt-1 block w-full rounded-md border-gray-300 {{ $errors->has('terminogarantia') ? 'border-red-400' : 'border-blue-100' }} shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
-                                @error('terminogarantia')
-                                    <span class="text-red-500 text-sm"> {{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Productos Section -->
                     <div class="bg-gray-50 p-6 rounded-lg">
                         <h2 class="text-2xl font-semibold text-gray-700 mb-4 border-b pb-2 flex items-center">

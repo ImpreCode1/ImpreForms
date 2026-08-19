@@ -90,8 +90,6 @@ class EnviarFormulario extends Component
     public $direccion_domicilio;
     public $cc_representante;
     // public $details;
-    public $aplicagarantia = '';
-    public $terminogarantia;
 
     // public $formapago;
     // public $moneda;
@@ -135,6 +133,7 @@ class EnviarFormulario extends Component
     public $columnMapping = [];
     public $excelPreview = [];
     public $showExcelMapping = false;
+    public $excelAutoMatched = false;
 
     public $selectedDirector;
     public $DirectorEmail = '';
@@ -231,8 +230,6 @@ class EnviarFormulario extends Component
         'finalizacion' => 'nullable|date|after_or_equal:inicio',
 
         // * Producto
-        'aplicagarantia' => 'nullable|in:Fábrica,Impresistem',
-        'terminogarantia' => 'nullable|string|min:1',
         'aplicapoliza' => 'required|in:si,no',
         'porcentaje' => 'nullable|numeric|min:0|max:100',
         'aseguradora_poliza' => 'nullable|string|max:255',
@@ -292,7 +289,6 @@ class EnviarFormulario extends Component
         'porcentaje_anticipo.max' => 'El porcentaje de anticipo no puede ser mayor que 100.',
         'fecha_pago_anticipo.required_if' => 'Debe especificar la fecha de pago del anticipo.',
 
-        'terminogarantia.required_if' => 'Debe especificar el término de la garantía.',
         'porcentaje.required_if' => 'Debe especificar el porcentaje de póliza.',
         'porcentaje.numeric' => 'El porcentaje debe ser numérico.',
         'porcentaje.min' => 'El porcentaje no puede ser menor que 0.',
@@ -416,12 +412,63 @@ class EnviarFormulario extends Component
         $this->excelRows = array_slice($rows, 1);
         $this->columnMapping = array_fill(0, count($this->excelHeaders), '');
         $this->showExcelMapping = true;
+        $this->excelAutoMatched = $this->detectExcelMapping();
         $this->buildPreview();
     }
 
     public function updatedColumnMapping()
     {
         $this->buildPreview();
+    }
+
+    private function normalizarEncabezado(string $value): string
+    {
+        $sinTildes = strtr($value, [
+            'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U', 'Ü' => 'U', 'Ñ' => 'N',
+            'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ü' => 'u', 'ñ' => 'n',
+        ]);
+
+        return mb_strtoupper(trim($sinTildes));
+    }
+
+    private function detectExcelMapping(): bool
+    {
+        $whitelist = [
+            'descripcion'     => ['DESCRIPCION', 'DESCIPCION'],
+            'cantidad'        => ['CANTIDAD', 'CANT'],
+            'tipo'            => ['TIPO'],
+            'precio_unitario' => ['PRECIO UNITARIO', 'PRECIOUNITARIO'],
+        ];
+
+        $canonical = [
+            'descripcion'     => 'Descripción',
+            'cantidad'        => 'Cantidad',
+            'tipo'            => 'Tipo',
+            'precio_unitario' => 'Precio Unitario',
+        ];
+
+        $mapping = array_fill(0, count($this->excelHeaders), '');
+        $matched = [];
+
+        foreach ($this->excelHeaders as $index => $header) {
+            $norm = $this->normalizarEncabezado((string) $header);
+
+            foreach ($whitelist as $field => $aliases) {
+                if (isset($matched[$field])) {
+                    continue;
+                }
+
+                if (in_array($norm, $aliases, true)) {
+                    $mapping[$index] = $canonical[$field];
+                    $matched[$field] = true;
+                    break;
+                }
+            }
+        }
+
+        $this->columnMapping = $mapping;
+
+        return count($matched) === count($whitelist);
     }
 
     public function confirmarMapeoExcel()
@@ -470,6 +517,7 @@ class EnviarFormulario extends Component
         $this->columnMapping = [];
         $this->excelPreview = [];
         $this->showExcelMapping = false;
+        $this->excelAutoMatched = false;
     }
 
     private function buildPreview()
@@ -638,8 +686,6 @@ class EnviarFormulario extends Component
             // ✅ Crear Producto
             Producto::create([
                 'informacion_id' => $informacion->id,
-                'aplica_garantia' => $this->aplicagarantia,
-                'termino_garantia' => $this->terminogarantia,
                 'aplica_poliza' => $this->aplicapoliza,
                 'porcentaje_poliza' => $this->porcentaje,
                 'aseguradora_poliza' => $this->aseguradora_poliza,
@@ -849,15 +895,6 @@ class EnviarFormulario extends Component
             DB::rollBack();
             report($e);
             session()->flash('error', 'Ocurrió un error al guardar el formulario. Inténtalo de nuevo.');
-        }
-    }
-
-    public function updatedAplicagarantia($value)
-    {
-        if ($value === 'Fábrica' || $value === 'Impresistem') {
-            $this->rules['terminogarantia'] = 'required|string|min:3';
-        } else {
-            $this->rules['terminogarantia'] = 'nullable';
         }
     }
 
@@ -1118,8 +1155,6 @@ class EnviarFormulario extends Component
             'suministrar'          => 'Frecuencia de suministro',
             'inicio'               => 'Fecha de inicio',
             'finalizacion'         => 'Fecha de finalización',
-            'aplicagarantia'       => '¿Aplica garantía?',
-            'terminogarantia'      => 'Término de garantía',
             'aplicapoliza'         => '¿Aplica póliza?',
             'porcentaje'           => 'Porcentaje de póliza',
             'aseguradora_poliza'   => 'Aseguradora de la póliza',

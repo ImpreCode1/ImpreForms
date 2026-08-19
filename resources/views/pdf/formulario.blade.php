@@ -422,45 +422,6 @@
     <br>
     <br>
 
-    {{-- garantia --}}
-    <div class="header">
-        <h1>Garantias</h1>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">¿Aplica algún tipo de garantía?</span>
-        {{-- <div class="info-value">{{ $formulario->informacion->first()->aplica_garantia ?? 'No especificado' }}</div> --}}
-        <div class="info-value">
-            @foreach ($formulario->informacion as $informacion)
-                @foreach ($informacion->producto as $producto)
-                    {{ $producto->aplica_garantia ?? 'No especificado' }}
-                    @if (!$loop->last)
-                        ,
-                    @endif
-                @endforeach
-            @endforeach
-        </div>
-    </div>
-
-    <div class="info-section">
-        <span class="info-label">¿Cuál es el termino de la garantía?</span>
-        <div class="info-value">
-            @foreach ($formulario->informacion as $informacion)
-                @foreach ($informacion->producto as $producto)
-                    {{ $producto->termino_garantia ?? 'No especificado' }}
-                    @if (!$loop->last)
-                        ,
-                    @endif
-                @endforeach
-            @endforeach
-        </div>
-
-    </div>
-
-
-    <br>
-    <br>
-
     {{-- polizas --}}
     <div class="header">
         <h1>Polizas</h1>

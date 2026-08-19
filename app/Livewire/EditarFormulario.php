@@ -32,7 +32,7 @@ class EditarFormulario extends Component
     public $prestar, $suministrar, $inicio, $finalizacion;
     public $clientcode, $clientname, $mail;
     public $cod;
-    public $aplicagarantia, $terminogarantia, $aplicapoliza, $porcentaje;
+    public $aplicapoliza, $porcentaje;
     public $incluye_iva, $otros, $orden_compra;
     public $nit;
     public $direccion_domicilio;
@@ -74,6 +74,7 @@ class EditarFormulario extends Component
     public $columnMapping = [];
     public $excelPreview = [];
     public $showExcelMapping = false;
+    public $excelAutoMatched = false;
 
     protected $rules = [
         // validaciones
@@ -81,7 +82,6 @@ class EditarFormulario extends Component
         'email_ejc' => 'required|email',
         // 'telefono_ejc' => 'required|numeric',
         'nombre_ejc' =>  'required|string|min:5',
-        'terminogarantia' => 'nullable|string|min:5',
         'porcentaje' => 'nullable|numeric|min:0|max:100',
 
         'negocio' => 'required|string|regex:/^[\d,\.]+$/',
@@ -126,7 +126,6 @@ class EditarFormulario extends Component
 
         'clientname' => 'nullable|numeric',
         'mail' => 'nullable|email',
-        'aplicagarantia' => 'nullable|in:Fábrica,Impresistem',
         'aplicapoliza' => 'required|in:si,no',
         'aseguradora_poliza' => 'nullable|string|max:255',
         'facturacion_moneda' => 'nullable|in:COP,USD',
@@ -237,10 +236,6 @@ class EditarFormulario extends Component
         'mail.email' => 'El campo "Correo del Cliente" debe ser un correo electrónico válido.',
         'details.required' => 'El campo "Detalles" es obligatorio.',
         'details.string' => 'El campo "Detalles" debe ser una cadena de texto.',
-        'aplicagarantia.required' => 'El campo "Aplicar Garantía" es obligatorio.',
-        'aplicagarantia.string' => 'El campo "Aplicar Garantía" debe ser una cadena de texto.',
-        'terminogarantia.required' => 'El campo "Término de Garantía" es obligatorio.',
-        'terminogarantia.string' => 'El campo "Término de Garantía" debe ser una cadena de texto.',
         'aplicapoliza.required' => 'El campo "Aplicar Póliza" es obligatorio.',
         'aplicapoliza.string' => 'El campo "Aplicar Póliza" debe ser una cadena de texto.',
         'porcentaje.required' => 'El campo "Porcentaje" es obligatorio.',
@@ -439,8 +434,6 @@ class EditarFormulario extends Component
 
             if ($info->producto->isNotEmpty()) {
                 $producto = $info->producto->first();
-                $this->aplicagarantia = $producto->aplica_garantia;
-                $this->terminogarantia = $producto->termino_garantia;
                 $this->aplicapoliza = $producto->aplica_poliza;
                 $this->porcentaje = $producto->porcentaje_poliza;
                 $this->aseguradora_poliza = $producto->aseguradora_poliza;
@@ -567,12 +560,63 @@ class EditarFormulario extends Component
         $this->excelRows = array_slice($rows, 1);
         $this->columnMapping = array_fill(0, count($this->excelHeaders), '');
         $this->showExcelMapping = true;
+        $this->excelAutoMatched = $this->detectExcelMapping();
         $this->buildPreview();
     }
 
     public function updatedColumnMapping()
     {
         $this->buildPreview();
+    }
+
+    private function normalizarEncabezado(string $value): string
+    {
+        $sinTildes = strtr($value, [
+            'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U', 'Ü' => 'U', 'Ñ' => 'N',
+            'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ü' => 'u', 'ñ' => 'n',
+        ]);
+
+        return mb_strtoupper(trim($sinTildes));
+    }
+
+    private function detectExcelMapping(): bool
+    {
+        $whitelist = [
+            'descripcion'     => ['DESCRIPCION', 'DESCIPCION'],
+            'cantidad'        => ['CANTIDAD', 'CANT'],
+            'tipo'            => ['TIPO'],
+            'precio_unitario' => ['PRECIO UNITARIO', 'PRECIOUNITARIO'],
+        ];
+
+        $canonical = [
+            'descripcion'     => 'Descripción',
+            'cantidad'        => 'Cantidad',
+            'tipo'            => 'Tipo',
+            'precio_unitario' => 'Precio Unitario',
+        ];
+
+        $mapping = array_fill(0, count($this->excelHeaders), '');
+        $matched = [];
+
+        foreach ($this->excelHeaders as $index => $header) {
+            $norm = $this->normalizarEncabezado((string) $header);
+
+            foreach ($whitelist as $field => $aliases) {
+                if (isset($matched[$field])) {
+                    continue;
+                }
+
+                if (in_array($norm, $aliases, true)) {
+                    $mapping[$index] = $canonical[$field];
+                    $matched[$field] = true;
+                    break;
+                }
+            }
+        }
+
+        $this->columnMapping = $mapping;
+
+        return count($matched) === count($whitelist);
     }
 
     public function confirmarMapeoExcel()
@@ -621,6 +665,7 @@ class EditarFormulario extends Component
         $this->columnMapping = [];
         $this->excelPreview = [];
         $this->showExcelMapping = false;
+        $this->excelAutoMatched = false;
     }
 
     private function buildPreview()
@@ -745,8 +790,6 @@ class EditarFormulario extends Component
 
                 if ($producto = $info->producto->first()) {
                     $producto->update([
-                        'aplica_garantia' => $this->aplicagarantia,
-                        'termino_garantia' => $this->terminogarantia,
                         'aplica_poliza' => $this->aplicapoliza,
                         'porcentaje_poliza' => $this->porcentaje,
                         'aseguradora_poliza' => $this->aseguradora_poliza,

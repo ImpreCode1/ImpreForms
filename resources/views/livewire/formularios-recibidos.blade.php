@@ -1040,40 +1040,6 @@
                                     </div>
 
 
-                                    <!-- Garantia -->
-                                    <div class="bg-white rounded-lg shadow-md border border-slate-200">
-                                        <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
-                                            <h2 class="text-lg font-semibold text-slate-900">Garantias</h2>
-                                        </div>
-
-                                        <div class="p-6">
-                                            <div class="flex space-x-8">
-                                                @foreach ($this->selectedFormulario->informacion as $informacion)
-                                                    @foreach ($informacion->producto as $producto)
-                                                        <div class="space-y-1 w-1/2">
-                                                            <p class="text-sm font-medium text-black">¿Aplica algún
-                                                                tipo de garantía?</p>
-                                                            <p class="text-sm text-slate-900">
-                                                                {{ $producto->aplica_garantia ?? 'No especificado' }}
-                                                            </p>
-                                                            <div class="h-px bg-slate-200 mt-2"></div>
-                                                        </div>
-
-
-                                                        <div class="space-y-1 w-1/2">
-                                                            <p class="text-sm font-medium text-black">¿Cuál es el
-                                                                termino de la garantía?</p>
-                                                            <p class="text-sm text-slate-900">
-                                                                {{ $producto->termino_garantia ?? 'No especificado' }}
-                                                            </p>
-                                                            <div class="h-px bg-slate-200 mt-2"></div>
-                                                        </div>
-                                                    @endforeach
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     <!-- Pólizas -->
                                     <div class="bg-white rounded-lg shadow-md border border-slate-200">
                                         <div class="border-b border-slate-200 px-6 py-4 bg-indigo-50">
