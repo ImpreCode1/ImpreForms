@@ -52,9 +52,6 @@ class FormulariosRecibidos extends Component implements FromCollection, WithMapp
     public string $comentarioAutorizacion = '';
     public bool $mostrarRechazo = false;
 
-    public string $comentarioAutorizacion = '';
-    public bool $mostrarRechazo = false;
-
     protected $listeners = ['openModal' => 'loadFormulario'];
 
     public function approveFormulario($id)
