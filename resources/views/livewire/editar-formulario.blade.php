@@ -931,6 +931,17 @@
                                             </tr>
                                         @endforeach
                                     </tbody>
+                                    <tfoot>
+                                        <tr class="border-t-2 border-amber-300">
+                                            <td colspan="5" class="px-2 py-1 text-right text-sm font-bold text-gray-700">
+                                                Total General:
+                                            </td>
+                                            <td class="px-2 py-1 text-sm font-bold text-gray-900">
+                                                {{ number_format(collect($excelPreview)->where('error', null)->sum('precio_total'), 2) }}
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         @endif
