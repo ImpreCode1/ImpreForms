@@ -385,6 +385,9 @@ class EnviarFormulario extends Component
             'tipo' => '',
             'precio_unitario' => 0,
             'precio_total' => 0,
+            'garantia_tipo' => null,
+            'garantia_cantidad' => null,
+            'garantia_unidad' => null,
         ];
     }
 
@@ -438,6 +441,9 @@ class EnviarFormulario extends Component
             'cantidad'        => ['CANTIDAD', 'CANT'],
             'tipo'            => ['TIPO'],
             'precio_unitario' => ['PRECIO UNITARIO', 'PRECIOUNITARIO'],
+            'garantia_tipo'     => ['TIPO GARANTIA', 'TIPOGARANTIA'],
+            'garantia_cantidad' => ['CANT.G', 'CANTG', 'CANTIDAD GARANTIA'],
+            'garantia_unidad'   => ['TIEMPO'],
         ];
 
         $canonical = [
@@ -445,6 +451,9 @@ class EnviarFormulario extends Component
             'cantidad'        => 'Cantidad',
             'tipo'            => 'Tipo',
             'precio_unitario' => 'Precio Unitario',
+            'garantia_tipo'     => 'Tipo Garantía',
+            'garantia_cantidad' => 'Cant. Garantía',
+            'garantia_unidad'   => 'Tiempo Garantía',
         ];
 
         $mapping = array_fill(0, count($this->excelHeaders), '');
@@ -498,6 +507,9 @@ class EnviarFormulario extends Component
             'tipo'            => $row['tipo'],
             'precio_unitario' => (float) $row['precio_unitario'],
             'precio_total'    => (float) $row['precio_total'],
+            'garantia_tipo'     => $row['garantia_tipo'] ?? null,
+            'garantia_cantidad' => isset($row['garantia_cantidad']) && $row['garantia_cantidad'] !== '' ? (int) $row['garantia_cantidad'] : null,
+            'garantia_unidad'   => $row['garantia_unidad'] ?? null,
         ], $validas);
 
         $this->resetExcelState();
@@ -527,6 +539,9 @@ class EnviarFormulario extends Component
             'cantidad'        => array_search('Cantidad', $this->columnMapping),
             'tipo'            => array_search('Tipo', $this->columnMapping),
             'precio_unitario' => array_search('Precio Unitario', $this->columnMapping),
+            'garantia_tipo'     => array_search('Tipo Garantía', $this->columnMapping),
+            'garantia_cantidad' => array_search('Cant. Garantía', $this->columnMapping),
+            'garantia_unidad'   => array_search('Tiempo Garantía', $this->columnMapping),
         ];
 
         $this->excelPreview = [];
@@ -537,6 +552,9 @@ class EnviarFormulario extends Component
                 'cantidad'        => $mappedColumns['cantidad'] !== false ? trim((string) ($row[$mappedColumns['cantidad']] ?? '')) : '',
                 'tipo'            => $mappedColumns['tipo'] !== false ? trim((string) ($row[$mappedColumns['tipo']] ?? '')) : '',
                 'precio_unitario' => $mappedColumns['precio_unitario'] !== false ? trim((string) ($row[$mappedColumns['precio_unitario']] ?? '')) : '',
+                'garantia_tipo'     => $mappedColumns['garantia_tipo'] !== false ? trim((string) ($row[$mappedColumns['garantia_tipo']] ?? '')) : null,
+                'garantia_cantidad' => $mappedColumns['garantia_cantidad'] !== false ? trim((string) ($row[$mappedColumns['garantia_cantidad']] ?? '')) : null,
+                'garantia_unidad'   => $mappedColumns['garantia_unidad'] !== false ? trim((string) ($row[$mappedColumns['garantia_unidad']] ?? '')) : null,
                 'error'           => null,
             ];
 
@@ -703,6 +721,9 @@ class EnviarFormulario extends Component
                         'tipo' => $item['tipo'],
                         'precio_unitario' => $item['precio_unitario'],
                         'precio_total' => $item['precio_total'],
+                        'garantia_tipo' => $item['garantia_tipo'] ?? null,
+                        'garantia_cantidad' => $item['garantia_cantidad'] ?? null,
+                        'garantia_unidad' => $item['garantia_unidad'] ?? null,
                     ]);
                 }
             }
