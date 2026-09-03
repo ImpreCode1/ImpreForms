@@ -908,6 +908,9 @@
                                             <th class="px-2 py-1 text-left">Cantidad</th>
                                             <th class="px-2 py-1 text-left">Tipo</th>
                                             <th class="px-2 py-1 text-left">P. Unitario</th>
+                                            <th class="px-2 py-1 text-left">Tipo Garantía</th>
+                                            <th class="px-2 py-1 text-left">Cant. Garantía</th>
+                                            <th class="px-2 py-1 text-left">Tiempo Garantía</th>
                                             <th class="px-2 py-1 text-left">P. Total</th>
                                             <th class="px-2 py-1 text-left">Estado</th>
                                         </tr>
@@ -920,6 +923,9 @@
                                                 <td class="px-2 py-1">{{ $previewRow['cantidad'] }}</td>
                                                 <td class="px-2 py-1">{{ $previewRow['tipo'] }}</td>
                                                 <td class="px-2 py-1">{{ $previewRow['precio_unitario'] }}</td>
+                                                <td class="px-2 py-1">{{ $previewRow['garantia_tipo'] ?? '' }}</td>
+                                                <td class="px-2 py-1">{{ $previewRow['garantia_cantidad'] ?? '' }}</td>
+                                                <td class="px-2 py-1">{{ $previewRow['garantia_unidad'] ?? '' }}</td>
                                                 <td class="px-2 py-1">{{ $previewRow['precio_total'] ?? '' }}</td>
                                                 <td class="px-2 py-1">
                                                     @if ($previewRow['error'])
@@ -933,7 +939,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr class="border-t-2 border-amber-300">
-                                            <td colspan="5" class="px-2 py-1 text-right text-sm font-bold text-gray-700">
+                                            <td colspan="8" class="px-2 py-1 text-right text-sm font-bold text-gray-700">
                                                 Total General:
                                             </td>
                                             <td class="px-2 py-1 text-sm font-bold text-gray-900">
@@ -986,6 +992,9 @@
                                 <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Cantidad</th>
                                 <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tipo</th>
                                 <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Precio Unitario</th>
+                                <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tipo Garantía</th>
+                                <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Cant. Garantía</th>
+                                <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tiempo Garantía</th>
                                 <th class="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Precio Total</th>
                                 <th class="px-3 py-2"></th>
                             </tr>
@@ -1031,6 +1040,15 @@
                                         @enderror
                                     </td>
                                     <td class="px-3 py-2">
+                                        <span class="block text-sm text-gray-700">{{ $item['garantia_tipo'] ?? '—' }}</span>
+                                    </td>
+                                    <td class="px-3 py-2">
+                                        <span class="block text-sm text-gray-700">{{ $item['garantia_cantidad'] ?? '—' }}</span>
+                                    </td>
+                                    <td class="px-3 py-2">
+                                        <span class="block text-sm text-gray-700">{{ $item['garantia_unidad'] ?? '—' }}</span>
+                                    </td>
+                                    <td class="px-3 py-2">
                                         <input type="number" step="0.01" readonly
                                             x-bind:value="(parseFloat($el.closest('tr').querySelector('[data-cantidad]')?.value) || 0) * (parseFloat($el.closest('tr').querySelector('[data-precio-u]')?.value) || 0)"
                                             wire:model="objetoContrato.{{ $index }}.precio_total"
@@ -1050,7 +1068,7 @@
                         </tbody>
                         <tfoot>
                             <tr class="border-t-2 border-gray-300">
-                                <td colspan="4" class="px-3 py-3 text-right text-sm font-bold text-gray-700">
+                                <td colspan="7" class="px-3 py-3 text-right text-sm font-bold text-gray-700">
                                     Total General:
                                 </td>
                                 <td class="px-3 py-3 text-sm font-bold text-gray-900">

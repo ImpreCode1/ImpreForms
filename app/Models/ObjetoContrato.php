@@ -18,6 +18,9 @@ class ObjetoContrato extends Model
         'tipo',
         'precio_unitario',
         'precio_total',
+        'garantia_tipo',
+        'garantia_cantidad',
+        'garantia_unidad',
     ];
 
     public function marca()
